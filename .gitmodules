@@ -1,0 +1,3 @@
+[submodule "trading-engine"]
+	path = trading-engine
+	url = https://github.com/becker-freelancing/trading-engine.git
