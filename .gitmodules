@@ -1,6 +1,3 @@
 [submodule "trading-engine"]
 	path = trading-engine
 	url = https://github.com/becker-freelancing/trading-engine.git
-[submodule "trading-abstract-app"]
-	path = trading-abstract-app
-	url = https://github.com/becker-freelancing/trading-abstract-app.git
