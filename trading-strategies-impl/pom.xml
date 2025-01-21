@@ -13,8 +13,8 @@
     <artifactId>trading-strategies-impl</artifactId>
 
     <modules>
-        <module>bachelor-strategy-impl</module>
-        <module>other-strategy-impl</module>
+        <module>bachelor-strategies-impl</module>
+        <module>other-strategies-impl</module>
     </modules>
 
     <dependencies>
