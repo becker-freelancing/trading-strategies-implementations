@@ -1,0 +1,8 @@
+com.becker.freelance.strategies.BestHardTpAndSlStrategy
+com.becker.freelance.strategies.BollingerBandBounceMinSlopeStrategy
+com.becker.freelance.strategies.BollingerBandBounceStrategy
+com.becker.freelance.strategies.MA2Strategy
+com.becker.freelance.strategies.ParabolicSarStrategy
+com.becker.freelance.strategies.RsiOverboughtOversoldStrategy
+com.becker.freelance.strategies.TestStrategy
+com.becker.freelance.strategies.MA3Strategy
