@@ -11,4 +11,11 @@
 
     <artifactId>other-strategies-impl</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.ta4j</groupId>
+            <artifactId>ta4j-core</artifactId>
+            <version>${ta4j.version}</version>
+        </dependency>
+    </dependencies>
 </project>
