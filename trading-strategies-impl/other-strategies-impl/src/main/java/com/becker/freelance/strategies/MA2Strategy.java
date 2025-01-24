@@ -3,6 +3,7 @@ package com.becker.freelance.strategies;
 import com.becker.freelance.commons.*;
 import com.becker.freelance.strategies.algorithm.SwingDetection;
 import org.ta4j.core.BarSeries;
+import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
@@ -30,21 +31,26 @@ public class MA2Strategy extends BaseStrategy{
 
     }
 
-    private int shortPeriod;
-    private int longPeriod;
-
     private int swingHighLowMaxAge;
     private int swingHighLowOrder;
     private SwingDetection swingDetection;
+    private BarSeries barSeries;
+    private SMAIndicator shortSma;
+    private SMAIndicator longSma;
 
     public MA2Strategy(Map<String, Double> parameters) {
         super(parameters);
 
-        shortPeriod = parameters.get("short_ma_period").intValue();
-        longPeriod = parameters.get("long_ma_period").intValue();
+        int shortPeriod = parameters.get("short_ma_period").intValue();
+        int longPeriod = parameters.get("long_ma_period").intValue();
         swingHighLowMaxAge = parameters.get("swing_high_low_max_age").intValue();
         swingHighLowOrder = parameters.get("swing_high_low_order").intValue();
         this.swingDetection = new SwingDetection();
+        barSeries = new BaseBarSeries();
+        barSeries.setMaximumBarCount(Math.max(longPeriod, swingHighLowOrder));
+        ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
+        shortSma = new SMAIndicator(closePriceIndicator, shortPeriod);
+        longSma = new SMAIndicator(closePriceIndicator, longPeriod);
     }
 
     @Override
@@ -59,22 +65,19 @@ public class MA2Strategy extends BaseStrategy{
         return swingHighLowOrder + swingHighLowMaxAge;
     }
 
-    private LastTwoMaResults lastTwoMaValuesForTime(ClosePriceIndicator data, int period){
-        SMAIndicator smaIndicator = new SMAIndicator(data, period);
-        int size = smaIndicator.getBarSeries().getBarCount();
-        double last = smaIndicator.getValue(size - 2).doubleValue();
-        double current = smaIndicator.getValue(size - 1).doubleValue();
+    private LastTwoMaResults lastTwoMaValuesForTime(SMAIndicator smaIndicator, int barCount){
+        double last = smaIndicator.getValue(barCount - 2).doubleValue();
+        double current = smaIndicator.getValue(barCount - 1).doubleValue();
         return new LastTwoMaResults(last, current);
     }
 
     @Override
     public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
 
-        BarSeries longClose = timeSeries.getLastNCloseForTimeAsBarSeries(time, longPeriod + 1);
-        ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(longClose);
 
-        LastTwoMaResults lastShortMaValues = lastTwoMaValuesForTime(closePriceIndicator, shortPeriod);
-        LastTwoMaResults lastLongMaValues = lastTwoMaValuesForTime(closePriceIndicator, longPeriod);
+        int barCount = barSeries.getBarCount();
+        LastTwoMaResults lastShortMaValues = lastTwoMaValuesForTime(shortSma, barCount);
+        LastTwoMaResults lastLongMaValues = lastTwoMaValuesForTime(longSma, barCount);
 
         List<TimeSeriesEntry> swingHighLowData = timeSeries.getLastNCloseForTimeAsEntry(time, swingHighLowMaxAge + swingHighLowOrder);
 
