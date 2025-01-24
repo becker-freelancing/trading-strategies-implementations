@@ -2,6 +2,7 @@ package com.becker.freelance.strategies;
 
 import com.becker.freelance.commons.*;
 import com.becker.freelance.strategies.algorithm.SwingDetection;
+import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.SMAIndicator;
@@ -73,8 +74,8 @@ public class MA2Strategy extends BaseStrategy{
 
     @Override
     public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-
-
+        Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
+        barSeries.addBar(currentPrice);
         int barCount = barSeries.getBarCount();
         LastTwoMaResults lastShortMaValues = lastTwoMaValuesForTime(shortSma, barCount);
         LastTwoMaResults lastLongMaValues = lastTwoMaValuesForTime(longSma, barCount);
