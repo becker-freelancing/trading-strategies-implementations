@@ -1,6 +1,10 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.*;
+import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.signal.Direction;
+import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.timeseries.TimeSeries;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;

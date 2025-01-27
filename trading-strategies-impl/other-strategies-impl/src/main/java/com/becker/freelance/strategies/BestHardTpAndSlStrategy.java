@@ -1,6 +1,10 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.*;
+import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.signal.Direction;
+import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.timeseries.TimeSeries;
 
 import java.time.LocalDateTime;
 import java.util.List;

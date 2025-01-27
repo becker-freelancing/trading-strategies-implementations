@@ -1,6 +1,6 @@
 package com.becker.freelance.strategies.algorithm;
 
-import com.becker.freelance.commons.TimeSeriesEntry;
+import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +34,12 @@ public class SwingDetection {
             boolean isExtrema = true;
             for (int j = 1; j <= order; j++) {
                 if (findHighs) {
-                    if (values.get(i).closeMid() <= values.get(i - j).closeMid() || values.get(i).closeMid() <= values.get(i + j).closeMid()) {
+                    if (values.get(i).getCloseMid() <= values.get(i - j).getCloseMid() || values.get(i).getCloseMid() <= values.get(i + j).getCloseMid()) {
                         isExtrema = false;
                         break;
                     }
                 } else {
-                    if (values.get(i).closeMid() >= values.get(i - j).closeMid() || values.get(i).closeMid() >= values.get(i + j).closeMid()) {
+                    if (values.get(i).getCloseMid() >= values.get(i - j).getCloseMid() || values.get(i).getCloseMid() >= values.get(i + j).getCloseMid()) {
                         isExtrema = false;
                         break;
                     }

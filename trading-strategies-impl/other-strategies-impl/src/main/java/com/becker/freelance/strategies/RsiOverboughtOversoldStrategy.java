@@ -1,6 +1,11 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.*;
+import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.signal.Direction;
+import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -70,11 +75,11 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
     }
 
     private boolean isBullishEngulfing(TimeSeriesEntry currentEntry, TimeSeriesEntry lastEntry){
-        return currentEntry.isGreenCandle() && !lastEntry.isGreenCandle() && lastEntry.highMid() < currentEntry.closeMid() && lastEntry.lowMid() > currentEntry.openMid();
+        return currentEntry.isGreenCandle() && !lastEntry.isGreenCandle() && lastEntry.getHighMid() < currentEntry.getCloseMid() && lastEntry.getLowMid() > currentEntry.getOpenMid();
     }
 
     private boolean isBearishEngulfing(TimeSeriesEntry currentEntry, TimeSeriesEntry lastEntry){
-        return !currentEntry.isGreenCandle() && lastEntry.isGreenCandle() && lastEntry.highMid() < currentEntry.openMid() && lastEntry.lowMid() > currentEntry.closeMid();
+        return !currentEntry.isGreenCandle() && lastEntry.isGreenCandle() && lastEntry.getHighMid() < currentEntry.getOpenMid() && lastEntry.getLowMid() > currentEntry.getCloseMid();
     }
 
     @Override

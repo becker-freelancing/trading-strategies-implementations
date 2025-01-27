@@ -1,6 +1,11 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.*;
+import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.signal.Direction;
+import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -106,8 +111,8 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
         int barCount = series.getBarCount();
         Num lowValueNum = bollingerBandsLowerIndicator.getValue(barCount - 1);
         double lowValue = lowValueNum.doubleValue();
-        double closeMid = currentPrice.closeMid();
-        if (currentPrice.openMid() < lowValue && closeMid > lowValue) {
+        double closeMid = currentPrice.getCloseMid();
+        if (currentPrice.getOpenMid() < lowValue && closeMid > lowValue) {
             Num middleValueNum = bollingerBandsMiddleIndicator.getValue(barCount - 1);
             double middleValue = middleValueNum.doubleValue();
             double limit = Math.abs(closeMid - middleValue);
@@ -120,8 +125,8 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     private Optional<EntrySignal> toSellEntrySignal(BarSeries series, BollingerBandsUpperIndicator bollingerBandsUpperIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Double size) {
         int barCount = series.getBarCount();
         double highValue = bollingerBandsUpperIndicator.getValue(barCount - 1).doubleValue();
-        double closeMid = currentPrice.closeMid();
-        if (currentPrice.openMid() > highValue && closeMid < highValue) {
+        double closeMid = currentPrice.getCloseMid();
+        if (currentPrice.getOpenMid() > highValue && closeMid < highValue) {
             double middleValue = bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue();
             double limit = Math.abs(closeMid - middleValue);
             double stop = Math.abs(closeMid - highValue) + 5;

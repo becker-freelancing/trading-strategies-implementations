@@ -1,6 +1,11 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.*;
+import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.signal.Direction;
+import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.strategies.algorithm.SwingDetection;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
@@ -94,12 +99,12 @@ public class MA2Strategy extends BaseStrategy{
         if (lastShort < lastLong && currentShort > currentLong){
             //BUY
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingLow(swingData, swingOrder);
-            double stopPoints = lastSwingLow.map(entry -> Math.round(Math.abs(current.closeMid() - entry.closeMid()) + 5)).orElse(10L);
+            double stopPoints = lastSwingLow.map(entry -> Math.round(Math.abs(current.getCloseMid() - entry.getCloseMid()) + 5)).orElse(10L);
             return Optional.of(new EntrySignal(1, Direction.BUY, stopPoints, 15, PositionType.HARD_LIMIT));
         } else if (lastShort > lastLong && currentShort < currentLong) {
             //SELL
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingHigh(swingData, swingOrder);
-            double stopPoints = lastSwingLow.map(entry -> Math.round(Math.abs(current.closeMid() - entry.closeMid()) + 5)).orElse(10L);
+            double stopPoints = lastSwingLow.map(entry -> Math.round(Math.abs(current.getCloseMid() - entry.getCloseMid()) + 5)).orElse(10L);
             return Optional.of(new EntrySignal(1, Direction.SELL, stopPoints, 15, PositionType.HARD_LIMIT));
         }
         return Optional.empty();
