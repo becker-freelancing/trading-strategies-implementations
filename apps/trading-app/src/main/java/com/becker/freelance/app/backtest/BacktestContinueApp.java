@@ -5,13 +5,11 @@ import com.becker.freelance.app.AbstractBacktestAppBuilder;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class BacktestApp {
+public class BacktestContinueApp {
 
     public static void main(String[] args) throws IOException {
         Runnable backtestApp = AbstractBacktestAppBuilder.builder()
-                .withInitialWalletAmount(2000.)
-                .withFromTime(LocalDateTime.parse("2023-01-01T00:00:00"))
-                .withToTime(LocalDateTime.parse("2024-01-01T00:00:00"))
+                .continueMode()
                 .build();
 
         backtestApp.run();

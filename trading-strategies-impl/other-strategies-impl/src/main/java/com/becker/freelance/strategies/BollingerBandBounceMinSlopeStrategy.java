@@ -53,7 +53,7 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
 
 
     public BollingerBandBounceMinSlopeStrategy(Map<String, Double> parameters) {
-        this();
+        super(parameters);
         period = parameters.get("period").intValue();
         std = parameters.get("std");
         size = parameters.get("size");
