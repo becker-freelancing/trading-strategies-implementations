@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.becker-freelance.trading</groupId>
-    <artifactId>data-request</artifactId>
+    <artifactId>apps</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -14,12 +15,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20241224</version>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>backtest-result-viewer-app</module>
+        <module>data-request</module>
+        <module>trading-app</module>
+    </modules>
+
 
 </project>
