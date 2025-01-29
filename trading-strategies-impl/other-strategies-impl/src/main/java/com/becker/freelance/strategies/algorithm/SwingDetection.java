@@ -34,12 +34,12 @@ public class SwingDetection {
             boolean isExtrema = true;
             for (int j = 1; j <= order; j++) {
                 if (findHighs) {
-                    if (values.get(i).getCloseMid() <= values.get(i - j).getCloseMid() || values.get(i).getCloseMid() <= values.get(i + j).getCloseMid()) {
+                    if (values.get(i).getCloseMid().isLessThanOrEqualTo(values.get(i - j).getCloseMid()) || values.get(i).getCloseMid().isLessThanOrEqualTo(values.get(i + j).getCloseMid())) {
                         isExtrema = false;
                         break;
                     }
                 } else {
-                    if (values.get(i).getCloseMid() >= values.get(i - j).getCloseMid() || values.get(i).getCloseMid() >= values.get(i + j).getCloseMid()) {
+                    if (values.get(i).getCloseMid().isGreaterThanOrEqualTo(values.get(i - j).getCloseMid()) || values.get(i).getCloseMid().isGreaterThanOrEqualTo(values.get(i + j).getCloseMid())) {
                         isExtrema = false;
                         break;
                     }

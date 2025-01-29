@@ -5,6 +5,7 @@ import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.math.Decimal;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +25,7 @@ public class TestStrategy extends BaseStrategy {
         ));
     }
 
-    private TestStrategy(Map<String, Double> parameters){
+    private TestStrategy(Map<String, Decimal> parameters){
         super(parameters);
     }
 
@@ -36,7 +37,7 @@ public class TestStrategy extends BaseStrategy {
         }
         Direction direction = rand.nextDouble() > 0.5 ? Direction.BUY : Direction.SELL;
         return Optional.of(new EntrySignal(
-                1, direction, 10, 1, PositionType.HARD_LIMIT
+                Decimal.ONE, direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT
         ));
     }
 
@@ -46,7 +47,7 @@ public class TestStrategy extends BaseStrategy {
     }
 
     @Override
-    public BaseStrategy forParameters(Map<String, Double> parameters) {
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
         return new TestStrategy(parameters);
     }
 }

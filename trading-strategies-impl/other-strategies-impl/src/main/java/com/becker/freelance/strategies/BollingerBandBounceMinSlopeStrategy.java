@@ -6,6 +6,7 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
+import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -27,8 +28,8 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     public BollingerBandBounceMinSlopeStrategy() {
         super("Bollinger_Band_Bounce_Min_Slope", new PermutableStrategyParameter(
                 new StrategyParameter("period", 14, 15, 20, 1),
-                new StrategyParameter("std", 2, 1, 1.8, 0.2),
-                new StrategyParameter("size", 0.5, 0.2, 1, 0.2),
+                new StrategyParameter("std", 2, 1., 1.8, 0.2),
+                new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
                 new StrategyParameter("min_slope", 1, 0.2, 1.0, 0.4),
                 new StrategyParameter("min_slope_window", 20, 20, 70, 10),
                 new StrategyParameter("min_slope_period", 20, 20, 40, 10)
@@ -36,8 +37,8 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     }
 
     private int period;
-    private Double std;
-    private Double size;
+    private Decimal std;
+    private Decimal size;
     private BarSeries barSeries;
     private ClosePriceIndicator bandData;
     private SMAIndicator smaIndicator;
@@ -49,10 +50,10 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
 
     private SMAIndicator slopeSma;
     private int slopeWindow;
-    private Double minSlope;
+    private Decimal minSlope;
 
 
-    public BollingerBandBounceMinSlopeStrategy(Map<String, Double> parameters) {
+    public BollingerBandBounceMinSlopeStrategy(Map<String, Decimal> parameters) {
         super(parameters);
         period = parameters.get("period").intValue();
         std = parameters.get("std");
@@ -70,7 +71,7 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     }
 
     @Override
-    public BaseStrategy forParameters(Map<String, Double> parameters) {
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
         return new BollingerBandBounceMinSlopeStrategy(parameters);
     }
 
@@ -104,32 +105,32 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
         double current = slopeSma.getValue(barCount - 1).doubleValue();
         double last = slopeSma.getValue(barCount - slopeWindow - 1).doubleValue();
 
-        return Math.abs(current - last) >= minSlope;
+        return minSlope.isLessThanOrEqualTo(Math.abs(current - last));
     }
 
-    private Optional<EntrySignal> toBuyEntrySignal(BarSeries series, BollingerBandsLowerIndicator bollingerBandsLowerIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Double size) {
+    private Optional<EntrySignal> toBuyEntrySignal(BarSeries series, BollingerBandsLowerIndicator bollingerBandsLowerIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Decimal size) {
         int barCount = series.getBarCount();
         Num lowValueNum = bollingerBandsLowerIndicator.getValue(barCount - 1);
         double lowValue = lowValueNum.doubleValue();
-        double closeMid = currentPrice.getCloseMid();
-        if (currentPrice.getOpenMid() < lowValue && closeMid > lowValue) {
+        Decimal closeMid = currentPrice.getCloseMid();
+        if (currentPrice.getOpenMid().isLessThan(lowValue) && closeMid.isGreaterThan(lowValue)) {
             Num middleValueNum = bollingerBandsMiddleIndicator.getValue(barCount - 1);
             double middleValue = middleValueNum.doubleValue();
-            double limit = Math.abs(closeMid - middleValue);
-            double stop = Math.abs(closeMid - lowValue) + 5;
+            Decimal limit = closeMid.subtract(middleValue).abs();
+            Decimal stop = closeMid.subtract(lowValue).abs().add(5);
             return Optional.of(new EntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT));
         }
         return Optional.empty();
     }
 
-    private Optional<EntrySignal> toSellEntrySignal(BarSeries series, BollingerBandsUpperIndicator bollingerBandsUpperIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Double size) {
+    private Optional<EntrySignal> toSellEntrySignal(BarSeries series, BollingerBandsUpperIndicator bollingerBandsUpperIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Decimal size) {
         int barCount = series.getBarCount();
         double highValue = bollingerBandsUpperIndicator.getValue(barCount - 1).doubleValue();
-        double closeMid = currentPrice.getCloseMid();
-        if (currentPrice.getOpenMid() > highValue && closeMid < highValue) {
+        Decimal closeMid = currentPrice.getCloseMid();
+        if (currentPrice.getOpenMid().isGreaterThan(highValue) && closeMid.isLessThan(highValue)) {
             double middleValue = bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue();
-            double limit = Math.abs(closeMid - middleValue);
-            double stop = Math.abs(closeMid - highValue) + 5;
+            Decimal limit = closeMid.subtract(middleValue);
+            Decimal stop = closeMid.subtract(highValue).abs().add(5);
             return Optional.of(new EntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT));
         }
         return Optional.empty();

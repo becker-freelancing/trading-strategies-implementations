@@ -5,6 +5,7 @@ import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.math.Decimal;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,13 +22,13 @@ public class BestHardTpAndSlStrategy extends BaseStrategy{
         )));
     }
 
-    private Double allBuy;
-    private Double tp;
-    private Double sl;
+    private boolean allBuy;
+    private Decimal tp;
+    private Decimal sl;
 
-    public BestHardTpAndSlStrategy(Map<String, Double> parameters) {
+    public BestHardTpAndSlStrategy(Map<String, Decimal> parameters) {
         super(parameters);
-        allBuy = parameters.get("all_buy");
+        allBuy = !parameters.get("all_buy").isEqualToZero();
         tp = parameters.get("tp");
         sl = parameters.get("sl");
     }
@@ -36,7 +37,7 @@ public class BestHardTpAndSlStrategy extends BaseStrategy{
     public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
 
 
-        return Optional.of(new EntrySignal(1, allBuy == 0 ? Direction.SELL : Direction.BUY, sl, tp, PositionType.HARD_LIMIT));
+        return Optional.of(new EntrySignal(Decimal.ONE, allBuy ? Direction.BUY : Direction.SELL, sl, tp, PositionType.HARD_LIMIT));
     }
 
     @Override
@@ -45,7 +46,7 @@ public class BestHardTpAndSlStrategy extends BaseStrategy{
     }
 
     @Override
-    public BaseStrategy forParameters(Map<String, Double> parameters) {
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
         return new BestHardTpAndSlStrategy(parameters);
     }
 }

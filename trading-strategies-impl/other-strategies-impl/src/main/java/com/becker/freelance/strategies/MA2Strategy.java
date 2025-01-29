@@ -6,6 +6,7 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
+import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.algorithm.SwingDetection;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
@@ -20,8 +21,8 @@ import java.util.Optional;
 
 public class MA2Strategy extends BaseStrategy{
 
-    private static boolean shortMaLessThanLongMaValidation(Map<String, Double> parameter){
-        return parameter.get("short_ma_period") < parameter.get("long_ma_period");
+    private static boolean shortMaLessThanLongMaValidation(Map<String, Decimal> parameter){
+        return parameter.get("short_ma_period").isLessThan(parameter.get("long_ma_period"));
     }
 
     private static record LastTwoMaResults(Double last, Double current){}
@@ -44,7 +45,7 @@ public class MA2Strategy extends BaseStrategy{
     private SMAIndicator shortSma;
     private SMAIndicator longSma;
 
-    public MA2Strategy(Map<String, Double> parameters) {
+    public MA2Strategy(Map<String, Decimal> parameters) {
         super(parameters);
 
         int shortPeriod = parameters.get("short_ma_period").intValue();
@@ -60,12 +61,12 @@ public class MA2Strategy extends BaseStrategy{
     }
 
     @Override
-    public BaseStrategy forParameters(Map<String, Double> parameters) {
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
         return new MA2Strategy(parameters);
     }
 
     @Override
-    public int minNumberOfBarsRequired(Map<String, Double> parameters) {
+    public int minNumberOfBarsRequired(Map<String, Decimal> parameters) {
         int swingHighLowMaxAge = parameters.get("swing_high_low_max_age").intValue();
         int swingHighLowOrder = parameters.get("swing_high_low_order").intValue();
         return swingHighLowOrder + swingHighLowMaxAge;
@@ -99,13 +100,13 @@ public class MA2Strategy extends BaseStrategy{
         if (lastShort < lastLong && currentShort > currentLong){
             //BUY
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingLow(swingData, swingOrder);
-            double stopPoints = lastSwingLow.map(entry -> Math.round(Math.abs(current.getCloseMid() - entry.getCloseMid()) + 5)).orElse(10L);
-            return Optional.of(new EntrySignal(1, Direction.BUY, stopPoints, 15, PositionType.HARD_LIMIT));
+            Decimal stopPoints = lastSwingLow.map(entry -> current.getCloseMid().subtract(entry.getCloseMid()).abs().add(5).round(0)).orElse(Decimal.TEN);
+            return Optional.of(new EntrySignal(Decimal.ONE, Direction.BUY, stopPoints, new Decimal(15), PositionType.HARD_LIMIT));
         } else if (lastShort > lastLong && currentShort < currentLong) {
             //SELL
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingHigh(swingData, swingOrder);
-            double stopPoints = lastSwingLow.map(entry -> Math.round(Math.abs(current.getCloseMid() - entry.getCloseMid()) + 5)).orElse(10L);
-            return Optional.of(new EntrySignal(1, Direction.SELL, stopPoints, 15, PositionType.HARD_LIMIT));
+            Decimal stopPoints = lastSwingLow.map(entry -> current.getCloseMid().subtract(entry.getCloseMid()).abs().add(5).round(0)).orElse(Decimal.TEN);
+            return Optional.of(new EntrySignal(Decimal.ONE, Direction.SELL, stopPoints, new Decimal(15), PositionType.HARD_LIMIT));
         }
         return Optional.empty();
     }

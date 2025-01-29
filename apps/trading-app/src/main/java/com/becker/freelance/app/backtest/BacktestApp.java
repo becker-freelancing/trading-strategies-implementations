@@ -1,15 +1,15 @@
 package com.becker.freelance.app.backtest;
 
 import com.becker.freelance.app.AbstractBacktestAppBuilder;
+import com.becker.freelance.math.Decimal;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class BacktestApp {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Runnable backtestApp = AbstractBacktestAppBuilder.builder()
-                .withInitialWalletAmount(2000.)
+                .withInitialWalletAmount(new Decimal(2000))
                 .withFromTime(LocalDateTime.parse("2023-01-01T00:00:00"))
                 .withToTime(LocalDateTime.parse("2024-01-01T00:00:00"))
                 .build();

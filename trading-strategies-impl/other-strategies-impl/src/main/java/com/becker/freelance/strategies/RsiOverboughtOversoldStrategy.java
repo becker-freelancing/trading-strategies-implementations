@@ -6,6 +6,7 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
+import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -23,20 +24,20 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
                 new StrategyParameter("rsi_period", 12, 5, 17, 1),
                 new StrategyParameter("stop_points", 9, 5, 15, 2),
                 new StrategyParameter("limit_points", 11, 9, 22, 2),
-                new StrategyParameter("size", 0.5, 0.2, 1, 0.2)
+                new StrategyParameter("size", 0.5, 0.2, 1., 0.2)
             ));
     }
 
     private BarSeries barSeries;
     private RSIIndicator rsiIndicator;
-    private Double size;
-    private Double limit;
-    private Double stop;
+    private Decimal size;
+    private Decimal limit;
+    private Decimal stop;
 
 
     private LocalDateTime lastUpdate = LocalDateTime.MIN;
 
-    public RsiOverboughtOversoldStrategy(Map<String, Double> parameters) {
+    public RsiOverboughtOversoldStrategy(Map<String, Decimal> parameters) {
         this();
         barSeries = new BaseBarSeries();
         int rsiPeriod = parameters.get("rsi_period").intValue();
@@ -49,7 +50,7 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
     }
 
     @Override
-    public BaseStrategy forParameters(Map<String, Double> parameters) {
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
         return new RsiOverboughtOversoldStrategy(parameters);
     }
 
@@ -75,11 +76,11 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
     }
 
     private boolean isBullishEngulfing(TimeSeriesEntry currentEntry, TimeSeriesEntry lastEntry){
-        return currentEntry.isGreenCandle() && !lastEntry.isGreenCandle() && lastEntry.getHighMid() < currentEntry.getCloseMid() && lastEntry.getLowMid() > currentEntry.getOpenMid();
+        return currentEntry.isGreenCandle() && !lastEntry.isGreenCandle() && lastEntry.getHighMid().isLessThan(currentEntry.getCloseMid()) && lastEntry.getLowMid().isGreaterThan(currentEntry.getOpenMid());
     }
 
     private boolean isBearishEngulfing(TimeSeriesEntry currentEntry, TimeSeriesEntry lastEntry){
-        return !currentEntry.isGreenCandle() && lastEntry.isGreenCandle() && lastEntry.getHighMid() < currentEntry.getOpenMid() && lastEntry.getLowMid() > currentEntry.getCloseMid();
+        return !currentEntry.isGreenCandle() && lastEntry.isGreenCandle() && lastEntry.getHighMid().isLessThan(currentEntry.getOpenMid()) && lastEntry.getLowMid().isGreaterThan(currentEntry.getCloseMid());
     }
 
     @Override

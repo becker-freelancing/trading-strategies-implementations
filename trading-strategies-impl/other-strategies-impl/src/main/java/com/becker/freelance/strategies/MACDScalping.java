@@ -5,10 +5,9 @@ import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
-import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
+import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.BaseBar;
 import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.MACDIndicator;
@@ -21,8 +20,8 @@ import java.util.Optional;
 
 public class MACDScalping extends BaseStrategy{
 
-    private static boolean shortBarCountLessThanLongBarCountValidation(Map<String, Double> parameter){
-        return parameter.get("short_bar_count") < parameter.get("long_bar_count");
+    private static boolean shortBarCountLessThanLongBarCountValidation(Map<String, Decimal> parameter){
+        return parameter.get("short_bar_count").isLessThan(parameter.get("long_bar_count"));
     }
 
 
@@ -31,7 +30,7 @@ public class MACDScalping extends BaseStrategy{
                 new StrategyParameter("short_bar_count", 6, 5, 9, 2),
                 new StrategyParameter("long_bar_count", 13, 11, 17, 2),
                 new StrategyParameter("signal_line_period", 5, 2, 7, 2),
-                new StrategyParameter("size", 0.5, 0.2, 1, 0.2),
+                new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
                 new StrategyParameter("take_profit", 15, 13, 22, 3),
                 new StrategyParameter("stop_loss", 8, 6, 12, 2)
         ), MACDScalping::shortBarCountLessThanLongBarCountValidation));
@@ -41,11 +40,11 @@ public class MACDScalping extends BaseStrategy{
     private MACDIndicator macdIndicator;
     private EMAIndicator macdSignal;
     private int longBarCount;
-    private double stopLoss;
-    private double takeProfit;
-    private double size;
+    private Decimal stopLoss;
+    private Decimal takeProfit;
+    private Decimal size;
 
-    public MACDScalping(Map<String, Double> parameters) {
+    public MACDScalping(Map<String, Decimal> parameters) {
         super(parameters);
 
         longBarCount = parameters.get("long_bar_count").intValue();
@@ -89,7 +88,7 @@ public class MACDScalping extends BaseStrategy{
     }
 
     @Override
-    public BaseStrategy forParameters(Map<String, Double> parameters) {
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
         return new MACDScalping(parameters);
     }
 }

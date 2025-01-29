@@ -5,6 +5,7 @@ import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -17,9 +18,9 @@ import java.util.Optional;
 
 public class MA3Strategy extends BaseStrategy {
 
-    private static boolean validateParameter(Map<String, Double> parameters) {
-        return parameters.get("short_period") < parameters.get("mid_period") &&
-                parameters.get("mid_period") < parameters.get("long_period");
+    private static boolean validateParameter(Map<String, Decimal> parameters) {
+        return parameters.get("short_period").isLessThan(parameters.get("mid_period")) &&
+                parameters.get("mid_period").isLessThan(parameters.get("long_period"));
     }
 
     public MA3Strategy() {
@@ -27,7 +28,7 @@ public class MA3Strategy extends BaseStrategy {
                 new StrategyParameter("short_period", 5, 3, 9, 3),
                 new StrategyParameter("mid_period", 20, 10, 30, 10),
                 new StrategyParameter("long_period", 200, 150, 250, 50),
-                new StrategyParameter("size", 0.5, 0.2, 1, 0.2),
+                new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
                 new StrategyParameter("min_slope", 1, 0.4, 0.8, 0.4),
                 new StrategyParameter("min_slope_window", 20, 20, 40, 20),
                 new StrategyParameter("stop_points", 9, 5, 15, 5),
@@ -35,17 +36,17 @@ public class MA3Strategy extends BaseStrategy {
                 ));
     }
 
-    private Double size;
-    private Double stop;
-    private Double limit;
+    private Decimal size;
+    private Decimal stop;
+    private Decimal limit;
     private BarSeries barSeries;
     private SMAIndicator shortSma;
     private SMAIndicator midSma;
     private SMAIndicator longSma;
-    private Double minSlope;
+    private Decimal minSlope;
     private int minSlopeWindow;
 
-    public MA3Strategy(Map<String, Double> parameters) {
+    public MA3Strategy(Map<String, Decimal> parameters) {
         super(parameters);
         size = parameters.get("size");
         int longPeriod = parameters.get("long_period").intValue();
@@ -66,7 +67,7 @@ public class MA3Strategy extends BaseStrategy {
         Bar currentBar = timeSeries.getEntryForTimeAsBar(time);
         barSeries.addBar(currentBar);
 
-        Optional<Direction> trendDirection = Optional.of(Direction.BUY);//getTrendDirection();
+        Optional<Direction> trendDirection = getTrendDirection();
         if (trendDirection.isEmpty()){
             return Optional.empty();
         }
@@ -94,7 +95,7 @@ public class MA3Strategy extends BaseStrategy {
     }
 
     @Override
-    public BaseStrategy forParameters(Map<String, Double> parameters) {
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
         return new MA3Strategy(parameters);
     }
 
@@ -108,9 +109,9 @@ public class MA3Strategy extends BaseStrategy {
         double last = longSma.getValue(barCount - minSlopeWindow - 1).doubleValue();
 
         double slope = (current - last) / minSlopeWindow;
-        if (slope <= -minSlope){
+        if (minSlope.negate().isGreaterThanOrEqualTo(slope)){
             return Optional.of(Direction.SELL);
-        } else if (slope >= minSlope){
+        } else if (minSlope.isLessThanOrEqualTo(slope)){
             return Optional.of(Direction.BUY);
         }
         return Optional.empty();
