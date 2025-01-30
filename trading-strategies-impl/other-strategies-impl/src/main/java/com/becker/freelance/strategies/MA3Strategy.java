@@ -3,6 +3,7 @@ package com.becker.freelance.strategies;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
@@ -31,14 +32,14 @@ public class MA3Strategy extends BaseStrategy {
                 new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
                 new StrategyParameter("min_slope", 1, 0.4, 0.8, 0.4),
                 new StrategyParameter("min_slope_window", 20, 20, 40, 20),
-                new StrategyParameter("stop_points", 9, 5, 15, 5),
-                new StrategyParameter("limit_points", 11, 9, 20, 5)
+                new StrategyParameter("stop_in_euros", 90, 50, 150, 50),
+                new StrategyParameter("limit_in_euros", 110, 90, 200, 50)
                 ));
     }
 
     private Decimal size;
-    private Decimal stop;
-    private Decimal limit;
+    private Decimal stopInEuros;
+    private Decimal limitInEuros;
     private BarSeries barSeries;
     private SMAIndicator shortSma;
     private SMAIndicator midSma;
@@ -58,8 +59,8 @@ public class MA3Strategy extends BaseStrategy {
         longSma = new SMAIndicator(closePriceIndicator, longPeriod);
         minSlope = parameters.get("min_slope");
         minSlopeWindow = parameters.get("min_slope_window").intValue();
-        stop = parameters.get("stop_points");
-        limit = parameters.get("limit_points");
+        stopInEuros = parameters.get("stop_in_euros");
+        limitInEuros = parameters.get("limit_in_euros");
     }
 
     @Override
@@ -81,9 +82,9 @@ public class MA3Strategy extends BaseStrategy {
         Direction direction = trendDirection.get();
 
         if (currentShortSma > currentMidSma && lastShortSmaValue < lastMidSmaValue && Direction.BUY.equals(direction)){
-            return Optional.of(new EntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
         } else if (currentShortSma < currentMidSma && lastShortSmaValue > lastMidSmaValue && Direction.SELL.equals(direction)){
-            return Optional.of(new EntrySignal(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
         }
 
         return Optional.empty();

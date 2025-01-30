@@ -1,9 +1,11 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.signal.LevelEntrySignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
@@ -100,13 +102,15 @@ public class MA2Strategy extends BaseStrategy{
         if (lastShort < lastLong && currentShort > currentLong){
             //BUY
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingLow(swingData, swingOrder);
-            Decimal stopPoints = lastSwingLow.map(entry -> current.getCloseMid().subtract(entry.getCloseMid()).abs().add(5).round(0)).orElse(Decimal.TEN);
-            return Optional.of(new EntrySignal(Decimal.ONE, Direction.BUY, stopPoints, new Decimal(15), PositionType.HARD_LIMIT));
+            Pair pair = current.pair();
+            return lastSwingLow.map(swingValue -> swingValue.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50))))
+                    .map(stopLevel -> new LevelEntrySignal(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150))), PositionType.HARD_LIMIT));
         } else if (lastShort > lastLong && currentShort < currentLong) {
             //SELL
-            Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingHigh(swingData, swingOrder);
-            Decimal stopPoints = lastSwingLow.map(entry -> current.getCloseMid().subtract(entry.getCloseMid()).abs().add(5).round(0)).orElse(Decimal.TEN);
-            return Optional.of(new EntrySignal(Decimal.ONE, Direction.SELL, stopPoints, new Decimal(15), PositionType.HARD_LIMIT));
+            Optional<TimeSeriesEntry> lastSwingHigh = swingDetection.getLastSwingHigh(swingData, swingOrder);
+            Pair pair = current.pair();
+            return lastSwingHigh.map(swingValue -> swingValue.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50))))
+                    .map(stopLevel -> new LevelEntrySignal(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150))), PositionType.HARD_LIMIT));
         }
         return Optional.empty();
     }

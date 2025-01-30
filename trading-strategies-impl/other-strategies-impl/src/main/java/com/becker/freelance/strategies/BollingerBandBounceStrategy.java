@@ -1,9 +1,11 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.signal.LevelEntrySignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
@@ -84,27 +86,27 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
     private Optional<EntrySignal> toBuyEntrySignal(BarSeries series, BollingerBandsLowerIndicator bollingerBandsLowerIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Decimal size) {
         int barCount = series.getBarCount();
         Num lowValueNum = bollingerBandsLowerIndicator.getValue(barCount - 1);
-        double lowValue = lowValueNum.doubleValue();
+        Decimal lowValue = new Decimal(lowValueNum.doubleValue());
         Decimal closeMid = currentPrice.getCloseMid();
         if (currentPrice.getOpenMid().isLessThan(lowValue) && closeMid.isGreaterThan(lowValue)) {
             Num middleValueNum = bollingerBandsMiddleIndicator.getValue(barCount - 1);
-            double middleValue = middleValueNum.doubleValue();
-            Decimal limit = closeMid.subtract(middleValue).abs();
-            Decimal stop = closeMid.subtract(lowValue).abs().add(5);
-            return Optional.of(new EntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT));
+            Decimal middleValue = new Decimal(middleValueNum.doubleValue());
+            Pair pair = currentPrice.pair();
+            Decimal stop = lowValue.subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50")));
+            return Optional.of(new LevelEntrySignal(size, Direction.BUY, stop, middleValue, PositionType.HARD_LIMIT));
         }
         return Optional.empty();
     }
 
     private Optional<EntrySignal> toSellEntrySignal(BarSeries series, BollingerBandsUpperIndicator bollingerBandsUpperIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Decimal size) {
         int barCount = series.getBarCount();
-        double highValue = bollingerBandsUpperIndicator.getValue(barCount - 1).doubleValue();
+        Decimal highValue = new Decimal(bollingerBandsUpperIndicator.getValue(barCount - 1).doubleValue());
         Decimal closeMid = currentPrice.getCloseMid();
         if (currentPrice.getOpenMid().isGreaterThan(highValue) && closeMid.isLessThan(highValue)) {
-            double middleValue = bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue();
-            Decimal limit = closeMid.subtract(middleValue).abs();
-            Decimal stop = closeMid.subtract(highValue).abs().add(5);
-            return Optional.of(new EntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT));
+            Decimal middleValue = new Decimal(bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue());
+            Pair pair = currentPrice.pair();
+            Decimal stop = highValue.add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50")));
+            return Optional.of(new LevelEntrySignal(size, Direction.BUY, stop, middleValue, PositionType.HARD_LIMIT));
         }
         return Optional.empty();
     }

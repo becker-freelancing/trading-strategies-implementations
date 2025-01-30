@@ -3,6 +3,7 @@ package com.becker.freelance.strategies;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
@@ -22,8 +23,8 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
     public RsiOverboughtOversoldStrategy(){
         super("Rsi_Overbought_Oversold", new PermutableStrategyParameter(
                 new StrategyParameter("rsi_period", 12, 5, 17, 1),
-                new StrategyParameter("stop_points", 9, 5, 15, 2),
-                new StrategyParameter("limit_points", 11, 9, 22, 2),
+                new StrategyParameter("stop_in_euros", 90, 50, 150, 20),
+                new StrategyParameter("limit_in_euros", 110, 90, 220, 20),
                 new StrategyParameter("size", 0.5, 0.2, 1., 0.2)
             ));
     }
@@ -31,11 +32,9 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
     private BarSeries barSeries;
     private RSIIndicator rsiIndicator;
     private Decimal size;
-    private Decimal limit;
-    private Decimal stop;
+    private Decimal limitInEuros;
+    private Decimal stopInEuros;
 
-
-    private LocalDateTime lastUpdate = LocalDateTime.MIN;
 
     public RsiOverboughtOversoldStrategy(Map<String, Decimal> parameters) {
         this();
@@ -45,8 +44,8 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
         rsiIndicator = new RSIIndicator(closePriceIndicator, rsiPeriod);
         size = parameters.get("size");
-        limit = parameters.get("limit_points");
-        stop = parameters.get("stop_points");
+        limitInEuros = parameters.get("limit_in_euros");
+        stopInEuros = parameters.get("stop_in_euros");
     }
 
     @Override
@@ -67,9 +66,9 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
         TimeSeriesEntry lastEntry = timeSeries.getLastEntryForTime(time);
 
         if (value > 70 && isBearishEngulfing(currentEntry, lastEntry)){
-            return Optional.of(new EntrySignal(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
         } else if (value < 30 && isBullishEngulfing(currentEntry, lastEntry)) {
-            return Optional.of(new EntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
         }
 
         return Optional.empty();

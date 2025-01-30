@@ -4,7 +4,9 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.signal.LevelEntrySignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
@@ -110,12 +112,12 @@ public class ParabolicSarStrategy extends BaseStrategy{
 
 
     private Optional<EntrySignal> toBuyEntrySignal() {
-        Decimal stop = currentCloseMid.subtract(currentSarValue).abs();
-        return Optional.of(new EntrySignal(size, Direction.BUY, stop, stop.multiply(2), PositionType.HARD_LIMIT));
+        Decimal limit = currentCloseMid.add(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
+        return Optional.of(new LevelEntrySignal(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT));
     }
 
     private Optional<EntrySignal> toSellEntrySignal() {
-        Decimal stop = new Decimal(Math.abs(currentSarValue - currentCloseMid.doubleValue()));
-        return Optional.of(new EntrySignal(size, Direction.SELL, stop, stop.multiply( 2), PositionType.HARD_LIMIT));
+        Decimal limit = currentCloseMid.subtract(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
+        return Optional.of(new LevelEntrySignal(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT));
     }
 }

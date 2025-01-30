@@ -3,6 +3,7 @@ package com.becker.freelance.strategies;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
@@ -31,8 +32,8 @@ public class MACDScalping extends BaseStrategy{
                 new StrategyParameter("long_bar_count", 13, 11, 17, 2),
                 new StrategyParameter("signal_line_period", 5, 2, 7, 2),
                 new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
-                new StrategyParameter("take_profit", 15, 13, 22, 3),
-                new StrategyParameter("stop_loss", 8, 6, 12, 2)
+                new StrategyParameter("limit_in_euros", 150, 130, 220, 30),
+                new StrategyParameter("stop_in_euros", 80, 60, 120, 20)
         ), MACDScalping::shortBarCountLessThanLongBarCountValidation));
     }
 
@@ -40,8 +41,8 @@ public class MACDScalping extends BaseStrategy{
     private MACDIndicator macdIndicator;
     private EMAIndicator macdSignal;
     private int longBarCount;
-    private Decimal stopLoss;
-    private Decimal takeProfit;
+    private Decimal stopInEuros;
+    private Decimal limitInEuros;
     private Decimal size;
 
     public MACDScalping(Map<String, Decimal> parameters) {
@@ -53,8 +54,8 @@ public class MACDScalping extends BaseStrategy{
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
         macdIndicator = new MACDIndicator(closePriceIndicator, parameters.get("short_bar_count").intValue(), longBarCount);
         macdSignal = new EMAIndicator(macdIndicator, parameters.get("signal_line_period").intValue());
-        stopLoss = parameters.get("stop_loss");
-        takeProfit = parameters.get("take_profit");
+        stopInEuros = parameters.get("stop_in_euros");
+        limitInEuros = parameters.get("limit_in_euros");
         size = parameters.get("size");
     }
 
@@ -73,10 +74,10 @@ public class MACDScalping extends BaseStrategy{
 
         if (currentMacd > currentSignal && lastMacd < lastSignal){
             //BUY
-            return Optional.of(new EntrySignal(size, Direction.BUY, stopLoss, takeProfit, PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
         } else if (currentMacd < currentSignal && lastMacd > lastSignal) {
             //SELL
-            return Optional.of(new EntrySignal(size, Direction.SELL, stopLoss, takeProfit, PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
         }
 
         return Optional.empty();

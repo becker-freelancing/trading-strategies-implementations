@@ -3,6 +3,7 @@ package com.becker.freelance.strategies;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
@@ -16,8 +17,8 @@ public class BestHardTpAndSlStrategy extends BaseStrategy{
 
     public BestHardTpAndSlStrategy(){
         super("Best_Hard_TP_and_SL", new PermutableStrategyParameter(List.of(
-                new StrategyParameter("tp", 30, 5, 100, 5),
-                new StrategyParameter("sl", 15, 5, 100, 5),
+                new StrategyParameter("tp", 30, 50, 1000, 50),
+                new StrategyParameter("sl", 15, 50, 1000, 50),
                 new StrategyParameter("all_buy", 0, 0, 1, 1)
         )));
     }
@@ -37,7 +38,7 @@ public class BestHardTpAndSlStrategy extends BaseStrategy{
     public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
 
 
-        return Optional.of(new EntrySignal(Decimal.ONE, allBuy ? Direction.BUY : Direction.SELL, sl, tp, PositionType.HARD_LIMIT));
+        return Optional.of(new EuroDistanceEntrySignal(Decimal.ONE, allBuy ? Direction.BUY : Direction.SELL, sl, tp, PositionType.HARD_LIMIT));
     }
 
     @Override
