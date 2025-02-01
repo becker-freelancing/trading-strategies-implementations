@@ -120,7 +120,7 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
             Decimal middleValue = new Decimal(middleValueNum.doubleValue());
             Pair pair = currentPrice.pair();
             Decimal stop = lowValue.subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50")));
-            return Optional.of(new LevelEntrySignal(size, Direction.BUY, stop, middleValue, PositionType.HARD_LIMIT));
+            return Optional.of(new LevelEntrySignal(size, Direction.BUY, stop, middleValue, PositionType.TRAILING));
         }
         return Optional.empty();
     }
@@ -133,7 +133,7 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
             Decimal middleValue = new Decimal(bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue());
             Pair pair = currentPrice.pair();
             Decimal stop = highValue.add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50")));
-            return Optional.of(new LevelEntrySignal(size, Direction.SELL, stop, middleValue, PositionType.HARD_LIMIT));
+            return Optional.of(new LevelEntrySignal(size, Direction.SELL, stop, middleValue, PositionType.TRAILING));
         }
         return Optional.empty();
     }
