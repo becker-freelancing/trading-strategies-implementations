@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -52,19 +53,18 @@ public class IgDataRequestGold {
         JSONArray prices = jsonObject.getJSONArray("prices");
 
         for (Object o : prices) {
-            StringBuilder builder = new StringBuilder();
             JSONObject price = (JSONObject) o;
-            builder.append(price.getString("snapshotTimeUTC")).append(",")
-                    .append(price.getJSONObject("openPrice").getDouble("bid")).append(",")
-                    .append(price.getJSONObject("openPrice").getDouble("ask")).append(",")
-                    .append(price.getJSONObject("highPrice").getDouble("bid")).append(",")
-                    .append(price.getJSONObject("highPrice").getDouble("ask")).append(",")
-                    .append(price.getJSONObject("lowPrice").getDouble("bid")).append(",")
-                    .append(price.getJSONObject("lowPrice").getDouble("ask")).append(",")
-                    .append(price.getJSONObject("closePrice").getDouble("bid")).append(",")
-                    .append(price.getJSONObject("closePrice").getDouble("ask")).append(",")
-                    .append(price.getDouble("lastTradedVolume"));
-            lines.add(builder.toString());
+            String builder = price.getString("snapshotTimeUTC") + "," +
+                    price.getJSONObject("openPrice").getDouble("bid") + "," +
+                    price.getJSONObject("openPrice").getDouble("ask") + "," +
+                    price.getJSONObject("highPrice").getDouble("bid") + "," +
+                    price.getJSONObject("highPrice").getDouble("ask") + "," +
+                    price.getJSONObject("lowPrice").getDouble("bid") + "," +
+                    price.getJSONObject("lowPrice").getDouble("ask") + "," +
+                    price.getJSONObject("closePrice").getDouble("bid") + "," +
+                    price.getJSONObject("closePrice").getDouble("ask") + "," +
+                    price.getDouble("lastTradedVolume");
+            lines.add(builder);
         }
 
         Files.writeString(path, String.join("\n", lines));
@@ -100,7 +100,7 @@ public class IgDataRequestGold {
 
         String payload = String.format("{\"identifier\":\"%s\", \"password\":\"%s\"}", IDENTIFIER, PASSWORD);
         try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = payload.getBytes("utf-8");
+            byte[] input = payload.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 

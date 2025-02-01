@@ -27,7 +27,8 @@ public class MA2Strategy extends BaseStrategy{
         return parameter.get("short_ma_period").isLessThan(parameter.get("long_ma_period"));
     }
 
-    private static record LastTwoMaResults(Double last, Double current){}
+    private record LastTwoMaResults(Double last, Double current) {
+    }
 
 
     public MA2Strategy() {
