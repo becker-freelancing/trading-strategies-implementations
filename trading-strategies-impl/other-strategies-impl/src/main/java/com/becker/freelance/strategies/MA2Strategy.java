@@ -89,9 +89,13 @@ public class MA2Strategy extends BaseStrategy{
         LastTwoMaResults lastShortMaValues = lastTwoMaValuesForTime(shortSma, barCount);
         LastTwoMaResults lastLongMaValues = lastTwoMaValuesForTime(longSma, barCount);
 
-        List<TimeSeriesEntry> swingHighLowData = timeSeries.getLastNCloseForTimeAsEntry(time, swingHighLowMaxAge + swingHighLowOrder);
+        int swingDataCount = swingHighLowMaxAge + swingHighLowOrder;
+        Optional<List<TimeSeriesEntry>> optionalSwingHighLowData = timeSeries.getLastNCloseForTimeAsEntryIfExist(time, swingDataCount);
 
-        return toEntrySignal(lastShortMaValues, lastLongMaValues, swingHighLowData, swingHighLowOrder, timeSeries.getEntryForTime(time));
+        if (optionalSwingHighLowData.isEmpty()) {
+            return Optional.empty();
+        }
+        return toEntrySignal(lastShortMaValues, lastLongMaValues, optionalSwingHighLowData.get(), swingHighLowOrder, timeSeries.getEntryForTime(time));
     }
 
     private Optional<EntrySignal> toEntrySignal(LastTwoMaResults lastShortMaValues, LastTwoMaResults lastLongMaValues, List<TimeSeriesEntry> swingData, int swingOrder, TimeSeriesEntry current) {
