@@ -28,10 +28,10 @@ public class IgDataRequestGold {
     public static void main(String[] args) throws Exception {
 
 
-        String epic = "CS.D.BITCOIN.CFE.IP";
-        String filename = "BTCUSD_1.csv";
+        String epic = "CS.D.CFDGOLD.CFM.IP";
+        String filename = "GLDUSD_1.csv";
 
-        LocalDateTime minTime = LocalDateTime.parse("2024-12-14T08:00");//LocalDateTime.of(2025, 1, 10, 0, 0, 0);//findMinTime(getCsvPath());
+        LocalDateTime minTime = LocalDateTime.parse("2025-02-05T23:00");//LocalDateTime.of(2025, 1, 10, 0, 0, 0);//findMinTime(getCsvPath());
         PASSWORD = args[0];
         String securityToken = authenticate();
         System.out.println("Requesting to: " + minTime);
