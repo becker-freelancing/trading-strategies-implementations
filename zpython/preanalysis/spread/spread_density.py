@@ -3,8 +3,8 @@ import scipy.stats as stats
 
 from zpython.util.ig_data_reader import read_data
 
-PAIR = "GLD/USD M1"
-FILENAME = "GLDUSD_1.csv"
+PAIR = "GLD/USD M5"
+FILENAME = "GLDUSD_5.csv"
 
 df = read_data(FILENAME)
 
@@ -13,7 +13,8 @@ df["highSpread"] = df["highAsk"] - df["highBid"]
 df["lowSpread"] = df["lowAsk"] - df["lowBid"]
 df["closeSpread"] = df["closeAsk"] - df["closeBid"]
 # 1. KDE-Schätzung der Wahrscheinlichkeitsdichte
-df = df[df["openSpread"] < 100]
+
+df = df[df["openSpread"] < 4]
 data = df["openSpread"].values
 kde = stats.gaussian_kde(data)
 
@@ -21,11 +22,11 @@ kde = stats.gaussian_kde(data)
 samples = kde.resample(size=len(df))[0]
 
 # 3. Histogramm der Originaldaten und der generierten Daten plotten
-plt.hist(data, density=True, alpha=0.5, label="Original", bins=30)
-plt.hist(samples, density=True, alpha=0.5, label="Generated", bins=30)
+plt.hist(data, density=True, alpha=0.5, label="Original")
+plt.hist(samples, density=True, alpha=0.5, label="Generated")
 plt.title(f"Spread for {PAIR}")
 plt.xlabel("Spread")
 plt.ylabel("Density")
-plt.xlim((0, 3))
+plt.yscale("log")
 plt.legend()
 plt.show()

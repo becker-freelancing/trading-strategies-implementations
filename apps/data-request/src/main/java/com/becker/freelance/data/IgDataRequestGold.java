@@ -19,8 +19,10 @@ import java.util.List;
 
 public class IgDataRequestGold {
 
-    private static final String API_KEY = "908c9e882ee568f2fe3e48d51e9f0e8e4b887756";
-    //    private static final String API_KEY = "f662a91bf02d467438aeff389a19dc3d173ded6d";
+    private static final String MINUTE = "MINUTE";
+    private static final String MINUTE_5 = "MINUTE_5";
+
+    private static final String API_KEY = "735b3666f7b3bf52b5f92ad8a08ca4b6bcf86be3";
     private static final String IDENTIFIER = "beckerjason";
     private static String PASSWORD = "<set-by-first-program-argument>";
     private static final String API_URL = "https://demo-api.ig.com/gateway/deal";
@@ -29,14 +31,16 @@ public class IgDataRequestGold {
 
 
         String epic = "CS.D.CFDGOLD.CFM.IP";
-        String filename = "GLDUSD_1.csv";
+        String filename = "GLDUSD_5.csv";
+        String resolution = MINUTE_5;
+        int barsToRequest = 7500;
 
-        LocalDateTime minTime = LocalDateTime.parse("2025-02-05T23:00");//LocalDateTime.of(2025, 1, 10, 0, 0, 0);//findMinTime(getCsvPath());
+        LocalDateTime minTime = LocalDateTime.parse("2025-01-24T09:40");//LocalDateTime.of(2025, 1, 10, 0, 0, 0);//findMinTime(getCsvPath());
         PASSWORD = args[0];
         String securityToken = authenticate();
         System.out.println("Requesting to: " + minTime);
         if (securityToken != null) {
-            String marketData = fetchMarketData(securityToken, minTime.minusMinutes(9900).plusHours(1), minTime.minusMinutes(1).plusHours(1), epic);
+            String marketData = fetchMarketData(resolution, securityToken, minTime.minusMinutes(barsToRequest).plusHours(1), minTime.minusMinutes(1).plusHours(1), epic);
             parseAndWriteMarketData(marketData, filename);
         } else {
             System.out.println("Authentifizierung fehlgeschlagen.");
@@ -45,7 +49,7 @@ public class IgDataRequestGold {
         MissingTime.main(new String[]{filename});
     }
 
-    private static void parseAndWriteMarketData(String marketData, String filename) throws IOException {
+    public static void parseAndWriteMarketData(String marketData, String filename) throws IOException {
 
         Path path = getCsvPath(filename);
         List<String> lines = readCsv(path);
@@ -114,8 +118,8 @@ public class IgDataRequestGold {
         }
     }
 
-    private static String fetchMarketData(String securityToken, LocalDateTime fromTime, LocalDateTime toTime, String epic) throws Exception {
-        URL url = new URL(API_URL + "/prices/" + epic + "?resolution=MINUTE&from=" + formatTime(fromTime) + "&to=" + formatTime(toTime) + "&max=3&pageSize=10000&pageNumber=0");
+    private static String fetchMarketData(String resolution, String securityToken, LocalDateTime fromTime, LocalDateTime toTime, String epic) throws Exception {
+        URL url = new URL(API_URL + "/prices/" + epic + "?resolution=" + resolution + "&from=" + formatTime(fromTime) + "&to=" + formatTime(toTime) + "&max=3&pageSize=10000&pageNumber=0");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("X-IG-API-KEY", API_KEY);
