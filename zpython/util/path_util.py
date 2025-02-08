@@ -21,3 +21,7 @@ def root_result_dir():
 
 def result_dir_for_strategy(strategy_name):
     return os.path.join(root_result_dir(), strategy_name)
+
+
+def from_relative_path_from_models_dir(path):
+    return from_relative_path(f"models/{path}")
