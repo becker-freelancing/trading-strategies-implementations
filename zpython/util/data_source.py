@@ -8,6 +8,7 @@ class DataSource(str, Enum):
     KRAKEN_SPREAD = "KRAKEN_SPREAD"
     KRAKEN = "KRAKEN"
     IG = "IG"
+    HIST_DATA = "HIST_DATA"
 
     def file_path(self, pair: Pair):
         if self == DataSource.IG:
@@ -16,3 +17,5 @@ class DataSource(str, Enum):
             return from_relative_path(f"data-kraken-spread/{pair.file_name()}")
         if self == DataSource.KRAKEN:
             return from_relative_path(f"data-kraken/{pair.file_name()}")
+        if self == DataSource.HIST_DATA:
+            return from_relative_path(f"data-histdata/{pair.file_name()}")
