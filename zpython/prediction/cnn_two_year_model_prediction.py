@@ -9,7 +9,7 @@ from zpython.util.pair import Pair
 class CnnTwoYearModelPrediction(BasePrediction):
 
     def __init__(self, start_time=pd.Timestamp(year=2024, month=1, day=1),
-                 end_time=pd.Timestamp(year=2024, month=1, day=30),
+                 end_time=pd.Timestamp(year=2024, month=3, day=30),
                  bars_to_predict=None,
                  data_reader=None):
         super().__init__("cnn_two_year",
@@ -38,5 +38,5 @@ class CnnTwoYearModelPrediction(BasePrediction):
 
 
 if __name__ == "__main__":
-    predictor = CnnModelPrediction()
-    predictor.predict_and_save(12)
+    predictor = CnnTwoYearModelPrediction()
+    predictor.predict_and_save(20)
