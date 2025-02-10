@@ -65,18 +65,12 @@ class BaseTraining:
     def get_fitted_scaler(self) -> BaseEstimator:
         pass
 
-    # def slice_partitions(self, df: pd.DataFrame, minutes: int) -> list[pd.DataFrame]:
-    #     index = df.index
-    #     delta = pd.Timedelta(minutes=minutes)
-    #     data = [df[(df.index >= idx) & (df.index < idx + delta)] for idx in index]
-    #     return data
 
     def slice_timeframe(self, df: pd.DataFrame):
         return df[(df.index >= self.from_time) & (df.index <= self.to_time)]
 
     def slice_partitions(self, df: pd.DataFrame, minutes_timeframe: int, elements: int) -> list[pd.DataFrame]:
         print("Slicing data in partitions...")
-        df = self.slice_timeframe(df)
         timestamps = df.index.values
         end_times = timestamps + np.timedelta64(minutes_timeframe * elements, "m")
         start_idx = np.arange(len(df))

@@ -7,8 +7,8 @@ from keras.api.optimizers import Adam
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import MinMaxScaler
 
-from zpython.models.base_training import BaseTraining
-from zpython.models.data_preparation import read_data
+from zpython.models.regression.base_training import BaseTraining
+from zpython.models.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 
@@ -59,6 +59,8 @@ class TransformerModelTraining(BaseTraining):
 
     def prepare_data_scaled(self, data_source: DataSource, pair: Pair) -> tuple[np.ndarray, np.ndarray]:
         df = read_data(data_source.file_path(pair))
+        df = self.slice_timeframe(df)
+        df["closeBid"] = self.scaler.fit_transform(df[["closeBid"]])
         parts = self.slice_partitions(df, pair.minutes(), 130)
         print("Extracting Input data...")
         inputs = np.stack([part["closeBid"].to_numpy()[:100] for part in parts])
@@ -67,7 +69,7 @@ class TransformerModelTraining(BaseTraining):
         return inputs.reshape(inputs.shape[0], inputs.shape[1], 1), outputs
 
     def get_fitted_scaler(self) -> BaseEstimator:
-        pass
+        return self.scaler
 
 
 if __name__ == "__main__":
