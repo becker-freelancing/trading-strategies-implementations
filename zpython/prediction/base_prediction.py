@@ -6,6 +6,7 @@ import pandas as pd
 from keras.api.models import Model
 from keras.api.models import load_model
 
+from zpython.models.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 from zpython.util.path_util import from_relative_path_from_models_dir
@@ -18,7 +19,9 @@ class BasePrediction:
                  pair: Pair,
                  from_time: pd.Timestamp,
                  to_time: pd.Timestamp,
-                 prediction_batch_size: int):
+                 prediction_batch_size: int,
+                 bars_to_predict=None,
+                 data_reader=None):
         self.model_name = model_name
         self.data_source = data_source
         self.pair = pair
@@ -26,6 +29,11 @@ class BasePrediction:
         self.to_time = to_time
         self.prediction_batch_size = prediction_batch_size
         self.scaler = None
+        self.bars_to_predict = bars_to_predict
+        if data_reader is None:
+            self.data_reader = read_data
+        else:
+            self.data_reader = data_reader
 
     def model_dir(self) -> str:
         models_dir = from_relative_path_from_models_dir(f"{self.data_source}/{self.model_name}/")
@@ -45,6 +53,9 @@ class BasePrediction:
         return model
 
     def slice_timeframe(self, df: pd.DataFrame):
+        if self.bars_to_predict is not None:
+            df = df[df.index >= self.from_time]
+            return df.iloc[:self.bars_to_predict]
         return df[(df.index >= self.from_time) & (df.index <= self.to_time)]
 
     def slice_partitions(self, df: pd.DataFrame, minutes_timeframe: int, elements: int) -> list[pd.DataFrame]:
@@ -80,9 +91,7 @@ class BasePrediction:
         Zeitstempeln [Länge: B] enthält, zu dem vorhergesagt werden soll, sowie die Input Daten mit dem Shape (B, Input-Länge, Anz. Feature)
         """
 
-        scaled_data = self.prepare_data_scaled(self.data_source, self.pair)
-        dates = scaled_data[0]
-        data = scaled_data[1]
+        dates, data = self.prepare_data_scaled(self.data_source, self.pair)
 
         batch_dates = [dates[i:i + self.prediction_batch_size] for i in
                        range(0, len(dates), self.prediction_batch_size)]
