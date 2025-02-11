@@ -104,8 +104,9 @@ class BasePrediction:
     def predict_and_save(self, epoch: int):
         predictions = self.predict(epoch)
         print(f"{len(predictions)} Timestamps predicted ({self.from_time} to {self.to_time})")
-        predictions.to_pickle(self.file_name_in_models_dir(f"prediction_{self.model_name}_{epoch}.pkl"),
-                              compression="zip")
+        predictions["prediction"] = predictions["prediction"].apply(lambda x: [float(i) for i in x])
+        predictions.to_csv(self.file_name_in_models_dir(f"prediction_{self.model_name}_{epoch}.csv.zip"),
+                           compression="zip", index=False)
 
     def predict(self, epoch: int) -> pd.DataFrame:
         predictions = pd.DataFrame(columns=["closeTime", "prediction"])
