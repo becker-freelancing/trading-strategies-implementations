@@ -23,10 +23,10 @@ public class BufferedPredictor {
 
     private static final Logger logger = LoggerFactory.getLogger(BufferedPredictor.class);
 
-    private final Map<LocalDateTime, List<Decimal>> predictions;
+    private static Map<LocalDateTime, List<Decimal>> predictions;
 
     protected BufferedPredictor(String modelName, int modelId) {
-        String predictionFilePath = PathUtil.fromModelsDir("Datasource.HIST_DATA\\predictions_" + modelName + "_" + modelId + ".csv.zip");
+        String predictionFilePath = PathUtil.fromModelsDir("Datasource.HIST_DATA\\" + modelName + "\\prediction_" + modelName + "_" + modelId + ".csv.zip");
         try {
             predictions = readPredictions(predictionFilePath);
         } catch (IOException e) {
@@ -34,7 +34,10 @@ public class BufferedPredictor {
         }
     }
 
-    protected Map<LocalDateTime, List<Decimal>> readPredictions(String predictionFilePath) throws IOException {
+    protected synchronized Map<LocalDateTime, List<Decimal>> readPredictions(String predictionFilePath) throws IOException {
+        if (predictions != null) {
+            return predictions;
+        }
         logger.info("Start reading Prediction...");
 
         ZipFile zipFile = new ZipFile(predictionFilePath);
@@ -59,7 +62,7 @@ public class BufferedPredictor {
         return rows.stream().skip(1).parallel().map(row -> {
             LocalDateTime closeTime = LocalDateTime.parse(row[0], formatter);
             JSONArray predictionArray = new JSONArray(row[1]);
-            List<Decimal> prediction = IntStream.range(0, predictions.size()).mapToObj(predictionArray::getDouble)
+            List<Decimal> prediction = IntStream.range(0, predictionArray.length()).mapToObj(predictionArray::getDouble)
                     .map(Decimal::new)
                     .toList();
             return Map.entry(closeTime, prediction);
