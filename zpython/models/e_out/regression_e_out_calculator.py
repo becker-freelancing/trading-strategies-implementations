@@ -3,10 +3,10 @@ import pandas as pd
 
 from zpython.models.e_out.error_calculation import mean_errors
 from zpython.models.regression.data_preparation import read_data
-from zpython.prediction.transformer_model_prediction import TransformerModelPrediction
+from zpython.prediction.cnn_five_year_m5_model_prediction import CnnModelPrediction
 
 predictions_to_calculate = 10000
-predictor = TransformerModelPrediction(bars_to_predict=predictions_to_calculate)
+predictor = CnnModelPrediction(bars_to_predict=predictions_to_calculate)
 
 e_outs = pd.DataFrame(columns=["Epoch", "MSE", "RMSE", "MAE", "MAPE", "MSLE", "LogCosh", "R2"])
 
