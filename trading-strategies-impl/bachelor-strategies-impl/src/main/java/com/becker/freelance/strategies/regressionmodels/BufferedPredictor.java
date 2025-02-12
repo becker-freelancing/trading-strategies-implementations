@@ -34,7 +34,7 @@ public class BufferedPredictor {
         }
     }
 
-    protected synchronized Map<LocalDateTime, List<Decimal>> readPredictions(String predictionFilePath) throws IOException {
+    protected Map<LocalDateTime, List<Decimal>> readPredictions(String predictionFilePath) throws IOException {
         if (predictions != null) {
             return predictions;
         }

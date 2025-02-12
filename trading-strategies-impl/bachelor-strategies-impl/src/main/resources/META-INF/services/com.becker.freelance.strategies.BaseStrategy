@@ -1,1 +1,8 @@
 com.becker.freelance.strategies.regressionmodels.CnnModelStrategy
+com.becker.freelance.strategies.regressionmodels.CnnFiveYearM5ModelStrategy
+com.becker.freelance.strategies.regressionmodels.TransformerModelStrategy
+com.becker.freelance.strategies.regressionmodels.CnnTwoYearModelStrategy
+com.becker.freelance.strategies.regressionmodels.CnnTwoYearM5ModelStrategy
+com.becker.freelance.strategies.regressionmodels.CnnM5ModelStrategy
+com.becker.freelance.strategies.regressionmodels.CnnHalfYearModelStrategy
+com.becker.freelance.strategies.regressionmodels.CnnHalfYearM5ModelStrategy

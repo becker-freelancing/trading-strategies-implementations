@@ -27,7 +27,7 @@ public abstract class AbstractRegressionModelStrategy extends BaseStrategy {
 
     public AbstractRegressionModelStrategy(String name) {
         super(name, new PermutableStrategyParameter(
-                new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
+                new StrategyParameter("size", 0.5, 0.2, 3., 0.2),
                 new StrategyParameter("limit_in_euros", 150, 130, 220, 30),
                 new StrategyParameter("stop_in_euros", 80, 60, 120, 20)
         ));
@@ -55,8 +55,8 @@ public abstract class AbstractRegressionModelStrategy extends BaseStrategy {
     }
 
     private Optional<EntrySignal> toEntrySignal(List<Decimal> predictions, Pair pair, TimeSeriesEntry currentPrice) {
-        Decimal stopDiff = pair.priceDifferenceForNProfitInCounterCurrency(stopInEuro);
-        Decimal limitDiff = pair.priceDifferenceForNProfitInCounterCurrency(limitInEuro);
+        Decimal stopDiff = pair.priceDifferenceForNProfitInCounterCurrency(stopInEuro, size);
+        Decimal limitDiff = pair.priceDifferenceForNProfitInCounterCurrency(limitInEuro, size);
         Decimal closeMid = currentPrice.getCloseMid();
         Decimal sellLimit = closeMid.subtract(limitDiff);
         Decimal sellStop = closeMid.add(stopDiff);
