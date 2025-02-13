@@ -7,7 +7,7 @@ from keras.api.optimizers import Adam
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import MinMaxScaler
 
-from zpython.training.classification.base_training import BaseTraining
+from zpython.training.classification.classification_base_training import ClassificationBaseTraining
 from zpython.training.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
@@ -33,7 +33,7 @@ def build_model() -> Model:
     return model
 
 
-class ClassificationLimit30Stop10(BaseTraining):
+class ClassificationLimit30Stop10(ClassificationBaseTraining):
 
     def __init__(self):
         super().__init__("classification_limit_30_stop_10",

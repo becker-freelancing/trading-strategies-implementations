@@ -43,7 +43,7 @@ class ProgbarWithoutMetrics(Callback):
         self.progbar.update(self.params['steps'], finalize=True)
 
 
-class BaseTraining:
+class RegressionBaseTraining:
 
     def __init__(self, model_name: str, data_source: DataSource, pair: Pair, from_time: pd.Timestamp,
                  to_time: pd.Timestamp):
