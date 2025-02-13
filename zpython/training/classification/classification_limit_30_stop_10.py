@@ -33,7 +33,7 @@ def build_model() -> Model:
     return model
 
 
-class ClassificationLimit30Stop10(ClassificationBaseTraining):
+class ClassificationLimit30Stop10Training(ClassificationBaseTraining):
 
     def __init__(self):
         super().__init__("classification_limit_30_stop_10",
@@ -49,12 +49,7 @@ class ClassificationLimit30Stop10(ClassificationBaseTraining):
         return model
 
     def prepare_data_scaled(self, data_source: DataSource, pair: Pair) -> tuple[np.ndarray, np.ndarray]:
-        path = from_relative_path(
-            f"training-data/classification/{self.data_source.value}_{self.pair.name()}limit_30_stop_10.csv.zip")
-
-        df = pd.read_csv(path, compression="zip")
-        df["closeTime"] = pd.to_datetime(df["closeTime"])
-        df.set_index("closeTime", inplace=True)
+        df = self.read_raw_expected()
         output_df = self.slice_timeframe(df)
 
         input_df = read_data(data_source.file_path(pair))
@@ -69,6 +64,14 @@ class ClassificationLimit30Stop10(ClassificationBaseTraining):
         outputs = self.extract_output(output_df, dates)
         return inputs.reshape(inputs.shape[0], inputs.shape[1], 1), outputs
 
+    def read_raw_expected(self):
+        path = from_relative_path(
+            f"training-data/classification/{self.data_source.value}_{self.pair.name()}limit_30_stop_10.csv.zip")
+        df = pd.read_csv(path, compression="zip")
+        df["closeTime"] = pd.to_datetime(df["closeTime"])
+        df.set_index("closeTime", inplace=True)
+        return df
+
     def get_fitted_scaler(self) -> BaseEstimator:
         return self.scaler
 
@@ -79,5 +82,5 @@ class ClassificationLimit30Stop10(ClassificationBaseTraining):
 
 
 if __name__ == "__main__":
-    training = ClassificationLimit30Stop10()
+    training = ClassificationLimit30Stop10Training()
     training.train_model(30)

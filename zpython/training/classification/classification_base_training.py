@@ -1,8 +1,10 @@
+from abc import ABC, abstractmethod
+
 import numpy as np
 import pandas as pd
 from keras.api.callbacks import Callback
-from keras.api.metrics import Precision, Recall, F1Score, BinaryCrossentropy, Accuracy, BinaryAccuracy, \
-    CategoricalCrossentropy
+from keras.api.metrics import F1Score, CategoricalCrossentropy
+from keras.src.metrics import CategoricalAccuracy
 
 from zpython.training.base_training import BaseTraining
 from zpython.util.data_source import DataSource
@@ -17,24 +19,28 @@ class EpochEndCallback(Callback):
         self.epoch = -1
         with open(self.file_name, 'w') as loss_out:
             loss_out.write(
-                "Epoch,Loss,Accuracy,Binary_Crossentropy,Precision,Recall,F1,BinaryAccuracy,CategorialCrossentropy\n")
+                "Epoch,Loss,Categorial_Crossentropy,Categorical_Accuracy,F1_Score\n")
 
     def on_train_end(self, logs=None):
         self.epoch += 1
         with open(self.file_name, 'a') as loss_out:
+            f1 = [float(f) for f in list(logs['f1_score'].numpy())]
             loss_out.write(
-                f"{self.epoch},{logs['loss']},{logs['accuracy']},{logs['binary_crossentropy']},{logs['precision']},{logs['recall']},{logs['f1_score']},{logs['binary_accuracy']},{logs['categorical_crossentropy']}\n")
+                f"{self.epoch},{logs['loss']},{logs['categorical_crossentropy']},{logs['categorical_accuracy']},{f1}\n")
 
 
-class ClassificationBaseTraining(BaseTraining):
+class ClassificationBaseTraining(BaseTraining, ABC):
 
     def __init__(self, model_name: str, data_source: DataSource, pair: Pair, from_time: pd.Timestamp,
                  to_time: pd.Timestamp):
         super().__init__(model_name, data_source, pair, from_time, to_time)
 
+    @abstractmethod
+    def read_raw_expected(self):
+        pass
 
     def slice_partitions(self, df: pd.DataFrame, minutes_timeframe: int, elements: int) -> (
-    list[pd.Timestamp], list[pd.DataFrame]):
+            list[pd.Timestamp], list[pd.DataFrame]):
         print("Slicing data in partitions...")
         timestamps = df.index.values
         end_times = timestamps + np.timedelta64(minutes_timeframe * elements, "m")
@@ -46,12 +52,12 @@ class ClassificationBaseTraining(BaseTraining):
         result = [t[1] for t in res]
         return dates, result
 
-
-
     def get_metrics(self) -> list:
-        return [Accuracy(), BinaryCrossentropy(), Precision(name="precision"), Recall(name="recall"), F1Score(),
-                BinaryAccuracy(), CategoricalCrossentropy()
-                ]
+        return [
+            CategoricalCrossentropy(),
+            CategoricalAccuracy(),
+            F1Score()
+        ]
 
     def epoch_end_Callback(self) -> Callback:
         return EpochEndCallback(self.file_name_in_models_dir, self.model_name)
