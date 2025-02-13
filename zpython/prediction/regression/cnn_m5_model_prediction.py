@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-
 from zpython.prediction.base_prediction import BasePrediction
+
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 
@@ -12,9 +12,9 @@ class CnnModelPrediction(BasePrediction):
                  end_time=pd.Timestamp(year=2024, month=3, day=30),
                  bars_to_predict=None,
                  data_reader=None):
-        super().__init__("cnn",
+        super().__init__("cnn_m5",
                          DataSource.HIST_DATA,
-                         Pair.EURUSD_1,
+                         Pair.EURUSD_5,
                          start_time,
                          end_time,
                          10000,
@@ -39,4 +39,4 @@ class CnnModelPrediction(BasePrediction):
 
 if __name__ == "__main__":
     predictor = CnnModelPrediction()
-    predictor.predict_and_save(26)
+    predictor.predict_and_save(14)
