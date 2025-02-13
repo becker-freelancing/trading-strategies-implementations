@@ -6,7 +6,7 @@ import pandas as pd
 from keras.api.models import Model
 from keras.api.models import load_model
 
-from zpython.models.regression.data_preparation import read_data
+from zpython.training.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 from zpython.util.path_util import from_relative_path_from_models_dir

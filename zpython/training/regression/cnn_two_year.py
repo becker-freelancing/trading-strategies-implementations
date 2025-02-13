@@ -7,8 +7,8 @@ from keras.api.optimizers import Adam
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import MinMaxScaler
 
-from zpython.models.regression.base_training import BaseTraining
-from zpython.models.regression.data_preparation import read_data
+from zpython.training.regression.base_training import BaseTraining
+from zpython.training.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 
@@ -28,9 +28,9 @@ def build_model(input_shape, output_steps) -> Model:
 class CnnModelTraining(BaseTraining):
 
     def __init__(self):
-        super().__init__("cnn_two_year_m5",
+        super().__init__("cnn_two_year",
                          DataSource.HIST_DATA,
-                         Pair.EURUSD_5,
+                         Pair.EURUSD_1,
                          pd.Timestamp(year=2022, month=1, day=1),
                          pd.Timestamp(year=2023, month=12, day=31))
         self.scaler = MinMaxScaler()

@@ -7,8 +7,8 @@ from keras.api.optimizers import Adam
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import MinMaxScaler
 
-from zpython.models.classification.base_training import BaseTraining
-from zpython.models.regression.data_preparation import read_data
+from zpython.training.classification.base_training import BaseTraining
+from zpython.training.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 from zpython.util.path_util import from_relative_path
@@ -33,13 +33,13 @@ def build_model() -> Model:
     return model
 
 
-class ClassificationLimit30Stop10(BaseTraining):
+class ClassificationLimit30Stop10TwoYear(BaseTraining):
 
     def __init__(self):
-        super().__init__("classification_limit_30_stop_10",
+        super().__init__("classification_limit_30_stop_10_two_year",
                          DataSource.HIST_DATA,
                          Pair.EURUSD_5,
-                         pd.Timestamp(year=2023, month=1, day=1),
+                         pd.Timestamp(year=2022, month=1, day=1),
                          pd.Timestamp(year=2023, month=12, day=31))
         self.scaler = MinMaxScaler()
 
@@ -79,5 +79,5 @@ class ClassificationLimit30Stop10(BaseTraining):
 
 
 if __name__ == "__main__":
-    training = ClassificationLimit30Stop10()
+    training = ClassificationLimit30Stop10TwoYear()
     training.train_model(30)

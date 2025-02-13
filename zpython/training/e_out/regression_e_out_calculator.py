@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 
-from zpython.models.e_out.error_calculation import mean_errors
-from zpython.models.regression.data_preparation import read_data
 from zpython.prediction.cnn_five_year_m5_model_prediction import CnnModelPrediction
+from zpython.training.e_out.error_calculation import mean_errors
+from zpython.training.regression.data_preparation import read_data
 
 predictions_to_calculate = 10000
 predictor = CnnModelPrediction(bars_to_predict=predictions_to_calculate)
