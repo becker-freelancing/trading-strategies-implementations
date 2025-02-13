@@ -1,3 +1,5 @@
+from abc import ABC
+
 import numpy as np
 import pandas as pd
 from keras.api.callbacks import Callback
@@ -25,7 +27,7 @@ class EpochEndCallback(Callback):
                 f"{self.epoch},{logs['loss']},{logs['mean_squared_error']},{logs['root_mean_squared_error']},{logs['mean_absolute_error']},{logs['mean_absolute_percentage_error']},{logs['mean_squared_logarithmic_error']},{logs['logcosh']},{logs['r2_score']}\n")
 
 
-class RegressionBaseTraining(BaseTraining):
+class RegressionBaseTraining(BaseTraining, ABC):
 
     def __init__(self, model_name: str, data_source: DataSource, pair: Pair, from_time: pd.Timestamp,
                  to_time: pd.Timestamp):
