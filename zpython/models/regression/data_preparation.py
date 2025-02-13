@@ -39,7 +39,7 @@ def ffill(df, file_path):
     return df
 
 
-def read_data(file_path):
+def read_data(file_path) -> pd.DataFrame:
     print("Reading data...")
     df = pd.read_csv(file_path, compression="zip")
     df["closeTime"] = pd.to_datetime(df["closeTime"])
