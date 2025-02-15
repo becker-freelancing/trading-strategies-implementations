@@ -19,3 +19,6 @@ class DataSource(str, Enum):
             return from_relative_path(f"data-kraken/{pair.file_name()}")
         if self == DataSource.HIST_DATA:
             return from_relative_path(f"data-histdata/{pair.file_name()}")
+
+    def name(self):
+        return self.value

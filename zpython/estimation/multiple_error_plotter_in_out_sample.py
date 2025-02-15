@@ -11,8 +11,8 @@ if __name__ == "__main__":
     fig, axs = plt.subplots(4, 2, figsize=(10, 5))
 
     for model_name, color in zip(model_names, colors):
-        path = from_relative_path_from_models_dir(f"DataSource.HIST_DATA/{model_name}/{model_name}_losses_out.csv")
-        path_in = from_relative_path_from_models_dir(f"DataSource.HIST_DATA/{model_name}/{model_name}_losses.csv")
+        path = from_relative_path_from_models_dir(f"HIST_DATA/{model_name}/{model_name}_losses_out.csv")
+        path_in = from_relative_path_from_models_dir(f"HIST_DATA/{model_name}/{model_name}_losses.csv")
 
         build_plots(path, axs, color=color, model_name=model_name)
         build_plots(path_in, axs, linestyle="--", color=color, model_name=model_name)

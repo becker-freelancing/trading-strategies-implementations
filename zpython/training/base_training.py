@@ -59,7 +59,8 @@ class BaseTraining:
         return df[(df.index >= self.from_time) & (df.index <= self.to_time)]
 
     def model_dir(self) -> str:
-        models_dir = from_relative_path_from_models_dir(f"{self.data_source}/{self.model_name}/")
+        models_dir = from_relative_path_from_models_dir(
+            f"{self.data_source.value}/{self.pair.name()}/{self.model_name}/")
         if not os.path.exists(models_dir):
             os.makedirs(models_dir)
         return models_dir

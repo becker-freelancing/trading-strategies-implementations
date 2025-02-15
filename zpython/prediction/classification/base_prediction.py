@@ -121,7 +121,7 @@ class BasePrediction:
         model = self.get_model(epoch)
 
         for i, batch_data in zip(range(len(batches)), batches):
-            print(f"Predicting... (Iteration {i} of {len(batches)})")
+            print(f"Predicting... (Iteration {i + 1} of {len(batches)})")
             dates = batch_data[0]
             input_data = batch_data[1]
 

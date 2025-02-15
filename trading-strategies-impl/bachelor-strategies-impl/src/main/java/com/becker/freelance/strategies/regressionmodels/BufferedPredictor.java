@@ -26,7 +26,7 @@ public class BufferedPredictor {
     private static Map<LocalDateTime, List<Decimal>> predictions;
 
     protected BufferedPredictor(String modelName, int modelId) {
-        String predictionFilePath = PathUtil.fromModelsDir("Datasource.HIST_DATA\\" + modelName + "\\prediction_" + modelName + "_" + modelId + ".csv.zip");
+        String predictionFilePath = PathUtil.fromModelsDir("HIST_DATA\\" + modelName + "\\prediction_" + modelName + "_" + modelId + ".csv.zip");
         try {
             predictions = readPredictions(predictionFilePath);
         } catch (IOException e) {

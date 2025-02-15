@@ -5,8 +5,8 @@ from zpython.util.path_util import from_relative_path_from_models_dir
 
 if __name__ == "__main__":
     model_name = "cnn"
-    path = from_relative_path_from_models_dir(f"DataSource.HIST_DATA/{model_name}/{model_name}_losses_out.csv")
-    path_in = from_relative_path_from_models_dir(f"DataSource.HIST_DATA/{model_name}/{model_name}_losses.csv")
+    path = from_relative_path_from_models_dir(f"HIST_DATA/{model_name}/{model_name}_losses_out.csv")
+    path_in = from_relative_path_from_models_dir(f"DHIST_DATA/{model_name}/{model_name}_losses.csv")
 
     fig, axs = plt.subplots(4, 2, figsize=(10, 5))
     build_plots(path, axs)
