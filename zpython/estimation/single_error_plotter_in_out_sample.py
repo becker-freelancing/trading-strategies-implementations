@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from zpython.estimation.error_plot_builer import build_plots
+from zpython.estimation.error_plot_builer import build_regression_plots
 from zpython.util.path_util import from_relative_path_from_models_dir
 
 if __name__ == "__main__":
@@ -9,6 +9,6 @@ if __name__ == "__main__":
     path_in = from_relative_path_from_models_dir(f"DHIST_DATA/{model_name}/{model_name}_losses.csv")
 
     fig, axs = plt.subplots(4, 2, figsize=(10, 5))
-    build_plots(path, axs)
-    build_plots(path_in, axs, linestyle="--")
+    build_regression_plots(path, axs)
+    build_regression_plots(path_in, axs, linestyle="--")
     plt.show()

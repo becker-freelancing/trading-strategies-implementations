@@ -36,7 +36,8 @@ class BasePrediction:
             self.data_reader = data_reader
 
     def model_dir(self) -> str:
-        models_dir = from_relative_path_from_models_dir(f"{self.data_source}/{self.model_name}/")
+        models_dir = from_relative_path_from_models_dir(
+            f"{self.data_source.name()}/{self.pair.name()}/{self.model_name}/")
         return models_dir
 
     def file_name_in_models_dir(self, file_name):

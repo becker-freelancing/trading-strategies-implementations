@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 
-from zpython.prediction.classification.classification_limit_30_stop_10 import ClassificationLimit30Stop10
-from zpython.training.classification.classification_limit_30_stop_10 import ClassificationLimit30Stop10Training
+from zpython.prediction.classification.classification_limit_30_stop_10_multi_dim import ClassificationLimit30Stop10
+from zpython.training.classification.classification_limit_30_stop_10_multi_dim import \
+    ClassificationLimit30Stop10Training
 from zpython.training.e_out.error_calculation import classification_mean_errors
 
 predictions_to_calculate = 1000
@@ -38,7 +39,7 @@ try:
         error = e_out_for_model(epoch)
         err = pd.DataFrame.from_dict(error, orient="index").T
         e_outs = pd.concat([e_outs, err])
-except Exception:
-    pass
+except Exception as e:
+    print(e.with_traceback())
 
 e_outs.to_csv(predictor.file_name_in_models_dir(f"{predictor.model_name}_losses_out.csv"), index=False)
