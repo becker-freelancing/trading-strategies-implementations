@@ -100,5 +100,5 @@ df["NoneOutput"] = np.where(((df["SellOutput"] == 0) & (df["BuyOutput"] == 0)), 
 df_trans = df.drop(columns=["BuyValid", "SellValid", "BuyLimitIdx", "BuyStopIdx", "SellLimitIdx", "SellStopIdx"])
 
 write_path = from_relative_path(
-    f"training-data/classification/{data_source.value}_{pair.name()}limit_{limit}_stop_{stop}.csv.zip")
+    f"training-data/classification/{data_source.value}_{pair.name()}_limit_{limit}_stop_{stop}.csv.zip")
 df_trans.to_csv(write_path, index=False, compression="zip")
