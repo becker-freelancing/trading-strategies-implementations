@@ -3,8 +3,8 @@ import zipfile
 
 import pandas as pd
 
-path = "C:/Users/jasb/Downloads/histdata"
-write_name = "EURUSD_TICK_ASK.csv.zip"
+path = "C:/Users/jasb/Downloads/histdatabid"
+write_name = "EURUSD_TICK_BID.csv.zip"
 
 for filename in os.listdir(path):
     file_path = os.path.join(path, filename)
@@ -23,6 +23,7 @@ for filename in os.listdir(path):
 df.columns = ["closeTime", "closeBid", "volume"]
 df = df.drop(columns=["volume"])
 df["closeTime"] = pd.to_datetime(df["closeTime"], format='%Y%m%d %H%M%S')
+df = df.sort_values("closeTime")
 # df.set_index("closeTime", inplace=True)
 df.drop_duplicates(subset="closeTime")
 print(len(df))
