@@ -2,11 +2,25 @@ import pandas as pd
 
 
 def get_reindex_freq(file_path):
-    if "_5." in file_path:
+    if "_5." in file_path or "_5_" in file_path:
         return "5min"
 
-    if "_1." in file_path:
+    if "_1." in file_path or "_1_" in file_path:
         return "1min"
+
+    if "_15." in file_path or "_15_" in file_path:
+        return "15min"
+
+    if "_30." in file_path or "_30_" in file_path:
+        return "30min"
+
+    if "_60." in file_path or "_60_" in file_path:
+        return "60min"
+
+    if "_1440." in file_path or "_1440_" in file_path:
+        return "1440min"
+
+
 
     raise Exception("get_reindex_freq not implemented for " + file_path)
 
