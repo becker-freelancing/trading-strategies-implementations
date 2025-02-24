@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 
 from zpython.models.test.prediction.multiple_2.multiple_models_and_tf_2 import generate_features
-from zpython.preprocessing.classification.classification_preparation_2 import prepare_data
+from zpython.preprocessing.classification.classification_preparation_2 import read_data_for_preparation, add_outputs
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 
@@ -67,8 +67,7 @@ def return_result(time, result):
     return time, result[0], result[1], result[2]
 
 
-def create_actual_one(df, stop_distance, limit_distance, model, train_length, pred_length):
-    split_idx = df.index.max()
+def create_actual_one(df, split_idx, stop_distance, limit_distance, model, train_length, pred_length):
     current_close = df.loc[split_idx]["close"]
     X_train, Y_train, X_pred = slice_data(df, split_idx, train_length, pred_length)
     predictions = regression(X_train, Y_train, X_pred, model)
@@ -101,29 +100,45 @@ def create_actual_one(df, stop_distance, limit_distance, model, train_length, pr
 
 def create_actual(regression_df, stop_distance, limit_distance, model_supplier, train_length, pred_length):
     needed_length = train_length + train_length + pred_length
-    regression_df_grouped = [regression_df.iloc[i:i + needed_length] for i in
-                             range(len(regression_df) - (needed_length - 1))]
+    # regression_df_grouped = [regression_df.iloc[i:i + needed_length] for i in
+    #                          range(len(regression_df) - (needed_length - 1))]
+
+    min_idx = regression_df.index.min()
+    max_idx = regression_df.index.max()
 
     def apply(df):
-        return create_actual_one(df, stop_distance, limit_distance, model_supplier(), train_length, pred_length)
+        curr_idx = df.name
+        if curr_idx - train_length - train_length < min_idx:
+            return return_result(pd.to_datetime("2099-01-01 00:00:00"), handle_none())
+        return create_actual_one(regression_df, curr_idx, stop_distance, limit_distance, model_supplier(), train_length,
+                                 pred_length)
 
-    result = [apply(df) for df in regression_df_grouped]
+    result = regression_df.apply(lambda x: apply(x), axis=1)
+    # result = [apply(df) for df in regression_df_grouped]
 
-    parsed = pd.DataFrame(result)
+    parsed = result.apply(pd.Series)
     parsed.columns = ["closeTime", "ActualBuy", "ActualSell", "ActualNone"]
     return parsed
 
 
 def calc_error(expected, actual):
     merge = pd.merge(expected, actual, on="closeTime", how="inner")
-    exp = merge[["ActualBuy", "ActualSell", "ActualNone"]].to_numpy()
-    act = merge[["BuyOutput", "SellOutput", "NoneOutput"]].to_numpy()
+    act = merge[["ActualBuy", "ActualSell", "ActualNone"]].to_numpy()
+    exp = merge[["BuyOutput", "SellOutput", "NoneOutput"]].to_numpy()
 
     accuracy = accuracy_score(exp, act)
     prec, recall, f1, _, = precision_recall_fscore_support(exp, act, average="macro")
     logloss = log_loss(exp, act)
     auc_roc = 0  # roc_auc_score(exp, act)
     kappa = 0  # cohen_kappa_score(exp, act)
+
+    total_len_exp = len(merge)
+    buy_len_exp = len(merge[merge["BuyOutput"] == 1])
+    sell_len_exp = len(merge[merge["SellOutput"] == 1])
+    none_len_exp = len(merge[merge["NoneOutput"] == 1])
+    buy_len_act = len(merge[merge["ActualBuy"] == 1])
+    sell_len_act = len(merge[merge["ActualSell"] == 1])
+    none_len_act = len(merge[merge["ActualNone"] == 1])
 
     return {
         "Accuracy": accuracy,
@@ -132,19 +147,18 @@ def calc_error(expected, actual):
         "F1": f1,
         "LogLoss": logloss,
         "AUC_ROC": auc_roc,
-        "Kappa": kappa
+        "Kappa": kappa,
+        "ActualNoneRatio": none_len_act / total_len_exp,
+        "ActualBuyRatio": buy_len_act / total_len_exp,
+        "ActualSellRatio": sell_len_act / total_len_exp,
+        "ExpectedNoneRatio": none_len_exp / total_len_exp,
+        "ExpectedBuyRatio": buy_len_exp / total_len_exp,
+        "ExpectedSellRatio": sell_len_exp / total_len_exp
     }
 
 
-def execute_for_parameter(stop_in_euro, limit_in_euro, size, model_supplier, train_length, pred_length):
-    df = prepare_data(
-        DataSource.HIST_DATA,
-        Pair.EURUSD_1_2024,
-        stop_in_euro,
-        limit_in_euro,
-        size,
-        3000
-    )
+def execute_for_parameter(df, stop_in_euro, limit_in_euro, size, model_supplier, train_length, pred_length):
+    df = add_outputs(df, stop_in_euro, limit_in_euro, size)
     regression_df = generate_features(df)
 
     stop_distance = stop_in_euro / 100_000 / size
@@ -198,20 +212,34 @@ def svr_meta_data_supplier():
 
 if __name__ == "__main__":
     errors = pd.DataFrame(
-        columns=["model", "stop", "limit", "size", "Accuracy", "Precision", "Recall", "F1", "LogLoss", "AUC_ROC",
+        columns=["model", "stop", "limit", "size", "ActualNoneRatio", "ActualBuyRatio", "ActualSellRatio",
+                 "ExpectedNoneRatio", "ExpectedBuyRatio", "ExpectedSellRatio"
+                                                          "Accuracy", "Precision", "Recall", "F1", "LogLoss", "AUC_ROC",
                  "Kappa"])
     idx = 0
+    df = read_data_for_preparation(DataSource.HIST_DATA, Pair.EURUSD_1_2024, 3_000)
+
+    supplier = [lin_reg_supplier, ridge_supplier, sgd_supplier, svr_supplier, rand_for_supplier]
+    stops = [10, 20, 30, 50, 70, 100]
+    limits = [10, 20, 30, 50, 100, 200]
+    sizes = [0.2, 0.5, 1]
+    metadata_supplier = [lin_reg_meta_data_supplier, ridge_meta_data_supplier, sgd_meta_data_supplier,
+                         svr_meta_data_supplier,
+                         rand_for_meta_data_supplier]
+
+    iterations = len(supplier) * len(stops) * len(limits) * len(sizes)
+
     for model_sup, met_data in zip(
-            [lin_reg_supplier, ridge_supplier, sgd_supplier, svr_supplier, rand_for_supplier],
-            [lin_reg_meta_data_supplier, ridge_meta_data_supplier, sgd_meta_data_supplier, svr_meta_data_supplier,
-             rand_for_meta_data_supplier]
+            supplier,
+            metadata_supplier
     ):
-        for stop in [10, 20, 30, 50, 70, 100]:
-            for limit in [10, 20, 30, 50, 100, 200]:
-                for size in [0.2, 0.5, 1]:
+        for stop in stops:
+            for limit in limits:
+                for size in sizes:
+                    print(f"Iteration {idx} / {iterations}")
                     try:
                         name, train_length, pred_length = met_data()
-                        err = execute_for_parameter(stop, limit, size, model_sup, train_length, pred_length)
+                        err = execute_for_parameter(df, stop, limit, size, model_sup, train_length, pred_length)
                         err["model"] = name
                         err["stop"] = stop
                         err["limit"] = limit
@@ -223,5 +251,5 @@ if __name__ == "__main__":
                         print("===========")
                         print(e)
 
-                errors.to_csv("./errors.csv", index=False)
-    errors.to_csv("./errors.csv", index=False)
+                errors.to_csv("./backtest_results_ratios.csv", index=False)
+    errors.to_csv("./backtest_results_ratios.csv", index=False)

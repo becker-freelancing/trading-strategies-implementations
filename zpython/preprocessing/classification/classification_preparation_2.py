@@ -1,16 +1,25 @@
 import numpy as np
+import pandas as pd
 
 from zpython.models.training.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 
 
-def prepare_data(data_source: DataSource,
-                 pair: Pair,
-                 stop_in_euro: int,
-                 limit_in_euro: int,
-                 size: float,
-                 number_of_entries: int):
+def read_data_for_preparation(data_source: DataSource,
+                              pair: Pair,
+                              number_of_entries: int):
+    df = read_data(data_source.file_path(pair))
+    df.reset_index(inplace=True, names="closeTime")
+    df = df.iloc[len(df) - number_of_entries:]
+    df = df.reset_index(drop=True)
+    return df
+
+
+def add_outputs(df: pd.DataFrame,
+                stop_in_euro: int,
+                limit_in_euro: int,
+                size: float):
     stop_distance = stop_in_euro / 100_000 / size
     limit_distance = limit_in_euro / 100_000 / size
 
@@ -25,10 +34,7 @@ def prepare_data(data_source: DataSource,
     # -> Falls beides existiert, dann das nehmen, wo vorher limit erreicht wurde
     # -> Falls keins existiert, dann None
 
-    df = read_data(data_source.file_path(pair))
-    df.reset_index(inplace=True, names="closeTime")
-    df = df.iloc[len(df) - number_of_entries:]
-    df = df.reset_index(drop=True)
+
 
     # df["BuyLimitReached"] = df.index.map(
     #     lambda i: np.sum(df.loc[i+1:, 'closeBid'] >= df.loc[i, 'closeBid'] + limit_distance)
@@ -100,3 +106,13 @@ def prepare_data(data_source: DataSource,
     df_trans = df.drop(columns=["BuyValid", "SellValid", "BuyLimitIdx", "BuyStopIdx", "SellLimitIdx", "SellStopIdx"])
 
     return df_trans
+
+
+def prepare_data(data_source: DataSource,
+                 pair: Pair,
+                 stop_in_euro: int,
+                 limit_in_euro: int,
+                 size: float,
+                 number_of_entries: int):
+    df = read_data_for_preparation(data_source, pair, number_of_entries)
+    return add_outputs(df, stop_in_euro, limit_in_euro, size)
