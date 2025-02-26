@@ -1,23 +1,23 @@
-package com.becker.freelance.strategies.regressionmodels;
+package com.becker.freelance.strategies.regression.ai;
 
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.BaseStrategy;
 
 import java.util.Map;
 
-public class CnnModelStrategy extends AbstractRegressionModelStrategy {
+public class CnnHalfYearM5ModelStrategy extends AbstractRegressionModelStrategy {
 
-    public CnnModelStrategy() {
-        super("cnn");
+    public CnnHalfYearM5ModelStrategy() {
+        super("cnn_half_year_m5");
     }
 
-    protected CnnModelStrategy(Map<String, Decimal> parameters) {
+    protected CnnHalfYearM5ModelStrategy(Map<String, Decimal> parameters) {
         super(parameters);
     }
 
     @Override
     protected String getModelName() {
-        return "cnn";
+        return "cnn_half_year_m5";
     }
 
     @Override
@@ -27,6 +27,6 @@ public class CnnModelStrategy extends AbstractRegressionModelStrategy {
 
     @Override
     public BaseStrategy forParameters(Map<String, Decimal> parameters) {
-        return new CnnModelStrategy(parameters);
+        return new CnnHalfYearM5ModelStrategy(parameters);
     }
 }

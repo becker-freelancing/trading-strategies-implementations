@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support, log
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 
-from zpython.models.test.prediction.multiple_2.multiple_models_and_tf_2 import generate_features
+from zpython.models.test.prediction.regression.multiple_models_and_tf_2 import generate_features
 from zpython.preprocessing.classification.classification_preparation_2 import read_data_for_preparation, add_outputs
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair

@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.regressionmodels;
+package com.becker.freelance.strategies.regression.ai;
 
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.BaseStrategy;

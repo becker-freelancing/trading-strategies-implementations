@@ -1,3 +1,7 @@
+import matplotlib
+
+matplotlib.use("TkAgg")
+
 import random
 
 import numpy as np
@@ -12,6 +16,7 @@ from sklearn.svm import SVR
 from zpython.preprocessing.classification.classification_preparation_2 import prepare_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
+import matplotlib.pyplot as plt
 
 
 def generate_features(df):
@@ -97,9 +102,9 @@ def slice_data(df, split_idx, train_length, pred_length):
     data_pred_y = df.iloc[split_idx:split_idx + pred_length]
     data_train_x = df.iloc[split_idx - train_length - train_length:split_idx - train_length]
     data_train_y = df.iloc[split_idx - train_length:split_idx]
-    return (data_train_x.drop("close", axis="columns"),
+    return (data_train_x.drop("close", axis="columns").drop("closeTime", axis="columns"),
             data_train_y.close,
-            data_pred_x.drop("close", axis="columns"),
+            data_pred_x.drop("close", axis="columns").drop("closeTime", axis="columns"),
             data_pred_y.close)
 
 
@@ -131,7 +136,7 @@ def test_model(model_name, model, data, timeframe, input_length, test_length, sp
     errors["TestLength"] = test_length
     errors["TimeFrame"] = timeframe
 
-    return errors
+    return errors, Y_pred, y_test_actual
 
 
 if __name__ == "__main__":
@@ -144,7 +149,7 @@ if __name__ == "__main__":
     train_lengths = np.arange(start=5, stop=1000, step=20)
     models = [LinearRegression(), SGDRegressor(), SVR(), RandomForestRegressor(), Ridge()]
     model_names = ["lin_reg", "sgd", "svr", "random_forest", "ridge"]
-    num_of_tests_per_model = 3
+    num_of_tests_per_model = 1
 
     total_iterations = len(time_frames) * len(train_lengths) * len(models) * num_of_tests_per_model
     current_iteration = 0
@@ -161,22 +166,32 @@ if __name__ == "__main__":
         all_data = all_data.reset_index(drop=True)
         test_length = 180
 
-        for train_length in train_lengths:
+        for model, name in zip(models, model_names):
 
-            for model, name in zip(models, model_names):
+            errors = []
+            predictions = []
+            for train_length in train_lengths:
+
+                split_idx = random.randint(train_length + train_length + 10, len(all_data) - test_length - 10)
 
                 for _ in range(num_of_tests_per_model):
                     current_iteration += 1
                     print(f"==========  {current_iteration} / {total_iterations}")
 
-                    split_idx = random.randint(train_length + train_length + 10, len(all_data) - test_length - 10)
                     try:
-                        new_errors_map = test_model(name, model, all_data, time_frame.minutes(), train_length,
-                                                    test_length, split_idx)
-                        new_errors = pd.DataFrame(new_errors_map, index=[current_iteration])
+                        err, actual, prediction = test_model(name, model, all_data, time_frame.minutes(), train_length,
+                                                             test_length, split_idx)
+                        errors.append(err["RMSE_TEST"])
+                        predictions.append(prediction)
+                        # plt.plot(list(range(len(prediction))), prediction, label=_)
+                    except Exception as e:
+                        print(e)
 
-                        errors = pd.concat([errors, new_errors], ignore_index=True)
-                    except Exception:
-                        pass
+        idx = np.argmin(errors)
+        plt.plot(list(range(len(predictions[idx]))), predictions[idx], label="Prediction")
+        plt.plot(list(range(len(actual))), actual, "--")
+        # plt.ylim((np.min(actual), np.max(actual)))
+        plt.legend()
+        plt.show()
 
-    errors.to_csv("./errors_2.csv", index=False)
+    # errors.to_csv("./errors_2.csv", index=False)

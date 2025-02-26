@@ -1,60 +1,37 @@
-package com.becker.freelance.strategies.regressionmodels;
+package com.becker.freelance.strategies.regression.shared;
 
 import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
-import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.BaseStrategy;
-import com.becker.freelance.strategies.PermutableStrategyParameter;
-import com.becker.freelance.strategies.StrategyParameter;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-public abstract class AbstractRegressionModelStrategy extends BaseStrategy {
+public class PredictionToEntrySignalConverter {
 
-    private Decimal size;
-    private Decimal limitInEuro;
-    private Decimal stopInEuro;
-    private BufferedPredictor predictor;
+    private final Decimal stopInEuro;
+    private final Decimal limitInEuro;
+    private final Decimal size;
+    private final PositionType positionType;
+    private Decimal trailingStepSize;
 
-    public AbstractRegressionModelStrategy(String name) {
-        super(name, new PermutableStrategyParameter(
-                new StrategyParameter("size", 0.5, 0.2, 3., 0.2),
-                new StrategyParameter("limit_in_euros", 150, 130, 220, 30),
-                new StrategyParameter("stop_in_euros", 80, 60, 120, 20)
-        ));
+    public PredictionToEntrySignalConverter(Decimal stopInEuro, Decimal limitInEuro, Decimal size, PositionType positionType, Decimal trailingStepSizeInEuro) {
+        this.stopInEuro = stopInEuro;
+        this.limitInEuro = limitInEuro;
+        this.size = size;
+        this.positionType = positionType;
+        this.trailingStepSize = trailingStepSizeInEuro;
     }
 
-    protected AbstractRegressionModelStrategy(Map<String, Decimal> parameters) {
-        super(parameters);
-        size = parameters.get("size");
-        limitInEuro = parameters.get("limit_in_euros");
-        stopInEuro = parameters.get("stop_in_euros");
-        predictor = new BufferedPredictor(getModelName(), getModelId());
+    public PredictionToEntrySignalConverter(Decimal stopInEuro, Decimal limitInEuro, Decimal size) {
+        this(stopInEuro, limitInEuro, size, PositionType.HARD_LIMIT, Decimal.ZERO);
     }
 
-
-    @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Optional<List<Decimal>> optionalPrediction = predictor.getPrediction(time);
-
-        if (optionalPrediction.isEmpty()) {
-            return Optional.empty();
-        }
-
-        List<Decimal> prediction = optionalPrediction.get();
-        return toEntrySignal(prediction, timeSeries.getPair(), timeSeries.getEntryForTime(time));
-    }
-
-    private Optional<EntrySignal> toEntrySignal(List<Decimal> predictions, Pair pair, TimeSeriesEntry currentPrice) {
+    public Optional<EntrySignal> toEntrySignal(List<Decimal> predictions, Pair pair, TimeSeriesEntry currentPrice) {
         Decimal stopDiff = pair.priceDifferenceForNProfitInCounterCurrency(stopInEuro, size);
         Decimal limitDiff = pair.priceDifferenceForNProfitInCounterCurrency(limitInEuro, size);
         Decimal closeMid = currentPrice.getCloseMid();
@@ -104,22 +81,24 @@ public abstract class AbstractRegressionModelStrategy extends BaseStrategy {
         if (sellStopIdx <= sellLimitIdx) {
             return Optional.empty();
         }
-        return Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuro, limitInEuro, PositionType.HARD_LIMIT));
+        return switch (positionType) {
+            case HARD_LIMIT ->
+                    Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuro, limitInEuro, PositionType.HARD_LIMIT));
+            case TRAILING ->
+                    Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuro, limitInEuro, PositionType.TRAILING, trailingStepSize));
+        };
     }
 
     private Optional<EntrySignal> toBuyEntrySignal(int buyLimitIdx, int buyStopIdx) {
         if (buyStopIdx <= buyLimitIdx) {
             return Optional.empty();
         }
-        return Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuro, limitInEuro, PositionType.HARD_LIMIT));
+
+        return switch (positionType) {
+            case HARD_LIMIT ->
+                    Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuro, limitInEuro, PositionType.HARD_LIMIT));
+            case TRAILING ->
+                    Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuro, limitInEuro, PositionType.TRAILING, trailingStepSize));
+        };
     }
-
-    @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
-        return Optional.empty();
-    }
-
-    protected abstract String getModelName();
-
-    protected abstract int getModelId();
 }
