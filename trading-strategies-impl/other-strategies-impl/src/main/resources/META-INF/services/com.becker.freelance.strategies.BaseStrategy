@@ -7,3 +7,4 @@ com.becker.freelance.strategies.RsiOverboughtOversoldStrategy
 com.becker.freelance.strategies.TestStrategy
 com.becker.freelance.strategies.MA3Strategy
 com.becker.freelance.strategies.MACDScalping
+com.becker.freelance.strategies.SuperTrendStrategy
