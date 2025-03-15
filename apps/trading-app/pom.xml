@@ -43,6 +43,12 @@
         </dependency>
         <dependency>
             <groupId>com.becker-freelance.trading</groupId>
+            <artifactId>datasource-binance</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.becker-freelance.trading</groupId>
             <artifactId>demo-trade-executor</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>runtime</scope>
