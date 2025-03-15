@@ -44,7 +44,7 @@ def get_historical_klines(symbol: str, interval: str, start: str, end: str = Non
 
 
 if __name__ == "__main__":
-    symbol = "BTCEUR"
+    symbol = "BTCUSDT"
     interval = "1m"
     bars = 990
 

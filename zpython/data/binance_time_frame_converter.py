@@ -35,4 +35,5 @@ def for_tf(tf_min):
 for tf_min in [2, 3, 5, 15, 30, 60, 240, 1440]:
     for_tf(tf_min)
 
+input.reset_index(inplace=True)
 input.to_csv(f"./{pair}_1.csv.zip", compression="zip", index=False)
