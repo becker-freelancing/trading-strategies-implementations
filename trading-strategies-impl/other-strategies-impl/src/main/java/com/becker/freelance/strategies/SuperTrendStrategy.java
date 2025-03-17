@@ -99,7 +99,7 @@ public class SuperTrendStrategy extends BaseStrategy {
         RsiResult currentRsi = updateRsiCrosses(barCount);
 
         // Sind bereits Positionen geöffnet? -> Keine neuen mehr öffnen
-        if (getOpenPositionRequestor().isPositionOpen()) {
+        if (getOpenPositionRequestor().isPositionOpen(timeSeries.getPair())) {
             return Optional.empty();
         }
 

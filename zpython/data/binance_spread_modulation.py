@@ -1,8 +1,8 @@
 import pandas as pd
 
-pair = "ETHBTC"
-spread = 0.00001  # Außer bei ETHBTC, dann 0.00001
-digits = 5
+pair = "BTCUSDT"
+spread = 0.01  # Außer bei ETHBTC, dann 0.00001, sonst 0.01
+digits = 2
 
 df = pd.read_csv(f"./{pair}_1_raw.csv")
 
@@ -30,4 +30,4 @@ df = df.sort_values("closeTime")
 
 df["closeTime"] = df["closeTime"].apply(lambda t: t.floor("s") + pd.Timedelta(seconds=1))
 
-df.to_csv(f"./{pair}_1.csv", index=False)
+df.to_csv(f"./{pair}_1.csv.zip", index=False, compression="zip")

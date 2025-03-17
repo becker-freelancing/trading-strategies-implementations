@@ -65,9 +65,9 @@ public class SwingHighLowStrategy extends BaseStrategy {
         }
 
         if (lastSwingHighOrNull.index() == index - 1) {
-            return Optional.of(new EuroDistanceEntrySignal(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(100_000), PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT));
         } else if (lastSwingLowOrNull.index() == index - 1) {
-            return Optional.of(new EuroDistanceEntrySignal(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(100_000), PositionType.HARD_LIMIT));
+            return Optional.of(new EuroDistanceEntrySignal(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT));
         }
 
         return Optional.empty();

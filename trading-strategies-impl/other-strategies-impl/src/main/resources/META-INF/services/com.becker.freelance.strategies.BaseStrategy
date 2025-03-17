@@ -9,3 +9,5 @@ com.becker.freelance.strategies.MA3Strategy
 com.becker.freelance.strategies.MACDScalping
 com.becker.freelance.strategies.SuperTrendStrategy
 com.becker.freelance.strategies.SwingHighLowStrategy
+com.becker.freelance.strategies.VoltyExpanCloseStrategy
+com.becker.freelance.strategies.FreqStrategy
