@@ -11,7 +11,6 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.Rule;
 import org.ta4j.core.indicators.*;
-import org.ta4j.core.indicators.adx.MinusDIIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.TransformIndicator;
 import org.ta4j.core.indicators.helpers.VolumeIndicator;
@@ -25,15 +24,8 @@ import java.util.Optional;
 
 public class FreqStrategy extends BaseStrategy {
 
-
-    private BarSeries series;
-    private Rule entryRule;
-    private Rule exitRule;
-    private Decimal size;
-    private Decimal stop;
-    private Decimal limit;
     public FreqStrategy() {
-        super("freq_strategy", new PermutableStrategyParameter(
+        super("freq_strategy", new PermutableStrategyParameter(FreqStrategy::stopLessThanLimit,
                 new StrategyParameter("size", 1),//, 0.2, 1.2, 0.2),
                 new StrategyParameter("sma", 40, 30, 50, 10),
                 new StrategyParameter("rsi", 14, 10, 18, 4),
@@ -42,9 +34,19 @@ public class FreqStrategy extends BaseStrategy {
                 new StrategyParameter("macd_long", 26, 24, 28, 2),
                 new StrategyParameter("ema", 9, 7, 11, 2),
                 new StrategyParameter("minusdi", 14, 12, 16, 2),
-                new StrategyParameter("stop", 10, 10, 40, 10),
-                new StrategyParameter("limit", 20, 20, 60, 10)
+                new StrategyParameter("stop", 10, 10, 40, 15),
+                new StrategyParameter("limit", 20, 20, 60, 15)
         ));
+    }
+
+    private BarSeries series;
+    private Rule entryRule;
+    private Decimal size;
+    private Decimal stop;
+    private Decimal limit;
+
+    private static boolean stopLessThanLimit(Map<String, Decimal> parameters) {
+        return parameters.get("limit").isLessThanOrEqualTo(parameters.get("stop"));
     }
 
     public FreqStrategy(Map<String, Decimal> parameters) {
@@ -58,9 +60,6 @@ public class FreqStrategy extends BaseStrategy {
         StochasticOscillatorKIndicator stochK = new StochasticOscillatorKIndicator(series, parameters.get("stochk").intValue());
         StochasticOscillatorDIndicator stochD = new StochasticOscillatorDIndicator(stochK);
         MACDIndicator macd = new MACDIndicator(closePrice, parameters.get("macd_short").intValue(), parameters.get("macd_long").intValue());
-        EMAIndicator macdSignal = new EMAIndicator(macd, parameters.get("ema").intValue());
-        ParabolicSarIndicator sar = new ParabolicSarIndicator(series);
-        MinusDIIndicator minusDI = new MinusDIIndicator(series, parameters.get("minusdi").intValue());
 
         entryRule = new OverIndicatorRule(closePrice, Decimal.valueOf(0.00000200)) // Preis > 0.00000200
                 .and(new OverIndicatorRule(volume, new TransformIndicator(new SMAIndicator(volume, 40), d -> d.multipliedBy(DecimalNum.valueOf(4))))) // Volumen > 4x Durchschnitt
@@ -69,11 +68,6 @@ public class FreqStrategy extends BaseStrategy {
                 .and(new OverIndicatorRule(rsi, Decimal.valueOf(30))) // RSI > 30
                 .and(new OverIndicatorRule(stochD, Decimal.valueOf(30))); // Stoch-D > 30
 
-        exitRule = new OverIndicatorRule(rsi, Decimal.valueOf(74)) // RSI > 74
-                .and(new UnderIndicatorRule(macd, macdSignal)) // MACD unter MACD-Signal
-                .and(new OverIndicatorRule(minusDI, Decimal.valueOf(50))) // MinusDI > 50
-                .or(new OverIndicatorRule(sar, closePrice) // SAR über Preis
-                        .and(new OverIndicatorRule(rsi, Decimal.valueOf(50)))); // Fisher RSI > 50
 
         size = parameters.get("size");
         stop = parameters.get("stop");
@@ -97,15 +91,7 @@ public class FreqStrategy extends BaseStrategy {
     @Override
     public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
         series.addBar(timeSeries.getEntryForTimeAsBar(time));
-        int index = series.getBarCount() - 1;
 
-//        if (getOpenPositionRequestor().isPositionOpen()) {
-//            if (exitRule.isSatisfied(index)) { //entryRule
-//                return Optional.of(
-//                        new ExitSignal(Decimal.DOUBLE_MAX, Direction.BUY)
-//                );
-//            }
-//        }
         return Optional.empty();
     }
 

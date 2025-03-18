@@ -1,8 +1,8 @@
 import pandas as pd
 
-pair = "BTCUSDT"
-spread = 0.01  # Außer bei ETHBTC, dann 0.00001, sonst 0.01
-digits = 2
+pair = "ETHBTC"
+spread = 0.00001  # Außer bei ETHBTC, dann 0.00001, sonst 0.01
+digits = 5
 
 df = pd.read_csv(f"./{pair}_1_raw.csv")
 
