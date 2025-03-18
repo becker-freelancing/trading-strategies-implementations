@@ -1,0 +1,19 @@
+my-app/
+│── public/             # Statische Dateien (z. B. index.html, Favicon)
+│── src/                # Quellcode der Anwendung
+│   ├── assets/         # Bilder, Icons, Fonts, globale Styles
+│   ├── components/     # Wiederverwendbare UI-Komponenten
+│   ├── pages/          # Seiten der App (z. B. Home, About)
+│   ├── hooks/          # Eigene React-Hooks
+│   ├── context/        # React Context API für globale Zustände
+│   ├── services/       # API-Calls, externe Datenquellen
+│   ├── utils/          # Hilfsfunktionen
+│   ├── routes/         # React Router Konfiguration
+│   ├── store/          # Zustand (Redux, Zustand oder Context API)
+│   ├── styles/         # Globale SCSS/CSS-Dateien oder Tailwind-Konfiguration
+│   ├── App.jsx         # Hauptkomponente
+│   ├── main.jsx        # Einstiegspunkt der App
+│── .gitignore          # Dateien, die nicht mit Git getrackt werden
+│── package.json        # Abhängigkeiten und Skripte
+│── vite.config.js      # Vite-Konfiguration (falls Vite genutzt wird)
+│── README.md           # Projektbeschreibung
