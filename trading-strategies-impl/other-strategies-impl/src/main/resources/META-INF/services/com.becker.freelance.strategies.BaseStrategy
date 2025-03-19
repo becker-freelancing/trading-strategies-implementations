@@ -11,3 +11,4 @@ com.becker.freelance.strategies.SuperTrendStrategy
 com.becker.freelance.strategies.SwingHighLowStrategy
 com.becker.freelance.strategies.VoltyExpanCloseStrategy
 com.becker.freelance.strategies.FreqStrategy
+com.becker.freelance.strategies.ChartPatternStrategy
