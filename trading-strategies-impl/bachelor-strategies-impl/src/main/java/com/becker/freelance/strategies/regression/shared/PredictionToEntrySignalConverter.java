@@ -17,7 +17,7 @@ public class PredictionToEntrySignalConverter {
     private final Decimal limitInEuro;
     private final Decimal size;
     private final PositionType positionType;
-    private Decimal trailingStepSize;
+    private final Decimal trailingStepSize;
 
     public PredictionToEntrySignalConverter(Decimal stopInEuro, Decimal limitInEuro, Decimal size, PositionType positionType, Decimal trailingStepSizeInEuro) {
         this.stopInEuro = stopInEuro;
