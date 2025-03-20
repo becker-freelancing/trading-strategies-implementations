@@ -53,11 +53,6 @@ public class SwingHighLowStrategy extends BaseStrategy {
     }
 
     @Override
-    public int minNumberOfBarsRequired(Map<String, Decimal> parameters) {
-        return swingLowIndicator.getUnstableBars();
-    }
-
-    @Override
     public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
 
         if (lastSwingLowOrNull == null || lastSwingHighOrNull == null) {

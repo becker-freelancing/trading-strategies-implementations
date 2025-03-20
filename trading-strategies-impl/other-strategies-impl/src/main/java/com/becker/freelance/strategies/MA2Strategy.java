@@ -68,13 +68,6 @@ public class MA2Strategy extends BaseStrategy{
         return new MA2Strategy(parameters);
     }
 
-    @Override
-    public int minNumberOfBarsRequired(Map<String, Decimal> parameters) {
-        int swingHighLowMaxAge = parameters.get("swing_high_low_max_age").intValue();
-        int swingHighLowOrder = parameters.get("swing_high_low_order").intValue();
-        return swingHighLowOrder + swingHighLowMaxAge;
-    }
-
     private LastTwoMaResults lastTwoMaValuesForTime(SMAIndicator smaIndicator, int barCount){
         double last = smaIndicator.getValue(barCount - 2).doubleValue();
         double current = smaIndicator.getValue(barCount - 1).doubleValue();
