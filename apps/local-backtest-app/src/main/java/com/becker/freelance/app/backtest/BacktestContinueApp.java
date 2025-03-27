@@ -1,14 +1,13 @@
 package com.becker.freelance.app.backtest;
 
-import com.becker.freelance.app.AbstractBacktestAppBuilder;
+import com.becker.freelance.app.AbstractLocalBacktestAppBuilder;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 public class BacktestContinueApp {
 
     public static void main(String[] args) throws IOException {
-        Runnable backtestApp = AbstractBacktestAppBuilder.builder()
+        Runnable backtestApp = AbstractLocalBacktestAppBuilder.builder()
                 .continueMode()
                 .build();
 

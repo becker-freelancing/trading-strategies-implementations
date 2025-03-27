@@ -18,7 +18,8 @@
     <modules>
         <module>backtest-result-viewer-app</module>
         <module>data-request</module>
-        <module>trading-app</module>
+        <module>local-backtest-app</module>
+        <module>remote-backtest-app</module>
     </modules>
 
 
