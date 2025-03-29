@@ -1,9 +1,9 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
-import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
+import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
@@ -44,6 +44,7 @@ public class FreqStrategy extends BaseStrategy {
     private Decimal size;
     private Decimal stop;
     private Decimal limit;
+    private EntrySignalFactory entrySignalFactory;
 
     private static boolean stopLessThanLimit(Map<String, Decimal> parameters) {
         return parameters.get("limit").isLessThanOrEqualTo(parameters.get("stop"));
@@ -72,7 +73,7 @@ public class FreqStrategy extends BaseStrategy {
         size = parameters.get("size");
         stop = parameters.get("stop");
         limit = parameters.get("limit");
-
+        entrySignalFactory = new EntrySignalFactory();
     }
 
 
@@ -82,7 +83,7 @@ public class FreqStrategy extends BaseStrategy {
 
         if (entryRule.isSatisfied(index)) {
             return Optional.of(
-                    new EuroDistanceEntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT)
+                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
             );
         }
         return Optional.empty();

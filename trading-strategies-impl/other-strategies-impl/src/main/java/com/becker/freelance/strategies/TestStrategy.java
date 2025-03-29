@@ -1,9 +1,8 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
-import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
@@ -37,8 +36,8 @@ public class TestStrategy extends BaseStrategy {
             return Optional.empty();
         }
         Direction direction = rand.nextDouble() > 0.5 ? Direction.BUY : Direction.SELL;
-        return Optional.of(new EuroDistanceEntrySignal(
-                Decimal.ONE, direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT
+        return Optional.of(entrySignalFactory.fromAmount(
+                Decimal.ONE, direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)
         ));
     }
 

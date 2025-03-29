@@ -1,9 +1,9 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
-import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
+import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
@@ -27,6 +27,7 @@ public class ChartPatternStrategy extends BaseStrategy {
     private BarSeries barSeries;
     private List<Indicator<Boolean>> bullishIndicator;
     private List<Indicator<Boolean>> bearischIndicator;
+    private EntrySignalFactory entrySignalFactory;
     public ChartPatternStrategy() {
         super("chart_pattern", new PermutableStrategyParameter(
                 new StrategyParameter("size", 1),
@@ -38,6 +39,7 @@ public class ChartPatternStrategy extends BaseStrategy {
                 new StrategyParameter("fac_bull", 1., 0.5, 4., 1.)
         ));
     }
+
 
     public ChartPatternStrategy(Map<String, Decimal> parameters) {
         super(parameters);
@@ -62,6 +64,7 @@ public class ChartPatternStrategy extends BaseStrategy {
                 new HangingManIndicator(barSeries),
                 new ShootingStarIndicator(barSeries, parameters.get("bc_bull").doubleValue(), parameters.get("fac_bull").doubleValue())
         );
+        entrySignalFactory = new EntrySignalFactory();
     }
 
     @Override
@@ -72,13 +75,13 @@ public class ChartPatternStrategy extends BaseStrategy {
         boolean bullish = bullishIndicator.stream().anyMatch(ind -> ind.getValue(index));
         if (bullish) {
             return Optional.of(
-                    new EuroDistanceEntrySignal(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT)
+                    entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
             );
         }
         boolean bearish = bearischIndicator.stream().anyMatch(ind -> ind.getValue(index));
         if (bearish) {
             return Optional.of(
-                    new EuroDistanceEntrySignal(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT)
+                    entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
             );
         }
 

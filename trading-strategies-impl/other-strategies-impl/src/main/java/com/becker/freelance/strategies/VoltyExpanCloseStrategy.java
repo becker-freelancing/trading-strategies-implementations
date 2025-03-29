@@ -1,9 +1,8 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
-import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
@@ -51,7 +50,7 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
     public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
 
         if (direction != null) {
-            return Optional.of(new EuroDistanceEntrySignal(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionType.HARD_LIMIT));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
         }
 
         return Optional.empty();

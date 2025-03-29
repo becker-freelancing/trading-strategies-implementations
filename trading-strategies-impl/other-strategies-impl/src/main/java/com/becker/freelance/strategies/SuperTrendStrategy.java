@@ -1,11 +1,11 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.signal.LevelEntrySignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.indicators.ta.stochasticrsi.RsiResult;
 import com.becker.freelance.indicators.ta.stochasticrsi.StochasticRsiIndicator;
 import com.becker.freelance.math.Decimal;
@@ -105,15 +105,15 @@ public class SuperTrendStrategy extends BaseStrategy {
 
         //Ist EMA über den Kerzen? -> Nur Short, sonst nur Long
         if (emaIndicator.getValue(barCount).isGreaterThan(currentPrice.getClosePrice())) {
-            return lookForShortPosition(barCount, currentPrice, currentRsi);
+            return lookForShortPosition(barCount, currentPrice, currentRsi, timeSeries.getEntryForTime(time));
         } else if (emaIndicator.getValue(barCount).isLessThan(currentPrice.getClosePrice())) {
-            return lookForLongPosition(barCount, currentPrice, currentRsi);
+            return lookForLongPosition(barCount, currentPrice, currentRsi, timeSeries.getEntryForTime(time));
         }
 
         return Optional.empty();
     }
 
-    private Optional<EntrySignal> lookForLongPosition(int barCount, Bar currentPrice, RsiResult currentRsi) {
+    private Optional<EntrySignal> lookForLongPosition(int barCount, Bar currentPrice, RsiResult currentRsi, TimeSeriesEntry price) {
         List<Num> trendLinesBelowPrice = getTrendLinesBelowPrice(barCount, currentPrice);
 
         // Sind zwei Trendlinien unter dem Preis
@@ -123,19 +123,19 @@ public class SuperTrendStrategy extends BaseStrategy {
 
         // War in letzter Zeit ein RSI-Cross und ist der RSI noch nicht zu weit gestiegen?
         if (lastRsiLower20CrossAge <= maxRsiCrossAge && currentRsi.isMidGreaterThan(20 + maxRsiDiff)) {
-            return Optional.of(openLongPosition(trendLinesBelowPrice, currentPrice));
+            return Optional.of(openLongPosition(trendLinesBelowPrice, currentPrice, price));
         }
 
         return Optional.empty();
     }
 
-    private EntrySignal openLongPosition(List<Num> trendLinesBelowPrice, Bar currentPrice) {
+    private EntrySignal openLongPosition(List<Num> trendLinesBelowPrice, Bar currentPrice, TimeSeriesEntry price) {
         Decimal secondTrendLineBelowPrice = new Decimal(trendLinesBelowPrice.get(1).doubleValue());
         Decimal closePrice = new Decimal(currentPrice.getClosePrice().doubleValue());
         Decimal diffToCurrentPrice = closePrice.subtract(secondTrendLineBelowPrice).abs();
         Decimal limitLevel = closePrice.add(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return new LevelEntrySignal(size, Direction.BUY, secondTrendLineBelowPrice, limitLevel, PositionType.HARD_LIMIT);
+        return entrySignalFactory.fromLevel(size, Direction.BUY, secondTrendLineBelowPrice, limitLevel, PositionType.HARD_LIMIT, price);
     }
 
     private List<Num> getTrendLinesBelowPrice(int barCount, Bar currentPrice) {
@@ -146,7 +146,7 @@ public class SuperTrendStrategy extends BaseStrategy {
                 .toList();
     }
 
-    private Optional<EntrySignal> lookForShortPosition(int barCount, Bar currentPrice, RsiResult currentRsi) {
+    private Optional<EntrySignal> lookForShortPosition(int barCount, Bar currentPrice, RsiResult currentRsi, TimeSeriesEntry price) {
         List<Num> trendLinesAbovePrice = getTrendLinesAbovePrice(barCount, currentPrice);
 
         // Sind zwei Trendlinien über dem Preis
@@ -156,19 +156,19 @@ public class SuperTrendStrategy extends BaseStrategy {
 
         // War in letzter Zeit ein RSI-Cross und ist der RSI noch nicht zu weit abgesackt?
         if (lastRsiUpper80CrossAge <= maxRsiCrossAge && currentRsi.isMidGreaterThan(80 - maxRsiDiff)) {
-            return Optional.of(openShortPosition(trendLinesAbovePrice, currentPrice));
+            return Optional.of(openShortPosition(trendLinesAbovePrice, currentPrice, price));
         }
 
         return Optional.empty();
     }
 
-    private EntrySignal openShortPosition(List<Num> trendLinesAbovePrice, Bar currentPrice) {
+    private EntrySignal openShortPosition(List<Num> trendLinesAbovePrice, Bar currentPrice, TimeSeriesEntry price) {
         Decimal secondTrendLineAbovePrice = new Decimal(trendLinesAbovePrice.get(1).doubleValue());
         Decimal closePrice = new Decimal(currentPrice.getClosePrice().doubleValue());
         Decimal diffToCurrentPrice = secondTrendLineAbovePrice.subtract(closePrice).abs();
         Decimal limitLevel = closePrice.subtract(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return new LevelEntrySignal(size, Direction.SELL, secondTrendLineAbovePrice, limitLevel, PositionType.HARD_LIMIT);
+        return entrySignalFactory.fromLevel(size, Direction.SELL, secondTrendLineAbovePrice, limitLevel, PositionType.HARD_LIMIT, price);
     }
 
     private List<Num> getTrendLinesAbovePrice(int barCount, Bar currentPrice) {

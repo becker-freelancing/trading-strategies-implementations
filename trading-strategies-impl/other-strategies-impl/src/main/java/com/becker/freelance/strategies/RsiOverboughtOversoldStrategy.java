@@ -1,9 +1,8 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
-import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
@@ -66,9 +65,9 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
         TimeSeriesEntry lastEntry = timeSeries.getLastEntryForTime(time);
 
         if (value > 70 && isBearishEngulfing(currentEntry, lastEntry)){
-            return Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
         } else if (value < 30 && isBullishEngulfing(currentEntry, lastEntry)) {
-            return Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
         }
 
         return Optional.empty();

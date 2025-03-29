@@ -1,10 +1,9 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.signal.LevelEntrySignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
@@ -71,9 +70,9 @@ public class ParabolicSarStrategy extends BaseStrategy{
         }
 
         if(currentCloseMid.isLessThan(currentSarValue) && lastCloseMid.isGreaterThan(lastSarValue)){
-            return toSellEntrySignal();
+            return toSellEntrySignal(timeSeries.getEntryForTime(time));
         } else if (currentCloseMid.isGreaterThan(currentSarValue) && lastCloseMid.isLessThan(lastSarValue)) {
-            return toBuyEntrySignal();
+            return toBuyEntrySignal(timeSeries.getEntryForTime(time));
         }
 
         return Optional.empty();
@@ -110,14 +109,13 @@ public class ParabolicSarStrategy extends BaseStrategy{
     }
 
 
-
-    private Optional<EntrySignal> toBuyEntrySignal() {
+    private Optional<EntrySignal> toBuyEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.add(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(new LevelEntrySignal(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT));
+        return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice));
     }
 
-    private Optional<EntrySignal> toSellEntrySignal() {
+    private Optional<EntrySignal> toSellEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.subtract(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(new LevelEntrySignal(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT));
+        return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice));
     }
 }

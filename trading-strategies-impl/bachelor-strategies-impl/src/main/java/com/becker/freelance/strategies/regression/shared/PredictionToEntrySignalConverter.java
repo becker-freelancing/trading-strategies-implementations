@@ -1,10 +1,10 @@
 package com.becker.freelance.strategies.regression.shared;
 
 import com.becker.freelance.commons.pair.Pair;
+import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.commons.signal.Direction;
 import com.becker.freelance.commons.signal.EntrySignal;
-import com.becker.freelance.commons.signal.EuroDistanceEntrySignal;
+import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 
@@ -18,6 +18,7 @@ public class PredictionToEntrySignalConverter {
     private final Decimal size;
     private final PositionType positionType;
     private final Decimal trailingStepSize;
+    private final EntrySignalFactory entrySignalFactory;
 
     public PredictionToEntrySignalConverter(Decimal stopInEuro, Decimal limitInEuro, Decimal size, PositionType positionType, Decimal trailingStepSizeInEuro) {
         this.stopInEuro = stopInEuro;
@@ -25,6 +26,7 @@ public class PredictionToEntrySignalConverter {
         this.size = size;
         this.positionType = positionType;
         this.trailingStepSize = trailingStepSizeInEuro;
+        this.entrySignalFactory = new EntrySignalFactory();
     }
 
     public PredictionToEntrySignalConverter(Decimal stopInEuro, Decimal limitInEuro, Decimal size) {
@@ -60,45 +62,45 @@ public class PredictionToEntrySignalConverter {
             }
         }
 
-        return toEntrySignal(sellLimitIdx, sellStopIdx, buyLimitIdx, buyStopIdx);
+        return toEntrySignal(sellLimitIdx, sellStopIdx, buyLimitIdx, buyStopIdx, currentPrice);
     }
 
-    private Optional<EntrySignal> toEntrySignal(int sellLimitIdx, int sellStopIdx, int buyLimitIdx, int buyStopIdx) {
+    private Optional<EntrySignal> toEntrySignal(int sellLimitIdx, int sellStopIdx, int buyLimitIdx, int buyStopIdx, TimeSeriesEntry currentPrice) {
         Optional<EntrySignal> entrySignal = Optional.empty();
 
         if (buyLimitIdx < sellLimitIdx && buyLimitIdx >= 0) {
-            entrySignal = toBuyEntrySignal(buyLimitIdx, buyStopIdx);
+            entrySignal = toBuyEntrySignal(buyLimitIdx, buyStopIdx, currentPrice);
         }
 
         if (sellLimitIdx >= 0 && entrySignal.isEmpty()) {
-            entrySignal = toSellEntrySignal(sellLimitIdx, sellStopIdx);
+            entrySignal = toSellEntrySignal(sellLimitIdx, sellStopIdx, currentPrice);
         }
 
         return entrySignal;
     }
 
-    protected Optional<EntrySignal> toSellEntrySignal(int sellLimitIdx, int sellStopIdx) {
+    protected Optional<EntrySignal> toSellEntrySignal(int sellLimitIdx, int sellStopIdx, TimeSeriesEntry currentPrice) {
         if (sellStopIdx <= sellLimitIdx) {
             return Optional.empty();
         }
         return switch (positionType) {
             case HARD_LIMIT ->
-                    Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuro, limitInEuro, PositionType.HARD_LIMIT));
+                    Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuro, limitInEuro, PositionType.HARD_LIMIT, currentPrice));
             case TRAILING ->
-                    Optional.of(new EuroDistanceEntrySignal(size, Direction.SELL, stopInEuro, limitInEuro, PositionType.TRAILING, trailingStepSize));
+                    Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuro, limitInEuro, PositionType.TRAILING, currentPrice));
         };
     }
 
-    private Optional<EntrySignal> toBuyEntrySignal(int buyLimitIdx, int buyStopIdx) {
+    private Optional<EntrySignal> toBuyEntrySignal(int buyLimitIdx, int buyStopIdx, TimeSeriesEntry currentPrice) {
         if (buyStopIdx <= buyLimitIdx) {
             return Optional.empty();
         }
 
         return switch (positionType) {
             case HARD_LIMIT ->
-                    Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuro, limitInEuro, PositionType.HARD_LIMIT));
+                    Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuro, limitInEuro, PositionType.HARD_LIMIT, currentPrice));
             case TRAILING ->
-                    Optional.of(new EuroDistanceEntrySignal(size, Direction.BUY, stopInEuro, limitInEuro, PositionType.TRAILING, trailingStepSize));
+                    Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuro, limitInEuro, PositionType.TRAILING, currentPrice));
         };
     }
 }
