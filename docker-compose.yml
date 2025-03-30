@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  remote-backtest-app:
+    image: remote-backtest-app:1.0-SNAPSHOT
+    build:
+      context: .
+    env_file:
+      - .env
