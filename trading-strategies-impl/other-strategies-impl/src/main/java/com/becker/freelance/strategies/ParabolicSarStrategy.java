@@ -99,10 +99,10 @@ public class ParabolicSarStrategy extends BaseStrategy{
 
         if(currentCloseMid.isLessThan(currentSarValue) && lastCloseMid.isGreaterThan(lastSarValue)){
             //Alle Buy schließen
-            return Optional.of(new ExitSignal(Decimal.DOUBLE_MAX, Direction.BUY));
+            return Optional.of(new ExitSignal(Direction.BUY));
         } else if (currentCloseMid.isGreaterThan(currentSarValue) && lastCloseMid.isLessThan(lastSarValue)) {
             //Alle Sell schließen
-            return Optional.of(new ExitSignal(Decimal.DOUBLE_MAX, Direction.SELL));
+            return Optional.of(new ExitSignal(Direction.SELL));
         }
 
         return Optional.empty();

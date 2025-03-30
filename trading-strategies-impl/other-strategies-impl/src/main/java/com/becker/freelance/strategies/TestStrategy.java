@@ -32,12 +32,12 @@ public class TestStrategy extends BaseStrategy {
     @Override
     public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
         Random rand = new Random();
-        if (rand.nextDouble() > 0.2) {
+        if (rand.nextDouble() < 0) {
             return Optional.empty();
         }
         Direction direction = rand.nextDouble() > 0.5 ? Direction.BUY : Direction.SELL;
         return Optional.of(entrySignalFactory.fromAmount(
-                Decimal.ONE, direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)
+                new Decimal(0.01), direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)
         ));
     }
 

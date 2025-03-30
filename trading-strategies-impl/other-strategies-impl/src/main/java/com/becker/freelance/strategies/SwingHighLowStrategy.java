@@ -76,9 +76,9 @@ public class SwingHighLowStrategy extends BaseStrategy {
         }
 
         if (lastSwingHighOrNull.index() == index - 1) {
-            return Optional.of(new ExitSignal(Decimal.DOUBLE_MAX, Direction.BUY));
+            return Optional.of(new ExitSignal(Direction.BUY));
         } else if (lastSwingLowOrNull.index() == index - 1) {
-            return Optional.of(new ExitSignal(Decimal.DOUBLE_MAX, Direction.SELL));
+            return Optional.of(new ExitSignal(Direction.SELL));
         }
 
         return Optional.empty();

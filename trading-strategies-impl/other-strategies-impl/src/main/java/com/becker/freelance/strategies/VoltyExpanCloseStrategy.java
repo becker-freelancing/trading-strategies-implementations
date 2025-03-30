@@ -62,7 +62,7 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
         updateData(timeSeries, time);
 
         if (direction != null) {
-            return Optional.of(new ExitSignal(Decimal.DOUBLE_MAX, direction.negate()));
+            return Optional.of(new ExitSignal(direction.negate()));
         }
 
         return Optional.empty();
