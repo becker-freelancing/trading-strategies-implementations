@@ -1,0 +1,1 @@
+docker build -t local-backtest-app:1.0-SNAPSHOT .
