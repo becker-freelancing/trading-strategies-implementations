@@ -30,7 +30,7 @@ public class ChartPatternStrategy extends BaseStrategy {
     private EntrySignalFactory entrySignalFactory;
     public ChartPatternStrategy() {
         super("chart_pattern", new PermutableStrategyParameter(
-                new StrategyParameter("size", 1),
+                new StrategyParameter("size", 0.02, 0.02, 0.02, 0.02),
                 new StrategyParameter("stop", 20, 10, 100, 15),
                 new StrategyParameter("limit", 10, 10, 100, 15),
                 new StrategyParameter("bw_bull", 0.1, 0.1, 3., 0.5),
@@ -72,7 +72,7 @@ public class ChartPatternStrategy extends BaseStrategy {
         Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
         barSeries.addBar(currentPrice);
         int index = barSeries.getBarCount() - 1;
-        boolean bullish = bullishIndicator.stream().anyMatch(ind -> ind.getValue(index));
+        boolean bullish = bullishIndicator.stream().anyMatch(ind -> ind.getValue(index)) || true;
         if (bullish) {
             return Optional.of(
                     entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
