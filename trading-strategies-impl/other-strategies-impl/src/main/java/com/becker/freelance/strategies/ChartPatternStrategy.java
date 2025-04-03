@@ -72,7 +72,7 @@ public class ChartPatternStrategy extends BaseStrategy {
         Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
         barSeries.addBar(currentPrice);
         int index = barSeries.getBarCount() - 1;
-        boolean bullish = bullishIndicator.stream().anyMatch(ind -> ind.getValue(index)) || true;
+        boolean bullish = bullishIndicator.stream().anyMatch(ind -> ind.getValue(index));
         if (bullish) {
             return Optional.of(
                     entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
