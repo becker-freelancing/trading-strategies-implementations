@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   remote-backtest-app:
     image: remote-backtest-app:1.0-SNAPSHOT
@@ -7,3 +5,12 @@ services:
       context: .
     env_file:
       - .env
+    environment:
+      - JAVA_OPTS=-Dhttp.proxyHost=proxy-server -Dhttp.proxyPort=8080  # Optional, wenn ein Proxy verwendet wird
+    ports:
+      - "8080:8080"  # Beispiel, falls du eine Portweiterleitung brauchst
+    network_mode: host
+
+networks:
+  default:
+    driver: bridge
