@@ -20,6 +20,7 @@
         <module>data-request</module>
         <module>local-backtest-app</module>
         <module>remote-backtest-app</module>
+        <module>bybit-export-app</module>
     </modules>
 
     <dependencies>

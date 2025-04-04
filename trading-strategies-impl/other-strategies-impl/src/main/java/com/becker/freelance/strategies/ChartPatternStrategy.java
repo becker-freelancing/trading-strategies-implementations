@@ -30,7 +30,7 @@ public class ChartPatternStrategy extends BaseStrategy {
     private EntrySignalFactory entrySignalFactory;
     public ChartPatternStrategy() {
         super("chart_pattern", new PermutableStrategyParameter(
-                new StrategyParameter("size", 0.02, 0.02, 0.02, 0.02),
+                new StrategyParameter("size", 1, 0.02, 0.02, 0.02),
                 new StrategyParameter("stop", 20, 10, 100, 15),
                 new StrategyParameter("limit", 10, 10, 100, 15),
                 new StrategyParameter("bw_bull", 0.1, 0.1, 3., 0.5),
