@@ -13,7 +13,7 @@ public class ExportTradeHistory {
 
     public static void main(String[] args) {
 
-        long exportStart = LocalDateTime.parse("2025-01-01T00:00:00").toEpochSecond(ZoneId.systemDefault().getRules().getOffset(LocalDateTime.now()));
+        long exportStart = LocalDateTime.parse("2025-04-04T07:50:00").toEpochSecond(ZoneId.systemDefault().getRules().getOffset(LocalDateTime.now()));
         long exportEnd = LocalDateTime.parse("2025-05-01T00:00:00").toEpochSecond(ZoneId.systemDefault().getRules().getOffset(LocalDateTime.now()));
 
 
