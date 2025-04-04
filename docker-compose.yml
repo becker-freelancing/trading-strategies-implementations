@@ -7,9 +7,9 @@ services:
       - .env
     environment:
       - JAVA_OPTS=-Dhttp.proxyHost=proxy-server -Dhttp.proxyPort=8080  # Optional, wenn ein Proxy verwendet wird
-    ports:
-      - "8080:8080"  # Beispiel, falls du eine Portweiterleitung brauchst
     network_mode: host
+    volumes:
+      - /srv/docker/remote-backtest/logs:/app/logs
 
 networks:
   default:
