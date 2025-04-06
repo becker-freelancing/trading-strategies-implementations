@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>com.becker-freelance.trading</groupId>
-            <artifactId>datasource-bybit</artifactId>
+            <artifactId>datasource-remote-bybit</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
