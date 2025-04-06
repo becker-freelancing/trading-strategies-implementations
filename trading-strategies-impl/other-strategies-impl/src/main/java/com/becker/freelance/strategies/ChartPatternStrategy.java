@@ -7,6 +7,8 @@ import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -21,6 +23,8 @@ import java.util.Optional;
 
 public class ChartPatternStrategy extends BaseStrategy {
 
+    private static final Logger logger = LoggerFactory.getLogger(ChartPatternStrategy.class);
+
     private Decimal size;
     private Decimal stop;
     private Decimal limit;
@@ -28,6 +32,7 @@ public class ChartPatternStrategy extends BaseStrategy {
     private List<Indicator<Boolean>> bullishIndicator;
     private List<Indicator<Boolean>> bearischIndicator;
     private EntrySignalFactory entrySignalFactory;
+
     public ChartPatternStrategy() {
         super("chart_pattern", new PermutableStrategyParameter(
                 new StrategyParameter("size", 1, 0.02, 0.02, 0.02),
@@ -52,17 +57,17 @@ public class ChartPatternStrategy extends BaseStrategy {
         bullishIndicator = List.of(
                 new BullishEngulfingIndicator(barSeries),
                 new BullishHaramiIndicator(barSeries),
-                new InvertedHammerIndicator(barSeries, parameters.get("bw_bull").doubleValue(), parameters.get("buw_bull").doubleValue()),
+                new InvertedHammerIndicator(barSeries),
                 new HammerIndicator(barSeries),
-                new ThreeWhiteSoldiersIndicator(barSeries, parameters.get("bc_bull").intValue(), DecimalNum.valueOf(parameters.get("fac_bull").doubleValue()))
+                new ThreeWhiteSoldiersIndicator(barSeries, 5, DecimalNum.valueOf(0.2))
         );
 
         bearischIndicator = List.of(
                 new BearishEngulfingIndicator(barSeries),
                 new BearishHaramiIndicator(barSeries),
-                new ThreeBlackCrowsIndicator(barSeries, parameters.get("bw_bull").intValue(), parameters.get("buw_bull").doubleValue()),
+                new ThreeBlackCrowsIndicator(barSeries, 5, 0.2),
                 new HangingManIndicator(barSeries),
-                new ShootingStarIndicator(barSeries, parameters.get("bc_bull").doubleValue(), parameters.get("fac_bull").doubleValue())
+                new ShootingStarIndicator(barSeries)
         );
         entrySignalFactory = new EntrySignalFactory();
     }
@@ -72,17 +77,22 @@ public class ChartPatternStrategy extends BaseStrategy {
         Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
         barSeries.addBar(currentPrice);
         int index = barSeries.getBarCount() - 1;
-        boolean bullish = bullishIndicator.stream().anyMatch(ind -> ind.getValue(index));
-        if (bullish) {
-            return Optional.of(
-                    entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
-            );
+        for (Indicator<Boolean> bullish : bullishIndicator) {
+            if (bullish.getValue(index)) {
+                logger.info("Try to open buy position on {} bullish indicator {} is true", timeSeries.getPair().technicalName(), bullish.getClass().getName());
+                return Optional.of(
+                        entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
+                );
+            }
         }
-        boolean bearish = bearischIndicator.stream().anyMatch(ind -> ind.getValue(index));
-        if (bearish) {
-            return Optional.of(
-                    entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
-            );
+
+        for (Indicator<Boolean> baerish : bearischIndicator) {
+            if (baerish.getValue(index)) {
+                logger.info("Try to open sell position on {} baerish indicator {} is true", timeSeries.getPair().technicalName(), baerish.getClass().getName());
+                return Optional.of(
+                        entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
+                );
+            }
         }
 
         return Optional.empty();
