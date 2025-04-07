@@ -5,9 +5,10 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
-import com.becker.freelance.indicators.ta.supportresistence.SwingHighIndicator;
-import com.becker.freelance.indicators.ta.supportresistence.SwingLowIndicator;
-import com.becker.freelance.indicators.ta.supportresistence.SwingPoint;
+import com.becker.freelance.indicators.ta.swing.SwingHighIndicator;
+import com.becker.freelance.indicators.ta.swing.SwingHighPoint;
+import com.becker.freelance.indicators.ta.swing.SwingLowIndicator;
+import com.becker.freelance.indicators.ta.swing.SwingLowPoint;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
@@ -24,10 +25,10 @@ public class SwingHighLowStrategy extends BaseStrategy {
 
 
     private BarSeries barSeries;
-    private Indicator<Optional<SwingPoint>> swingHighIndicator;
-    private Indicator<Optional<SwingPoint>> swingLowIndicator;
-    private SwingPoint lastSwingHighOrNull;
-    private SwingPoint lastSwingLowOrNull;
+    private Indicator<Optional<SwingHighPoint>> swingHighIndicator;
+    private Indicator<Optional<SwingLowPoint>> swingLowIndicator;
+    private SwingHighPoint lastSwingHighOrNull;
+    private SwingLowPoint lastSwingLowOrNull;
     private int index;
     public SwingHighLowStrategy() {
         super("swing_high_low", new PermutableStrategyParameter(List.of(
@@ -42,8 +43,8 @@ public class SwingHighLowStrategy extends BaseStrategy {
         barSeries = new BaseBarSeries();
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
         int swingPeriod = parameters.get("swing_period").intValue();
-        swingHighIndicator = new SwingHighIndicator(closePriceIndicator, swingPeriod);
-        swingLowIndicator = new SwingLowIndicator(closePriceIndicator, swingPeriod);
+        swingHighIndicator = new SwingHighIndicator(swingPeriod, closePriceIndicator);
+        swingLowIndicator = new SwingLowIndicator(swingPeriod, closePriceIndicator);
     }
 
     @Override
@@ -89,8 +90,8 @@ public class SwingHighLowStrategy extends BaseStrategy {
         barSeries.addBar(currentPrice);
         index = barSeries.getBarCount() - 1;
 
-        Optional<SwingPoint> optionalSwingLowPoint = swingLowIndicator.getValue(index);
-        Optional<SwingPoint> optionalSwingHighPoint = swingHighIndicator.getValue(index);
+        Optional<SwingLowPoint> optionalSwingLowPoint = swingLowIndicator.getValue(index);
+        Optional<SwingHighPoint> optionalSwingHighPoint = swingHighIndicator.getValue(index);
 
         lastSwingHighOrNull = optionalSwingHighPoint.orElse(null);
         lastSwingLowOrNull = optionalSwingLowPoint.orElse(null);

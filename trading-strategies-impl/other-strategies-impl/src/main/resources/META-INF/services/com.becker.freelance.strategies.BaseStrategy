@@ -13,3 +13,4 @@ com.becker.freelance.strategies.VoltyExpanCloseStrategy
 com.becker.freelance.strategies.FreqStrategy
 com.becker.freelance.strategies.ChartPatternStrategy
 com.becker.freelance.strategies.SwingHighLowTest
+com.becker.freelance.strategies.SupportResistenceTest
