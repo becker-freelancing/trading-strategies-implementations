@@ -12,6 +12,8 @@ import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.indicators.helpers.HighPriceIndicator;
+import org.ta4j.core.indicators.helpers.LowPriceIndicator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,8 +38,10 @@ public class SwingHighLowTest extends BaseStrategy {
         barSeries = new BaseBarSeries();
         period = 300;
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
-        swingHighIndicator = new SwingHighIndicator(period, closePriceIndicator);
-        swingHighLowIndicator = new SwingLowIndicator(period, closePriceIndicator);
+        HighPriceIndicator highPriceIndicator = new HighPriceIndicator(barSeries);
+        LowPriceIndicator lowPriceIndicator = new LowPriceIndicator(barSeries);
+        swingHighIndicator = new SwingHighIndicator(period, highPriceIndicator);
+        swingHighLowIndicator = new SwingLowIndicator(period, lowPriceIndicator);
     }
 
     @Override

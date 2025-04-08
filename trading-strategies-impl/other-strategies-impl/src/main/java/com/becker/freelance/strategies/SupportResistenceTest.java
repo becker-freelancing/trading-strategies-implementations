@@ -4,11 +4,14 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.indicators.ta.supportresistence.*;
+import com.becker.freelance.indicators.ta.swing.SwingPoint;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.indicators.helpers.HighPriceIndicator;
+import org.ta4j.core.indicators.helpers.LowPriceIndicator;
 import org.ta4j.core.num.DecimalNum;
 
 import java.time.LocalDateTime;
@@ -35,10 +38,11 @@ public class SupportResistenceTest extends BaseStrategy {
         super(parameters);
 
         barSeries = new BaseBarSeries();
-        period = 100;
+        period = 3;
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
-        supportIndicator = new SupportIndicator(DecimalNum.valueOf(0.01), period, closePriceIndicator);
-        resistenceIndicator = new ResistenceIndicator(DecimalNum.valueOf(0.01), period, closePriceIndicator);
+        DecimalNum rangePrecision = DecimalNum.valueOf(0.001);
+        supportIndicator = new SupportIndicator(rangePrecision, period, new LowPriceIndicator(barSeries));
+        resistenceIndicator = new ResistenceIndicator(rangePrecision, period, new HighPriceIndicator(barSeries));
     }
 
     @Override
@@ -52,7 +56,8 @@ public class SupportResistenceTest extends BaseStrategy {
         barSeries.addBar(currentPrice);
         int barCount = barSeries.getBarCount();
 
-        if (barCount < 8000) {
+
+        if (barCount < 10080) {
             return Optional.empty();
         }
 
@@ -70,10 +75,10 @@ public class SupportResistenceTest extends BaseStrategy {
     private void print(BarSeries barSeries, Zone<?> support) {
         System.out.println(support);
         support.hits().stream()
-                .map(hit -> barSeries.getBar(hit.index()))
-                .sorted(Comparator.comparing(Bar::getBeginTime))
+                .sorted(Comparator.comparing(SwingPoint::index).reversed())
+                .map(hit -> Map.entry(hit, barSeries.getBar(hit.index())))
                 .forEach(bar -> {
-                    System.out.println("\t\t" + bar.getBeginTime() + " - " + bar.getClosePrice());
+                    System.out.println("\t\t" + bar.getValue().getBeginTime() + " - " + bar.getValue().getClosePrice() + " - " + bar.getKey().index());
                 });
     }
 
