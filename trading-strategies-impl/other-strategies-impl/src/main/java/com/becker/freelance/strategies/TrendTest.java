@@ -5,7 +5,8 @@ import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.indicators.ta.supportresistence.Zone;
 import com.becker.freelance.indicators.ta.swing.SwingPoint;
-import com.becker.freelance.indicators.ta.trend.Trend;
+import com.becker.freelance.indicators.ta.trend.TrendChanel;
+import com.becker.freelance.indicators.ta.trend.TrendChanelIndicator;
 import com.becker.freelance.indicators.ta.trend.TrendIndicator;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
@@ -24,7 +25,7 @@ import java.util.Optional;
 public class TrendTest extends BaseStrategy {
 
     private BarSeries barSeries;
-    private TrendIndicator upTrendIndicator;
+    private TrendChanelIndicator upTrendIndicator;
     private DownTrendIndicator downTrendIndicator;
     private int period;
 
@@ -42,7 +43,8 @@ public class TrendTest extends BaseStrategy {
         period = 10;
         int numForValidation = 3;
         Num errorRange = DecimalNum.valueOf(0.001);
-        upTrendIndicator = new TrendIndicator(barSeries, period, numForValidation, errorRange);
+        TrendIndicator trendIndicator = new TrendIndicator(barSeries, period, numForValidation, errorRange);
+        upTrendIndicator = new TrendChanelIndicator(trendIndicator);
     }
 
     @Override
@@ -56,9 +58,13 @@ public class TrendTest extends BaseStrategy {
         barSeries.addBar(currentPrice);
         int barCount = barSeries.getBarCount();
 
-        Trend up = upTrendIndicator.getValue(barCount - 1);
+        Optional<TrendChanel> value = upTrendIndicator.getValue(barCount - 1);
 
-        System.out.println(currentPrice.getBeginTime() + " - " + currentPrice.getClosePrice() + " - Direction: " + up.direction());
+        value.ifPresent(chanel -> {
+            System.out.println(chanel);
+        });
+
+//        System.out.println(currentPrice.getBeginTime() + " - " + currentPrice.getClosePrice() + " - Direction: " + up.direction());
         return Optional.empty();
     }
 
