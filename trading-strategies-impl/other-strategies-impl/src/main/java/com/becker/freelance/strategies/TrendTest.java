@@ -1,0 +1,82 @@
+package com.becker.freelance.strategies;
+
+import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.ExitSignal;
+import com.becker.freelance.commons.timeseries.TimeSeries;
+import com.becker.freelance.indicators.ta.supportresistence.Zone;
+import com.becker.freelance.indicators.ta.swing.SwingPoint;
+import com.becker.freelance.indicators.ta.trend.Trend;
+import com.becker.freelance.indicators.ta.trend.TrendIndicator;
+import com.becker.freelance.math.Decimal;
+import org.ta4j.core.Bar;
+import org.ta4j.core.BarSeries;
+import org.ta4j.core.BaseBarSeries;
+import org.ta4j.core.indicators.trend.DownTrendIndicator;
+import org.ta4j.core.num.DecimalNum;
+import org.ta4j.core.num.Num;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public class TrendTest extends BaseStrategy {
+
+    private BarSeries barSeries;
+    private TrendIndicator upTrendIndicator;
+    private DownTrendIndicator downTrendIndicator;
+    private int period;
+
+    public TrendTest() {
+        super("trend", new PermutableStrategyParameter(List.of(
+                new StrategyParameter("period", 5, 5, 5, 1)
+        )));
+
+    }
+
+    public TrendTest(Map<String, Decimal> parameters) {
+        super(parameters);
+
+        barSeries = new BaseBarSeries();
+        period = 10;
+        int numForValidation = 3;
+        Num errorRange = DecimalNum.valueOf(0.001);
+        upTrendIndicator = new TrendIndicator(barSeries, period, numForValidation, errorRange);
+    }
+
+    @Override
+    public BaseStrategy forParameters(Map<String, Decimal> parameters) {
+        return new TrendTest(parameters);
+    }
+
+    @Override
+    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+        Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
+        barSeries.addBar(currentPrice);
+        int barCount = barSeries.getBarCount();
+
+        Trend up = upTrendIndicator.getValue(barCount - 1);
+
+        System.out.println(currentPrice.getBeginTime() + " - " + currentPrice.getClosePrice() + " - Direction: " + up.direction());
+        return Optional.empty();
+    }
+
+    private void print(BarSeries barSeries, Zone<?> support) {
+        System.out.println(support);
+        support.hits().stream()
+                .sorted(Comparator.comparing(SwingPoint::index).reversed())
+                .map(hit -> Map.entry(hit, barSeries.getBar(hit.index())))
+                .forEach(bar -> {
+                    System.out.println("\t\t" + bar.getValue().getBeginTime() + " - " + bar.getValue().getClosePrice() + " - " + bar.getKey().index());
+                });
+    }
+
+    @Override
+    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+        return Optional.empty();
+    }
+
+    private record LastTwoMaResults(Double last, Double current) {
+    }
+}
