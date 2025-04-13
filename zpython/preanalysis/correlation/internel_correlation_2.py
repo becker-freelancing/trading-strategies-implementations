@@ -11,7 +11,7 @@ window_size = 50  # Länge des Ausschnitts
 lag = 1  # Wie viele Schritte rückwärts betrachtet werden
 
 # Gleitende Autokorrelation berechnen
-df['Rolling_Autocorr'] = df['Zeitreihe'].rolling(window=window_size).corr(df['Zeitreihe'].shift(lag))
+df['Rolling_Autocorr'] = df['Zeitreihe'].rolling(window=window_size).corr_sub(df['Zeitreihe'].shift(lag))
 
 print(df[['Zeitreihe', 'Rolling_Autocorr']])
 
