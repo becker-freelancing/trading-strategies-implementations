@@ -5,8 +5,8 @@ import pandas as pd
 from keras.api.callbacks import Callback
 from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
     MeanSquaredLogarithmicError, LogCoshError, R2Score
-from zpython.training.base_training import BaseTraining
 
+from zpython.models.training.base_training import BaseTraining
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 

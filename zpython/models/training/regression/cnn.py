@@ -7,8 +7,8 @@ from keras.api.optimizers import Adam
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import MinMaxScaler
 from zpython.training.regression.data_preparation import read_data
-from zpython.training.regression.regression_base_training import RegressionBaseTraining
 
+from zpython.models.training.regression.regression_base_training import RegressionBaseTraining
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 

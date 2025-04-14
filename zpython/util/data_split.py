@@ -3,12 +3,19 @@ import pandas as pd
 from zpython.util.path_util import from_relative_path
 
 
+class DataCache:
+    cache = None
+
 def read_data():
     path = from_relative_path("data-bybit\\ETHUSDT_1.csv")
 
-    df = pd.read_csv(path)
-    df["closeTime"] = pd.to_datetime(df["closeTime"], format="%Y-%m-%d %H:%M:%S")
-    return df
+    if DataCache.cache is None:
+        df = pd.read_csv(path)
+        df["closeTime"] = pd.to_datetime(df["closeTime"], format="%Y-%m-%d %H:%M:%S")
+        df = df.sort_values("closeTime")
+        DataCache.cache = df
+
+    return DataCache.cache
 
 
 def train_data():
