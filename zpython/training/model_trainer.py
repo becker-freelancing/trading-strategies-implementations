@@ -1,9 +1,10 @@
-import multiprocessing
+
 import os
 import shutil
+import threading
 from abc import abstractmethod
 from math import ceil
-from multiprocessing import Lock
+from threading import Lock
 
 import joblib
 import numpy as np
@@ -55,7 +56,23 @@ def clean_directory(path):
         elif os.path.isdir(item_path):
             shutil.rmtree(item_path)
 
-d
+
+def run_study_for_model(model_class, model_name, study_name, storage_url, x_train, y_train, x_val, y_val, metrics_lock,
+                        trials_lock, header_content, trial_params_keys):
+    trainer = model_class()
+    trainer.model_name = model_name
+    trainer.study_name = study_name
+    trainer.study_storage = storage_url
+    trainer.x_train = x_train
+    trainer.y_train = y_train
+    trainer.x_val = x_val
+    trainer.y_val = y_val
+    trainer.study_name = study_name
+    trainer.metrics_lock = metrics_lock
+    trainer.trials_lock = trials_lock
+    trainer.header_content = header_content
+    trainer.trial_params_keys = trial_params_keys
+    trainer._run_study()
 
 class ModelTrainer:
 
@@ -268,7 +285,21 @@ class ModelTrainer:
 
         processes = []
         for _ in range(self._get_optuna_processes()):
-            p = multiprocessing.Process(target=self._run_study)
+            p = threading.Thread(
+                target=run_study_for_model,
+                args=(self.__class__,
+                      self.model_name,
+                      self.study_name,
+                      self.study_storage,
+                      self.x_train,
+                      self.y_train,
+                      self.x_val,
+                      self.y_val,
+                      self.metrics_lock,
+                      self.trials_lock,
+                      self.header_content,
+                      self.trial_params_keys)
+            )
             p.start()
             processes.append(p)
 

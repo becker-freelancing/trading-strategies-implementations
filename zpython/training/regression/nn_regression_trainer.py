@@ -63,8 +63,5 @@ class NNRegressionTrainer(RegressionModelTrainer):
 
 
 if __name__ == "__main__":
-    import multiprocessing
-
-    multiprocessing.freeze_support()
     trainer = NNRegressionTrainer()
     trainer.train_model()

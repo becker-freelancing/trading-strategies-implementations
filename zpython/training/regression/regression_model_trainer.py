@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from multiprocessing import Lock
+from threading import Lock
 
 import numpy as np
 from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
