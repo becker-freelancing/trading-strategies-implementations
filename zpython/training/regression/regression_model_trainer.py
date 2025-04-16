@@ -1,23 +1,32 @@
 from abc import abstractmethod
+from multiprocessing import Lock
 
 import numpy as np
 from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
     MeanSquaredLogarithmicError, LogCoshError, R2Score
 from keras.src.callbacks import Callback
+from optuna import Trial
 
 from zpython.training.model_trainer import ModelTrainer
 
 
-class EpochEndCallback(Callback):
+class SaveMetricCallback(Callback):
 
-    def __init__(self):
+    def __init__(self, trial: Trial, file_name: str, lock: Lock, metric_columns):
         super().__init__()
+        self.trial_id = trial.number
+        self.file_name = file_name
+        self.lock = lock
+        self.metrics = metric_columns
+
 
     def on_epoch_end(self, epoch, logs=None):
-        print(f"Epoch: {epoch}, Logs: {logs}")
-
-    def on_train_end(self, logs=None):
-        print(logs)
+        metrics = ",".join([str(logs[metric_name]) for metric_name in self.metrics])
+        with self.lock:
+            with open(self.file_name, "a") as file:
+                file.write(
+                    f"{self.trial_id},{epoch},{metrics}\n"
+                )
 
 
 class RegressionModelTrainer(ModelTrainer):
@@ -26,15 +35,12 @@ class RegressionModelTrainer(ModelTrainer):
         super().__init__(model_name, scaler_provider)
 
     @abstractmethod
-    def _get_output_length(self):
+    def _get_output_length(self) -> int:
         pass
 
     @abstractmethod
-    def _get_target_column(self):
+    def _get_target_column(self) -> str:
         pass
-
-    def _get_train_data_limit(self):
-        return 2_000
 
     def _get_train_data(self) -> tuple[np.ndarray, np.ndarray]:
         train_data = self._create_unsplited_data(train_data=True)
@@ -82,9 +88,14 @@ class RegressionModelTrainer(ModelTrainer):
         input_data_window = input_data_np[input_window_indices]
         output_data_window = output_data_np[output_window_indices]
         input_data_window = input_data_window[:len(output_data_window)]
-        nan_mask = ~np.isnan(input_data_window).any(axis=(1, 2))
-        input_data_window = input_data_window[nan_mask]
-        output_data_window = output_data_window[nan_mask]
+
+        input_data_nan_mask = ~np.isnan(input_data_window).any(axis=(1, 2))
+        input_data_window = input_data_window[input_data_nan_mask]
+        output_data_window = output_data_window[input_data_nan_mask]
+
+        output_data_nan_mask = ~np.isnan(output_data_window).any(axis=(1, 2))
+        input_data_window = input_data_window[output_data_nan_mask]
+        output_data_window = output_data_window[output_data_nan_mask]
 
         return input_data_window, output_data_window
 
@@ -92,5 +103,5 @@ class RegressionModelTrainer(ModelTrainer):
         return [MeanSquaredError(), RootMeanSquaredError(), MeanAbsoluteError(), MeanAbsolutePercentageError(),
                 MeanSquaredLogarithmicError(), LogCoshError(), R2Score()]
 
-    def _get_custom_epoch_end_callbacks(self) -> list[Callback]:
-        return [EpochEndCallback()]
+    def _get_custom_callbacks(self, trial: Trial, lock: Lock) -> list[Callback]:
+        return [SaveMetricCallback(trial, self._get_metric_file_path(), lock, self._get_metric_columns())]

@@ -22,11 +22,17 @@ class NNRegressionTrainer(RegressionModelTrainer):
     def _get_input_length(self):
         return 13
 
-    def _create_model(self, trial: Trial) -> Model:
+    def _create_model(self, trial: Trial) -> (Model, dict):
         # Hyperparameter von Optuna
         num_layers = trial.suggest_int('num_layers', 1, 3)  # Anzahl der Schichten
         num_units = trial.suggest_int('num_units', 32, 128)  # Anzahl der Neuronen pro Schicht
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)  # Lernrate
+
+        params = {
+            "num_layers": num_layers,
+            "num_units": num_units,
+            "learning_rate": learning_rate
+        }
 
         # Modell erstellen
         model = Sequential()
@@ -41,7 +47,10 @@ class NNRegressionTrainer(RegressionModelTrainer):
         model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error',
                       metrics=self._get_metrics())
 
-        return model
+        return model, params
+
+    def _get_optuna_trial_params(self) -> list[str]:
+        return ["num_layers", "num_units", "learning_rate"]
 
     def _get_max_epochs_to_train(self):
         return 30
@@ -54,5 +63,8 @@ class NNRegressionTrainer(RegressionModelTrainer):
 
 
 if __name__ == "__main__":
+    import multiprocessing
+
+    multiprocessing.freeze_support()
     trainer = NNRegressionTrainer()
     trainer.train_model()

@@ -1,5 +1,11 @@
+import multiprocessing
+import os
+import shutil
 from abc import abstractmethod
+from math import ceil
+from multiprocessing import Lock
 
+import joblib
 import numpy as np
 import optuna
 import pandas as pd
@@ -12,6 +18,7 @@ from optuna.trial import Trial
 
 from zpython.indicators.indicator_creator import create_indicators
 from zpython.util.data_split import validation_data
+from zpython.util.path_util import from_relative_path
 
 
 class ProgbarWithoutMetrics(Callback):
@@ -27,6 +34,29 @@ class ProgbarWithoutMetrics(Callback):
         print(f"===========  END OF EPOCH {epoch}  ===========")
 
 
+class SaveModelCallback(Callback):
+
+    def __init__(self, trial: Trial, file_name_formatter, model_name):
+        super().__init__()
+        self.trial_id = trial.number
+        self.file_name_formatter = file_name_formatter
+        self.model_name = model_name
+
+    def on_epoch_end(self, epoch, logs=None):
+        file_name = self.file_name_formatter(f"trial_{self.trial_id}_epoch_{epoch}_{self.model_name}.keras")
+        self.model.save(file_name)
+
+
+def clean_directory(path):
+    for item in os.listdir(path):
+        item_path = os.path.join(path, item)
+        if os.path.isfile(item_path) or os.path.islink(item_path):
+            os.remove(item_path)
+        elif os.path.isdir(item_path):
+            shutil.rmtree(item_path)
+
+d
+
 class ModelTrainer:
 
     def __init__(self, model_name: str, scaler_provider):
@@ -37,9 +67,15 @@ class ModelTrainer:
         self.y_train = None
         self.x_val = None
         self.y_val = None
+        self.study_storage = None
+        self.study_name = None
+        self.metrics_lock = None
+        self.trials_lock = None
+        self.header_content = None
+        self.trial_params_keys = None
 
     @abstractmethod
-    def _get_input_length(self):
+    def _get_input_length(self) -> int:
         pass
 
     @abstractmethod
@@ -55,7 +91,7 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _get_custom_epoch_end_callbacks(self) -> list[Callback]:
+    def _get_custom_callbacks(self, trial: Trial, lock: Lock) -> list[Callback]:
         pass
 
     @abstractmethod
@@ -63,20 +99,49 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _get_max_epochs_to_train(self):
+    def _get_max_epochs_to_train(self) -> int:
         pass
 
     @abstractmethod
-    def _get_optuna_optimization_metric_name(self):
+    def _get_optuna_optimization_metric_name(self) -> str:
         pass
 
     @abstractmethod
-    def _get_optuna_optimization_metric_direction(self):
+    def _get_optuna_optimization_metric_direction(self) -> str:
         pass
 
     @abstractmethod
-    def _get_train_data_limit(self):
+    def _get_train_data_limit(self) -> int:
         pass
+
+    @abstractmethod
+    def _get_optuna_processes(self) -> int:
+        return 2
+
+    @abstractmethod
+    def _get_optuna_trials(self) -> int:
+        return 40
+
+    @abstractmethod
+    def _get_optuna_trial_params(self) -> list[str]:
+        pass
+
+    def _get_file_path(self, relative_path):
+        dir = from_relative_path("models-bybit/") + self.model_name
+        os.makedirs(dir, exist_ok=True)
+        return dir + "/" + relative_path
+
+    def _get_metric_file_path(self):
+        return self._get_file_path(f"a-metrics_{self.model_name}.csv")
+
+    def _get_trials_file_path(self):
+        return self._get_file_path(f"a-trials_{self.model_name}.csv")
+
+    def _save_scaler(self):
+        scaler = self._get_scaler()
+        path = self._get_file_path(f"a-scaler_{self.model_name}.scaler")
+        joblib.dump(scaler, path)
+
 
     def _limit_data(self, data):
         limit = self._get_train_data_limit()
@@ -84,13 +149,14 @@ class ModelTrainer:
             return data[len(data) - limit:]
         return data
 
-    def _get_epoch_end_callbacks(self):
-        custom_callbacks = self._get_custom_epoch_end_callbacks()
+    def _get_callbacks(self, trial: Trial, lock: Lock):
+        custom_callbacks = self._get_custom_callbacks(trial, lock)
         custom_callbacks.append(
             EarlyStopping(monitor='val_loss',
                           patience=5)
         )
         custom_callbacks.append(ProgbarWithoutMetrics())
+        custom_callbacks.append(SaveModelCallback(trial, self._get_file_path, self.model_name))
         return custom_callbacks
 
     def _get_scaler(self):
@@ -103,18 +169,52 @@ class ModelTrainer:
         if train_data:
             data = create_indicators()
             data = pd.DataFrame(self._get_scaler().fit_transform(data), columns=data.columns, index=data.index)
+            self._save_scaler()
             return data
         else:
             data = create_indicators(validation_data)
             data = pd.DataFrame(self._get_scaler().transform(data), columns=data.columns, index=data.index)
             return data
 
+    def _prepare_metrics_file(self):
+        file_name = self._get_metric_file_path()
+        line_content = self._get_metric_columns()
+        line = ",".join(line_content)
+        with open(file_name, "w") as file:
+            file.write(f"trial,epoch,{line}\n")
+
+    def _get_metric_columns(self):
+        if self.header_content is None:
+            self.header_content = [metric.name for metric in self._get_metrics()]
+            self.header_content.extend([f"val_{metric.name}" for metric in self._get_metrics()])
+        return self.header_content
+
+    def _prepare_environment(self):
+        clean_directory(self._get_file_path(""))
+        self._get_train_validation_data()
+        self._prepare_metrics_file()
+        self._prepare_params_file()
+
+    def _prepare_params_file(self, ):
+        with open(self._get_trials_file_path(), "w") as file:
+            line = ",".join(self._get_optuna_trial_params())
+            file.write(f"trial,{line}\n")
+
+    def _save_trial_params(self, trial_id, params):
+        with self.trials_lock:
+            line = ",".join([str(params[key]) for key in self._get_optuna_trial_params()])
+            line = f"{trial_id},{line}\n"
+            with open(self._get_trials_file_path(), "a") as file:
+                file.write(line)
+
+
+
     def _create_objective(self, optuna_trial: Trial):
         clear_session()
 
         x_train, x_val, y_train, y_val = self._get_train_validation_data()
 
-        model = self._create_model(optuna_trial)
+        model, params = self._create_model(optuna_trial)
 
         print(f"Summary:\n{model.summary()}")
         print(f"X_Train Shape: {x_train.shape}")
@@ -122,13 +222,15 @@ class ModelTrainer:
         print(f"X_Valid Shape: {x_val.shape}")
         print(f"Y_Valid Shape: {y_val.shape}")
 
-        history = model.fit(
+        self._save_trial_params(optuna_trial.number, params)
+
+        model.fit(
             x=x_train,
             y=y_train,
             validation_data=(x_val, y_val),
             epochs=self._get_max_epochs_to_train(),
             batch_size=64,  # TODO: Batch-Size auch mit optuna verwalten -> Hyperparameter
-            callbacks=self._get_epoch_end_callbacks(),
+            callbacks=self._get_callbacks(optuna_trial, self.metrics_lock),
             verbose=0,
             validation_batch_size=64
         )
@@ -141,15 +243,37 @@ class ModelTrainer:
             x_train, y_train = self._get_train_data()
             self.x_train = self._limit_data(x_train)
             self.y_train = self._limit_data(y_train)
-            x_val, y_val = self._get_validation_data()
-            self.x_val = self._limit_data(x_val)  # TODO: Remove
-            self.y_val = self._limit_data(y_val)  # TODO: Remove
+            self.x_val, self.y_val = self._get_validation_data()
         return self.x_train, self.x_val, self.y_train, self.y_val
 
+    def _run_study(self):
+        study = optuna.load_study(
+            study_name=self.study_name,
+            storage=self.study_storage
+        )
+        study.optimize(self._create_objective, n_trials=ceil(self._get_optuna_trials() / self._get_optuna_processes()))
+
+
     def train_model(self):
+        self._prepare_environment()
+
+        self.study_storage = "sqlite:///optuna_sync_db.db"
         study = optuna.create_study(direction=self._get_optuna_optimization_metric_direction(),
-                                    study_name=f"study_{self.model_name}")
-        study.optimize(self._create_objective, n_trials=20)
+                                    storage=self.study_storage,
+                                    load_if_exists=True)
+        self.study_name = study.study_name
+
+        self.metrics_lock = Lock()
+        self.trials_lock = Lock()
+
+        processes = []
+        for _ in range(self._get_optuna_processes()):
+            p = multiprocessing.Process(target=self._run_study)
+            p.start()
+            processes.append(p)
+
+        for p in processes:
+            p.join()
 
         print(study)
         print("Best trial:")
