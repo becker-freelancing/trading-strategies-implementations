@@ -58,7 +58,7 @@ class RegressionModelTrainer(ModelTrainer):
     def _create_input_output_sequences(self, data):
         print("Slicing data in partitions...")
 
-        input_length = self._get_input_length()
+        input_length = self._get_max_input_length()
         output_length = self._get_output_length()
 
         if output_length > input_length:

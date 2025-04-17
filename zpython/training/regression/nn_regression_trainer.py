@@ -19,24 +19,26 @@ class NNRegressionTrainer(RegressionModelTrainer):
     def _get_target_column(self):
         return "logReturn_closeBid_1min"
 
-    def _get_input_length(self):
-        return 13
+    def _get_max_input_length(self) -> int:
+        return 50
 
-    def _create_model(self, trial: Trial) -> (Model, dict):
+    def _create_model(self, trial: Trial) -> (Model, int, dict):
         # Hyperparameter von Optuna
         num_layers = trial.suggest_int('num_layers', 1, 3)  # Anzahl der Schichten
         num_units = trial.suggest_int('num_units', 32, 128)  # Anzahl der Neuronen pro Schicht
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)  # Lernrate
+        input_length = trial.suggest_int('input_length', 5, 50)
 
         params = {
             "num_layers": num_layers,
             "num_units": num_units,
-            "learning_rate": learning_rate
+            "learning_rate": learning_rate,
+            "input_length": input_length
         }
 
         # Modell erstellen
         model = Sequential()
-        model.add(InputLayer(shape=(13, 52)))
+        model.add(InputLayer(shape=(input_length, 52)))
         model.add(Flatten())
         model.add(Dense(num_units, activation='relu'))  # Eingabeschicht
         for _ in range(num_layers - 1):  # Weitere Schichten
@@ -47,7 +49,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
         model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error',
                       metrics=self._get_metrics())
 
-        return model, params
+        return model, input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_layers", "num_units", "learning_rate"]
