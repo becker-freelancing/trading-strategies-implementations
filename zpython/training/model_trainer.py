@@ -1,4 +1,3 @@
-
 import os
 import shutil
 import threading
@@ -10,12 +9,13 @@ import joblib
 import numpy as np
 import optuna
 import pandas as pd
-from keras.api.backend import clear_session
+import torch
 from keras.api.callbacks import Callback
 from keras.api.callbacks import EarlyStopping
 from keras.api.models import Model
 from keras.api.utils import Progbar
 from optuna.trial import Trial
+from torch.utils.data import TensorDataset, DataLoader
 
 from zpython.indicators.indicator_creator import create_indicators
 from zpython.util.data_split import validation_data
@@ -55,6 +55,14 @@ def clean_directory(path):
             os.remove(item_path)
         elif os.path.isdir(item_path):
             shutil.rmtree(item_path)
+
+
+def get_device() -> torch.device:
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def to_tensor(data: np.ndarray):
+    return torch.from_numpy(data).float().to(get_device())
 
 
 def run_study_for_model(model_class, model_name, study_name, storage_url, x_train, y_train, x_val, y_val, metrics_lock,
@@ -112,7 +120,7 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _create_model(self, optuna_trial: Trial) -> Model:
+    def _create_model(self, optuna_trial: Trial) -> (Model, dict):
         pass
 
     @abstractmethod
@@ -133,11 +141,11 @@ class ModelTrainer:
 
     @abstractmethod
     def _get_optuna_processes(self) -> int:
-        return 2
+        return 3
 
     @abstractmethod
     def _get_optuna_trials(self) -> int:
-        return 40
+        return 30
 
     @abstractmethod
     def _get_optuna_trial_params(self) -> list[str]:
@@ -227,7 +235,6 @@ class ModelTrainer:
 
 
     def _create_objective(self, optuna_trial: Trial):
-        clear_session()
 
         x_train, x_val, y_train, y_val = self._get_train_validation_data()
 
@@ -235,11 +242,25 @@ class ModelTrainer:
 
         print(f"Summary:\n{model.summary()}")
         print(f"X_Train Shape: {x_train.shape}")
+        print(f"X_Train Device: {x_train.device}")
         print(f"Y_Train Shape: {y_train.shape}")
+        print(f"Y_Train Device: {y_train.device}")
         print(f"X_Valid Shape: {x_val.shape}")
+        print(f"X_Valid Device: {x_val.device}")
         print(f"Y_Valid Shape: {y_val.shape}")
+        print(f"Y_Valid Device: {y_val.device}")
 
         self._save_trial_params(optuna_trial.number, params)
+
+        model.to(get_device())
+
+        print("Model Device:", next(model.parameters()).device)
+
+        train_dataset = TensorDataset(x_train, y_train)
+        train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+
+        val_dataset = TensorDataset(x_val, y_val)
+        val_loader = DataLoader(val_dataset, batch_size=64)
 
         model.fit(
             x=x_train,
@@ -258,9 +279,12 @@ class ModelTrainer:
     def _get_train_validation_data(self):
         if self.x_train is None:
             x_train, y_train = self._get_train_data()
-            self.x_train = self._limit_data(x_train)
-            self.y_train = self._limit_data(y_train)
-            self.x_val, self.y_val = self._get_validation_data()
+            self.x_train = to_tensor(self._limit_data(x_train))
+            self.y_train = to_tensor(self._limit_data(y_train))
+            x_val, y_val = self._get_validation_data()
+            self.x_val = to_tensor(x_val)
+            self.y_val = to_tensor(y_val)
+
         return self.x_train, self.x_val, self.y_train, self.y_val
 
     def _run_study(self):
