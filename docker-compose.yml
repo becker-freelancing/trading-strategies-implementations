@@ -4,7 +4,7 @@ services:
     build:
       context: .
     env_file:
-      - .env
+      - docker-remote-backtest.env
     environment:
       - JAVA_OPTS=-Dhttp.proxyHost=proxy-server -Dhttp.proxyPort=8080  # Optional, wenn ein Proxy verwendet wird
     network_mode: host

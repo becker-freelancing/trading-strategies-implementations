@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 
 import numpy as np
@@ -6,6 +7,7 @@ from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsolu
     MeanSquaredLogarithmicError, LogCoshError, R2Score
 from keras.src.callbacks import Callback
 from optuna import Trial
+from tqdm import tqdm
 
 from zpython.training.model_trainer import ModelTrainer
 
@@ -56,48 +58,48 @@ class RegressionModelTrainer(ModelTrainer):
         return input_data, output_data
 
     def _create_input_output_sequences(self, data):
-        print("Slicing data in partitions...")
+        print("Creating input- and output-sequences...")
 
         input_length = self._get_max_input_length()
         output_length = self._get_output_length()
 
         if output_length > input_length:
-            raise Exception("Input-Length must be grater than Output-Length")
+            raise Exception("Input-Length must be greater than Output-Length")
 
-        # Zeitstempel und Indexarrays
-        timestamps = data.index.values
-        start_idx = np.arange(len(data))
-        end_times = timestamps + np.timedelta64(input_length, "m")
-        end_idx = np.searchsorted(timestamps, end_times)
+        input_data_np = data.loc[:, data.columns != self._get_target_column()].to_numpy(dtype=np.float32)
+        output_data_np = data.loc[:, self._get_target_column()].to_numpy(dtype=np.float32).reshape(-1, 1)
 
-        # Nur gültige Sequenzen
-        valid = (end_idx - start_idx) == input_length
-        start_idx = start_idx[valid]
+        total_length = len(data)
+        max_start = total_length - input_length - output_length + 1
 
-        # NumPy-Array der Daten
-        input_data_np = data.loc[:, data.columns != self._get_target_column()].to_numpy()
-        output_data_np = data.loc[:, self._get_target_column()].to_numpy().reshape(-1, 1)
+        input_sequences = []
+        output_sequences = []
 
-        # Vektorisiert: Indexmatrix für alle Fenster
-        input_window_offsets = np.arange(input_length)
-        input_window_indices = start_idx[:, None] + input_window_offsets  # shape: (n_windows, total_length)
-        output_window_indices = (input_window_indices + input_length)[:, 0:output_length]
-        output_window_indices = output_window_indices[np.all(output_window_indices < len(output_data_np), axis=1)]
+        def process_window(start_idx):
+            input_end = start_idx + input_length
+            output_end = input_end + output_length
 
-        # Jetzt einfach per fancy indexing das 3D-Array bauen
-        input_data_window = input_data_np[input_window_indices]
-        output_data_window = output_data_np[output_window_indices]
-        input_data_window = input_data_window[:len(output_data_window)]
+            input_window = input_data_np[start_idx:input_end]
+            output_window = output_data_np[input_end:output_end]
 
-        input_data_nan_mask = ~np.isnan(input_data_window).any(axis=(1, 2))
-        input_data_window = input_data_window[input_data_nan_mask]
-        output_data_window = output_data_window[input_data_nan_mask]
+            if not np.isnan(input_window).any() and not np.isnan(output_window).any():
+                return input_window, output_window
+            return None
 
-        output_data_nan_mask = ~np.isnan(output_data_window).any(axis=(1, 2))
-        input_data_window = input_data_window[output_data_nan_mask]
-        output_data_window = output_data_window[output_data_nan_mask]
+        with ThreadPoolExecutor() as executor:
+            futures = list(executor.map(process_window, tqdm(range(max_start), desc="Slicing sequences")))
 
-        return input_data_window, output_data_window
+        # Filtere nur gültige Ergebnisse
+        for result in tqdm(futures, desc="Filtering valid sequences"):
+            if result is not None:
+                x, y = result
+                input_sequences.append(x)
+                output_sequences.append(y)
+
+        input_sequences = np.stack(input_sequences)
+        output_sequences = np.stack(output_sequences)
+
+        return input_sequences, output_sequences
 
     def _get_metrics(self) -> list:
         return [MeanSquaredError(), RootMeanSquaredError(), MeanAbsoluteError(), MeanAbsolutePercentageError(),

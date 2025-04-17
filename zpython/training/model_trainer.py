@@ -17,6 +17,7 @@ from keras.api.utils import Progbar
 from optuna.trial import Trial
 
 from zpython.indicators.indicator_creator import create_indicators
+from zpython.training.optuna_env_provider import get_optuna_storage_url
 from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
 
@@ -238,16 +239,16 @@ class ModelTrainer:
         model, input_length, params = self._create_model(optuna_trial)
 
         x_train, x_val, y_train, y_val = self._get_train_validation_data(input_length)
-
-        print(f"Summary:\n{model.summary()}")
-        print(f"X_Train Shape: {x_train.shape}")
-        print(f"X_Train Device: {x_train.device}")
-        print(f"Y_Train Shape: {y_train.shape}")
-        print(f"Y_Train Device: {y_train.device}")
-        print(f"X_Valid Shape: {x_val.shape}")
-        print(f"X_Valid Device: {x_val.device}")
-        print(f"Y_Valid Shape: {y_val.shape}")
-        print(f"Y_Valid Device: {y_val.device}")
+        with self.trials_lock:
+            print(f"Summary:\n{model.summary()}")
+            print(f"X_Train Shape: {x_train.shape}")
+            print(f"X_Train Device: {x_train.device}")
+            print(f"Y_Train Shape: {y_train.shape}")
+            print(f"Y_Train Device: {y_train.device}")
+            print(f"X_Valid Shape: {x_val.shape}")
+            print(f"X_Valid Device: {x_val.device}")
+            print(f"Y_Valid Shape: {y_val.shape}")
+            print(f"Y_Valid Device: {y_val.device}")
 
         self._save_trial_params(optuna_trial.number, params, x_train.shape, y_train.shape, x_val.shape, y_val.shape)
 
@@ -291,7 +292,7 @@ class ModelTrainer:
     def train_model(self):
         self._prepare_environment()
 
-        self.study_storage = "sqlite:///optuna_sync_db.db"
+        self.study_storage = get_optuna_storage_url()
         study = optuna.create_study(direction=self._get_optuna_optimization_metric_direction(),
                                     storage=self.study_storage,
                                     load_if_exists=True)
