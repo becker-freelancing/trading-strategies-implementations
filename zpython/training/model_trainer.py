@@ -2,6 +2,7 @@ import os
 import shutil
 import threading
 from abc import abstractmethod
+from datetime import datetime
 from math import ceil
 from threading import Lock
 
@@ -281,6 +282,12 @@ class ModelTrainer:
 
         return self.x_train[:, :input_length, :], self.x_val[:, :input_length, :], self.y_train, self.y_val
 
+    def _build_optuna_study_name(self):
+        if self.study_name is None:
+            time = str(datetime.now()).replace(" ", "_").replace(":", "-")[:19]
+            self.study_name = f"{self.model_name}_{time}"
+        return self.study_name
+
     def _run_study(self):
         study = optuna.load_study(
             study_name=self.study_name,
@@ -295,8 +302,8 @@ class ModelTrainer:
         self.study_storage = get_optuna_storage_url()
         study = optuna.create_study(direction=self._get_optuna_optimization_metric_direction(),
                                     storage=self.study_storage,
-                                    load_if_exists=True)
-        self.study_name = study.study_name
+                                    load_if_exists=True,
+                                    study_name=self._build_optuna_study_name())
 
         self.metrics_lock = Lock()
         self.trials_lock = Lock()
