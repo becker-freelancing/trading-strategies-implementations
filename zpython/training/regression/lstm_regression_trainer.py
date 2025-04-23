@@ -48,9 +48,9 @@ class NNRegressionTrainer(RegressionModelTrainer):
 
         for i in range(num_layers - 1):  # Weitere Schichten
             if i == num_layers - 2:
-                model.add(LSTM(num_units, return_sequences=True))
-            else:
                 model.add(LSTM(num_units, return_sequences=False))
+            else:
+                model.add(LSTM(num_units, return_sequences=True))
 
         model.add(Dense(self._get_output_length(), activation='linear'))
 
