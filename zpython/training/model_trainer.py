@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 import threading
 from abc import abstractmethod
 from datetime import datetime
@@ -16,6 +17,7 @@ from keras.api.callbacks import EarlyStopping
 from keras.api.models import Model
 from keras.api.utils import Progbar
 from optuna.trial import Trial
+from torch.utils.data import DataLoader, Dataset
 
 from zpython.indicators.indicator_creator import create_indicators
 from zpython.training.optuna_env_provider import get_optuna_storage_url
@@ -64,6 +66,30 @@ def get_device() -> torch.device:
 
 def to_tensor(data: np.ndarray):
     return torch.from_numpy(data).float().to(get_device())
+
+
+def get_free_gpu_memory():
+    result = subprocess.check_output(
+        ['nvidia-smi', '--query-gpu=memory.free', '--format=csv,nounits,noheader']
+    )
+    return [int(x) for x in result.decode('utf-8').strip().split('\n')][0] * 1.049 * 1E6
+
+
+class NumpyDataSet(Dataset):
+
+    def __init__(self, x, y, device):
+        self.x = torch.from_numpy(x).float()
+        self.y = torch.from_numpy(y).float()
+        self.device = device
+
+    def __len__(self):
+        return len(self.x)
+
+    def __getitem__(self, idx):
+        return self.x[idx, :, :].to(self.device), self.y[idx, :].to(self.device)  # TODO: to Tensor on GPU
+
+
+
 
 
 def run_study_for_model(model_class, model_name, study_name, storage_url, x_train, y_train, x_val, y_val, metrics_lock,
@@ -142,7 +168,7 @@ class ModelTrainer:
 
     @abstractmethod
     def _get_optuna_processes(self) -> int:
-        return 3
+        return 5
 
     @abstractmethod
     def _get_optuna_trials(self) -> int:
@@ -153,7 +179,7 @@ class ModelTrainer:
         pass
 
     def _get_file_path(self, relative_path):
-        dir = from_relative_path("models-bybit/") + self.model_name
+        dir = f"{from_relative_path('models-bybit/')}{self._build_optuna_study_name()}"
         os.makedirs(dir, exist_ok=True)
         return dir + "/" + relative_path
 
@@ -216,7 +242,9 @@ class ModelTrainer:
         return self.header_content
 
     def _prepare_environment(self):
-        clean_directory(self._get_file_path(""))
+        path = self._get_file_path("")
+        print("Working in directory: ", path)
+        clean_directory(path)
         self._get_train_validation_data(self._get_max_input_length())
         self._prepare_metrics_file()
         self._prepare_params_file()
@@ -243,13 +271,9 @@ class ModelTrainer:
         with self.trials_lock:
             print(f"Summary:\n{model.summary()}")
             print(f"X_Train Shape: {x_train.shape}")
-            print(f"X_Train Device: {x_train.device}")
             print(f"Y_Train Shape: {y_train.shape}")
-            print(f"Y_Train Device: {y_train.device}")
             print(f"X_Valid Shape: {x_val.shape}")
-            print(f"X_Valid Device: {x_val.device}")
             print(f"Y_Valid Shape: {y_val.shape}")
-            print(f"Y_Valid Device: {y_val.device}")
 
         self._save_trial_params(optuna_trial.number, params, x_train.shape, y_train.shape, x_val.shape, y_val.shape)
 
@@ -257,15 +281,14 @@ class ModelTrainer:
 
         print("Model Device:", next(model.parameters()).device)
 
+        train_loader = DataLoader(NumpyDataSet(x_train, y_train, get_device()), batch_size=64, shuffle=True)
+        val_loader = DataLoader(NumpyDataSet(x_val, y_val, get_device()), batch_size=64, shuffle=True)
         model.fit(
-            x=x_train,
-            y=y_train,
-            validation_data=(x_val, y_val),
+            x=train_loader,
+            validation_data=val_loader,
             epochs=self._get_max_epochs_to_train(),
-            batch_size=64,  # TODO: Batch-Size auch mit optuna verwalten -> Hyperparameter
             callbacks=self._get_callbacks(optuna_trial, self.metrics_lock),
-            verbose=0,
-            validation_batch_size=64
+            verbose=0
         )
 
         score = model.evaluate(x_val, y_val, verbose=0)
@@ -274,11 +297,11 @@ class ModelTrainer:
     def _get_train_validation_data(self, input_length):
         if self.x_train is None:
             x_train, y_train = self._get_train_data()
-            self.x_train = to_tensor(self._limit_data(x_train))
-            self.y_train = to_tensor(self._limit_data(y_train))
+            self.x_train = self._limit_data(x_train)
+            self.y_train = self._limit_data(y_train)
             x_val, y_val = self._get_validation_data()
-            self.x_val = to_tensor(x_val)
-            self.y_val = to_tensor(y_val)
+            self.x_val = x_val
+            self.y_val = y_val
 
         return self.x_train[:, :input_length, :], self.x_val[:, :input_length, :], self.y_train, self.y_val
 
