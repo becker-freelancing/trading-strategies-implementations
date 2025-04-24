@@ -7,6 +7,7 @@ from datetime import datetime
 from math import ceil
 from threading import Lock
 
+import h5py
 import joblib
 import numpy as np
 import optuna
@@ -75,33 +76,63 @@ def get_free_gpu_memory():
     return [int(x) for x in result.decode('utf-8').strip().split('\n')][0] * 1.049 * 1E6
 
 
-class NumpyDataSet(Dataset):
+class LazyNumpyDataSet(Dataset):
 
-    def __init__(self, x, y, device):
-        self.x = torch.from_numpy(x).float()
-        self.y = torch.from_numpy(y).float()
-        self.device = device
+    def __init__(self, path, input_length, features_name, labels_name, limit, window_size=64):
+        self.file = h5py.File(path, "r")
+        self.features = self.file[features_name]
+        self.labels = self.file[labels_name]
+        self.window_size = window_size
+        self.length = len(self.features) - window_size
+        if limit is not None:
+            self.length = min(self.length, limit)
+        self.input_length = input_length
+        self.device = get_device()
+
+    def feature_shape(self):
+        return self.features.shape
+
+    def label_shape(self):
+        return self.labels.shape
 
     def __len__(self):
-        return len(self.x)
+        return self.length
 
     def __getitem__(self, idx):
-        return self.x[idx, :, :].to(self.device), self.y[idx, :].to(self.device)  # TODO: to Tensor on GPU
+        x = self.features[idx][:self.input_length, :]
+        y = self.labels[idx]
+        return torch.tensor(x, dtype=torch.float32).to(self.device), torch.tensor(y).to(self.device)
+
+    def __del__(self):
+        self.file.close()
 
 
+class LazyTrainNumpyDataSet(LazyNumpyDataSet):
+
+    def __init__(self, path, input_length, limit):
+        super().__init__(path,
+                         input_length,
+                         "train_features",
+                         "train_labels",
+                         limit)
 
 
+class LazyValidationNumpyDataSet(LazyNumpyDataSet):
 
-def run_study_for_model(model_class, model_name, study_name, storage_url, x_train, y_train, x_val, y_val, metrics_lock,
+    def __init__(self, path, input_length):
+        super().__init__(path,
+                         input_length,
+                         "val_features",
+                         "val_labels",
+                         None)
+
+
+def run_study_for_model(model_class, model_name, study_name, storage_url, metrics_lock,
                         trials_lock, header_content, trial_params_keys):
     trainer = model_class()
     trainer.model_name = model_name
     trainer.study_name = study_name
     trainer.study_storage = storage_url
-    trainer.x_train = x_train
-    trainer.y_train = y_train
-    trainer.x_val = x_val
-    trainer.y_val = y_val
     trainer.study_name = study_name
     trainer.metrics_lock = metrics_lock
     trainer.trials_lock = trials_lock
@@ -115,16 +146,14 @@ class ModelTrainer:
         self.model_name = model_name
         self.scaler_provider = scaler_provider
         self.scaler = None
-        self.x_train = None
-        self.y_train = None
-        self.x_val = None
-        self.y_val = None
         self.study_storage = None
         self.study_name = None
         self.metrics_lock = None
         self.trials_lock = None
         self.header_content = None
         self.trial_params_keys = None
+        self.train_data_loader_provider = None
+        self.val_data_loader_provider = None
 
     @abstractmethod
     def _get_max_input_length(self) -> int:
@@ -147,7 +176,7 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _create_model(self, optuna_trial: Trial) -> (Model, int, dict):
+    def _create_model(self, optuna_trial: Trial) -> tuple[Model, int, dict]:
         pass
 
     @abstractmethod
@@ -242,6 +271,7 @@ class ModelTrainer:
         return self.header_content
 
     def _prepare_environment(self):
+        print("Preparing environment...")
         path = self._get_file_path("")
         print("Working in directory: ", path)
         clean_directory(path)
@@ -267,43 +297,72 @@ class ModelTrainer:
 
         model, input_length, params = self._create_model(optuna_trial)
 
-        x_train, x_val, y_train, y_val = self._get_train_validation_data(input_length)
+        train_data_provider, val_data_provider = self._get_train_validation_data(input_length)
+
+        train_feature_shape = train_data_provider.dataset.feature_shape()
+        train_label_shape = train_data_provider.dataset.label_shape()
+        val_feature_shape = val_data_provider.dataset.feature_shape()
+        val_label_shape = val_data_provider.dataset.label_shape()
+
         with self.trials_lock:
             print(f"Summary:\n{model.summary()}")
-            print(f"X_Train Shape: {x_train.shape}")
-            print(f"Y_Train Shape: {y_train.shape}")
-            print(f"X_Valid Shape: {x_val.shape}")
-            print(f"Y_Valid Shape: {y_val.shape}")
+            print(f"X_Train Shape: {train_feature_shape}")
+            print(f"Y_Train Shape: {train_label_shape}")
+            print(f"X_Valid Shape: {val_feature_shape}")
+            print(f"Y_Valid Shape: {val_label_shape}")
 
-        self._save_trial_params(optuna_trial.number, params, x_train.shape, y_train.shape, x_val.shape, y_val.shape)
+        self._save_trial_params(optuna_trial.number, params, train_feature_shape, train_label_shape, val_feature_shape,
+                                val_label_shape)
 
         model.to(get_device())
 
         print("Model Device:", next(model.parameters()).device)
 
-        train_loader = DataLoader(NumpyDataSet(x_train, y_train, get_device()), batch_size=64, shuffle=True)
-        val_loader = DataLoader(NumpyDataSet(x_val, y_val, get_device()), batch_size=64, shuffle=True)
         model.fit(
-            x=train_loader,
-            validation_data=val_loader,
+            x=train_data_provider,
+            validation_data=val_data_provider,
             epochs=self._get_max_epochs_to_train(),
             callbacks=self._get_callbacks(optuna_trial, self.metrics_lock),
             verbose=0
         )
 
-        score = model.evaluate(x_val, y_val, verbose=0)
+        score = model.evaluate(val_data_provider, verbose=0)
         return score[1]
 
-    def _get_train_validation_data(self, input_length):
-        if self.x_train is None:
-            x_train, y_train = self._get_train_data()
-            self.x_train = self._limit_data(x_train)
-            self.y_train = self._limit_data(y_train)
-            x_val, y_val = self._get_validation_data()
-            self.x_val = x_val
-            self.y_val = y_val
+    def _create_train_val_data_numpy(self):  # TODO: Limit Data noch einbauen
+        x_train, y_train = self._get_train_data()
+        x_val, y_val = self._get_validation_data()
+        with h5py.File(self._numpy_data_path(), 'w') as f:
+            f.create_dataset("train_features", data=x_train, compression="gzip")
+            f.create_dataset("train_labels", data=y_train, compression="gzip")
+            f.create_dataset("val_features", data=x_val, compression="gzip")
+            f.create_dataset("val_labels", data=y_val, compression="gzip")
+            f.flush()
 
-        return self.x_train[:, :input_length, :], self.x_val[:, :input_length, :], self.y_train, self.y_val
+    def _create_train_val_data_loader_provider(self, input_length, batch_size=64):
+        print("Creating train and validation data loader...")
+        numpy_data_path = self._numpy_data_path()
+        if not os.path.exists(numpy_data_path):
+            self._create_train_val_data_numpy()
+
+        def train_data_loader():
+            train_data_set = LazyTrainNumpyDataSet(numpy_data_path, input_length, self._get_train_data_limit())
+            return DataLoader(train_data_set, batch_size=batch_size, shuffle=True)
+
+        def val_data_loader():
+            val_data_set = LazyValidationNumpyDataSet(numpy_data_path, input_length)
+            return DataLoader(val_data_set, batch_size=batch_size, shuffle=True)
+
+        self.train_data_loader_provider = train_data_loader
+        self.val_data_loader_provider = val_data_loader
+
+    def _numpy_data_path(self):
+        return from_relative_path("data-bybit\\ETHUSDT_1.h5")
+
+    def _get_train_validation_data(self, input_length):
+        if self.train_data_loader_provider is None:
+            self._create_train_val_data_loader_provider(input_length)
+        return self.train_data_loader_provider(), self.val_data_loader_provider()
 
     def _build_optuna_study_name(self):
         if self.study_name is None:
@@ -339,10 +398,6 @@ class ModelTrainer:
                       self.model_name,
                       self.study_name,
                       self.study_storage,
-                      self.x_train,
-                      self.y_train,
-                      self.x_val,
-                      self.y_val,
                       self.metrics_lock,
                       self.trials_lock,
                       self.header_content,
