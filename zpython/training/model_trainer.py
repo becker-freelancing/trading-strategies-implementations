@@ -1,13 +1,21 @@
+import warnings
+
+# Nur das spezifische FutureWarning von torch.load filtern
+warnings.filterwarnings(
+    "ignore",
+    category=FutureWarning
+)
+
 import os
 import shutil
 import subprocess
 import threading
 from abc import abstractmethod
 from datetime import datetime
-from math import ceil
+from math import ceil, floor
 from threading import Lock
 
-import h5py
+from tqdm import tqdm
 import joblib
 import numpy as np
 import optuna
@@ -24,6 +32,7 @@ from zpython.indicators.indicator_creator import create_indicators
 from zpython.training.optuna_env_provider import get_optuna_storage_url
 from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
+
 
 
 class ProgbarWithoutMetrics(Callback):
@@ -78,53 +87,91 @@ def get_free_gpu_memory():
 
 class LazyNumpyDataSet(Dataset):
 
-    def __init__(self, path, input_length, features_name, labels_name, limit, window_size=64):
-        self.file = h5py.File(path, "r")
-        self.features = self.file[features_name]
-        self.labels = self.file[labels_name]
-        self.window_size = window_size
-        self.length = len(self.features) - window_size
-        if limit is not None:
-            self.length = min(self.length, limit)
+    def __init__(self, path_provider, input_length, limit):
+        self.path_provider = path_provider
         self.input_length = input_length
+        self.current_cache_idx = -1
         self.device = get_device()
+        self.x_cache = None
+        self.y_cache = None
+        self._feature_shape = None
+        self._label_shape = None
+        self.limit = limit
+
 
     def feature_shape(self):
-        return self.features.shape
+        if self._feature_shape is None:
+            i = 0
+            while True:
+                path = self._file_path(i)
+                if not os.path.exists(path):
+                    i -= 1
+                    break
+                i += 1
+            x, y = torch.load(self._file_path(i))
+            last_len = x.shape[0]
+            total_len = (i - 1) * 10000 + last_len
+            self._feature_shape = (total_len, x.shape[1], x.shape[2])
+        return self._feature_shape
+
 
     def label_shape(self):
-        return self.labels.shape
+        if self._label_shape is None:
+            x, y = torch.load(self._file_path(0))
+            self._label_shape = (self.feature_shape()[0], y.shape[1])
+        return self._label_shape
 
     def __len__(self):
-        return self.length
+        if self.limit is None:
+            return self.feature_shape()[0]
+        return min(self.feature_shape()[0], self.limit)
+
+    def _file_path(self, idx):
+        pass
+
+    def _load(self, idx):
+        file_idx = int(floor(idx / 10000))
+        if self.current_cache_idx == file_idx:
+            return
+        self.current_cache_idx = file_idx
+        path = self._file_path(file_idx)
+        x_cache, y_cache = torch.load(path)
+        self.x_cache = torch.tensor(x_cache, dtype=torch.float32).to(self.device)
+        self.y_cache = torch.tensor(y_cache, dtype=torch.float32).to(self.device)
+        perm = torch.randperm(self.x_cache.size(0))
+        self.x_cache = self.x_cache[perm]
+        self.y_cache = self.y_cache[perm]
 
     def __getitem__(self, idx):
-        x = self.features[idx][:self.input_length, :]
-        y = self.labels[idx]
-        return torch.tensor(x, dtype=torch.float32).to(self.device), torch.tensor(y).to(self.device)
+        self._load(idx)
+        tensor_idx = int(idx % 10000)
+        x = self.x_cache[tensor_idx][:self.input_length, :]
+        y = self.y_cache[tensor_idx]
+        return x, y
 
-    def __del__(self):
-        self.file.close()
 
+class LazyTrainTensorDataSet(LazyNumpyDataSet):
 
-class LazyTrainNumpyDataSet(LazyNumpyDataSet):
-
-    def __init__(self, path, input_length, limit):
-        super().__init__(path,
+    def __init__(self, path_provider, input_length, limit):
+        super().__init__(path_provider,
                          input_length,
-                         "train_features",
-                         "train_labels",
                          limit)
 
+    def _file_path(self, idx):
+        path = self.path_provider(idx, train=True)
+        return path
 
-class LazyValidationNumpyDataSet(LazyNumpyDataSet):
 
-    def __init__(self, path, input_length):
-        super().__init__(path,
+class LazyValidationTensorDataSet(LazyNumpyDataSet):
+
+    def __init__(self, path_provider, input_length):
+        super().__init__(path_provider,
                          input_length,
-                         "val_features",
-                         "val_labels",
-                         None)
+                         210111)
+
+    def _file_path(self, idx):
+        path = self.path_provider(idx, train=False)
+        return path
 
 
 def run_study_for_model(model_class, model_name, study_name, storage_url, metrics_lock,
@@ -197,7 +244,7 @@ class ModelTrainer:
 
     @abstractmethod
     def _get_optuna_processes(self) -> int:
-        return 5
+        return 4
 
     @abstractmethod
     def _get_optuna_trials(self) -> int:
@@ -304,19 +351,19 @@ class ModelTrainer:
         val_feature_shape = val_data_provider.dataset.feature_shape()
         val_label_shape = val_data_provider.dataset.label_shape()
 
-        with self.trials_lock:
-            print(f"Summary:\n{model.summary()}")
-            print(f"X_Train Shape: {train_feature_shape}")
-            print(f"Y_Train Shape: {train_label_shape}")
-            print(f"X_Valid Shape: {val_feature_shape}")
-            print(f"Y_Valid Shape: {val_label_shape}")
 
         self._save_trial_params(optuna_trial.number, params, train_feature_shape, train_label_shape, val_feature_shape,
                                 val_label_shape)
 
         model.to(get_device())
 
-        print("Model Device:", next(model.parameters()).device)
+        with self.trials_lock:
+            print(f"Summary:\n{model.summary()}")
+            print(f"X_Train Shape: {train_feature_shape}")
+            print(f"Y_Train Shape: {train_label_shape}")
+            print(f"X_Valid Shape: {val_feature_shape}")
+            print(f"Y_Valid Shape: {val_label_shape}")
+            print("Model Device:", next(model.parameters()).device)
 
         model.fit(
             x=train_data_provider,
@@ -329,35 +376,44 @@ class ModelTrainer:
         score = model.evaluate(val_data_provider, verbose=0)
         return score[1]
 
-    def _create_train_val_data_numpy(self):  # TODO: Limit Data noch einbauen
+    def _create_train_val_data_tensor(self, chunk_size=10000):
         x_train, y_train = self._get_train_data()
         x_val, y_val = self._get_validation_data()
-        with h5py.File(self._numpy_data_path(), 'w') as f:
-            f.create_dataset("train_features", data=x_train, compression="gzip")
-            f.create_dataset("train_labels", data=y_train, compression="gzip")
-            f.create_dataset("val_features", data=x_val, compression="gzip")
-            f.create_dataset("val_labels", data=y_val, compression="gzip")
-            f.flush()
+        i = -1
+        for chunk in tqdm(range(0, len(x_train), chunk_size), "Writing train tensors"):
+            i += 1
+            torch.save((x_train[chunk:chunk + chunk_size], y_train[chunk:chunk + chunk_size]),
+                       self._tensor_data_path(i, True))
+
+        i = -1
+        for chunk in tqdm(range(0, len(x_val), chunk_size), "Writing val tensors"):
+            i += 1
+            torch.save((x_val[chunk:chunk + chunk_size], y_val[chunk:chunk + chunk_size]),
+                       self._tensor_data_path(i, False))
+
 
     def _create_train_val_data_loader_provider(self, input_length, batch_size=64):
         print("Creating train and validation data loader...")
-        numpy_data_path = self._numpy_data_path()
-        if not os.path.exists(numpy_data_path):
-            self._create_train_val_data_numpy()
+        tensor_data_path = self._tensor_data_path(0)
+        if not os.path.exists(tensor_data_path):
+            self._create_train_val_data_tensor()
 
         def train_data_loader():
-            train_data_set = LazyTrainNumpyDataSet(numpy_data_path, input_length, self._get_train_data_limit())
-            return DataLoader(train_data_set, batch_size=batch_size, shuffle=True)
+            train_data_set = LazyTrainTensorDataSet(self._tensor_data_path, input_length, self._get_train_data_limit())
+            return DataLoader(train_data_set, batch_size=batch_size, shuffle=False)
 
         def val_data_loader():
-            val_data_set = LazyValidationNumpyDataSet(numpy_data_path, input_length)
-            return DataLoader(val_data_set, batch_size=batch_size, shuffle=True)
+            val_data_set = LazyValidationTensorDataSet(self._tensor_data_path, input_length)
+            return DataLoader(val_data_set, batch_size=batch_size, shuffle=False)
 
         self.train_data_loader_provider = train_data_loader
         self.val_data_loader_provider = val_data_loader
 
-    def _numpy_data_path(self):
-        return from_relative_path("data-bybit\\ETHUSDT_1.h5")
+    def _tensor_data_path(self, idx, train=True):
+        if train:
+            return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_TRAIN.pt")
+        else:
+            return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_VAL.pt")
 
     def _get_train_validation_data(self, input_length):
         if self.train_data_loader_provider is None:
