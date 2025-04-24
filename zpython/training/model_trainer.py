@@ -420,7 +420,7 @@ class ModelTrainer:
 
     def _get_train_validation_data(self, input_length):
         if self.train_data_loader_provider is None:
-            self._create_train_val_data_loader_provider(input_length)
+            self._create_train_val_data_loader_provider(input_length, batch_size=256)
         return self.train_data_loader_provider(), self.val_data_loader_provider()
 
     def _build_optuna_study_name(self):
