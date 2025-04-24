@@ -244,7 +244,7 @@ class ModelTrainer:
 
     @abstractmethod
     def _get_optuna_processes(self) -> int:
-        return 4
+        return 10
 
     @abstractmethod
     def _get_optuna_trials(self) -> int:

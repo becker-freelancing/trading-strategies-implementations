@@ -7,7 +7,7 @@ class DataCache:
     cache = None
 
 def read_data():
-    path = from_relative_path("data-bybit\\ETHUSDT_1.csv")
+    path = from_relative_path("data-bybit/ETHUSDT_1.csv")
 
     if DataCache.cache is None:
         df = pd.read_csv(path)
