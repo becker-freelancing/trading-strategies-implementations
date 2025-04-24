@@ -32,6 +32,7 @@ from zpython.indicators.indicator_creator import create_indicators
 from zpython.training.optuna_env_provider import get_optuna_storage_url
 from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
+import platform
 
 
 
@@ -244,6 +245,8 @@ class ModelTrainer:
 
     @abstractmethod
     def _get_optuna_processes(self) -> int:
+        if "Win" in platform.system() or "win" in platform.system():
+            return 2
         return 10
 
     @abstractmethod

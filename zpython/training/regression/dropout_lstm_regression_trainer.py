@@ -68,7 +68,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
         return ["num_layers", "num_units", "learning_rate"]
 
     def _get_max_epochs_to_train(self):
-        return 30
+        return 20
 
     def _get_optuna_optimization_metric_name(self):
         return 'val_rmse'
