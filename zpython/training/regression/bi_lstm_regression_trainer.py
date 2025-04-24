@@ -24,7 +24,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
 
     def _create_model(self, trial: Trial) -> (Model, int, dict):
         # Hyperparameter von Optuna
-        num_layers = trial.suggest_int('num_layers', 1, 3)  # Anzahl der Schichten
+        num_layers = trial.suggest_int('num_layers', 1, 2)  # Anzahl der Schichten
         num_units_input = trial.suggest_int('num_units_input', 32, 128)  # Anzahl der Neuronen pro Schicht
         num_units = trial.suggest_int('num_units', 32, 128)  # Anzahl der Neuronen pro Schicht
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)  # Lernrate
@@ -48,9 +48,9 @@ class NNRegressionTrainer(RegressionModelTrainer):
 
         for i in range(num_layers - 1):  # Weitere Schichten
             if i == num_layers - 2:
-                model.add(Bidirectional(LSTM(num_units, return_sequences=True)))
-            else:
                 model.add(Bidirectional(LSTM(num_units, return_sequences=False)))
+            else:
+                model.add(Bidirectional(LSTM(num_units, return_sequences=True)))
 
         model.add(Dense(self._get_output_length(), activation='linear'))
 
