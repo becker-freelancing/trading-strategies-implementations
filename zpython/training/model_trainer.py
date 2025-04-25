@@ -7,12 +7,10 @@ warnings.filterwarnings(
 )
 
 import os
-import shutil
-import subprocess
 import threading
 from abc import abstractmethod
 from datetime import datetime
-from math import ceil, floor
+from math import ceil
 from threading import Lock
 
 from tqdm import tqdm
@@ -24,9 +22,8 @@ import torch
 from keras.api.callbacks import Callback
 from keras.api.callbacks import EarlyStopping
 from keras.api.models import Model
-from keras.api.utils import Progbar
 from optuna.trial import Trial
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 
 from zpython.indicators.indicator_creator import create_indicators
 from zpython.training.optuna_env_provider import get_optuna_storage_url, get_optuna_study_name
@@ -34,186 +31,9 @@ from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
 import platform
 
-
-
-class ProgbarWithoutMetrics(Callback):
-    def on_epoch_begin(self, epoch, logs=None):
-        print(f"=========== START OF EPOCH {epoch} ===========")
-        self.progbar = Progbar(target=self.params['steps'])
-
-    def on_batch_end(self, batch, logs=None):
-        self.progbar.update(batch + 1)
-
-    def on_epoch_end(self, epoch, logs=None):
-        self.progbar.update(self.params['steps'], finalize=True)
-        print(f"===========  END OF EPOCH {epoch}  ===========")
-
-
-class SaveModelCallback(Callback):
-
-    def __init__(self, trial: Trial, file_name_formatter, model_name):
-        super().__init__()
-        self.trial_id = trial.number
-        self.file_name_formatter = file_name_formatter
-        self.model_name = model_name
-
-    def on_epoch_end(self, epoch, logs=None):
-        file_name = self.file_name_formatter(f"trial_{self.trial_id}_epoch_{epoch}_{self.model_name}.keras")
-        self.model.save(file_name)
-
-
-def clean_directory(path):
-    for item in os.listdir(path):
-        item_path = os.path.join(path, item)
-        if os.path.isfile(item_path) or os.path.islink(item_path):
-            os.remove(item_path)
-        elif os.path.isdir(item_path):
-            shutil.rmtree(item_path)
-
-
-def get_device() -> torch.device:
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
-def to_tensor(data: np.ndarray):
-    return torch.from_numpy(data).float().to(get_device())
-
-
-def get_free_gpu_memory():
-    result = subprocess.check_output(
-        ['nvidia-smi', '--query-gpu=memory.free', '--format=csv,nounits,noheader']
-    )
-    return [int(x) for x in result.decode('utf-8').strip().split('\n')][0] * 1.049 * 1E6
-
-
-class LazyNumpyDataSet(Dataset):
-
-    def __init__(self, path_provider, input_length, limit):
-        self.path_provider = path_provider
-        self.input_length = input_length
-        self.current_cache_idx = -1
-        self.device = get_device()
-        self.x_cache = None
-        self.y_cache = None
-        self.next_x = None
-        self.next_y = None
-        self.next_file_idx = None
-        self._feature_shape = None
-        self._label_shape = None
-        self.limit = limit
-
-
-    def feature_shape(self):
-        if self._feature_shape is None:
-            i = 0
-            while True:
-                path = self._file_path(i)
-                if not os.path.exists(path):
-                    i -= 1
-                    break
-                i += 1
-            x, y = torch.load(self._file_path(i))
-            last_len = x.shape[0]
-            total_len = (i - 1) * 15000 + last_len
-            self._feature_shape = (total_len, x.shape[1], x.shape[2])
-        return self._feature_shape
-
-
-    def label_shape(self):
-        if self._label_shape is None:
-            x, y = torch.load(self._file_path(0))
-            self._label_shape = (self.feature_shape()[0], y.shape[1])
-        return self._label_shape
-
-    def __len__(self):
-        if self.limit is None:
-            return self.feature_shape()[0]
-        return min(self.feature_shape()[0], self.limit)
-
-    def _file_path(self, idx):
-        pass
-
-    def _load_file_sync(self, file_idx):
-        path = self._file_path(file_idx)
-        x_cache, y_cache = torch.load(path)
-        x_cache = torch.tensor(x_cache, dtype=torch.float32).to(self.device)
-        y_cache = torch.tensor(y_cache, dtype=torch.float32).to(self.device)
-        perm = torch.randperm(x_cache.size(0))
-        x_cache = x_cache[perm]
-        y_cache = y_cache[perm]
-        return x_cache, y_cache, file_idx
-
-    def _preload(self, preload_file_idx):
-        def _async_preload():
-            self.next_x, self.next_y, self.next_file_idx = self._load_file_sync(preload_file_idx)
-
-        load_thread = threading.Thread(target=_async_preload)
-        load_thread.start()
-
-    def _get_next_and_preload(self, needed_file_idx):
-        if self.next_file_idx != needed_file_idx:
-            self.x_cache, self.y_cache, self.current_cache_idx = self._load_file_sync(needed_file_idx)
-        else:
-            self.x_cache = self.next_x
-            self.y_cache = self.next_y
-            self.current_cache_idx = self.next_file_idx
-
-        self.x_cache = self.x_cache
-        self.y_cache = self.y_cache
-        self._preload(needed_file_idx + 1)
-
-
-
-    def _load(self, idx):
-        file_idx = int(floor(idx / 15000))
-        if self.current_cache_idx == file_idx:
-            return
-        self._get_next_and_preload(file_idx)
-
-    def __getitem__(self, idx):
-        self._load(idx)
-        tensor_idx = int(idx % 15000)
-        x = self.x_cache[tensor_idx][:self.input_length, :]
-        y = self.y_cache[tensor_idx]
-        return x, y
-
-
-class LazyTrainTensorDataSet(LazyNumpyDataSet):
-
-    def __init__(self, path_provider, input_length, limit):
-        super().__init__(path_provider,
-                         input_length,
-                         limit)
-
-    def _file_path(self, idx):
-        path = self.path_provider(idx, train=True)
-        return path
-
-
-class LazyValidationTensorDataSet(LazyNumpyDataSet):
-
-    def __init__(self, path_provider, input_length):
-        super().__init__(path_provider,
-                         input_length,
-                         210111)
-
-    def _file_path(self, idx):
-        path = self.path_provider(idx, train=False)
-        return path
-
-
-def run_study_for_model(model_class, model_name, study_name, storage_url, metrics_lock,
-                        trials_lock, header_content, trial_params_keys):
-    trainer = model_class()
-    trainer.model_name = model_name
-    trainer.study_name = study_name
-    trainer.study_storage = storage_url
-    trainer.study_name = study_name
-    trainer.metrics_lock = metrics_lock
-    trainer.trials_lock = trials_lock
-    trainer.header_content = header_content
-    trainer.trial_params_keys = trial_params_keys
-    trainer._run_study()
+from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback
+from zpython.training.train_util import get_device, run_study_for_model
+from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet
 
 class ModelTrainer:
 
