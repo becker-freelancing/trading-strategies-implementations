@@ -29,7 +29,7 @@ from optuna.trial import Trial
 from torch.utils.data import DataLoader, Dataset
 
 from zpython.indicators.indicator_creator import create_indicators
-from zpython.training.optuna_env_provider import get_optuna_storage_url
+from zpython.training.optuna_env_provider import get_optuna_storage_url, get_optuna_study_name
 from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
 import platform
@@ -95,6 +95,9 @@ class LazyNumpyDataSet(Dataset):
         self.device = get_device()
         self.x_cache = None
         self.y_cache = None
+        self.next_x = None
+        self.next_y = None
+        self.next_file_idx = None
         self._feature_shape = None
         self._label_shape = None
         self.limit = limit
@@ -111,7 +114,7 @@ class LazyNumpyDataSet(Dataset):
                 i += 1
             x, y = torch.load(self._file_path(i))
             last_len = x.shape[0]
-            total_len = (i - 1) * 10000 + last_len
+            total_len = (i - 1) * 15000 + last_len
             self._feature_shape = (total_len, x.shape[1], x.shape[2])
         return self._feature_shape
 
@@ -130,22 +133,46 @@ class LazyNumpyDataSet(Dataset):
     def _file_path(self, idx):
         pass
 
-    def _load(self, idx):
-        file_idx = int(floor(idx / 10000))
-        if self.current_cache_idx == file_idx:
-            return
-        self.current_cache_idx = file_idx
+    def _load_file_sync(self, file_idx):
         path = self._file_path(file_idx)
         x_cache, y_cache = torch.load(path)
-        self.x_cache = torch.tensor(x_cache, dtype=torch.float32).to(self.device)
-        self.y_cache = torch.tensor(y_cache, dtype=torch.float32).to(self.device)
-        perm = torch.randperm(self.x_cache.size(0))
-        self.x_cache = self.x_cache[perm]
-        self.y_cache = self.y_cache[perm]
+        x_cache = torch.tensor(x_cache, dtype=torch.float32).to(self.device)
+        y_cache = torch.tensor(y_cache, dtype=torch.float32).to(self.device)
+        perm = torch.randperm(x_cache.size(0))
+        x_cache = x_cache[perm]
+        y_cache = y_cache[perm]
+        return x_cache, y_cache, file_idx
+
+    def _preload(self, preload_file_idx):
+        def _async_preload():
+            self.next_x, self.next_y, self.next_file_idx = self._load_file_sync(preload_file_idx)
+
+        load_thread = threading.Thread(target=_async_preload)
+        load_thread.start()
+
+    def _get_next_and_preload(self, needed_file_idx):
+        if self.next_file_idx != needed_file_idx:
+            self.x_cache, self.y_cache, self.current_cache_idx = self._load_file_sync(needed_file_idx)
+        else:
+            self.x_cache = self.next_x
+            self.y_cache = self.next_y
+            self.current_cache_idx = self.next_file_idx
+
+        self.x_cache = self.x_cache
+        self.y_cache = self.y_cache
+        self._preload(needed_file_idx + 1)
+
+
+
+    def _load(self, idx):
+        file_idx = int(floor(idx / 15000))
+        if self.current_cache_idx == file_idx:
+            return
+        self._get_next_and_preload(file_idx)
 
     def __getitem__(self, idx):
         self._load(idx)
-        tensor_idx = int(idx % 10000)
+        tensor_idx = int(idx % 15000)
         x = self.x_cache[tensor_idx][:self.input_length, :]
         y = self.y_cache[tensor_idx]
         return x, y
@@ -195,7 +222,7 @@ class ModelTrainer:
         self.scaler_provider = scaler_provider
         self.scaler = None
         self.study_storage = None
-        self.study_name = None
+        self.study_name = get_optuna_study_name()
         self.metrics_lock = None
         self.trials_lock = None
         self.header_content = None
@@ -309,6 +336,8 @@ class ModelTrainer:
 
     def _prepare_metrics_file(self):
         file_name = self._get_metric_file_path()
+        if os.path.exists(file_name):
+            return
         line_content = self._get_metric_columns()
         line = ",".join(line_content)
         with open(file_name, "w") as file:
@@ -324,13 +353,15 @@ class ModelTrainer:
         print("Preparing environment...")
         path = self._get_file_path("")
         print("Working in directory: ", path)
-        clean_directory(path)
         self._get_train_validation_data(self._get_max_input_length())
         self._prepare_metrics_file()
         self._prepare_params_file()
 
-    def _prepare_params_file(self, ):
-        with open(self._get_trials_file_path(), "w") as file:
+    def _prepare_params_file(self):
+        path = self._get_trials_file_path()
+        if os.path.exists(path):
+            return
+        with open(path, "w") as file:
             line = ",".join(self._get_optuna_trial_params())
             file.write(f"trial,x_train_shape,y_train_shape,x_val_shape,y_val_shape,{line}\n")
 
@@ -379,7 +410,7 @@ class ModelTrainer:
         score = model.evaluate(val_data_provider, verbose=0)
         return score[1]
 
-    def _create_train_val_data_tensor(self, chunk_size=10000):
+    def _create_train_val_data_tensor(self, chunk_size=15000):
         x_train, y_train = self._get_train_data()
         x_val, y_val = self._get_validation_data()
         i = -1
@@ -432,7 +463,7 @@ class ModelTrainer:
     def _run_study(self):
         study = optuna.load_study(
             study_name=self.study_name,
-            storage=self.study_storage
+            storage=self.study_storage,
         )
         study.optimize(self._create_objective, n_trials=ceil(self._get_optuna_trials() / self._get_optuna_processes()))
 
