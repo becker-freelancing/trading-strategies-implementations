@@ -11,9 +11,9 @@ def get_free_gpu_memory():
     return [int(x) for x in result.decode('utf-8').strip().split('\n')][0] * 1.049 * 1E6
 
 
-print(get_free_gpu_memory())
 
 
 print("Keras Backend: ", keras.backend.backend())
 print("CUDA verfügbar:", torch.cuda.is_available())
 print("Name der GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "Keine GPU")
+print("Free Memory: ", get_free_gpu_memory())
