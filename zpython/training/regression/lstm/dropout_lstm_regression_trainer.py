@@ -65,7 +65,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
         return model, input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
-        return ["num_layers", "num_units", "learning_rate"]
+        return ["num_layers", "num_units", "learning_rate", "input_length", "num_units_input", "dropout"]
 
     def _get_max_epochs_to_train(self):
         return 20
