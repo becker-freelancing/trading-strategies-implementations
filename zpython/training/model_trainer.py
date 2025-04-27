@@ -20,7 +20,6 @@ import optuna
 import pandas as pd
 import torch
 from keras.api.callbacks import Callback
-from keras.api.callbacks import EarlyStopping
 from keras.api.models import Model
 from optuna.trial import Trial
 from torch.utils.data import DataLoader
@@ -31,7 +30,7 @@ from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
 import platform
 
-from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback
+from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback, PercentageEarlyStopCallback
 from zpython.training.train_util import get_device, run_study_for_model
 from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet
 
@@ -129,8 +128,7 @@ class ModelTrainer:
     def _get_callbacks(self, trial: Trial, lock: Lock):
         custom_callbacks = self._get_custom_callbacks(trial, lock)
         custom_callbacks.append(
-            EarlyStopping(monitor='val_loss',
-                          patience=5)
+            PercentageEarlyStopCallback(trial.number, monitor='val_loss')
         )
         custom_callbacks.append(ProgbarWithoutMetrics(trial.number))
         custom_callbacks.append(SaveModelCallback(trial, self._get_file_path, self.model_name))

@@ -32,3 +32,38 @@ class SaveModelCallback(Callback):
     def on_epoch_end(self, epoch, logs=None):
         file_name = self.file_name_formatter(f"trial_{self.trial_id}_epoch_{epoch}_{self.model_name}.keras")
         self.model.save(file_name)
+
+
+class PercentageEarlyStopCallback(Callback):
+    def __init__(self, trial_id, monitor, min_delta=0.001, verbose=1):
+        super().__init__()
+        self.monitor = monitor
+        self.min_delta = min_delta
+        self.verbose = verbose
+        self.prev_value = None
+        self.trial_id = trial_id
+
+    def on_epoch_end(self, epoch, logs=None):
+        logs = logs or {}
+        current_value = logs.get(self.monitor)
+
+        if current_value is None:
+            if self.verbose:
+                print(f"Warning: Metric '{self.monitor}' is not available in logs (Trial {self.trial_id}).")
+            return
+
+        if self.prev_value is not None:
+            # Berechne die relative Änderung
+            relative_change = abs(self.prev_value - current_value) / self.prev_value
+
+            if self.verbose:
+                print(
+                    f"Epoch {epoch}: relative change in {self.monitor} = {relative_change:.5f} (Trial {self.trial_id})")
+
+            if relative_change < self.min_delta:
+                if self.verbose:
+                    print(
+                        f"Stopping training: {self.monitor} improved less than {self.min_delta * 100:.2f}% (Trial {self.trial_id})")
+                self.model.stop_training = True
+
+        self.prev_value = current_value
