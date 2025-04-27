@@ -4,8 +4,13 @@ from optuna.trial import Trial
 
 
 class ProgbarWithoutMetrics(Callback):
+
+    def __init__(self, trial_id):
+        super().__init__()
+        self.trial_id = trial_id
+
     def on_epoch_begin(self, epoch, logs=None):
-        print(f"=========== START OF EPOCH {epoch} ===========")
+        print(f"=========== START OF EPOCH {epoch} (Trial {self.trial_id}) ===========")
         self.progbar = Progbar(target=self.params['steps'])
 
     def on_batch_end(self, batch, logs=None):
@@ -13,7 +18,7 @@ class ProgbarWithoutMetrics(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         self.progbar.update(self.params['steps'], finalize=True)
-        print(f"===========  END OF EPOCH {epoch}  ===========")
+        print(f"===========  END OF EPOCH {epoch} (Trial {self.trial_id}) ===========")
 
 
 class SaveModelCallback(Callback):

@@ -133,7 +133,7 @@ class ModelTrainer:
             EarlyStopping(monitor='val_loss',
                           patience=5)
         )
-        custom_callbacks.append(ProgbarWithoutMetrics())
+        custom_callbacks.append(ProgbarWithoutMetrics(trial.number))
         custom_callbacks.append(SaveModelCallback(trial, self._get_file_path, self.model_name))
         return custom_callbacks
 
