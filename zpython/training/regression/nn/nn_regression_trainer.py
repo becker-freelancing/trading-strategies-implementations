@@ -14,7 +14,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
         super().__init__("nn", MinMaxScaler)
 
     def _get_output_length(self):
-        return 10
+        return 30
 
     def _get_target_column(self):
         return "logReturn_closeBid_1min"
@@ -28,22 +28,27 @@ class NNRegressionTrainer(RegressionModelTrainer):
         num_units = trial.suggest_int('num_units', 32, 128)  # Anzahl der Neuronen pro Schicht
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)  # Lernrate
         input_length = trial.suggest_int('input_length', 5, 50)
+        flatten_before = trial.suggest_categorical("flatten_before", [True, False])
 
         params = {
             "num_layers": num_layers,
             "num_units": num_units,
             "learning_rate": learning_rate,
-            "input_length": input_length
+            "input_length": input_length,
+            "flatten_before": flatten_before
         }
 
         # Modell erstellen
         model = Sequential()
         model.add(InputLayer(shape=(input_length, 52)))
-        model.add(Flatten())
+        if flatten_before:
+            model.add(Flatten())
         model.add(Dense(num_units, activation='relu'))  # Eingabeschicht
         for _ in range(num_layers - 1):  # Weitere Schichten
             model.add(Dense(num_units, activation='relu'))
-        model.add(Dense(10, activation='linear'))  # Ausgangsschicht (10 Klassen für MNIST)
+        if not flatten_before:
+            model.add(Flatten())
+        model.add(Dense(self._get_output_length(), activation='linear'))  # Ausgangsschicht (10 Klassen für MNIST)
 
         # Kompilieren des Modells
         model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error',
@@ -52,7 +57,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
         return model, input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
-        return ["num_layers", "num_units", "learning_rate"]
+        return ["num_layers", "num_units", "learning_rate", "input_length", "flatten_before"]
 
     def _get_max_epochs_to_train(self):
         return 30
