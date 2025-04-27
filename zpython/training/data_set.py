@@ -91,7 +91,7 @@ class LazyNumpyDataSet(Dataset):
     def __getitem__(self, idx):
         self._load(idx)
         tensor_idx = int(idx % 15000)
-        x = self.x_cache[tensor_idx][:self.input_length, :]
+        x = self.x_cache[tensor_idx][-self.input_length:, :]
         y = self.y_cache[tensor_idx]
         return x, y
 
