@@ -68,9 +68,6 @@ class CNNRegressionTrainer(RegressionModelTrainer):
                 "pool_size",
                 "num_units"]
 
-    def _get_max_epochs_to_train(self):
-        return 20
-
     def _get_optuna_optimization_metric_name(self):
         return 'val_rmse'
 

@@ -63,9 +63,6 @@ class NNRegressionTrainer(RegressionModelTrainer):
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_layers", "num_units", "learning_rate", "input_length", "num_units_input"]
 
-    def _get_max_epochs_to_train(self):
-        return 20
-
     def _get_optuna_optimization_metric_name(self):
         return 'val_rmse'
 

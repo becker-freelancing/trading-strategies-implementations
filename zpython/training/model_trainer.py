@@ -74,9 +74,8 @@ class ModelTrainer:
     def _create_model(self, optuna_trial: Trial) -> tuple[Model, int, dict]:
         pass
 
-    @abstractmethod
     def _get_max_epochs_to_train(self) -> int:
-        pass
+        return 20
 
     @abstractmethod
     def _get_optuna_optimization_metric_name(self) -> str:
