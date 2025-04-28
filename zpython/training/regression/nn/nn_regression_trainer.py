@@ -20,14 +20,14 @@ class NNRegressionTrainer(RegressionModelTrainer):
         return "logReturn_closeBid_1min"
 
     def _get_max_input_length(self) -> int:
-        return 50
+        return 150
 
     def _create_model(self, trial: Trial) -> (Model, int, dict):
         # Hyperparameter von Optuna
         num_layers = trial.suggest_int('num_layers', 1, 3)  # Anzahl der Schichten
         num_units = trial.suggest_int('num_units', 32, 128)  # Anzahl der Neuronen pro Schicht
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)  # Lernrate
-        input_length = trial.suggest_int('input_length', 5, 50)
+        input_length = trial.suggest_int('input_length', 5, 150)
         flatten_before = trial.suggest_categorical("flatten_before", [True, False])
 
         params = {
