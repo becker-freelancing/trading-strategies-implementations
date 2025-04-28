@@ -183,6 +183,9 @@ class ModelTrainer:
             file.write(f"trial,x_train_shape,y_train_shape,x_val_shape,y_val_shape,{line}\n")
 
     def _save_trial_params(self, trial_id, params, x_train_shape, y_train_shape, x_val_shape, y_val_shape):
+        if len(params) != len(self._get_optuna_trial_params()):
+            raise Exception(
+                f"Actual Params contain different params than expected.\n\tExpected: {self._get_optuna_trial_params()}\n\tActual:  {params.keys()}")
         with self.trials_lock:
             line = ",".join([str(params[key]) for key in self._get_optuna_trial_params()])
             line = f"{trial_id},{x_train_shape},{y_train_shape},{x_val_shape},{y_val_shape},{line}\n"
