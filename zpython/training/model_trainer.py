@@ -242,8 +242,7 @@ class ModelTrainer:
             torch.save((x_val[chunk:chunk + chunk_size], y_val[chunk:chunk + chunk_size]),
                        self._tensor_data_path(i, False))
 
-
-    def _create_train_val_data_loader_provider(self, input_length, batch_size=64):
+    def _create_train_val_data_loader_provider(self, input_length, batch_size):
         print("Creating train and validation data loader...")
         tensor_data_path = self._tensor_data_path(0)
         if not os.path.exists(tensor_data_path):
@@ -257,8 +256,7 @@ class ModelTrainer:
             val_data_set = LazyValidationTensorDataSet(self._tensor_data_path, input_length)
             return DataLoader(val_data_set, batch_size=batch_size, shuffle=False)
 
-        self.train_data_loader_provider = train_data_loader
-        self.val_data_loader_provider = val_data_loader
+        return train_data_loader, val_data_loader
 
     def _tensor_data_path(self, idx, train=True):
         if train:
@@ -267,9 +265,9 @@ class ModelTrainer:
             return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_VAL.pt")
 
     def _get_train_validation_data(self, input_length):
-        if self.train_data_loader_provider is None:
-            self._create_train_val_data_loader_provider(input_length, batch_size=256)
-        return self.train_data_loader_provider(), self.val_data_loader_provider()
+        train_data_loader_provider, val_data_loader_provider = self._create_train_val_data_loader_provider(input_length,
+                                                                                                           batch_size=256)
+        return train_data_loader_provider(), val_data_loader_provider()
 
     def _build_optuna_study_name(self):
         if self.study_name is None:
@@ -279,8 +277,9 @@ class ModelTrainer:
 
     def _run_study(self):
         study = optuna.load_study(
-            study_name=self.study_name,
+            study_name=self._build_optuna_study_name(),
             storage=self.study_storage,
+
         )
         study.optimize(self._create_objective, n_trials=ceil(self._get_optuna_trials() / self._get_optuna_processes()))
 

@@ -36,7 +36,7 @@ class LazyNumpyDataSet(Dataset):
             x, y = torch.load(self._file_path(i))
             last_len = x.shape[0]
             total_len = (i - 1) * 15000 + last_len
-            self._feature_shape = (total_len, x.shape[1], x.shape[2])
+            self._feature_shape = (total_len, min(x.shape[1], self.input_length), x.shape[2])
         return self._feature_shape
 
     def label_shape(self):
