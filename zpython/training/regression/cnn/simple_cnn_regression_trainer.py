@@ -1,5 +1,5 @@
 from keras import Model
-from keras.api.layers import Dense, Flatten, Conv1D, MaxPooling1D
+from keras.api.layers import Dense, Flatten, Conv1D, MaxPooling1D, InputLayer
 from keras.api.models import Sequential
 from keras.api.optimizers import Adam
 from optuna import Trial
@@ -44,6 +44,7 @@ class CNNRegressionTrainer(RegressionModelTrainer):
 
         # Modell erstellen
         model = Sequential()
+        model.add(InputLayer(shape=(input_length, 52)))
         model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu"))
         model.add(MaxPooling1D(pool_size=pool_size))
         if flatten_before:
