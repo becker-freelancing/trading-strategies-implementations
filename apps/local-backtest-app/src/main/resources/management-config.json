@@ -1,0 +1,12 @@
+{
+  "maxRiskPerTrade": 0.01,
+  "preferredRiskPerTrade": 0.01,
+  "maxTotalRisk": 0.2,
+  "minChanceRiskRatio": 2,
+  "maxDrawdowns": [
+    {
+      "drawdown": 0.1,
+      "durationSec": 86400
+    }
+  ]
+}
