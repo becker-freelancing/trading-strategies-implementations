@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.becker-freelance.trading</groupId>
-            <artifactId>bybit-trade-executor</artifactId>
+            <artifactId>bybit-connector</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

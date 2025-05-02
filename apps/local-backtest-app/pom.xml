@@ -49,7 +49,7 @@
         </dependency>
         <dependency>
             <groupId>com.becker-freelance.trading</groupId>
-            <artifactId>demo-trade-executor</artifactId>
+            <artifactId>demo-connector</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
