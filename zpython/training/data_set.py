@@ -26,18 +26,22 @@ class LazyNumpyDataSet(Dataset):
 
     def feature_shape(self):
         if self._feature_shape is None:
-            i = 0
-            while True:
-                path = self._file_path(i)
-                if not os.path.exists(path):
-                    i -= 1
-                    break
-                i += 1
+            i = self._get_max_file_idx()
             x, y = torch.load(self._file_path(i))
             last_len = x.shape[0]
             total_len = (i - 1) * 15000 + last_len
             self._feature_shape = (total_len, min(x.shape[1], self.input_length), x.shape[2])
         return self._feature_shape
+
+    def _get_max_file_idx(self):
+        i = 0
+        while True:
+            path = self._file_path(i)
+            if not os.path.exists(path):
+                i -= 1
+                break
+            i += 1
+        return i
 
     def label_shape(self):
         if self._label_shape is None:
@@ -110,11 +114,27 @@ class LazyTrainTensorDataSet(LazyNumpyDataSet):
 
 class LazyValidationTensorDataSet(LazyNumpyDataSet):
 
-    def __init__(self, path_provider, input_length):
+    def __init__(self, path_provider, input_length, limit):
         super().__init__(path_provider,
                          input_length,
-                         210111)
+                         limit)
 
     def _file_path(self, idx):
         path = self.path_provider(idx, train=False)
         return path
+
+
+class FeatureShuffleTensorDataSet(Dataset):
+
+    def __init__(self, dataset, feature_shuffle_idx):
+        super().__init__()
+        self.dataset = dataset
+        self.feature_shuffle_idx = feature_shuffle_idx
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, item):
+        x, y = self.dataset[item]
+        x[:, self.feature_shuffle_idx] = x[:, self.feature_shuffle_idx][torch.randperm(x.size(0))]
+        return x, y

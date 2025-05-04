@@ -245,7 +245,7 @@ class ModelTrainer:
             torch.save((x_val[chunk:chunk + chunk_size], y_val[chunk:chunk + chunk_size]),
                        self._tensor_data_path(i, False))
 
-    def _create_train_val_data_loader_provider(self, input_length, batch_size):
+    def _create_train_val_data_loader_provider(self, input_length, batch_size, val_data_size):
         print("Creating train and validation data loader...")
         tensor_data_path = self._tensor_data_path(0)
         if not os.path.exists(tensor_data_path):
@@ -256,7 +256,7 @@ class ModelTrainer:
             return DataLoader(train_data_set, batch_size=batch_size, shuffle=False)
 
         def val_data_loader():
-            val_data_set = LazyValidationTensorDataSet(self._tensor_data_path, input_length)
+            val_data_set = LazyValidationTensorDataSet(self._tensor_data_path, input_length, val_data_size)
             return DataLoader(val_data_set, batch_size=batch_size, shuffle=False)
 
         return train_data_loader, val_data_loader
@@ -267,9 +267,10 @@ class ModelTrainer:
         else:
             return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_VAL.pt")
 
-    def _get_train_validation_data(self, input_length):
+    def _get_train_validation_data(self, input_length, val_data_size=210111):
         train_data_loader_provider, val_data_loader_provider = self._create_train_val_data_loader_provider(input_length,
-                                                                                                           batch_size=256)
+                                                                                                           batch_size=256,
+                                                                                                           val_data_size=val_data_size)
         return train_data_loader_provider(), val_data_loader_provider()
 
     def _build_optuna_study_name(self):
