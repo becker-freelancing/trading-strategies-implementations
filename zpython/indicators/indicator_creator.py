@@ -91,13 +91,15 @@ def create_indicators(data_read_function=train_data,
                       close_column='closeBid',
                       high_column='highBid',
                       low_column='lowBid',
-                      momentum_lags=(1, 2, 3, 6, 9, 12)):
+                      momentum_lags=(1, 2, 3, 6, 9, 12),
+                      limit=100_000_000):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
         print("Reading data...")
         data = data_read_function()
         print("Creating indicators...")
         data = data.reset_index(drop=True)
+        data = data.iloc[:limit]
 
         datas = _split_on_gaps(data)
         datas = [_add_returns(part, momentum_lags, low_column) for part in datas]

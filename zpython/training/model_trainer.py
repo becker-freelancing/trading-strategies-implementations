@@ -34,6 +34,7 @@ from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback,
 from zpython.training.train_util import get_device, run_study_for_model
 from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet
 
+
 class ModelTrainer:
 
     def __init__(self, model_name: str, scaler_provider):
@@ -143,7 +144,8 @@ class ModelTrainer:
     def _create_unsplited_data(self, train_data=True):
         if train_data:
             data = create_indicators()
-            data = pd.DataFrame(self._get_scaler().fit_transform(data), columns=data.columns, index=data.index)
+            transform = self._get_scaler().fit_transform(data)
+            data = pd.DataFrame(transform, columns=data.columns, index=data.index)
             self._save_scaler()
             return data
         else:
