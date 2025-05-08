@@ -1,8 +1,10 @@
+import itertools
 import warnings
 
 import numpy as np
 import pandas as pd
 import pandas_ta as ta
+import tqdm
 
 from zpython.util.data_split import train_data
 
@@ -18,21 +20,84 @@ def _add_returns(data,
     return data
 
 
-def _split_on_gaps(data):
+def _split_on_gaps(data, time_frame):
     time_diffs = data["closeTime"].diff().dt.total_seconds()
     start_idx = 0
     dfs = []
     for i in range(1, len(data)):
-        if time_diffs.iloc[i] > 60:
+        if time_diffs.iloc[i] > 60 * time_frame:
             dfs.append(data.iloc[start_idx:i])
             start_idx = i
     dfs.append(data.iloc[start_idx:])
     return dfs
 
 
+def _create_long_indicators_for_part(data, close_column, momentum_lags):
+    for lag in momentum_lags:
+        data.loc[:, f'return_{close_column}_{lag}min'] = (data["closeBid"] - data["closeBid"].shift(lag)) / data[
+            "closeBid"].shift(lag)
+
+    for length in [5, 10, 20, 30]:
+        data.loc[:, f"Std_{length}"] = ta.stdev(data["logReturn_closeBid_1min"], length=length)
+
+    data.loc[:, "SMA_20"] = ta.sma(data["logReturn_closeBid_1min"], length=20)
+    data.loc[:, "SMA_10"] = ta.sma(data["logReturn_closeBid_1min"], length=10)
+    data.loc[:, "SMA_5"] = ta.sma(data["logReturn_closeBid_1min"], length=5)
+    data.loc[:, "SMA_30"] = ta.sma(data["logReturn_closeBid_1min"], length=30)
+
+    macd_fast = [5, 12, 28, 24]
+    macd_slow = [9, 18, 26, 45, 50]
+    macd_signal = [5, 9, 15, 20]
+    for fast, slow, signal in list(itertools.product(macd_fast, macd_slow, macd_signal)):
+        if fast > slow:
+            continue
+        macd = ta.macd(data["logReturn_closeBid_1min"], fast=fast, slow=slow, signal=signal)
+        name = f"MACD_{fast}_{slow}_{signal}"
+        data.loc[:, name] = macd[name]
+        data.loc[:, f"MACD_Signal_{fast}_{slow}_{signal}"] = macd[f"MACDs_{fast}_{slow}_{signal}"]
+
+    for length in [12, 20, 50, 100]:
+        data.loc[:, f"ROC_{length}"] = ta.roc(data["logReturn_closeBid_1min"], length=length)
+
+    for length in [7, 10, 14, 20, 30]:
+        data.loc[:, f"ADX_{length}"] = ta.adx(data["logReturn_highBid_1min"], data["logReturn_lowBid_1min"],
+                                              data["logReturn_closeBid_1min"], length=length)[f"ADX_{length}"]
+
+    for length in [5, 7, 20, 30]:
+        data.loc[:, f"HistVola_{length}"] = data["logReturn_closeBid_1min"].rolling(length).std()
+
+    for length in [5, 10, 20, 30]:
+        data.loc[:, f"ZScore_{length}"] = (data["logReturn_closeBid_1min"] - data[f"SMA_{length}"]) / data[
+            f"Std_{length}"]
+
+    # Cross Features
+    for rsi, fast, slow, signal in itertools.product([7, 14, 20], macd_fast, macd_slow, macd_signal):
+        if fast > slow:
+            continue
+        data.loc[:, f"RSI_{rsi}_MACD_{fast}_{slow}_{signal}"] = data[f"RSI_{rsi}"] * data[
+            f"MACD_{fast}_{slow}_{signal}"]
+
+    for ema in [5, 10, 20, 30]:
+        data.loc[:, f"EMA_{ema}_Less_logReturn_closeBid_1min"] = (
+                    data[f"EMA_{ema}"] < data["logReturn_closeBid_1min"]).astype(int)
+
+    for rsi in [7, 14, 20]:
+        data.loc[:, f"RSI_{rsi}_Greater_70"] = (data[f"RSI_{rsi}"] > 70).astype(int)
+        data.loc[:, f"RSI_{rsi}_Less_30"] = (data[f"RSI_{rsi}"] < 30).astype(int)
+        for vola in [5, 7, 20, 30]:
+            data.loc[:, f"RSI_{rsi}_Vola_{vola}"] = data[f"RSI_{rsi}"] * data[f"HistVola_{vola}"]
+
+    for volume in [5, 10, 20, 30, 50]:
+        data.loc[:, f"VolumeSpike_{volume}"] = (data["volume"].rolling(volume).mean() * 1.5 < data["volume"]).astype(
+            int)
+
+    return data
+
+
 def _create_indicator_for_part(data,
                                close_column,
-                               momentum_lags):
+                               momentum_lags,
+                               long=False):
     data.loc[:, "ATR_14"] = ta.atr(data["logReturn_highBid_1min"], data["logReturn_lowBid_1min"],
                                    data["logReturn_closeBid_1min"], 14)
     data.loc[:, "ATR_5"] = ta.atr(data["logReturn_highBid_1min"], data["logReturn_lowBid_1min"],
@@ -80,6 +145,10 @@ def _create_indicator_for_part(data,
     for t in range(1, 7):
         data.loc[:, f'logReturn_1m_t-{t}'] = data["logReturn_closeBid_1min"].shift(t)
 
+    if long:
+        data = data.dropna()
+        data = _create_long_indicators_for_part(data, close_column, momentum_lags)
+
     return data
 
 
@@ -92,16 +161,17 @@ def create_indicators(data_read_function=train_data,
                       high_column='highBid',
                       low_column='lowBid',
                       momentum_lags=(1, 2, 3, 6, 9, 12),
-                      limit=100_000_000):
+                      limit=100_000_000,
+                      time_frame=1):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
-        print("Reading data...")
-        data = data_read_function()
+        print(f"Reading data (M{time_frame})...")
+        data = data_read_function(time_frame=time_frame)
         print("Creating indicators...")
         data = data.reset_index(drop=True)
         data = data.iloc[:limit]
 
-        datas = _split_on_gaps(data)
+        datas = _split_on_gaps(data, time_frame)
         datas = [_add_returns(part, momentum_lags, low_column) for part in datas]
         datas = [_add_returns(part, momentum_lags, close_column) for part in datas]
         datas = [_add_returns(part, momentum_lags, high_column) for part in datas]
@@ -109,6 +179,36 @@ def create_indicators(data_read_function=train_data,
         datas = [_create_indicator_for_part(part, close_column, momentum_lags) for part in datas]
 
         data = _concat(datas)
+        exclude_columns = ["lowBid", "lowAsk", "highBid", "highAsk", "openBid", "openAsk", "closeAsk", "closeBid"]
+        data = data.drop(columns=exclude_columns)
+        data.set_index("closeTime", inplace=True)
+        return data
+
+
+def create_multiple_indicators(data_read_function=train_data,
+                               close_column='closeBid',
+                               high_column='highBid',
+                               low_column='lowBid',
+                               momentum_lags=(1, 2, 3, 6, 9, 12),
+                               limit=100_000_000,
+                               time_frame=1):
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore")
+        print("Reading data...")
+        data = data_read_function(time_frame=time_frame)
+        print("Creating indicators...")
+        data = data.reset_index(drop=True)
+        data = data.iloc[:limit]
+
+        with_indicators = []
+        for part in tqdm.tqdm(_split_on_gaps(data, time_frame), "Creating Indicators"):
+            part = _add_returns(part, momentum_lags, low_column)
+            part = _add_returns(part, momentum_lags, close_column)
+            part = _add_returns(part, momentum_lags, high_column)
+            part = _create_indicator_for_part(part, close_column, momentum_lags, long=True)
+            with_indicators.append(part)
+
+        data = _concat(with_indicators)
         exclude_columns = ["lowBid", "lowAsk", "highBid", "highAsk", "openBid", "openAsk", "closeAsk", "closeBid"]
         data = data.drop(columns=exclude_columns)
         data.set_index("closeTime", inplace=True)

@@ -4,22 +4,23 @@ from zpython.util.path_util import from_relative_path
 
 
 class DataCache:
-    cache = None
+    cache = {}
 
-def read_data():
-    path = from_relative_path("data-bybit/ETHUSDT_1.csv")
 
-    if DataCache.cache is None:
+def read_data(time_frame):
+    path = from_relative_path(f"data-bybit/ETHUSDT_{time_frame}.csv")
+
+    if not time_frame in list(DataCache.cache.keys()):
         df = pd.read_csv(path)
         df["closeTime"] = pd.to_datetime(df["closeTime"], format="%Y-%m-%d %H:%M:%S")
         df = df.sort_values("closeTime")
-        DataCache.cache = df
+        DataCache.cache[time_frame] = df
 
-    return DataCache.cache
+    return DataCache.cache[time_frame]
 
 
-def train_data():
-    data = read_data()
+def train_data(time_frame=1):
+    data = read_data(time_frame)
     data = data[data["closeTime"] < pd.to_datetime("2023-08-01")]
     data = data[
         (data["closeTime"].dt.day != 1) &
@@ -30,8 +31,8 @@ def train_data():
     return data
 
 
-def analysis_data():
-    data = read_data()
+def analysis_data(time_frame=1):
+    data = read_data(time_frame)
     data = data[data["closeTime"] < pd.to_datetime("2023-09-01")]
     data = pd.concat([
         data[data["closeTime"].dt.day == 1],
@@ -43,8 +44,8 @@ def analysis_data():
     return data
 
 
-def validation_data():
-    data = read_data()
+def validation_data(time_frame=1):
+    data = read_data(time_frame)
     data = data[
         (data["closeTime"] >= pd.to_datetime("2023-09-01")) &
         (data["closeTime"] < pd.to_datetime("2024-02-01"))
@@ -52,8 +53,8 @@ def validation_data():
     return data
 
 
-def test_data():
-    data = read_data()
+def test_data(time_frame=1):
+    data = read_data(time_frame)
     data = data[
         (data["closeTime"] >= pd.to_datetime("2024-02-01")) &
         (data["closeTime"] < pd.to_datetime("2024-05-01"))
@@ -61,10 +62,14 @@ def test_data():
     return data
 
 
-def backtest_data():
-    data = read_data()
+def backtest_data(time_frame=1):
+    data = read_data(time_frame)
     data = data[
         (data["closeTime"] >= pd.to_datetime("2024-05-01")) &
         (data["closeTime"] < pd.to_datetime("2025-04-01"))
         ]
     return data
+
+
+def valid_time_frames():
+    return [1, 2, 3, 5, 15]
