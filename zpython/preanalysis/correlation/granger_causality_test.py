@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.vector_ar.var_model import VARResultsWrapper
@@ -22,6 +23,7 @@ def fit(future_idx, splitIdx):
 
 
 def get_predict_df(future_idx, splitIdx):
+    work_data = data.loc[:splitIdx]
     names = []
     lags = []
     best = features.loc[[f"Best_{n}" for n in range(N_BEST)]]
@@ -31,20 +33,34 @@ def get_predict_df(future_idx, splitIdx):
         lags.append(int(caused[1]))
     predict_df = pd.DataFrame(columns=names)
     for name, lag in zip(names, lags):
-        predict_df[name] = data[name].shift(lag)
+        series = work_data[name]
+        shifted = series.shift(lag)
+        predict_df[name] = shifted
     predict_df = predict_df.dropna()
-    y = data.loc[predict_df.index][["logReturn_closeBid_1min"]].shift(-future_idx)
-    y = y.dropna()
+    y_raw = data.loc[predict_df.index + pd.Timedelta(minutes=future_idx)][["logReturn_closeBid_1min"]]
+    y_shifted = y_raw.shift(-future_idx)
+    y = y_shifted.dropna()
     predict_df = predict_df.loc[y.index]
-    return predict_df.reset_index(drop=True), y.reset_index(drop=True)
+    return sm.add_constant(predict_df.reset_index(drop=True)), y.reset_index(drop=True)
 
 
-def predict(model: VARResultsWrapper, idx):
-    x, y = get_predict_df(idx)
-    prediction = model.forecast(y=predict_df.values[-model.k_ar:], steps=1)[0][10]
-    return prediction
+def predict(model: VARResultsWrapper, future_idx, splitIdx):
+    x, y = get_predict_df(future_idx, splitIdx)
+    prediction = model.predict(x)
+    return prediction.iloc[-1]
 
 
 splitIdx = data.index.max() - pd.Timedelta(minutes=40)
-fitted = [fit(idx, splitIdx) for idx in range(30)]
-predicted = [predict(model, idx) for idx, model in zip(range(30), fitted)]
+horizon = list(range(1, 30))
+fitted = [fit(idx, splitIdx) for idx in horizon]
+predicted = [predict(model, idx, splitIdx) for idx, model in zip(horizon, fitted)]
+actual = [get_predict_df(idx, splitIdx)[1].iloc[-1]["logReturn_closeBid_1min"] for idx in horizon]
+
+print(actual)
+print(predicted)
+
+plt.plot(horizon, actual, label="Actual")
+plt.plot(horizon, predicted, label="Predicted")
+plt.legend()
+plt.grid()
+plt.show()
