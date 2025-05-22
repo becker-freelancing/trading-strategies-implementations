@@ -113,6 +113,8 @@ def _create_indicator_for_part(data,
     data.loc[:, "EMA_10"] = ta.ema(data["logReturn_closeBid_1min"], length=10)
     data.loc[:, "EMA_5"] = ta.ema(data["logReturn_closeBid_1min"], length=5)
     data.loc[:, "EMA_30"] = ta.ema(data["logReturn_closeBid_1min"], length=30)
+    data.loc[:, "EMA_50"] = ta.ema(data["logReturn_closeBid_1min"], length=50)
+    data.loc[:, "EMA_200"] = ta.ema(data["logReturn_closeBid_1min"], length=200)
 
     data.loc[:, "RSI_14"] = ta.rsi(data["logReturn_closeBid_1min"], length=14)
     data.loc[:, "RSI_7"] = ta.rsi(data["logReturn_closeBid_1min"], length=7)
