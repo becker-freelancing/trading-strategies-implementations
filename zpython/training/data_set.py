@@ -29,7 +29,7 @@ class LazyNumpyDataSet(Dataset):
             i = self._get_max_file_idx()
             x, y = torch.load(self._file_path(i))
             last_len = x.shape[0]
-            total_len = (i - 1) * 15000 + last_len
+            total_len = max((i - 1) * 15000 + last_len, last_len)
             self._feature_shape = (total_len, min(x.shape[1], self.input_length), x.shape[2])
         return self._feature_shape
 
