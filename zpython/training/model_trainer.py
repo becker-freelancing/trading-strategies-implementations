@@ -30,7 +30,7 @@ from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
 import platform
 
-from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback
+from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback, PercentageEarlyStopCallback
 from zpython.training.train_util import get_device, run_study_for_model
 from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet
 
@@ -128,9 +128,9 @@ class ModelTrainer:
 
     def _get_callbacks(self, trial: Trial, lock: Lock):
         custom_callbacks = self._get_custom_callbacks(trial, lock)
-        # custom_callbacks.append(
-        #     PercentageEarlyStopCallback(trial.number, monitor='val_loss')
-        # )
+        custom_callbacks.append(
+            PercentageEarlyStopCallback(trial.number, monitor='val_loss')
+        )
         custom_callbacks.append(ProgbarWithoutMetrics(trial.number))
         custom_callbacks.append(SaveModelCallback(trial, self._get_file_path, self.model_name))
         return custom_callbacks
@@ -143,13 +143,13 @@ class ModelTrainer:
 
     def _create_unsplited_data(self, train_data=True):
         if train_data:
-            data = create_indicators(limit=1000)
+            data = create_indicators()
             transform = self._get_scaler().fit_transform(data)
             data = pd.DataFrame(transform, columns=data.columns, index=data.index)
             self._save_scaler()
             return data
         else:
-            data = create_indicators(validation_data, limit=1000)
+            data = create_indicators(validation_data)
             data = pd.DataFrame(self._get_scaler().transform(data), columns=data.columns, index=data.index)
             return data
 

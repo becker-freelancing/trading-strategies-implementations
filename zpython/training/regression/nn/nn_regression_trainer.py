@@ -60,9 +60,6 @@ class NNRegressionTrainer(RegressionModelTrainer):
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_layers", "num_units", "learning_rate", "input_length", "flatten_before"]
 
-    def _get_train_data_limit(self) -> int:
-        return 1000
-
 
 if __name__ == "__main__":
     trainer = NNRegressionTrainer()
