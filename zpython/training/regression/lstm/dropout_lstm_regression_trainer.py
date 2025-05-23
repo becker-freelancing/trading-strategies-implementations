@@ -67,12 +67,6 @@ class NNRegressionTrainer(RegressionModelTrainer):
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_layers", "num_units", "learning_rate", "input_length", "num_units_input", "dropout"]
 
-    def _get_optuna_optimization_metric_name(self):
-        return 'val_rmse'
-
-    def _get_optuna_optimization_metric_direction(self):
-        return 'minimize'
-
 
 if __name__ == "__main__":
     trainer = NNRegressionTrainer()

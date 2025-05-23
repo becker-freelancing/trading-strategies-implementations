@@ -78,12 +78,6 @@ class TransformerModelTrainer(RegressionModelTrainer):
                 "ff_dim",
                 "dropout"]
 
-    def _get_optuna_optimization_metric_name(self):
-        return 'val_rmse'
-
-    def _get_optuna_optimization_metric_direction(self):
-        return 'minimize'
-
 
 if __name__ == "__main__":
     trainer = TransformerModelTrainer()

@@ -54,7 +54,7 @@ class PercentageEarlyStopCallback(Callback):
 
         if self.prev_value is not None:
             # Berechne die relative Änderung
-            relative_change = abs(self.prev_value - current_value) / self.prev_value
+            relative_change = abs(self.prev_value - current_value) / (self.prev_value + 1E-8)
 
             if self.verbose:
                 print(

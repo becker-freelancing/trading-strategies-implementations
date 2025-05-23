@@ -6,6 +6,7 @@ from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
 from zpython.training.regression.regression_model_trainer import RegressionModelTrainer
+from zpython.util.loss import PNLLoss
 
 
 class NNRegressionTrainer(RegressionModelTrainer):
@@ -40,7 +41,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
 
         # Modell erstellen
         model = Sequential()
-        model.add(InputLayer(shape=(input_length, 52)))
+        model.add(InputLayer(shape=(input_length, 54)))
         if flatten_before:
             model.add(Flatten())
         model.add(Dense(num_units, activation='relu'))  # Eingabeschicht
@@ -51,7 +52,7 @@ class NNRegressionTrainer(RegressionModelTrainer):
         model.add(Dense(self._get_output_length(), activation='linear'))  # Ausgangsschicht (10 Klassen für MNIST)
 
         # Kompilieren des Modells
-        model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error',
+        model.compile(optimizer=Adam(learning_rate=learning_rate), loss=PNLLoss(),
                       metrics=self._get_metrics())
 
         return model, input_length, params
@@ -59,11 +60,8 @@ class NNRegressionTrainer(RegressionModelTrainer):
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_layers", "num_units", "learning_rate", "input_length", "flatten_before"]
 
-    def _get_optuna_optimization_metric_name(self):
-        return 'val_rmse'
-
-    def _get_optuna_optimization_metric_direction(self):
-        return 'minimize'
+    def _get_train_data_limit(self) -> int:
+        return 1000
 
 
 if __name__ == "__main__":

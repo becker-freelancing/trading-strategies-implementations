@@ -30,7 +30,7 @@ from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
 import platform
 
-from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback, PercentageEarlyStopCallback
+from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback
 from zpython.training.train_util import get_device, run_study_for_model
 from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet
 
@@ -79,11 +79,11 @@ class ModelTrainer:
 
     @abstractmethod
     def _get_optuna_optimization_metric_name(self) -> str:
-        pass
+        return "val_loss"
 
     @abstractmethod
     def _get_optuna_optimization_metric_direction(self) -> str:
-        pass
+        return "minimize"
 
     @abstractmethod
     def _get_train_data_limit(self) -> int:
@@ -92,7 +92,7 @@ class ModelTrainer:
     @abstractmethod
     def _get_optuna_processes(self) -> int:
         if "Win" in platform.system() or "win" in platform.system():
-            return 2
+            return 1
         return 10
 
     @abstractmethod
@@ -128,9 +128,9 @@ class ModelTrainer:
 
     def _get_callbacks(self, trial: Trial, lock: Lock):
         custom_callbacks = self._get_custom_callbacks(trial, lock)
-        custom_callbacks.append(
-            PercentageEarlyStopCallback(trial.number, monitor='val_loss')
-        )
+        # custom_callbacks.append(
+        #     PercentageEarlyStopCallback(trial.number, monitor='val_loss')
+        # )
         custom_callbacks.append(ProgbarWithoutMetrics(trial.number))
         custom_callbacks.append(SaveModelCallback(trial, self._get_file_path, self.model_name))
         return custom_callbacks
@@ -143,13 +143,13 @@ class ModelTrainer:
 
     def _create_unsplited_data(self, train_data=True):
         if train_data:
-            data = create_indicators()
+            data = create_indicators(limit=1000)
             transform = self._get_scaler().fit_transform(data)
             data = pd.DataFrame(transform, columns=data.columns, index=data.index)
             self._save_scaler()
             return data
         else:
-            data = create_indicators(validation_data)
+            data = create_indicators(validation_data, limit=1000)
             data = pd.DataFrame(self._get_scaler().transform(data), columns=data.columns, index=data.index)
             return data
 
@@ -164,7 +164,7 @@ class ModelTrainer:
 
     def _get_metric_columns(self):
         if self.header_content is None:
-            self.header_content = [metric.name for metric in self._get_metrics()]
+            self.header_content = ["loss", "val_loss"] + [metric.name for metric in self._get_metrics()]
             self.header_content.extend([f"val_{metric.name}" for metric in self._get_metrics()])
         return self.header_content
 
@@ -229,8 +229,8 @@ class ModelTrainer:
             verbose=0
         )
 
-        score = model.evaluate(val_data_provider, verbose=0)
-        return score[1]
+        score = model.evaluate(val_data_provider, verbose=0, return_dict=True)
+        return score["loss"]
 
     def _create_train_val_data_tensor(self, chunk_size=15000):
         x_train, y_train = self._get_train_data()

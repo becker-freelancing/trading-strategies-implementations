@@ -66,12 +66,6 @@ class CNNRegressionTrainer(RegressionModelTrainer):
                 "pool_size",
                 "num_units"]
 
-    def _get_optuna_optimization_metric_name(self):
-        return 'val_rmse'
-
-    def _get_optuna_optimization_metric_direction(self):
-        return 'minimize'
-
 
 if __name__ == "__main__":
     trainer = CNNRegressionTrainer()

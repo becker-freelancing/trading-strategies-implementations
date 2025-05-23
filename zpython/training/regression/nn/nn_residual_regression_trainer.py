@@ -67,12 +67,6 @@ class NNRegressionTrainer(RegressionModelTrainer):
                 "num_units_res_prep",
                 "num_units_res"]
 
-    def _get_optuna_optimization_metric_name(self):
-        return 'val_rmse'
-
-    def _get_optuna_optimization_metric_direction(self):
-        return 'minimize'
-
 
 if __name__ == "__main__":
     trainer = NNRegressionTrainer()

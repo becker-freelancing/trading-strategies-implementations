@@ -69,6 +69,8 @@ class LazyNumpyDataSet(Dataset):
 
     def _preload(self, preload_file_idx):
         def _async_preload():
+            if not os.path.exists(self._file_path(preload_file_idx)):
+                return
             self.next_x, self.next_y, self.next_file_idx = self._load_file_sync(preload_file_idx)
 
         load_thread = threading.Thread(target=_async_preload)
