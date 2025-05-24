@@ -7,8 +7,8 @@ import pandas as pd
 import tqdm
 from statsmodels.tsa.api import VAR
 
-from zpython.indicators import create_multiple_indicators
 from zpython.util import from_relative_path, validation_data
+from zpython.util.indicator_creator import create_multiple_indicators
 
 df = create_multiple_indicators(validation_data)
 df = df.replace([np.inf, -np.inf], np.nan).dropna()

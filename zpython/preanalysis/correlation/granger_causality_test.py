@@ -3,8 +3,8 @@ import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.vector_ar.var_model import VARResultsWrapper
 
-from zpython.indicators import create_multiple_indicators
 from zpython.util import from_relative_path, analysis_data
+from zpython.util.indicator_creator import create_multiple_indicators
 
 N_BEST = 10
 

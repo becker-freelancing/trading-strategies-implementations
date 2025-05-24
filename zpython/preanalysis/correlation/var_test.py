@@ -5,7 +5,7 @@ import pandas as pd
 from statsmodels.tsa.api import VAR
 import matplotlib.pyplot as plt
 from zpython.util import analysis_data
-from zpython.indicators import create_multiple_indicators
+from zpython.util.indicator_creator import create_multiple_indicators
 import numpy as np
 import warnings
 

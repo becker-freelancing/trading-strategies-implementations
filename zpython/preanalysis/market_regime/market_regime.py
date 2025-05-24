@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pandas_ta as ta
 
-from zpython.indicators.indicator_creator import _split_on_gaps
+from zpython.util import split_on_gaps
 from zpython.util import train_data
 
 
@@ -53,7 +53,7 @@ def statistic(df):
 
 
 all = train_data()
-dfs = _split_on_gaps(all, 1)
+dfs = split_on_gaps(all, 1)
 mapped = [add_trend(add_vola(df)) for df in dfs]
 parsed = pd.concat(mapped)
 

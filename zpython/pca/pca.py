@@ -4,7 +4,7 @@ matplotlib.use("TkAgg")
 import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-from zpython.indicators.indicator_creator import create_indicators
+from zpython.util.indicator_creator import create_indicators
 from sklearn.preprocessing import MinMaxScaler
 
 

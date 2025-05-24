@@ -10,7 +10,7 @@ from keras.api.models import load_model
 
 from zpython.util.path_util import from_relative_path
 from zpython.util.data_split import validation_data
-from zpython.indicators.indicator_creator import create_indicators
+from zpython.util.indicator_creator import create_indicators
 from random import randint
 import matplotlib.pyplot as plt
 from concurrent.futures.thread import ThreadPoolExecutor

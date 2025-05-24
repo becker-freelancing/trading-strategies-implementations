@@ -1,3 +1,5 @@
+from threading import Lock
+
 from keras.api.callbacks import Callback
 from keras.api.utils import Progbar
 from optuna.trial import Trial
@@ -23,15 +25,37 @@ class ProgbarWithoutMetrics(Callback):
 
 class SaveModelCallback(Callback):
 
-    def __init__(self, trial: Trial, file_name_formatter, model_name):
+    def __init__(self, trial: Trial, file_name_formatter, model_name, regime):
         super().__init__()
         self.trial_id = trial.number
         self.file_name_formatter = file_name_formatter
         self.model_name = model_name
+        self.regime = regime
 
     def on_epoch_end(self, epoch, logs=None):
-        file_name = self.file_name_formatter(f"trial_{self.trial_id}_epoch_{epoch}_{self.model_name}.keras")
+        file_name = self.file_name_formatter(
+            f"trial_{self.trial_id}_epoch_{epoch}_{self.model_name}_{self.regime.name}.keras")
         self.model.save(file_name)
+
+
+class SaveMetricCallback(Callback):
+
+    def __init__(self, trial: Trial, file_name: str, lock: Lock, metric_columns, regime):
+        super().__init__()
+        self.trial_id = trial.number
+        self.file_name = file_name
+        self.lock = lock
+        self.metrics = metric_columns
+        self.regime = regime
+
+    def on_epoch_end(self, epoch, logs=None):
+        metrics = ",".join([str(logs[metric_name]) for metric_name in self.metrics])
+        with self.lock:
+            with open(self.file_name, "a") as file:
+                file.write(
+                    f"{self.trial_id},{epoch},{self.regime.name},{self.regime.value},{metrics}\n"
+                )
+
 
 
 class PercentageEarlyStopCallback(Callback):

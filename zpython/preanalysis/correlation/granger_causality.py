@@ -6,8 +6,8 @@ import pandas as pd
 import tqdm
 from statsmodels.tsa.api import VAR
 
-from zpython.indicators.indicator_creator import create_multiple_indicators
 from zpython.util.data_split import analysis_data, valid_time_frames
+from zpython.util.indicator_creator import create_multiple_indicators
 from zpython.util.path_util import from_relative_path
 
 

@@ -6,7 +6,7 @@ import pandas_ta as ta
 
 from zpython.util import train_data
 import warnings
-from zpython.indicators.indicator_creator import _split_on_gaps
+from zpython.util import split_on_gaps
 
 warnings.filterwarnings('ignore')
 
@@ -14,7 +14,7 @@ print("Read data")
 df = train_data()
 print("Create indicators")
 
-df = _split_on_gaps(df, 1)[2]
+df = split_on_gaps(df, 1)[2]
 df = df.reset_index(drop=True)
 
 df["EMA_200"] = ta.ema(df["closeBid"], 200)

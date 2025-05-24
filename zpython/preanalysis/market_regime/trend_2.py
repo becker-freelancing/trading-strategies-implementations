@@ -8,8 +8,8 @@ from hmmlearn.hmm import GaussianHMM
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.mixture import GaussianMixture
 
-from zpython.indicators.indicator_creator import _split_on_gaps
 from zpython.util import analysis_data
+from zpython.util import split_on_gaps
 
 warnings.filterwarnings('ignore')
 
@@ -17,7 +17,7 @@ print("Read data")
 df = analysis_data()
 print("Create indicators")
 
-df = _split_on_gaps(df, 1)[0]
+df = split_on_gaps(df, 1)[0]
 df = df[["closeTime", "closeBid"]]
 df.set_index("closeTime", inplace=True)
 

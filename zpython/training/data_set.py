@@ -3,14 +3,35 @@ import threading
 from math import floor
 
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
 from zpython.training.train_util import get_device
+from zpython.util.market_regime import MarketRegime
 
 
-class LazyNumpyDataSet(Dataset):
+class RegimeDataSet(Dataset):
 
-    def __init__(self, path_provider, input_length, limit):
+    def __init__(self, regime: MarketRegime):
+        self.regime = regime
+
+
+class RegimeDataLoader(DataLoader):
+
+    def __init__(self, data_set: RegimeDataSet, batch_size, shuffle):
+        super().__init__(dataset=data_set, batch_size=batch_size, shuffle=shuffle)
+        self.regime = data_set.regime
+
+    def feature_shape(self):
+        return self.dataset.feature_shape()
+
+    def label_shape(self):
+        return self.dataset.label_shape()
+
+
+class LazyNumpyDataSet(RegimeDataSet):
+
+    def __init__(self, path_provider, input_length, regime, limit):
+        super().__init__(regime)
         self.path_provider = path_provider
         self.input_length = input_length
         self.current_cache_idx = -1
@@ -104,25 +125,27 @@ class LazyNumpyDataSet(Dataset):
 
 class LazyTrainTensorDataSet(LazyNumpyDataSet):
 
-    def __init__(self, path_provider, input_length, limit):
+    def __init__(self, path_provider, input_length, regime, limit):
         super().__init__(path_provider,
                          input_length,
+                         regime,
                          limit)
 
     def _file_path(self, idx):
-        path = self.path_provider(idx, train=True)
+        path = self.path_provider(idx, regime=self.regime, train=True)
         return path
 
 
 class LazyValidationTensorDataSet(LazyNumpyDataSet):
 
-    def __init__(self, path_provider, input_length, limit):
+    def __init__(self, path_provider, input_length, regime, limit):
         super().__init__(path_provider,
                          input_length,
+                         regime,
                          limit)
 
     def _file_path(self, idx):
-        path = self.path_provider(idx, train=False)
+        path = self.path_provider(idx, regime=self.regime, train=False)
         return path
 
 

@@ -6,7 +6,9 @@ import pandas as pd
 import pandas_ta as ta
 import tqdm
 
+from zpython.util import split_on_gaps
 from zpython.util.data_split import train_data
+from zpython.util.market_regime import MarketRegimeDetector
 
 
 def _add_returns(data,
@@ -18,18 +20,6 @@ def _add_returns(data,
             .pipe(lambda x: x.clip(lower=x.quantile(outlier_cutoff),
                                    upper=x.quantile(1 - outlier_cutoff)))
     return data
-
-
-def _split_on_gaps(data, time_frame):
-    time_diffs = data["closeTime"].diff().dt.total_seconds()
-    start_idx = 0
-    dfs = []
-    for i in range(1, len(data)):
-        if time_diffs.iloc[i] > 60 * time_frame:
-            dfs.append(data.iloc[start_idx:i])
-            start_idx = i
-    dfs.append(data.iloc[start_idx:])
-    return dfs
 
 
 def _create_long_indicators_for_part(data, close_column, momentum_lags):
@@ -164,7 +154,8 @@ def create_indicators(data_read_function=train_data,
                       low_column='lowBid',
                       momentum_lags=(1, 2, 3, 6, 9, 12),
                       limit=100_000_000,
-                      time_frame=1):
+                      time_frame=1,
+                      regime_detector=None):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
         print(f"Reading data (M{time_frame})...")
@@ -172,8 +163,15 @@ def create_indicators(data_read_function=train_data,
         print("Creating indicators...")
         data = data.reset_index(drop=True)
         data = data.iloc[:limit]
+        data = data.sort_values(by="closeTime")
 
-        datas = _split_on_gaps(data, time_frame)
+        if not regime_detector:
+            regime_detector = MarketRegimeDetector()
+        if not regime_detector.is_fitted():
+            regime_detector.fit(data, close_column, time_frame)
+        data["regime"] = regime_detector.transform(data, close_column, time_frame)
+
+        datas = split_on_gaps(data, time_frame)
         datas = [_add_returns(part, momentum_lags, low_column) for part in datas]
         datas = [_add_returns(part, momentum_lags, close_column) for part in datas]
         datas = [_add_returns(part, momentum_lags, high_column) for part in datas]
@@ -184,7 +182,7 @@ def create_indicators(data_read_function=train_data,
         exclude_columns = ["lowBid", "lowAsk", "highBid", "highAsk", "openBid", "openAsk", "closeAsk", "closeBid"]
         data = data.drop(columns=exclude_columns)
         data.set_index("closeTime", inplace=True)
-        return data
+        return data, regime_detector
 
 
 def create_multiple_indicators(data_read_function=train_data,
@@ -203,7 +201,7 @@ def create_multiple_indicators(data_read_function=train_data,
         data = data.iloc[:limit]
 
         with_indicators = []
-        for part in tqdm.tqdm(_split_on_gaps(data, time_frame), "Creating Indicators"):
+        for part in tqdm.tqdm(split_on_gaps(data, time_frame), "Creating Indicators"):
             part = _add_returns(part, momentum_lags, low_column)
             part = _add_returns(part, momentum_lags, close_column)
             part = _add_returns(part, momentum_lags, high_column)

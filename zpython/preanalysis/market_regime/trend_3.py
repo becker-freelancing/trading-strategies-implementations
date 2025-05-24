@@ -6,7 +6,7 @@ import pandas_ta as ta
 
 from zpython.util import analysis_data
 import warnings
-from zpython.indicators.indicator_creator import _split_on_gaps
+from zpython.util import split_on_gaps
 
 warnings.filterwarnings('ignore')
 
@@ -14,7 +14,7 @@ print("Read data")
 df = analysis_data()
 print("Create indicators")
 
-df = _split_on_gaps(df, 1)[1]
+df = split_on_gaps(df, 1)[1]
 df = df.reset_index(drop=True)
 df = df[["closeBid"]]
 

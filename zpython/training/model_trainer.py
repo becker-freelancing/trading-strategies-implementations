@@ -1,5 +1,7 @@
 import warnings
 
+from zpython.model.regime_model import RegimeModel, ModelProvider
+
 # Nur das spezifische FutureWarning von torch.load filtern
 warnings.filterwarnings(
     "ignore",
@@ -17,22 +19,47 @@ from tqdm import tqdm
 import joblib
 import numpy as np
 import optuna
-import pandas as pd
 import torch
 from keras.api.callbacks import Callback
-from keras.api.models import Model
 from optuna.trial import Trial
-from torch.utils.data import DataLoader
 
-from zpython.indicators.indicator_creator import create_indicators
 from zpython.training.optuna_env_provider import get_optuna_storage_url, get_optuna_study_name
-from zpython.util.data_split import validation_data
 from zpython.util.path_util import from_relative_path
 import platform
 
 from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback, PercentageEarlyStopCallback
 from zpython.training.train_util import get_device, run_study_for_model
-from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet
+from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet, RegimeDataLoader
+from zpython.util.market_regime import MarketRegimeDetector, MarketRegime
+
+
+def _get_max_epochs_to_train() -> int:
+    return 20
+
+
+def _get_optuna_optimization_metric_name() -> str:
+    return "val_loss"
+
+
+def _get_optuna_optimization_metric_direction() -> str:
+    return "minimize"
+
+
+def _get_optuna_processes() -> int:
+    if "Win" in platform.system() or "win" in platform.system():
+        return 1
+    return 10
+
+
+def _get_optuna_trials() -> int:
+    return 30
+
+
+def _tensor_data_path(idx, regime: MarketRegime, train=True):
+    if train:
+        return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_TRAIN_{regime.name}.pt")
+    else:
+        return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_VAL_{regime.name}.pt")
 
 
 class ModelTrainer:
@@ -49,17 +76,18 @@ class ModelTrainer:
         self.trial_params_keys = None
         self.train_data_loader_provider = None
         self.val_data_loader_provider = None
+        self.regime_detector = None
 
     @abstractmethod
     def _get_max_input_length(self) -> int:
         pass
 
     @abstractmethod
-    def _get_train_data(self) -> tuple[np.ndarray, np.ndarray]:
+    def _get_train_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
         pass
 
     @abstractmethod
-    def _get_validation_data(self) -> tuple[np.ndarray, np.ndarray]:
+    def _get_validation_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
         pass
 
     @abstractmethod
@@ -67,37 +95,12 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _get_custom_callbacks(self, trial: Trial, lock: Lock) -> list[Callback]:
+    def _get_custom_callbacks(self, trial: Trial, lock: Lock, regime: MarketRegime) -> list[Callback]:
         pass
 
     @abstractmethod
-    def _create_model(self, optuna_trial: Trial) -> tuple[Model, int, dict]:
+    def _create_model(self, optuna_trial: Trial) -> tuple[ModelProvider, int, dict]:
         pass
-
-    def _get_max_epochs_to_train(self) -> int:
-        return 20
-
-    @abstractmethod
-    def _get_optuna_optimization_metric_name(self) -> str:
-        return "val_loss"
-
-    @abstractmethod
-    def _get_optuna_optimization_metric_direction(self) -> str:
-        return "minimize"
-
-    @abstractmethod
-    def _get_train_data_limit(self) -> int:
-        pass
-
-    @abstractmethod
-    def _get_optuna_processes(self) -> int:
-        if "Win" in platform.system() or "win" in platform.system():
-            return 1
-        return 10
-
-    @abstractmethod
-    def _get_optuna_trials(self) -> int:
-        return 30
 
     @abstractmethod
     def _get_optuna_trial_params(self) -> list[str]:
@@ -116,9 +119,13 @@ class ModelTrainer:
 
     def _save_scaler(self):
         scaler = self._get_scaler()
-        path = self._get_file_path(f"a-scaler_{self.model_name}.scaler")
+        path = from_relative_path(f"models-bybit/a-scaler_{self.model_name}.dump")
         joblib.dump(scaler, path)
 
+    def _save_regime_detector(self):
+        scaler = self._get_regime_detector()
+        path = from_relative_path(f"models-bybit/a-regime_detector_{self.model_name}.dump")
+        joblib.dump(scaler, path)
 
     def _limit_data(self, data):
         limit = self._get_train_data_limit()
@@ -126,13 +133,13 @@ class ModelTrainer:
             return data[len(data) - limit:]
         return data
 
-    def _get_callbacks(self, trial: Trial, lock: Lock):
-        custom_callbacks = self._get_custom_callbacks(trial, lock)
+    def _get_callbacks(self, trial: Trial, lock: Lock, regime: MarketRegime):
+        custom_callbacks = self._get_custom_callbacks(trial, lock, regime)
         custom_callbacks.append(
             PercentageEarlyStopCallback(trial.number, monitor='val_loss')
         )
         custom_callbacks.append(ProgbarWithoutMetrics(trial.number))
-        custom_callbacks.append(SaveModelCallback(trial, self._get_file_path, self.model_name))
+        custom_callbacks.append(SaveModelCallback(trial, self._get_file_path, self.model_name, regime))
         return custom_callbacks
 
     def _get_scaler(self):
@@ -141,17 +148,12 @@ class ModelTrainer:
 
         return self.scaler
 
-    def _create_unsplited_data(self, train_data=True):
-        if train_data:
-            data = create_indicators()
-            transform = self._get_scaler().fit_transform(data)
-            data = pd.DataFrame(transform, columns=data.columns, index=data.index)
-            self._save_scaler()
-            return data
-        else:
-            data = create_indicators(validation_data)
-            data = pd.DataFrame(self._get_scaler().transform(data), columns=data.columns, index=data.index)
-            return data
+    def _get_regime_detector(self):
+        if not self.regime_detector:
+            self.regime_detector = MarketRegimeDetector()
+
+        return self.regime_detector
+
 
     def _prepare_metrics_file(self):
         file_name = self._get_metric_file_path()
@@ -160,7 +162,7 @@ class ModelTrainer:
         line_content = self._get_metric_columns()
         line = ",".join(line_content)
         with open(file_name, "w") as file:
-            file.write(f"trial,epoch,{line}\n")
+            file.write(f"trial,epoch,regime_name,regime_id,{line}\n")
 
     def _get_metric_columns(self):
         if self.header_content is None:
@@ -172,7 +174,7 @@ class ModelTrainer:
         print("Preparing environment...")
         path = self._get_file_path("")
         print("Working in directory: ", path)
-        self._get_train_validation_data(self._get_max_input_length())
+        self._get_train_validation_data(self._get_max_input_length(), regime=MarketRegime.UP_LOW_VOLA)
         self._prepare_metrics_file()
         self._prepare_params_file()
 
@@ -181,16 +183,25 @@ class ModelTrainer:
         if os.path.exists(path):
             return
         with open(path, "w") as file:
-            line = ",".join(self._get_optuna_trial_params())
-            file.write(f"trial,x_train_shape,y_train_shape,x_val_shape,y_val_shape,{line}\n")
+            params = ",".join(self._get_optuna_trial_params())
+            shapes = [
+                [f"X_train_{regime}_shape", f"Y_train_{regime}_shape", f"X_val_{regime}_shape", f"Y_val_{regime}_shape"]
+                for regime in list(MarketRegime)]
+            shapes = [shape for sublist in shapes for shape in sublist]
+            shapes = ",".join(shapes)
+            file.write(f"trial,{params},{shapes}\n")
 
-    def _save_trial_params(self, trial_id, params, x_train_shape, y_train_shape, x_val_shape, y_val_shape):
+    def _save_trial_params(self, trial_id, params, data_providers):
         if len(params) != len(self._get_optuna_trial_params()):
             raise Exception(
                 f"Actual Params contain different params than expected.\n\tExpected: {self._get_optuna_trial_params()}\n\tActual:  {params.keys()}")
         with self.trials_lock:
-            line = ",".join([str(params[key]) for key in self._get_optuna_trial_params()])
-            line = f"{trial_id},{x_train_shape},{y_train_shape},{x_val_shape},{y_val_shape},{line}\n"
+            params_line = ",".join([str(params[key]) for key in self._get_optuna_trial_params()])
+            shapes = [[f"'{train.feature_shape()}'", f"'{train.label_shape()}'", f"'{val.feature_shape()}'",
+                       f"'{val.label_shape()}'"] for train, val in data_providers]
+            shapes = [shape for sublist in shapes for shape in sublist]
+            shapes = ",".join(shapes)
+            line = f"{trial_id},{params_line},{shapes}\n"
             with open(self._get_trials_file_path(), "a") as file:
                 file.write(line)
 
@@ -198,81 +209,78 @@ class ModelTrainer:
 
     def _create_objective(self, optuna_trial: Trial):
 
-        model, input_length, params = self._create_model(optuna_trial)
+        model_provider, input_length, params = self._create_model(optuna_trial)
+        model = RegimeModel(model_provider)
 
-        train_data_provider, val_data_provider = self._get_train_validation_data(input_length)
+        data_providers = [self._get_train_validation_data(input_length, regime) for regime in list(MarketRegime)]
 
-        train_feature_shape = train_data_provider.dataset.feature_shape()
-        train_label_shape = train_data_provider.dataset.label_shape()
-        val_feature_shape = val_data_provider.dataset.feature_shape()
-        val_label_shape = val_data_provider.dataset.label_shape()
-
-
-        self._save_trial_params(optuna_trial.number, params, train_feature_shape, train_label_shape, val_feature_shape,
-                                val_label_shape)
+        self._save_trial_params(optuna_trial.number, params, data_providers)
 
         model.to(get_device())
 
-        with self.trials_lock:
-            print(f"Summary:\n{model.summary()}")
-            print(f"X_Train Shape: {train_feature_shape}")
-            print(f"Y_Train Shape: {train_label_shape}")
-            print(f"X_Valid Shape: {val_feature_shape}")
-            print(f"Y_Valid Shape: {val_label_shape}")
-            print("Model Device:", next(model.parameters()).device)
+        self.print_train_env(data_providers, model)
 
-        model.fit(
-            x=train_data_provider,
-            validation_data=val_data_provider,
-            epochs=self._get_max_epochs_to_train(),
-            callbacks=self._get_callbacks(optuna_trial, self.metrics_lock),
-            verbose=0
-        )
+        for train_provider, val_provider in data_providers:
+            model.fit(
+                x=train_provider,
+                validation_data=val_provider,
+                epochs=_get_max_epochs_to_train(),
+                callbacks=self._get_callbacks(optuna_trial, self.metrics_lock, train_provider.regime),
+                verbose=0
+            )
 
-        score = model.evaluate(val_data_provider, verbose=0, return_dict=True)
+        score = model.evaluate(data_providers[0][1], verbose=0, return_dict=True)  # Todo
         return score["loss"]
 
+    def print_train_env(self, data_providers, model):
+        with self.trials_lock:
+            print(f"Summary:\n{model.summary()}")
+            for train_provider, val_provider in data_providers:
+                print(
+                    f"Data Shape for regime {train_provider.regime}: X_train {train_provider.feature_shape()}\tY_train {train_provider.label_shape()}\tX_valid {val_provider.feature_shape()}\tY_valid {val_provider.label_shape()}")
+
     def _create_train_val_data_tensor(self, chunk_size=15000):
-        x_train, y_train = self._get_train_data()
-        x_val, y_val = self._get_validation_data()
-        i = -1
-        for chunk in tqdm(range(0, len(x_train), chunk_size), "Writing train tensors"):
-            i += 1
-            torch.save((x_train[chunk:chunk + chunk_size], y_train[chunk:chunk + chunk_size]),
-                       self._tensor_data_path(i, True))
+        train_data = self._get_train_data()
+        val_data = self._get_validation_data()
 
-        i = -1
-        for chunk in tqdm(range(0, len(x_val), chunk_size), "Writing val tensors"):
-            i += 1
-            torch.save((x_val[chunk:chunk + chunk_size], y_val[chunk:chunk + chunk_size]),
-                       self._tensor_data_path(i, False))
+        for regime in train_data.keys():
+            x_train, y_train = train_data[regime]
+            i = -1
+            for chunk in tqdm(range(0, len(x_train), chunk_size), f"Writing train tensors for regime {regime.name}"):
+                i += 1
+                torch.save((x_train[chunk:chunk + chunk_size], y_train[chunk:chunk + chunk_size]),
+                           _tensor_data_path(i, regime, True))
 
-    def _create_train_val_data_loader_provider(self, input_length, batch_size, val_data_size):
+        for regime in val_data.keys():
+            x_val, y_val = val_data[regime]
+            i = -1
+            for chunk in tqdm(range(0, len(x_val), chunk_size), f"Writing val tensors for regime {regime.name}"):
+                i += 1
+                torch.save((x_val[chunk:chunk + chunk_size], y_val[chunk:chunk + chunk_size]),
+                           _tensor_data_path(i, regime, False))
+
+    def _create_train_val_data_loader_provider(self, input_length, batch_size, val_data_size, regime: MarketRegime):
         print("Creating train and validation data loader...")
-        tensor_data_path = self._tensor_data_path(0)
+        tensor_data_path = _tensor_data_path(0, regime)
         if not os.path.exists(tensor_data_path):
             self._create_train_val_data_tensor()
 
         def train_data_loader():
-            train_data_set = LazyTrainTensorDataSet(self._tensor_data_path, input_length, self._get_train_data_limit())
-            return DataLoader(train_data_set, batch_size=batch_size, shuffle=False)
+            train_data_set = LazyTrainTensorDataSet(_tensor_data_path, input_length, regime, None)
+            return RegimeDataLoader(train_data_set, batch_size=batch_size, shuffle=False)
 
         def val_data_loader():
-            val_data_set = LazyValidationTensorDataSet(self._tensor_data_path, input_length, val_data_size)
-            return DataLoader(val_data_set, batch_size=batch_size, shuffle=False)
+            val_data_set = LazyValidationTensorDataSet(_tensor_data_path, input_length, regime, val_data_size)
+            return RegimeDataLoader(val_data_set, batch_size=batch_size, shuffle=False)
 
         return train_data_loader, val_data_loader
 
-    def _tensor_data_path(self, idx, train=True):
-        if train:
-            return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_TRAIN.pt")
-        else:
-            return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_VAL.pt")
-
-    def _get_train_validation_data(self, input_length, val_data_size=210111):
+    def _get_train_validation_data(self, input_length, regime, val_data_size=210111) -> tuple[
+        RegimeDataLoader, RegimeDataLoader]:
         train_data_loader_provider, val_data_loader_provider = self._create_train_val_data_loader_provider(input_length,
                                                                                                            batch_size=256,
-                                                                                                           val_data_size=val_data_size)
+                                                                                                           val_data_size=val_data_size,
+                                                                                                           regime=regime)
         return train_data_loader_provider(), val_data_loader_provider()
 
     def _build_optuna_study_name(self):
@@ -287,14 +295,14 @@ class ModelTrainer:
             storage=self.study_storage,
 
         )
-        study.optimize(self._create_objective, n_trials=ceil(self._get_optuna_trials() / self._get_optuna_processes()))
+        study.optimize(self._create_objective, n_trials=ceil(_get_optuna_trials() / _get_optuna_processes()))
 
 
     def train_model(self):
         self._prepare_environment()
 
         self.study_storage = get_optuna_storage_url()
-        study = optuna.create_study(direction=self._get_optuna_optimization_metric_direction(),
+        study = optuna.create_study(direction=_get_optuna_optimization_metric_direction(),
                                     storage=self.study_storage,
                                     load_if_exists=True,
                                     study_name=self._build_optuna_study_name())
@@ -303,7 +311,7 @@ class ModelTrainer:
         self.trials_lock = Lock()
 
         processes = []
-        for _ in range(self._get_optuna_processes()):
+        for _ in range(_get_optuna_processes()):
             p = threading.Thread(
                 target=run_study_for_model,
                 args=(self.__class__,
