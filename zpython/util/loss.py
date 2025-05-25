@@ -2,6 +2,7 @@ import torch
 
 torch.set_printoptions(precision=3, sci_mode=False)
 from keras.api.losses import Loss
+from keras.api.metrics import Metric
 from keras.api import ops
 from keras.src.losses.loss import squeeze_or_expand_to_same_rank
 
@@ -15,7 +16,7 @@ def _sls_for_long_if_high_before_low(y_pred, y_pred_argmax):
     col_indices = ops.arange(num_cols)
     col_indices = ops.reshape(col_indices, (1, -1))
     mask = ops.cast(col_indices < ops.expand_dims(y_pred_argmax, axis=1), y_pred.dtype)
-    masked_data = y_pred * mask + (1.0 - mask) * ops.full_like(y_pred, INF)
+    masked_data = y_pred * mask + (1.0 - mask) * ops.ones_like(y_pred) * INF
     min_per_row = ops.min(masked_data, axis=1)
 
     return min_per_row
@@ -43,7 +44,7 @@ def _sls_for_short_if_low_before_high(y_pred, y_pred_argmin):
     col_indices = ops.arange(num_cols)
     col_indices = ops.reshape(col_indices, (1, -1))
     mask = ops.cast(col_indices < ops.expand_dims(y_pred_argmin, axis=1), y_pred.dtype)
-    masked_data = y_pred * mask + (1.0 - mask) * ops.full_like(y_pred, -INF)
+    masked_data = y_pred * mask + (1.0 - mask) * ops.ones_like(y_pred) * -INF
     max_per_row = ops.max(masked_data, axis=1)
 
     return max_per_row
@@ -61,7 +62,7 @@ def _indices_greater_than_value(x, y):
     mask = ops.greater_equal(x, y_expanded)
     mask_int = ops.cast(mask, dtype="int32")
     first_greater_indices = ops.argmax(mask_int, axis=1)
-    return ops.where(ops.all(mask == False, axis=1), ops.full_like(first_greater_indices, -1), first_greater_indices)
+    return ops.where(ops.all(mask == False, axis=1), ops.ones_like(first_greater_indices) * -1, first_greater_indices)
 
 
 def _indices_less_than_value(x, y):
@@ -69,39 +70,39 @@ def _indices_less_than_value(x, y):
     mask = ops.less_equal(x, y_expanded)
     mask_int = ops.cast(mask, dtype="int32")
     first_less_indices = ops.argmax(mask_int, axis=1)
-    return ops.where(ops.all(mask == False, axis=1), ops.full_like(first_less_indices, -1), first_less_indices)
+    return ops.where(ops.all(mask == False, axis=1), ops.ones_like(first_less_indices) * -1, first_less_indices)
 
 
 def _tp_reached_first_for_long(y_true_cumsum, tps, sls):
     y_true_greater_tp_indices = _indices_greater_than_value(y_true_cumsum, tps)
     y_true_less_sl_indices = _indices_less_than_value(y_true_cumsum, sls)
 
-    return ops.where(y_true_greater_tp_indices < y_true_less_sl_indices, ops.full_like(tps, True),
-                     ops.full_like(tps, False))
+    return ops.where(y_true_greater_tp_indices < y_true_less_sl_indices, ops.ones_like(tps, dtype=bool),
+                     ops.zeros_like(tps, dtype=bool))
 
 
 def _tp_reached_first_for_short(y_true_cumsum, tps, sls):
     y_true_less_tp_indices = _indices_less_than_value(y_true_cumsum, tps)
     y_true_greater_sl_indices = _indices_greater_than_value(y_true_cumsum, sls)
 
-    return ops.where(y_true_less_tp_indices < y_true_greater_sl_indices, ops.full_like(tps, True),
-                     ops.full_like(tps, False))
+    return ops.where(y_true_less_tp_indices < y_true_greater_sl_indices, ops.ones_like(tps, dtype=bool),
+                     ops.zeros_like(tps, dtype=bool))
 
 
 def _sl_reached_first_for_long(y_true_cumsum, tps, sls):
     y_true_greater_tp_indices = _indices_greater_than_value(y_true_cumsum, tps)
     y_true_less_sl_indices = _indices_less_than_value(y_true_cumsum, sls)
 
-    return ops.where(y_true_greater_tp_indices > y_true_less_sl_indices, ops.full_like(tps, True),
-                     ops.full_like(tps, False))
+    return ops.where(y_true_greater_tp_indices > y_true_less_sl_indices, ops.ones_like(tps, dtype=bool),
+                     ops.zeros_like(tps, dtype=bool))
 
 
 def _sl_reached_first_for_short(y_true_cumsum, tps, sls):
     y_true_less_tp_indices = _indices_less_than_value(y_true_cumsum, tps)
     y_true_greater_sl_indices = _indices_greater_than_value(y_true_cumsum, sls)
 
-    return ops.where(y_true_less_tp_indices > y_true_greater_sl_indices, ops.full_like(tps, True),
-                     ops.full_like(tps, False))
+    return ops.where(y_true_less_tp_indices > y_true_greater_sl_indices, ops.ones_like(tps, dtype=bool),
+                     ops.zeros_like(tps, dtype=bool))
 
 
 def _profits_for_long(tp_reached_indices, sl_reached_indices, tps, sls):
@@ -165,74 +166,118 @@ class PNLLoss(Loss):
         return -1 * profits
 
 
-class ProfitHitRatioLoss(Loss):
+class ProfitHitRatioMetric(Metric):
+    def __init__(self, name="profit_hit_ratio", **kwargs):
+        super().__init__(name=name, **kwargs)
+        self.successes = self.add_weight(name="successes", initializer="zeros")
+        self.total = self.add_weight(name="total", initializer="zeros")
 
-    def __init__(self):
-        super().__init__("profit_hitratio", "sum_over_batch_size", None)
-
-    def call(self, y_true, y_pred):
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        # Simuliere die Trades
         direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
 
-        zeros = ops.full_like(tps, 0)
-        ones = ops.full_like(tps, 1)
+        zeros = ops.zeros_like(tps)
+        ones = ops.ones_like(tps)
 
+        # Logik: wann war TP vor SL?
         profit_hit_before_loss = ops.where(tp_reached_indices < 0,
-                                           zeros,  # Falls TP nicht erreicht wurde, immer nicht erfolgreich setzen
+                                           zeros,
                                            ops.where(sl_reached_indices < 0,
                                                      ones,
-                                                     # Falls SL nicht erreicht wurde, aber TP schon ist der Trade erfolgreich
                                                      ops.where(tp_reached_indices < sl_reached_indices,
-                                                               ones,  # TP wurde vor SL erreicht
-                                                               zeros  # SL wurde vor TP erreicht
-                                                               )
-                                                     )
-                                           )
+                                                               ones,
+                                                               zeros)))
 
-        return profit_hit_before_loss
+        # Optional: sample weighting
+        if sample_weight is not None:
+            sample_weight = ops.cast(sample_weight, self.dtype)
+            profit_hit_before_loss = ops.multiply(profit_hit_before_loss, sample_weight)
+
+        # Zustände aktualisieren
+        self.successes.assign_add(ops.sum(profit_hit_before_loss))
+        self.total.assign_add(ops.cast(ops.size(profit_hit_before_loss), self.dtype))
+
+    def result(self):
+        return self.successes / (self.total + 1e-8)  # Schutz vor Division durch Null
+
+    def reset_states(self):
+        self.successes.assign(0.0)
+        self.total.assign(0.0)
 
 
-class LossHitRatioLoss(Loss):
+class LossHitRatioMetric(Metric):
+    def __init__(self, name="loss_hit_ratio", **kwargs):
+        super().__init__(name=name, **kwargs)
+        self.successes = self.add_weight(name="successes", initializer="zeros")
+        self.total = self.add_weight(name="total", initializer="zeros")
 
-    def __init__(self):
-        super().__init__("loss_hitratio", "sum_over_batch_size", None)
-
-    def call(self, y_true, y_pred):
+    def update_state(self, y_true, y_pred, sample_weight=None):
         direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
 
-        zeros = ops.full_like(tps, 0)
-        ones = ops.full_like(tps, 1)
+        zeros = ops.zeros_like(tps, dtype="float32")
+        ones = ops.ones_like(tps, dtype="float32")
 
-        loss_hit_before_loss = ops.where(tp_reached_indices < 0,
-                                         ones,  # Falls TP nicht erreicht wurde, immer nicht erfolgreich setzen
-                                         ops.where(sl_reached_indices < 0,
-                                                   zeros,
-                                                   # Falls SL nicht erreicht wurde, aber TP schon ist der Trade erfolgreich
-                                                   ops.where(tp_reached_indices < sl_reached_indices,
-                                                             zeros,  # TP wurde vor SL erreicht
-                                                             ones  # SL wurde vor TP erreicht
-                                                             )
-                                                   )
-                                         )
+        loss_hit_before_loss = ops.where(
+            tp_reached_indices < 0,
+            ones,  # TP nicht erreicht → immer erfolgreich (1)
+            ops.where(
+                sl_reached_indices < 0,
+                zeros,  # SL nicht erreicht → erfolglos (0)
+                ops.where(
+                    tp_reached_indices < sl_reached_indices,
+                    zeros,  # TP vor SL → erfolglos (0)
+                    ones  # SL vor TP → erfolgreich (1)
+                )
+            )
+        )
 
-        return loss_hit_before_loss
+        if sample_weight is not None:
+            sample_weight = ops.cast(sample_weight, self.dtype)
+            loss_hit_before_loss = loss_hit_before_loss * sample_weight
+
+        self.successes.assign_add(loss_hit_before_loss.sum())
+        self.total.assign_add(ops.cast(ops.size(loss_hit_before_loss), self.dtype))
+
+    def result(self):
+        return self.successes / (self.total + 1e-8)
+
+    def reset_states(self):
+        self.successes.assign(0.0)
+        self.total.assign(0.0)
 
 
-class NoneHitRatioLoss(Loss):
+class NoneHitRatioMetric(Metric):
+    def __init__(self, name="none_hit_ratio", **kwargs):
+        super().__init__(name=name, **kwargs)
+        self.successes = self.add_weight(name="successes", initializer="zeros")
+        self.total = self.add_weight(name="total", initializer="zeros")
 
-    def __init__(self):
-        super().__init__("none_hitratio", "sum_over_batch_size", None)
-
-    def call(self, y_true, y_pred):
+    def update_state(self, y_true, y_pred, sample_weight=None):
         direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
 
-        zeros = ops.full_like(tps, 0)
-        ones = ops.full_like(tps, 1)
+        zeros = ops.zeros_like(tps, dtype="float32")
+        ones = ops.ones_like(tps, dtype="float32")
 
-        none_hit_before_loss = ops.where(tp_reached_indices < 0,
-                                         ops.where(sl_reached_indices < 0,
-                                                   ones,
-                                                   zeros),
-                                         zeros
-                                         )
+        none_hit_before_loss = ops.where(
+            tp_reached_indices < 0,
+            ops.where(
+                sl_reached_indices < 0,
+                ones,
+                zeros
+            ),
+            zeros
+        )
 
-        return none_hit_before_loss
+        if sample_weight is not None:
+            sample_weight = ops.cast(sample_weight, self.dtype)
+            none_hit_before_loss = none_hit_before_loss * sample_weight
+
+        self.successes.assign_add(none_hit_before_loss.sum())
+        self.total.assign_add(ops.cast(ops.size(none_hit_before_loss), self.dtype))
+
+    def result(self):
+        return self.successes / (self.total + 1e-8)
+
+    def reset_states(self):
+        self.successes.assign(0.0)
+        self.total.assign(0.0)

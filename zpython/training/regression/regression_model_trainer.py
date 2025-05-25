@@ -12,7 +12,7 @@ from tqdm import tqdm
 from zpython.training.callbacks import SaveMetricCallback
 from zpython.training.model_trainer import ModelTrainer
 from zpython.util.data_split import validation_data, train_data
-from zpython.util.loss import ProfitHitRatioLoss, LossHitRatioLoss, NoneHitRatioLoss
+from zpython.util.loss import ProfitHitRatioMetric, LossHitRatioMetric, NoneHitRatioMetric
 from zpython.util.market_regime import MarketRegime
 from zpython.util.model_data_creator import get_model_data_by_regime
 
@@ -110,8 +110,8 @@ class RegressionModelTrainer(ModelTrainer):
 
     def _get_metrics(self) -> list:
         return [MeanSquaredError(), RootMeanSquaredError(), MeanAbsoluteError(), MeanAbsolutePercentageError(),
-                MeanSquaredLogarithmicError(), LogCoshError(), ProfitHitRatioLoss(), LossHitRatioLoss(),
-                NoneHitRatioLoss()]
+                MeanSquaredLogarithmicError(), LogCoshError(), ProfitHitRatioMetric(), LossHitRatioMetric(),
+                NoneHitRatioMetric()]
 
     def _get_custom_callbacks(self, trial: Trial, lock: Lock, regime: MarketRegime) -> list[Callback]:
         return [SaveMetricCallback(trial, self._get_metric_file_path(), lock, self._get_metric_columns(), regime)]
