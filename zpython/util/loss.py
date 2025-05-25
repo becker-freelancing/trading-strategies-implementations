@@ -1,23 +1,12 @@
 import torch
 
 torch.set_printoptions(precision=3, sci_mode=False)
-import numpy as np
 from keras.api.losses import Loss
 from keras.api import ops
 from keras.src.losses.loss import squeeze_or_expand_to_same_rank
 
 EPSILON = 0.1
 INF = 9999999999
-
-def huber_loss_np(y_true, y_pred, delta=0.03):
-    error = y_true - y_pred
-    is_small_error = np.abs(error) <= delta
-
-    squared_loss = 0.5 * error ** 2
-    linear_loss = delta * (np.abs(error) - 0.5 * delta)
-
-    return np.where(is_small_error, squared_loss, linear_loss).mean()
-
 
 def _sls_for_long_if_high_before_low(y_pred, y_pred_argmax):
     # Suche Minima vor Max-Index
@@ -84,7 +73,7 @@ def _indices_less_than_value(x, y):
 
 
 def _tp_reached_first_for_long(y_true_cumsum, tps, sls):
-    y_true_greater_tp_indices = _indices_greater_than_value(y_true_cumsum, tps)  # TODO: Umgang mit TP nicht getroffen
+    y_true_greater_tp_indices = _indices_greater_than_value(y_true_cumsum, tps)
     y_true_less_sl_indices = _indices_less_than_value(y_true_cumsum, sls)
 
     return ops.where(y_true_greater_tp_indices < y_true_less_sl_indices, ops.full_like(tps, True),
@@ -92,7 +81,7 @@ def _tp_reached_first_for_long(y_true_cumsum, tps, sls):
 
 
 def _tp_reached_first_for_short(y_true_cumsum, tps, sls):
-    y_true_less_tp_indices = _indices_less_than_value(y_true_cumsum, tps)  # TODO: Umgang mit TP nicht getroffen
+    y_true_less_tp_indices = _indices_less_than_value(y_true_cumsum, tps)
     y_true_greater_sl_indices = _indices_greater_than_value(y_true_cumsum, sls)
 
     return ops.where(y_true_less_tp_indices < y_true_greater_sl_indices, ops.full_like(tps, True),
@@ -100,7 +89,7 @@ def _tp_reached_first_for_short(y_true_cumsum, tps, sls):
 
 
 def _sl_reached_first_for_long(y_true_cumsum, tps, sls):
-    y_true_greater_tp_indices = _indices_greater_than_value(y_true_cumsum, tps)  # TODO: Umgang mit TP nicht getroffen
+    y_true_greater_tp_indices = _indices_greater_than_value(y_true_cumsum, tps)
     y_true_less_sl_indices = _indices_less_than_value(y_true_cumsum, sls)
 
     return ops.where(y_true_greater_tp_indices > y_true_less_sl_indices, ops.full_like(tps, True),
@@ -108,7 +97,7 @@ def _sl_reached_first_for_long(y_true_cumsum, tps, sls):
 
 
 def _sl_reached_first_for_short(y_true_cumsum, tps, sls):
-    y_true_less_tp_indices = _indices_less_than_value(y_true_cumsum, tps)  # TODO: Umgang mit TP nicht getroffen
+    y_true_less_tp_indices = _indices_less_than_value(y_true_cumsum, tps)
     y_true_greater_sl_indices = _indices_greater_than_value(y_true_cumsum, sls)
 
     return ops.where(y_true_less_tp_indices > y_true_greater_sl_indices, ops.full_like(tps, True),
@@ -133,47 +122,117 @@ def _profits_for_short(tp_reached_indices, sl_reached_indices, tps, sls):
     return -1 * _profits_for_long(tp_reached_indices, sl_reached_indices, tps, sls)
 
 
+def _simulate_trades(y_pred, y_true):
+    y_true = ops.convert_to_tensor(y_true)
+    y_pred = ops.convert_to_tensor(y_pred)
+    y_true, y_pred = squeeze_or_expand_to_same_rank(y_true, y_pred)
+    y_pred_cumsum = ops.cumsum(y_pred, axis=1)
+    y_pred_max = ops.max(y_pred_cumsum, axis=1)
+    y_pred_min = ops.min(y_pred_cumsum, axis=1)
+    # Falls |High| > |Low| Long Position (1), sonst Short (-1)
+    direction_factor = ops.where((ops.abs(y_pred_max) > ops.abs(y_pred_min)), 1, -1)
+    # Bestimmung von SL und TP
+    y_pred_argmax = ops.argmax(y_pred_cumsum, axis=1)
+    y_pred_argmin = ops.argmin(y_pred_cumsum, axis=1)
+    # Für Long-Positionen ist globales Maximum TP. Für Short ist globales Minimum TP
+    tps = ops.where(direction_factor == 1, y_pred_max, y_pred_min)
+    sls = ops.where(direction_factor == 1,
+                    _sls_for_long(y_pred, y_pred_min, y_pred_argmax, y_pred_argmin),
+                    _sls_for_short(y_pred, y_pred_max, y_pred_argmax, y_pred_argmin))
+    # Für jeden Trade P&L berechnen
+    y_true_cumsum = ops.cumsum(y_true, axis=1)
+    tp_reached_indices = ops.where(direction_factor == 1,
+                                   _indices_greater_than_value(y_true_cumsum, tps),
+                                   _indices_less_than_value(y_true_cumsum, tps))
+    sl_reached_indices = ops.where(direction_factor == 1,
+                                   _indices_less_than_value(y_true_cumsum, sls),
+                                   _indices_greater_than_value(y_true_cumsum, sls))
+    return direction_factor, sl_reached_indices, sls, tp_reached_indices, tps
+
+
 class PNLLoss(Loss):
 
     def __init__(self):
         super().__init__("pnl", "sum_over_batch_size", None)
 
     def call(self, y_true, y_pred):
-        y_true = ops.convert_to_tensor(y_true)
-        y_pred = ops.convert_to_tensor(y_pred)
-        y_true, y_pred = squeeze_or_expand_to_same_rank(y_true, y_pred)
-
-        y_pred_cumsum = ops.cumsum(y_pred, axis=1)
-        y_pred_max = ops.max(y_pred_cumsum, axis=1)
-        y_pred_min = ops.min(y_pred_cumsum, axis=1)
-
-        # Falls |High| > |Low| Long Position (1), sonst Short (-1)
-        direction_factor = ops.where((ops.abs(y_pred_max) > ops.abs(y_pred_min)), 1, -1)
-
-        # Bestimmung von SL und TP
-        y_pred_argmax = ops.argmax(y_pred_cumsum, axis=1)
-        y_pred_argmin = ops.argmin(y_pred_cumsum, axis=1)
-
-        # Für Long-Positionen ist globales Maximum TP. Für Short ist globales Minimum TP
-        tps = ops.where(direction_factor == 1, y_pred_max, y_pred_min)
-
-        sls = ops.where(direction_factor == 1,
-                        _sls_for_long(y_pred, y_pred_min, y_pred_argmax, y_pred_argmin),
-                        _sls_for_short(y_pred, y_pred_max, y_pred_argmax, y_pred_argmin))
-
-        # Für jeden Trade P&L berechnen
-        y_true_cumsum = ops.cumsum(y_true, axis=1)
-
-        tp_reached_indices = ops.where(direction_factor == 1,
-                                       _indices_greater_than_value(y_true_cumsum, tps),
-                                       _indices_less_than_value(y_true_cumsum, tps))
-
-        sl_reached_indices = ops.where(direction_factor == 1,
-                                       _indices_less_than_value(y_true_cumsum, sls),
-                                       _indices_greater_than_value(y_true_cumsum, sls))
+        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
 
         profits = ops.where(direction_factor == 1,
                             _profits_for_long(tp_reached_indices, sl_reached_indices, tps, sls),
                             _profits_for_short(tp_reached_indices, sl_reached_indices, tps, sls))
 
         return -1 * profits
+
+
+class ProfitHitRatioLoss(Loss):
+
+    def __init__(self):
+        super().__init__("profit_hitratio", "sum_over_batch_size", None)
+
+    def call(self, y_true, y_pred):
+        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
+
+        zeros = ops.full_like(tps, 0)
+        ones = ops.full_like(tps, 1)
+
+        profit_hit_before_loss = ops.where(tp_reached_indices < 0,
+                                           zeros,  # Falls TP nicht erreicht wurde, immer nicht erfolgreich setzen
+                                           ops.where(sl_reached_indices < 0,
+                                                     ones,
+                                                     # Falls SL nicht erreicht wurde, aber TP schon ist der Trade erfolgreich
+                                                     ops.where(tp_reached_indices < sl_reached_indices,
+                                                               ones,  # TP wurde vor SL erreicht
+                                                               zeros  # SL wurde vor TP erreicht
+                                                               )
+                                                     )
+                                           )
+
+        return profit_hit_before_loss
+
+
+class LossHitRatioLoss(Loss):
+
+    def __init__(self):
+        super().__init__("loss_hitratio", "sum_over_batch_size", None)
+
+    def call(self, y_true, y_pred):
+        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
+
+        zeros = ops.full_like(tps, 0)
+        ones = ops.full_like(tps, 1)
+
+        loss_hit_before_loss = ops.where(tp_reached_indices < 0,
+                                         ones,  # Falls TP nicht erreicht wurde, immer nicht erfolgreich setzen
+                                         ops.where(sl_reached_indices < 0,
+                                                   zeros,
+                                                   # Falls SL nicht erreicht wurde, aber TP schon ist der Trade erfolgreich
+                                                   ops.where(tp_reached_indices < sl_reached_indices,
+                                                             zeros,  # TP wurde vor SL erreicht
+                                                             ones  # SL wurde vor TP erreicht
+                                                             )
+                                                   )
+                                         )
+
+        return loss_hit_before_loss
+
+
+class NoneHitRatioLoss(Loss):
+
+    def __init__(self):
+        super().__init__("none_hitratio", "sum_over_batch_size", None)
+
+    def call(self, y_true, y_pred):
+        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
+
+        zeros = ops.full_like(tps, 0)
+        ones = ops.full_like(tps, 1)
+
+        none_hit_before_loss = ops.where(tp_reached_indices < 0,
+                                         ops.where(sl_reached_indices < 0,
+                                                   ones,
+                                                   zeros),
+                                         zeros
+                                         )
+
+        return none_hit_before_loss
