@@ -5,7 +5,9 @@ from keras.api.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
+from zpython.model.regime_model import ModelProvider
 from zpython.training.regression.regression_model_trainer import RegressionModelTrainer
+from zpython.util.loss import PNLLoss
 
 
 class NNRegressionTrainer(RegressionModelTrainer):
@@ -39,26 +41,28 @@ class NNRegressionTrainer(RegressionModelTrainer):
         }
 
         # Modell erstellen
-        model = Sequential()
-        model.add(InputLayer(shape=(input_length, 52)))
-        if num_layers == 1:
-            model.add(Bidirectional(LSTM(num_units_input, return_sequences=False)))
-        else:
-            model.add(Bidirectional(LSTM(num_units_input, return_sequences=True)))
-
-        for i in range(num_layers - 1):  # Weitere Schichten
-            if i == num_layers - 2:
-                model.add(Bidirectional(LSTM(num_units, return_sequences=False)))
+        def model_provider(input_dimension):
+            model = Sequential()
+            model.add(InputLayer(shape=(input_length, input_dimension)))
+            if num_layers == 1:
+                model.add(Bidirectional(LSTM(num_units_input, return_sequences=False)))
             else:
-                model.add(Bidirectional(LSTM(num_units, return_sequences=True)))
+                model.add(Bidirectional(LSTM(num_units_input, return_sequences=True)))
 
-        model.add(Dense(self._get_output_length(), activation='linear'))
+            for i in range(num_layers - 1):  # Weitere Schichten
+                if i == num_layers - 2:
+                    model.add(Bidirectional(LSTM(num_units, return_sequences=False)))
+                else:
+                    model.add(Bidirectional(LSTM(num_units, return_sequences=True)))
 
-        # Kompilieren des Modells
-        model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error',
-                      metrics=self._get_metrics())
+            model.add(Dense(self._get_output_length(), activation='linear'))
 
-        return model, input_length, params
+            # Kompilieren des Modells
+            model.compile(optimizer=Adam(learning_rate=learning_rate), loss=PNLLoss(),
+                          metrics=self._get_metrics())
+            return model
+
+        return ModelProvider(model_provider), input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_layers", "num_units", "learning_rate", "input_length", "num_units_input"]

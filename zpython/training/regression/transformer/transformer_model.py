@@ -5,7 +5,9 @@ from keras.api.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
+from zpython.model.regime_model import ModelProvider
 from zpython.training.regression.regression_model_trainer import RegressionModelTrainer
+from zpython.util.loss import PNLLoss
 
 
 class TransformerModelTrainer(RegressionModelTrainer):
@@ -54,21 +56,24 @@ class TransformerModelTrainer(RegressionModelTrainer):
             "dropout": dropout
         }
 
-        # Modell erstellen
-        inputs = Input(shape=(input_length, 52))
+        def model_provider(input_dimension):
+            # Modell erstellen
+            inputs = Input(shape=(input_length, input_dimension))
 
-        x = self.transformer_encoder(inputs, head_size=head_size, num_heads=num_heads, ff_dim=ff_dim, dropout=dropout)
-        x = self.transformer_encoder(x, head_size=head_size, num_heads=num_heads, ff_dim=ff_dim, dropout=dropout)
+            x = self.transformer_encoder(inputs, head_size=head_size, num_heads=num_heads, ff_dim=ff_dim,
+                                         dropout=dropout)
+            x = self.transformer_encoder(x, head_size=head_size, num_heads=num_heads, ff_dim=ff_dim, dropout=dropout)
 
-        x = GlobalAveragePooling1D()(x)
-        x = Dense(128, activation="relu")(x)
-        x = Dropout(0.2)(x)
-        outputs = Dense(self._get_output_length())(x)
+            x = GlobalAveragePooling1D()(x)
+            x = Dense(128, activation="relu")(x)
+            x = Dropout(0.2)(x)
+            outputs = Dense(self._get_output_length())(x)
 
-        model = Model(inputs, outputs)
-        model.compile(optimizer=Adam(learning_rate=learning_rate), loss="mse", metrics=self._get_metrics())
+            model = Model(inputs, outputs)
+            model.compile(optimizer=Adam(learning_rate=learning_rate), loss=PNLLoss(), metrics=self._get_metrics())
+            return model
 
-        return model, input_length, params
+        return ModelProvider(model_provider), input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_heads",

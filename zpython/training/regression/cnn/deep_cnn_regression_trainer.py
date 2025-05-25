@@ -5,7 +5,9 @@ from keras.api.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
+from zpython.model.regime_model import ModelProvider
 from zpython.training.regression.regression_model_trainer import RegressionModelTrainer
+from zpython.util.loss import PNLLoss
 
 
 class CNNRegressionTrainer(RegressionModelTrainer):
@@ -43,23 +45,25 @@ class CNNRegressionTrainer(RegressionModelTrainer):
         }
 
         # Modell erstellen
-        model = Sequential()
-        model.add(InputLayer(shape=(input_length, 52)))
-        model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu", padding="same"))
-        model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu", padding="same"))
-        model.add(MaxPooling1D(pool_size=pool_size))
-        if flatten_before:
-            model.add(Flatten())
-        model.add(Dense(num_units, activation="relu"))
-        if not flatten_before:
-            model.add(Flatten())
-        model.add(Dense(self._get_output_length()))
+        def model_provider(input_dimension):
+            model = Sequential()
+            model.add(InputLayer(shape=(input_length, input_dimension)))
+            model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu", padding="same"))
+            model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu", padding="same"))
+            model.add(MaxPooling1D(pool_size=pool_size))
+            if flatten_before:
+                model.add(Flatten())
+            model.add(Dense(num_units, activation="relu"))
+            if not flatten_before:
+                model.add(Flatten())
+            model.add(Dense(self._get_output_length()))
 
-        # Kompilieren des Modells
-        model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error',
-                      metrics=self._get_metrics())
+            # Kompilieren des Modells
+            model.compile(optimizer=Adam(learning_rate=learning_rate), loss=PNLLoss(),
+                          metrics=self._get_metrics())
+            return model
 
-        return model, input_length, params
+        return ModelProvider(model_provider), input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_units_cnn",

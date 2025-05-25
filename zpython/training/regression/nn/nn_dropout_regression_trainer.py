@@ -5,7 +5,9 @@ from keras.api.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
+from zpython.model.regime_model import ModelProvider
 from zpython.training.regression.regression_model_trainer import RegressionModelTrainer
+from zpython.util.loss import PNLLoss
 
 
 class NNRegressionTrainer(RegressionModelTrainer):
@@ -41,22 +43,24 @@ class NNRegressionTrainer(RegressionModelTrainer):
         }
 
         # Modell erstellen
-        model = Sequential()
-        model.add(InputLayer(shape=(input_length, 52)))
-        model.add(Flatten())
-        model.add(Dense(num_units_1, activation='relu'))  # Eingabeschicht
-        model.add(BatchNormalization())
-        model.add(Dropout(dropout))
-        for _ in range(num_layers - 1):  # Weitere Schichten
-            model.add(Dense(num_units_2, activation='relu'))
-        model.add(Dropout(dropout))
-        model.add(Dense(self._get_output_length(), activation='linear'))  # Ausgangsschicht (10 Klassen für MNIST)
+        def model_provider(input_dimension):
+            model = Sequential()
+            model.add(InputLayer(shape=(input_length, input_dimension)))
+            model.add(Flatten())
+            model.add(Dense(num_units_1, activation='relu'))  # Eingabeschicht
+            model.add(BatchNormalization())
+            model.add(Dropout(dropout))
+            for _ in range(num_layers - 1):  # Weitere Schichten
+                model.add(Dense(num_units_2, activation='relu'))
+            model.add(Dropout(dropout))
+            model.add(Dense(self._get_output_length(), activation='linear'))  # Ausgangsschicht (10 Klassen für MNIST)
 
-        # Kompilieren des Modells
-        model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error',
-                      metrics=self._get_metrics())
+            # Kompilieren des Modells
+            model.compile(optimizer=Adam(learning_rate=learning_rate), loss=PNLLoss(),
+                          metrics=self._get_metrics())
+            return model
 
-        return model, input_length, params
+        return ModelProvider(model_provider), input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
         return ["num_layers",
