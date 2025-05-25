@@ -1,9 +1,14 @@
+import pandas as pd
+
 from zpython.util.data_split import analysis_data, valid_time_frames, train_data, validation_data
 from zpython.util.path_util import from_relative_path
 
 
 def split_on_gaps(data, time_frame):
-    time_diffs = data["closeTime"].diff().dt.total_seconds()
+    if "closeTime" in data.columns.values:
+        time_diffs = data["closeTime"].diff().dt.total_seconds()
+    else:
+        time_diffs = pd.Series(data.index.diff().total_seconds())
     start_idx = 0
     dfs = []
     for i in range(1, len(data)):

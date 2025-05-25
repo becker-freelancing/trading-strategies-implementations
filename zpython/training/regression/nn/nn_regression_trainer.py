@@ -39,10 +39,10 @@ class NNRegressionTrainer(RegressionModelTrainer):
             "flatten_before": flatten_before
         }
 
-        def model_provider():
+        def model_provider(input_dimension):
             # Modell erstellen
             model = Sequential()
-            model.add(InputLayer(shape=(input_length, 56)))
+            model.add(InputLayer(shape=(input_length, input_dimension)))
             if flatten_before:
                 model.add(Flatten())
             model.add(Dense(num_units, activation='relu'))  # Eingabeschicht

@@ -21,14 +21,14 @@ class ModelProvider:
     def __init__(self, provider_fn):
         self.provider_fn = provider_fn
 
-    def get(self):
-        return self.provider_fn()
+    def get(self, input_dimension):
+        return self.provider_fn(input_dimension)
 
 
 class RegimeModel:
 
-    def __init__(self, model_provider: ModelProvider):
-        self.regime_models = {regime: model_provider.get() for regime in list(MarketRegime)}
+    def __init__(self, model_provider: ModelProvider, input_dimensions: dict[MarketRegime, int]):
+        self.regime_models = {regime: model_provider.get(input_dimensions[regime]) for regime in list(MarketRegime)}
 
     def to(self, to: device):
         for model in self.regime_models.values():

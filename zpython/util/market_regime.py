@@ -33,6 +33,23 @@ def market_regime_to_number(regime: MarketRegime):
     return regime.value
 
 
+def market_regime_to_number_if_needed(df: pd.DataFrame, regime_column="regime"):
+    if isinstance(df[regime_column].iloc[0], MarketRegime):
+        df[regime_column] = df[regime_column].apply(market_regime_to_number)
+    return df
+
+
+def split_on_regimes(df: pd.DataFrame, regime_column="regime") -> dict[MarketRegime, pd.DataFrame]:
+    result = {}
+    if isinstance(df[regime_column].iloc[0], MarketRegime):
+        for regime in list(MarketRegime):
+            result[regime] = df[df[regime_column] == regime]
+    else:
+        for regime in list(MarketRegime):
+            result[regime] = df[df[regime_column] == regime.value]
+
+    return result
+
 
 
 class MarketRegimeDetector:

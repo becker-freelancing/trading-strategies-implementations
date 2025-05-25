@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 def pca():
-    df = create_indicators()
+    df = create_indicators()[0]
     df = df.dropna()
     X = df.to_numpy()
     X = MinMaxScaler().fit_transform(X)

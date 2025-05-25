@@ -16,7 +16,7 @@ from zpython.util.market_regime import MarketRegime
 from zpython.util.model_data_creator import get_model_data_by_regime
 
 
-def transform(scaler, data: dict[MarketRegime, list[pd.DataFrame]]) -> dict[MarketRegime, list[pd.DataFrame]]:
+def transform(scaler, data: dict[MarketRegime, list[pd.DataFrame]]) -> dict[MarketRegime, list[np.ndarray]]:
     for key in tqdm(data.keys(), "Scaling Data"):
         value = data[key]
         value = [scaler.transform(df) for df in value]
@@ -40,7 +40,8 @@ class RegressionModelTrainer(ModelTrainer):
         target = self._get_target_column()
         return complete_data.columns.get_loc(target)
 
-    def _create_unsplited_data(self, load_train_data=True) -> tuple[dict[MarketRegime, list[pd.DataFrame]], int]:
+    def _create_unsplited_data(self, load_train_data=True) -> tuple[
+        dict[MarketRegime, list[np.ndarray]], dict[MarketRegime, list[np.ndarray]], int]:
         if load_train_data:
             slices, complete_data, self.regime_detector = get_model_data_by_regime(train_data,
                                                                                    self._get_max_input_length(),
@@ -48,38 +49,46 @@ class RegressionModelTrainer(ModelTrainer):
                                                                                    self._get_regime_detector())
             self._get_scaler().fit(complete_data)
             slices = transform(self._get_scaler(), slices)
+            self._get_regime_pca().fit(complete_data, self._get_scaler())
+            reduced_slices = self._get_regime_pca().transform(slices)
+
             self._save_scaler()
             self._save_regime_detector()
-            return slices, self._get_target_column_idx(complete_data)
+            self._save_pca()
+
+            return slices, reduced_slices, self._get_target_column_idx(complete_data)
         else:
             slices, complete_data, self.regime_detector = get_model_data_by_regime(validation_data,
                                                                                    self._get_max_input_length(),
                                                                                    self._get_output_length(),
                                                                                    self._get_regime_detector())
             slices = transform(self._get_scaler(), slices)
-            return slices, self._get_target_column_idx(complete_data)
+            reduced_slices = self._get_regime_pca().transform(slices)
+            return slices, reduced_slices, self._get_target_column_idx(complete_data)
 
     def _get_train_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
-        train_data, target_column_idx = self._create_unsplited_data(load_train_data=True)
-        return self._parse_input_output(train_data, target_column_idx)
+        train_data, reduced_train_data, target_column_idx = self._create_unsplited_data(load_train_data=True)
+        return self._parse_input_output(train_data, reduced_train_data, target_column_idx)
 
     def _get_validation_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
-        validation_data, target_column_idx = self._create_unsplited_data(load_train_data=False)
-        return self._parse_input_output(validation_data, target_column_idx)
+        validation_data, reduced_train_data, target_column_idx = self._create_unsplited_data(load_train_data=False)
+        return self._parse_input_output(validation_data, reduced_train_data, target_column_idx)
 
-    def _parse_input_output(self, train_data: dict[MarketRegime, list[pd.DataFrame]], target_column_idx) -> dict[
+    def _parse_input_output(self, data: dict[MarketRegime, list[np.ndarray]],
+                            reduced_data: dict[MarketRegime, list[np.ndarray]], target_column_idx) -> dict[
         MarketRegime, tuple[np.ndarray, np.ndarray]]:
         result = {}
-        for regime in train_data.keys():
-            print(f"Creating input- and output-sequences for regime {regime}...")
-            data = train_data[regime]
-            input_data, output_data = self._create_input_output_sequences(data, target_column_idx)
+        for regime in tqdm(data.keys(), "Create input- and output-sequences"):
+            regime_data = data[regime]
+            reduced_regime_data = reduced_data[regime]
+            input_data, output_data = self._create_input_output_sequences(regime_data, reduced_regime_data,
+                                                                          target_column_idx)
             output_data = output_data.reshape(-1, output_data.shape[1])
             result[regime] = (input_data, output_data)
 
         return result
 
-    def _create_input_output_sequences(self, data: list[pd.DataFrame], target_column_idx):
+    def _create_input_output_sequences(self, data: list[np.ndarray], reduced_data: list[np.ndarray], target_column_idx):
 
         input_length = self._get_max_input_length()
         output_length = self._get_output_length()
@@ -90,7 +99,7 @@ class RegressionModelTrainer(ModelTrainer):
         if len(data[0]) != input_length + output_length:
             raise Exception(f"Length of Data must be {input_length + output_length}, but was {len(data[0])}")
 
-        input_data_np = [df[:input_length, :] for df in data]
+        input_data_np = [df[:input_length, :] for df in reduced_data]
         output_data_np = [df[:, target_column_idx].reshape(-1, 1)[input_length:, :] for df in data]
 
         input_sequences = np.stack(input_data_np)

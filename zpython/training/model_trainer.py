@@ -1,6 +1,7 @@
 import warnings
 
 from zpython.model.regime_model import RegimeModel, ModelProvider
+from zpython.util.regime_pca import MarketRegimePCA
 
 # Nur das spezifische FutureWarning von torch.load filtern
 warnings.filterwarnings(
@@ -77,6 +78,7 @@ class ModelTrainer:
         self.train_data_loader_provider = None
         self.val_data_loader_provider = None
         self.regime_detector = None
+        self.regime_pca = None
 
     @abstractmethod
     def _get_max_input_length(self) -> int:
@@ -119,12 +121,17 @@ class ModelTrainer:
 
     def _save_scaler(self):
         scaler = self._get_scaler()
-        path = from_relative_path(f"models-bybit/a-scaler_{self.model_name}.dump")
+        path = from_relative_path(f"data-bybit/a-scaler_{self.model_name}.dump")
         joblib.dump(scaler, path)
 
     def _save_regime_detector(self):
         scaler = self._get_regime_detector()
-        path = from_relative_path(f"models-bybit/a-regime_detector_{self.model_name}.dump")
+        path = from_relative_path(f"data-bybit/a-regime_detector_{self.model_name}.dump")
+        joblib.dump(scaler, path)
+
+    def _save_pca(self):
+        scaler = self._get_regime_pca()
+        path = from_relative_path(f"data-bybit/a-regime_pca_{self.model_name}.dump")
         joblib.dump(scaler, path)
 
     def _limit_data(self, data):
@@ -153,6 +160,12 @@ class ModelTrainer:
             self.regime_detector = MarketRegimeDetector()
 
         return self.regime_detector
+
+    def _get_regime_pca(self):
+        if not self.regime_pca:
+            self.regime_pca = MarketRegimePCA(0.8)
+
+        return self.regime_pca
 
 
     def _prepare_metrics_file(self):
@@ -210,9 +223,11 @@ class ModelTrainer:
     def _create_objective(self, optuna_trial: Trial):
 
         model_provider, input_length, params = self._create_model(optuna_trial)
-        model = RegimeModel(model_provider)
 
         data_providers = [self._get_train_validation_data(input_length, regime) for regime in list(MarketRegime)]
+
+        input_dimensions = {provider[0].regime: provider[0].feature_shape()[2] for provider in data_providers}
+        model = RegimeModel(model_provider, input_dimensions)
 
         self._save_trial_params(optuna_trial.number, params, data_providers)
 
