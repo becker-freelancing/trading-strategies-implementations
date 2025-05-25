@@ -71,6 +71,10 @@ class NNRegressionTrainer(RegressionModelTrainer):
                 "input_length"]
 
 
-if __name__ == "__main__":
+def train_dropout_nn():
     trainer = NNRegressionTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train_dropout_nn()

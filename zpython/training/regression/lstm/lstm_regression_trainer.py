@@ -68,6 +68,10 @@ class NNRegressionTrainer(RegressionModelTrainer):
         return ["num_layers", "num_units", "learning_rate", "input_length", "num_units_input"]
 
 
-if __name__ == "__main__":
+def train_lstm():
     trainer = NNRegressionTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train_lstm()

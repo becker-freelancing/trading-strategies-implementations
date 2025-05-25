@@ -84,6 +84,10 @@ class TransformerModelTrainer(RegressionModelTrainer):
                 "dropout"]
 
 
-if __name__ == "__main__":
+def train_transformer():
     trainer = TransformerModelTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train_transformer()

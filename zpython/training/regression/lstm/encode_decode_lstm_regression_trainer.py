@@ -59,6 +59,10 @@ class NNRegressionTrainer(RegressionModelTrainer):
         return ["num_layers", "num_units", "learning_rate", "num_units_dropout"]
 
 
-if __name__ == "__main__":
+def train_encode_decose_lstm():
     trainer = NNRegressionTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train_encode_decose_lstm()

@@ -72,6 +72,10 @@ class NNRegressionTrainer(RegressionModelTrainer):
                 "num_units_res"]
 
 
-if __name__ == "__main__":
+def train_residual_nn():
     trainer = NNRegressionTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train_residual_nn()

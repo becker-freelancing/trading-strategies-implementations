@@ -72,6 +72,10 @@ class NNRegressionTrainer(RegressionModelTrainer):
         return ["num_layers", "num_units", "learning_rate", "input_length", "num_units_input", "dropout"]
 
 
-if __name__ == "__main__":
+def train_dropout_lstm():
     trainer = NNRegressionTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train_dropout_lstm()

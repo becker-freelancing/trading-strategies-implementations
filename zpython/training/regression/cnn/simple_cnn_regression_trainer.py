@@ -74,6 +74,10 @@ class CNNRegressionTrainer(RegressionModelTrainer):
                 "num_units"]
 
 
-if __name__ == "__main__":
+def train():
     trainer = CNNRegressionTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train()
