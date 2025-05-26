@@ -14,16 +14,7 @@ from zpython.util.training.loss import PNLLoss
 class CNNRegressionTrainer(SequenceRegressionModelTrainer):
 
     def __init__(self):
-        super().__init__("simplecnn", MinMaxScaler)
-
-    def _get_output_length(self):
-        return 30
-
-    def _get_target_column(self):
-        return "logReturn_closeBid_1min"
-
-    def _get_max_input_length(self) -> int:
-        return 150
+        super().__init__("deepcnn_single", MinMaxScaler)
 
     def _create_model(self, trial: Trial) -> (Model, int, dict):
         # Hyperparameter von Optuna
@@ -49,7 +40,8 @@ class CNNRegressionTrainer(SequenceRegressionModelTrainer):
         def model_provider(input_dimension):
             model = Sequential()
             model.add(InputLayer(shape=(input_length, input_dimension)))
-            model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu"))
+            model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu", padding="same"))
+            model.add(Conv1D(num_units_cnn, kernel_size=kernel_size, activation="relu", padding="same"))
             model.add(MaxPooling1D(pool_size=pool_size))
             if flatten_before:
                 model.add(Flatten())
@@ -75,10 +67,10 @@ class CNNRegressionTrainer(SequenceRegressionModelTrainer):
                 "num_units"]
 
 
-def train():
+def train_deep_cnn():
     trainer = CNNRegressionTrainer()
     trainer.train_model()
 
 
 if __name__ == "__main__":
-    train()
+    train_deep_cnn()

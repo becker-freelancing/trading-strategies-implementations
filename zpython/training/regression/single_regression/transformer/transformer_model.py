@@ -14,16 +14,7 @@ from zpython.util.training.loss import PNLLoss
 class TransformerModelTrainer(SequenceRegressionModelTrainer):
 
     def __init__(self):
-        super().__init__("transformer", MinMaxScaler)
-
-    def _get_output_length(self):
-        return 30
-
-    def _get_target_column(self):
-        return "logReturn_closeBid_1min"
-
-    def _get_max_input_length(self) -> int:
-        return 150
+        super().__init__("transformer_single", MinMaxScaler)
 
     def transformer_encoder(self, inputs, head_size, num_heads, ff_dim, dropout=0.):
         # Multi-Head Attention Layer

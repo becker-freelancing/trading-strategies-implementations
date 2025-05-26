@@ -1,13 +1,12 @@
 import torch
 
 torch.set_printoptions(precision=3, sci_mode=False)
-from keras.api.losses import Loss
-from keras.api.metrics import Metric
 from keras.api import ops
 from keras.src.losses.loss import squeeze_or_expand_to_same_rank
 
 EPSILON = 0.1
 INF = 9999999999
+
 
 def _sls_for_long_if_high_before_low(y_pred, y_pred_argmax):
     # Suche Minima vor Max-Index
@@ -123,7 +122,7 @@ def _profits_for_short(tp_reached_indices, sl_reached_indices, tps, sls):
     return -1 * _profits_for_long(tp_reached_indices, sl_reached_indices, tps, sls)
 
 
-def _simulate_trades(y_pred, y_true):
+def _simulate_trades_sequence(y_pred, y_true):
     y_true = ops.convert_to_tensor(y_true)
     y_pred = ops.convert_to_tensor(y_pred)
     y_true, y_pred = squeeze_or_expand_to_same_rank(y_true, y_pred)
@@ -150,134 +149,20 @@ def _simulate_trades(y_pred, y_true):
                                    _indices_greater_than_value(y_true_cumsum, sls))
     return direction_factor, sl_reached_indices, sls, tp_reached_indices, tps
 
-
-class PNLLoss(Loss):
-
-    def __init__(self):
-        super().__init__("pnl", "sum_over_batch_size", None)
-
-    def call(self, y_true, y_pred):
-        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
-
-        profits = ops.where(direction_factor == 1,
-                            _profits_for_long(tp_reached_indices, sl_reached_indices, tps, sls),
-                            _profits_for_short(tp_reached_indices, sl_reached_indices, tps, sls))
-
-        return -1 * profits
-
-
-class ProfitHitRatioMetric(Metric):
-    def __init__(self, name="profit_hit_ratio", **kwargs):
-        super().__init__(name=name, **kwargs)
-        self.successes = self.add_weight(name="successes", initializer="zeros")
-        self.total = self.add_weight(name="total", initializer="zeros")
-
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        # Simuliere die Trades
-        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
-
-        zeros = ops.zeros_like(tps)
-        ones = ops.ones_like(tps)
-
-        # Logik: wann war TP vor SL?
-        profit_hit_before_loss = ops.where(tp_reached_indices < 0,
-                                           zeros,
-                                           ops.where(sl_reached_indices < 0,
-                                                     ones,
-                                                     ops.where(tp_reached_indices < sl_reached_indices,
-                                                               ones,
-                                                               zeros)))
-
-        # Optional: sample weighting
-        if sample_weight is not None:
-            sample_weight = ops.cast(sample_weight, self.dtype)
-            profit_hit_before_loss = ops.multiply(profit_hit_before_loss, sample_weight)
-
-        # Zustände aktualisieren
-        self.successes.assign_add(ops.sum(profit_hit_before_loss))
-        self.total.assign_add(ops.cast(ops.size(profit_hit_before_loss), self.dtype))
-
-    def result(self):
-        return self.successes / (self.total + 1e-8)  # Schutz vor Division durch Null
-
-    def reset_states(self):
-        self.successes.assign(0.0)
-        self.total.assign(0.0)
-
-
-class LossHitRatioMetric(Metric):
-    def __init__(self, name="loss_hit_ratio", **kwargs):
-        super().__init__(name=name, **kwargs)
-        self.successes = self.add_weight(name="successes", initializer="zeros")
-        self.total = self.add_weight(name="total", initializer="zeros")
-
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
-
-        zeros = ops.zeros_like(tps, dtype="float32")
-        ones = ops.ones_like(tps, dtype="float32")
-
-        loss_hit_before_loss = ops.where(
-            tp_reached_indices < 0,
-            ones,  # TP nicht erreicht → immer erfolgreich (1)
-            ops.where(
-                sl_reached_indices < 0,
-                zeros,  # SL nicht erreicht → erfolglos (0)
-                ops.where(
-                    tp_reached_indices < sl_reached_indices,
-                    zeros,  # TP vor SL → erfolglos (0)
-                    ones  # SL vor TP → erfolgreich (1)
-                )
-            )
-        )
-
-        if sample_weight is not None:
-            sample_weight = ops.cast(sample_weight, self.dtype)
-            loss_hit_before_loss = loss_hit_before_loss * sample_weight
-
-        self.successes.assign_add(loss_hit_before_loss.sum())
-        self.total.assign_add(ops.cast(ops.size(loss_hit_before_loss), self.dtype))
-
-    def result(self):
-        return self.successes / (self.total + 1e-8)
-
-    def reset_states(self):
-        self.successes.assign(0.0)
-        self.total.assign(0.0)
-
-
-class NoneHitRatioMetric(Metric):
-    def __init__(self, name="none_hit_ratio", **kwargs):
-        super().__init__(name=name, **kwargs)
-        self.successes = self.add_weight(name="successes", initializer="zeros")
-        self.total = self.add_weight(name="total", initializer="zeros")
-
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades(y_pred, y_true)
-
-        zeros = ops.zeros_like(tps, dtype="float32")
-        ones = ops.ones_like(tps, dtype="float32")
-
-        none_hit_before_loss = ops.where(
-            tp_reached_indices < 0,
-            ops.where(
-                sl_reached_indices < 0,
-                ones,
-                zeros
-            ),
-            zeros
-        )
-
-        if sample_weight is not None:
-            sample_weight = ops.cast(sample_weight, self.dtype)
-            none_hit_before_loss = none_hit_before_loss * sample_weight
-
-        self.successes.assign_add(none_hit_before_loss.sum())
-        self.total.assign_add(ops.cast(ops.size(none_hit_before_loss), self.dtype))
-
-    def result(self):
-        return self.successes / (self.total + 1e-8)
-
-    def reset_states(self):
-        self.successes.assign(0.0)
-        self.total.assign(0.0)
+# def _simulate_trades(y_true, y_pred):
+#     # Falls |High| > |Low| Long Position (1), sonst Short (-1)
+#     direction_factor = ops.where((ops.abs(y_pred[:, 0]) > ops.abs(y_pred[:, 1])), 1, -1)
+#     # Für Long-Positionen ist globales Maximum TP. Für Short ist globales Minimum TP
+#     tps = ops.where(direction_factor == 1, y_pred[:, 0] + EPSILON, y_pred[:, 1] - EPSILON)
+#     sls = ops.where(direction_factor == 1,
+#                     _sls_for_long(y_pred, y_pred_min, y_pred_argmax, y_pred_argmin),
+#                     _sls_for_short(y_pred, y_pred_max, y_pred_argmax, y_pred_argmin))
+#     # Für jeden Trade P&L berechnen
+#     y_true_cumsum = ops.cumsum(y_true, axis=1)
+#     tp_reached_indices = ops.where(direction_factor == 1,
+#                                    _indices_greater_than_value(y_true_cumsum, tps),
+#                                    _indices_less_than_value(y_true_cumsum, tps))
+#     sl_reached_indices = ops.where(direction_factor == 1,
+#                                    _indices_less_than_value(y_true_cumsum, sls),
+#                                    _indices_greater_than_value(y_true_cumsum, sls))
+#     return direction_factor, sl_reached_indices, sls, tp_reached_indices, tps

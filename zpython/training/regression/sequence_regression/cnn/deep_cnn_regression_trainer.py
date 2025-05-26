@@ -8,7 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 from zpython.model.regime_model import ModelProvider
 from zpython.training.regression.sequence_regression.sequence_regression_model_trainer import \
     SequenceRegressionModelTrainer
-from zpython.util.loss import PNLLoss
+from zpython.util.training.loss import PNLLoss
 
 
 class CNNRegressionTrainer(SequenceRegressionModelTrainer):

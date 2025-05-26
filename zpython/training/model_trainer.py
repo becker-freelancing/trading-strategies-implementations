@@ -125,17 +125,17 @@ class ModelTrainer:
 
     def _save_scaler(self):
         scaler = self._get_scaler()
-        path = from_relative_path(f"data-bybit/a-scaler_{self.model_name}.dump")
+        path = from_relative_path(f"data-bybit/a-scaler_{self.model_name}_{self._get_data_selector()}.dump")
         joblib.dump(scaler, path)
 
     def _save_regime_detector(self):
         scaler = self._get_regime_detector()
-        path = from_relative_path(f"data-bybit/a-regime_detector_{self.model_name}.dump")
+        path = from_relative_path(f"data-bybit/a-regime_detector_{self.model_name}_{self._get_data_selector()}.dump")
         joblib.dump(scaler, path)
 
     def _save_pca(self):
         scaler = self._get_regime_pca()
-        path = from_relative_path(f"data-bybit/a-regime_pca_{self.model_name}.dump")
+        path = from_relative_path(f"data-bybit/a-regime_pca_{self.model_name}_{self._get_data_selector()}.dump")
         joblib.dump(scaler, path)
 
     def _limit_data(self, data):

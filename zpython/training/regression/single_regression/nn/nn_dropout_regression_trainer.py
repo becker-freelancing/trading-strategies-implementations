@@ -6,24 +6,14 @@ from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
 from zpython.model.regime_model import ModelProvider
-from zpython.training.regression.sequence_regression.sequence_regression_model_trainer import \
-    SequenceRegressionModelTrainer
+from zpython.training.regression.single_regression.single_regression_model_trainer import SingleRegressionModelTrainer
 from zpython.util.training.loss import PNLLoss
 
 
-class NNRegressionTrainer(SequenceRegressionModelTrainer):
+class NNRegressionTrainer(SingleRegressionModelTrainer):
 
     def __init__(self):
-        super().__init__("nndropout", MinMaxScaler)
-
-    def _get_output_length(self):
-        return 30
-
-    def _get_target_column(self):
-        return "logReturn_closeBid_1min"
-
-    def _get_max_input_length(self) -> int:
-        return 150
+        super().__init__("nndropout_single", MinMaxScaler)
 
     def _create_model(self, trial: Trial) -> (Model, int, dict):
         # Hyperparameter von Optuna

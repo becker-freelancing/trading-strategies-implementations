@@ -3,8 +3,6 @@ from threading import Lock
 
 import numpy as np
 import pandas as pd
-from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
-    MeanSquaredLogarithmicError, LogCoshError
 from keras.src.callbacks import Callback
 from optuna import Trial
 from tqdm import tqdm
@@ -12,9 +10,7 @@ from tqdm import tqdm
 from zpython.training.callbacks import SaveMetricCallback
 from zpython.training.model_trainer import ModelTrainer
 from zpython.util.data_split import validation_data, train_data
-from zpython.util.loss import ProfitHitRatioMetric, LossHitRatioMetric, NoneHitRatioMetric
-from zpython.util.market_regime import MarketRegime
-from zpython.util.model_data_creator import get_model_data_by_regime
+from zpython.util.market_regime import MarketRegime, MarketRegimeDetector
 
 
 def transform(scaler, data: dict[MarketRegime, list[pd.DataFrame]]) -> dict[MarketRegime, list[np.ndarray]]:
@@ -41,6 +37,11 @@ class RegressionModelTrainer(ModelTrainer):
     def _create_input_output_sequences(self, data: list[np.ndarray], reduced_data: list[np.ndarray], target_column_idx):
         pass
 
+    @abstractmethod
+    def _load_model_data_by_regime(self, data_read_fn, max_input_length: int, output_length: int,
+                                   regime_detector: MarketRegimeDetector, train):
+        pass
+
 
     def _get_target_column_idx(self, complete_data):
         target = self._get_target_column()
@@ -49,10 +50,11 @@ class RegressionModelTrainer(ModelTrainer):
     def _create_unsplited_data(self, load_train_data=True) -> tuple[
         dict[MarketRegime, list[np.ndarray]], dict[MarketRegime, list[np.ndarray]], int]:
         if load_train_data:
-            slices, complete_data, self.regime_detector = get_model_data_by_regime(train_data,
+            slices, complete_data, self.regime_detector = self._load_model_data_by_regime(train_data,
                                                                                    self._get_max_input_length(),
                                                                                    self._get_output_length(),
-                                                                                   self._get_regime_detector())
+                                                                                          self._get_regime_detector(),
+                                                                                          True)
             self._get_scaler().fit(complete_data)
             slices = transform(self._get_scaler(), slices)
             self._get_regime_pca().fit(complete_data, self._get_scaler())
@@ -64,10 +66,11 @@ class RegressionModelTrainer(ModelTrainer):
 
             return slices, reduced_slices, self._get_target_column_idx(complete_data)
         else:
-            slices, complete_data, self.regime_detector = get_model_data_by_regime(validation_data,
+            slices, complete_data, self.regime_detector = self._load_model_data_by_regime(validation_data,
                                                                                    self._get_max_input_length(),
                                                                                    self._get_output_length(),
-                                                                                   self._get_regime_detector())
+                                                                                          self._get_regime_detector(),
+                                                                                          False)
             slices = transform(self._get_scaler(), slices)
             reduced_slices = self._get_regime_pca().transform(slices)
             return slices, reduced_slices, self._get_target_column_idx(complete_data)
@@ -94,10 +97,6 @@ class RegressionModelTrainer(ModelTrainer):
 
         return result
 
-    def _get_metrics(self) -> list:
-        return [MeanSquaredError(), RootMeanSquaredError(), MeanAbsoluteError(), MeanAbsolutePercentageError(),
-                MeanSquaredLogarithmicError(), LogCoshError(), ProfitHitRatioMetric(), LossHitRatioMetric(),
-                NoneHitRatioMetric()]
 
     def _get_custom_callbacks(self, trial: Trial, lock: Lock, regime: MarketRegime) -> list[Callback]:
         return [SaveMetricCallback(trial, self._get_metric_file_path(), lock, self._get_metric_columns(), regime)]
