@@ -6,11 +6,12 @@ from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
 from zpython.model.regime_model import ModelProvider
-from zpython.training.regression.regression_model_trainer import RegressionModelTrainer
+from zpython.training.regression.sequence_regression.sequence_regression_model_trainer import \
+    SequenceRegressionModelTrainer
 from zpython.util.loss import PNLLoss
 
 
-class TransformerModelTrainer(RegressionModelTrainer):
+class TransformerModelTrainer(SequenceRegressionModelTrainer):
 
     def __init__(self):
         super().__init__("transformer", MinMaxScaler)

@@ -30,7 +30,7 @@ class RegimeDataLoader(DataLoader):
 
 class LazyNumpyDataSet(RegimeDataSet):
 
-    def __init__(self, path_provider, input_length, regime, limit):
+    def __init__(self, path_provider, input_length, regime, data_selector, limit):
         super().__init__(regime)
         self.path_provider = path_provider
         self.input_length = input_length
@@ -44,6 +44,7 @@ class LazyNumpyDataSet(RegimeDataSet):
         self._feature_shape = None
         self._label_shape = None
         self.limit = limit
+        self.data_selector = data_selector
 
     def feature_shape(self):
         if self._feature_shape is None:
@@ -125,27 +126,29 @@ class LazyNumpyDataSet(RegimeDataSet):
 
 class LazyTrainTensorDataSet(LazyNumpyDataSet):
 
-    def __init__(self, path_provider, input_length, regime, limit):
+    def __init__(self, path_provider, input_length, regime, data_selector, limit):
         super().__init__(path_provider,
                          input_length,
                          regime,
+                         data_selector,
                          limit)
 
     def _file_path(self, idx):
-        path = self.path_provider(idx, regime=self.regime, train=True)
+        path = self.path_provider(idx, regime=self.regime, data_selector=self.data_selector, train=True)
         return path
 
 
 class LazyValidationTensorDataSet(LazyNumpyDataSet):
 
-    def __init__(self, path_provider, input_length, regime, limit):
+    def __init__(self, path_provider, input_length, regime, data_selector, limit):
         super().__init__(path_provider,
                          input_length,
                          regime,
+                         data_selector,
                          limit)
 
     def _file_path(self, idx):
-        path = self.path_provider(idx, regime=self.regime, train=False)
+        path = self.path_provider(idx, regime=self.regime, data_selector=self.data_selector, train=False)
         return path
 
 

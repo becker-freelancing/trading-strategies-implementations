@@ -37,6 +37,11 @@ class RegressionModelTrainer(ModelTrainer):
     def _get_target_column(self) -> str:
         pass
 
+    @abstractmethod
+    def _create_input_output_sequences(self, data: list[np.ndarray], reduced_data: list[np.ndarray], target_column_idx):
+        pass
+
+
     def _get_target_column_idx(self, complete_data):
         target = self._get_target_column()
         return complete_data.columns.get_loc(target)
@@ -88,25 +93,6 @@ class RegressionModelTrainer(ModelTrainer):
             result[regime] = (input_data, output_data)
 
         return result
-
-    def _create_input_output_sequences(self, data: list[np.ndarray], reduced_data: list[np.ndarray], target_column_idx):
-
-        input_length = self._get_max_input_length()
-        output_length = self._get_output_length()
-
-        if output_length > input_length:
-            raise Exception("Input-Length must be greater than Output-Length")
-
-        if len(data[0]) != input_length + output_length:
-            raise Exception(f"Length of Data must be {input_length + output_length}, but was {len(data[0])}")
-
-        input_data_np = [df[:input_length, :] for df in reduced_data]
-        output_data_np = [df[:, target_column_idx].reshape(-1, 1)[input_length:, :] for df in data]
-
-        input_sequences = np.stack(input_data_np)
-        output_sequences = np.stack(output_data_np)
-
-        return input_sequences, output_sequences
 
     def _get_metrics(self) -> list:
         return [MeanSquaredError(), RootMeanSquaredError(), MeanAbsoluteError(), MeanAbsolutePercentageError(),

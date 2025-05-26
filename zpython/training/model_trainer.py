@@ -56,11 +56,11 @@ def _get_optuna_trials() -> int:
     return 30
 
 
-def _tensor_data_path(idx, regime: MarketRegime, train=True):
+def _tensor_data_path(idx, regime: MarketRegime, data_selector: str, train=True):
     if train:
-        return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_TRAIN_{regime.name}.pt")
+        return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_TRAIN_{data_selector}_{regime.name}.pt")
     else:
-        return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_VAL_{regime.name}.pt")
+        return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_VAL_{data_selector}_{regime.name}.pt")
 
 
 class ModelTrainer:
@@ -106,6 +106,10 @@ class ModelTrainer:
 
     @abstractmethod
     def _get_optuna_trial_params(self) -> list[str]:
+        pass
+
+    @abstractmethod
+    def _get_data_selector(self) -> str:
         pass
 
     def _get_file_path(self, relative_path):
@@ -257,6 +261,7 @@ class ModelTrainer:
     def _create_train_val_data_tensor(self, chunk_size=15000):
         train_data = self._get_train_data()
         val_data = self._get_validation_data()
+        data_selector = self._get_data_selector()
 
         for regime in train_data.keys():
             x_train, y_train = train_data[regime]
@@ -264,7 +269,7 @@ class ModelTrainer:
             for chunk in tqdm(range(0, len(x_train), chunk_size), f"Writing train tensors for regime {regime.name}"):
                 i += 1
                 torch.save((x_train[chunk:chunk + chunk_size], y_train[chunk:chunk + chunk_size]),
-                           _tensor_data_path(i, regime, True))
+                           _tensor_data_path(i, regime, self._get_data_selector(), True))
 
         for regime in val_data.keys():
             x_val, y_val = val_data[regime]
@@ -272,20 +277,22 @@ class ModelTrainer:
             for chunk in tqdm(range(0, len(x_val), chunk_size), f"Writing val tensors for regime {regime.name}"):
                 i += 1
                 torch.save((x_val[chunk:chunk + chunk_size], y_val[chunk:chunk + chunk_size]),
-                           _tensor_data_path(i, regime, False))
+                           _tensor_data_path(i, regime, self._get_data_selector(), False))
 
     def _create_train_val_data_loader_provider(self, input_length, batch_size, val_data_size, regime: MarketRegime):
         print("Creating train and validation data loader...")
-        tensor_data_path = _tensor_data_path(0, regime)
+        tensor_data_path = _tensor_data_path(0, regime, self._get_data_selector())
         if not os.path.exists(tensor_data_path):
             self._create_train_val_data_tensor()
 
         def train_data_loader():
-            train_data_set = LazyTrainTensorDataSet(_tensor_data_path, input_length, regime, None)
+            train_data_set = LazyTrainTensorDataSet(_tensor_data_path, input_length, regime, self._get_data_selector(),
+                                                    None)
             return RegimeDataLoader(train_data_set, batch_size=batch_size, shuffle=False)
 
         def val_data_loader():
-            val_data_set = LazyValidationTensorDataSet(_tensor_data_path, input_length, regime, val_data_size)
+            val_data_set = LazyValidationTensorDataSet(_tensor_data_path, input_length, regime,
+                                                       self._get_data_selector(), val_data_size)
             return RegimeDataLoader(val_data_set, batch_size=batch_size, shuffle=False)
 
         return train_data_loader, val_data_loader
