@@ -6,12 +6,12 @@ from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
 from zpython.model.regime_model import ModelProvider
-from zpython.training.regression.sequence_regression.sequence_regression_model_trainer import \
-    SequenceRegressionModelTrainer
+from zpython.training.regression.single_regression.single_regression_model_trainer import \
+    SingleRegressionModelTrainer
 from zpython.util.training.loss import PNLLoss
 
 
-class NNRegressionTrainer(SequenceRegressionModelTrainer):
+class NNRegressionTrainer(SingleRegressionModelTrainer):
 
     def __init__(self):
         super().__init__("encodedecodelstm_single", MinMaxScaler)
