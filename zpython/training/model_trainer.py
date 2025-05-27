@@ -115,7 +115,7 @@ class ModelTrainer:
         pass
 
     def _get_file_path(self, relative_path):
-        dir = f"{from_relative_path('models-bybit/')}{self._build_optuna_study_name()}"
+        dir = f"{from_relative_path('models-bybit/')}{self._get_data_selector()}/{self._build_optuna_study_name()}"
         os.makedirs(dir, exist_ok=True)
         return dir + "/" + relative_path
 
