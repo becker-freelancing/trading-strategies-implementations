@@ -1,7 +1,9 @@
 import warnings
 
 from zpython.model.regime_model import RegimeModel, ModelProvider
+from zpython.util.model_data_creator import ModelMarketRegime
 from zpython.util.regime_pca import MarketRegimePCA
+from zpython.util.regime_scaler import MarketRegimeScaler
 
 # Nur das spezifische FutureWarning von torch.load filtern
 warnings.filterwarnings(
@@ -31,7 +33,7 @@ import platform
 from zpython.training.callbacks import ProgbarWithoutMetrics, SaveModelCallback, PercentageEarlyStopCallback
 from zpython.training.train_util import get_device, run_study_for_model
 from zpython.training.data_set import LazyTrainTensorDataSet, LazyValidationTensorDataSet, RegimeDataLoader
-from zpython.util.market_regime import MarketRegimeDetector, MarketRegime
+from zpython.util.market_regime import MarketRegimeDetector
 
 
 def _get_max_epochs_to_train() -> int:
@@ -56,7 +58,7 @@ def _get_optuna_trials() -> int:
     return 30
 
 
-def _tensor_data_path(idx, regime: MarketRegime, data_selector: str, train=True):
+def _tensor_data_path(idx, regime: ModelMarketRegime, data_selector: str, train=True):
     if train:
         return from_relative_path(f"data-bybit/{idx}_ETHUSDT_1_TRAIN_{data_selector}_{regime.name}.pt")
     else:
@@ -85,11 +87,11 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _get_train_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
+    def _get_train_data(self) -> dict[ModelMarketRegime, tuple[np.ndarray, np.ndarray]]:
         pass
 
     @abstractmethod
-    def _get_validation_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
+    def _get_validation_data(self) -> dict[ModelMarketRegime, tuple[np.ndarray, np.ndarray]]:
         pass
 
     @abstractmethod
@@ -97,7 +99,7 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _get_custom_callbacks(self, trial: Trial, lock: Lock, regime: MarketRegime) -> list[Callback]:
+    def _get_custom_callbacks(self, trial: Trial, lock: Lock, regime: ModelMarketRegime) -> list[Callback]:
         pass
 
     @abstractmethod
@@ -125,26 +127,20 @@ class ModelTrainer:
 
     def _save_scaler(self):
         scaler = self._get_scaler()
-        path = from_relative_path(f"data-bybit/a-scaler_{self.model_name}_{self._get_data_selector()}.dump")
+        path = from_relative_path(f"data-bybit/a-scaler_{self._get_data_selector()}.dump")
         joblib.dump(scaler, path)
 
     def _save_regime_detector(self):
         scaler = self._get_regime_detector()
-        path = from_relative_path(f"data-bybit/a-regime_detector_{self.model_name}_{self._get_data_selector()}.dump")
+        path = from_relative_path(f"data-bybit/a-regime_detector_{self._get_data_selector()}.dump")
         joblib.dump(scaler, path)
 
     def _save_pca(self):
         scaler = self._get_regime_pca()
-        path = from_relative_path(f"data-bybit/a-regime_pca_{self.model_name}_{self._get_data_selector()}.dump")
+        path = from_relative_path(f"data-bybit/a-regime_pca_{self._get_data_selector()}.dump")
         joblib.dump(scaler, path)
 
-    def _limit_data(self, data):
-        limit = self._get_train_data_limit()
-        if limit is not None:
-            return data[len(data) - limit:]
-        return data
-
-    def _get_callbacks(self, trial: Trial, lock: Lock, regime: MarketRegime):
+    def _get_callbacks(self, trial: Trial, lock: Lock, regime: ModelMarketRegime):
         custom_callbacks = self._get_custom_callbacks(trial, lock, regime)
         custom_callbacks.append(
             PercentageEarlyStopCallback(trial.number, monitor='val_loss')
@@ -155,7 +151,7 @@ class ModelTrainer:
 
     def _get_scaler(self):
         if self.scaler is None:
-            self.scaler = self.scaler_provider()
+            self.scaler = MarketRegimeScaler()
 
         return self.scaler
 
@@ -191,7 +187,7 @@ class ModelTrainer:
         print("Preparing environment...")
         path = self._get_file_path("")
         print("Working in directory: ", path)
-        self._get_train_validation_data(self._get_max_input_length(), regime=MarketRegime.UP_LOW_VOLA)
+        self._get_train_validation_data(self._get_max_input_length(), regime=ModelMarketRegime.UP_LOW_VOLA_033)
         self._prepare_metrics_file()
         self._prepare_params_file()
 
@@ -203,7 +199,7 @@ class ModelTrainer:
             params = ",".join(self._get_optuna_trial_params())
             shapes = [
                 [f"X_train_{regime}_shape", f"Y_train_{regime}_shape", f"X_val_{regime}_shape", f"Y_val_{regime}_shape"]
-                for regime in list(MarketRegime)]
+                for regime in list(ModelMarketRegime)]
             shapes = [shape for sublist in shapes for shape in sublist]
             shapes = ",".join(shapes)
             file.write(f"trial,{params},{shapes}\n")
@@ -228,7 +224,7 @@ class ModelTrainer:
 
         model_provider, input_length, params = self._create_model(optuna_trial)
 
-        data_providers = [self._get_train_validation_data(input_length, regime) for regime in list(MarketRegime)]
+        data_providers = [self._get_train_validation_data(input_length, regime) for regime in list(ModelMarketRegime)]
 
         input_dimensions = {provider[0].regime: provider[0].feature_shape()[2] for provider in data_providers}
         model = RegimeModel(model_provider, input_dimensions)
@@ -279,7 +275,8 @@ class ModelTrainer:
                 torch.save((x_val[chunk:chunk + chunk_size], y_val[chunk:chunk + chunk_size]),
                            _tensor_data_path(i, regime, self._get_data_selector(), False))
 
-    def _create_train_val_data_loader_provider(self, input_length, batch_size, val_data_size, regime: MarketRegime):
+    def _create_train_val_data_loader_provider(self, input_length, batch_size, val_data_size,
+                                               regime: ModelMarketRegime):
         print("Creating train and validation data loader...")
         tensor_data_path = _tensor_data_path(0, regime, self._get_data_selector())
         if not os.path.exists(tensor_data_path):

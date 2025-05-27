@@ -3,7 +3,7 @@ from keras.api.models import Model, clone_model
 from torch import device
 
 from zpython.training.data_set import RegimeDataLoader
-from zpython.util.market_regime import MarketRegime
+from zpython.util.model_data_creator import ModelMarketRegime
 
 
 def clone(model: Model):
@@ -27,8 +27,9 @@ class ModelProvider:
 
 class RegimeModel:
 
-    def __init__(self, model_provider: ModelProvider, input_dimensions: dict[MarketRegime, int]):
-        self.regime_models = {regime: model_provider.get(input_dimensions[regime]) for regime in list(MarketRegime)}
+    def __init__(self, model_provider: ModelProvider, input_dimensions: dict[ModelMarketRegime, int]):
+        self.regime_models = {regime: model_provider.get(input_dimensions[regime]) for regime in
+                              input_dimensions.keys()}
 
     def to(self, to: device):
         for model in self.regime_models.values():

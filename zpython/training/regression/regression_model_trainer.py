@@ -2,7 +2,6 @@ from abc import abstractmethod
 from threading import Lock
 
 import numpy as np
-import pandas as pd
 from keras.src.callbacks import Callback
 from optuna import Trial
 from tqdm import tqdm
@@ -10,15 +9,9 @@ from tqdm import tqdm
 from zpython.training.callbacks import SaveMetricCallback
 from zpython.training.model_trainer import ModelTrainer
 from zpython.util.data_split import validation_data, train_data
-from zpython.util.market_regime import MarketRegime, MarketRegimeDetector
+from zpython.util.market_regime import MarketRegimeDetector
+from zpython.util.model_data_creator import ModelMarketRegime
 
-
-def transform(scaler, data: dict[MarketRegime, list[pd.DataFrame]]) -> dict[MarketRegime, list[np.ndarray]]:
-    for key in tqdm(data.keys(), "Scaling Data"):
-        value = data[key]
-        value = [scaler.transform(df) for df in value]
-        data[key] = value
-    return data
 
 class RegressionModelTrainer(ModelTrainer):
 
@@ -48,17 +41,15 @@ class RegressionModelTrainer(ModelTrainer):
         return complete_data.columns.get_loc(target)
 
     def _create_unsplited_data(self, load_train_data=True) -> tuple[
-        dict[MarketRegime, list[np.ndarray]], dict[MarketRegime, list[np.ndarray]], int]:
+        dict[ModelMarketRegime, list[np.ndarray]], dict[ModelMarketRegime, list[np.ndarray]], int]:
         if load_train_data:
             slices, complete_data, self.regime_detector = self._load_model_data_by_regime(train_data,
                                                                                    self._get_max_input_length(),
                                                                                    self._get_output_length(),
                                                                                           self._get_regime_detector(),
                                                                                           True)
-            self._get_scaler().fit(complete_data)
-            slices = transform(self._get_scaler(), slices)
-            self._get_regime_pca().fit(complete_data, self._get_scaler())
-            reduced_slices = self._get_regime_pca().transform(slices)
+            slices = self._get_scaler().fit_transform(slices)
+            reduced_slices = self._get_regime_pca().fit_transform(slices)
 
             self._save_scaler()
             self._save_regime_detector()
@@ -71,21 +62,21 @@ class RegressionModelTrainer(ModelTrainer):
                                                                                    self._get_output_length(),
                                                                                           self._get_regime_detector(),
                                                                                           False)
-            slices = transform(self._get_scaler(), slices)
+            slices = self._get_scaler().transform(slices)
             reduced_slices = self._get_regime_pca().transform(slices)
             return slices, reduced_slices, self._get_target_column_idx(complete_data)
 
-    def _get_train_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
+    def _get_train_data(self) -> dict[ModelMarketRegime, tuple[np.ndarray, np.ndarray]]:
         train_data, reduced_train_data, target_column_idx = self._create_unsplited_data(load_train_data=True)
         return self._parse_input_output(train_data, reduced_train_data, target_column_idx)
 
-    def _get_validation_data(self) -> dict[MarketRegime, tuple[np.ndarray, np.ndarray]]:
+    def _get_validation_data(self) -> dict[ModelMarketRegime, tuple[np.ndarray, np.ndarray]]:
         validation_data, reduced_train_data, target_column_idx = self._create_unsplited_data(load_train_data=False)
         return self._parse_input_output(validation_data, reduced_train_data, target_column_idx)
 
-    def _parse_input_output(self, data: dict[MarketRegime, list[np.ndarray]],
-                            reduced_data: dict[MarketRegime, list[np.ndarray]], target_column_idx) -> dict[
-        MarketRegime, tuple[np.ndarray, np.ndarray]]:
+    def _parse_input_output(self, data: dict[ModelMarketRegime, list[np.ndarray]],
+                            reduced_data: dict[ModelMarketRegime, list[np.ndarray]], target_column_idx) -> dict[
+        ModelMarketRegime, tuple[np.ndarray, np.ndarray]]:
         result = {}
         for regime in tqdm(data.keys(), "Create input- and output-sequences"):
             regime_data = data[regime]
@@ -97,6 +88,5 @@ class RegressionModelTrainer(ModelTrainer):
 
         return result
 
-
-    def _get_custom_callbacks(self, trial: Trial, lock: Lock, regime: MarketRegime) -> list[Callback]:
+    def _get_custom_callbacks(self, trial: Trial, lock: Lock, regime: ModelMarketRegime) -> list[Callback]:
         return [SaveMetricCallback(trial, self._get_metric_file_path(), lock, self._get_metric_columns(), regime)]

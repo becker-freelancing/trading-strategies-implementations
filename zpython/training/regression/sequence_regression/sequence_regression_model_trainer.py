@@ -30,11 +30,8 @@ class SequenceRegressionModelTrainer(RegressionModelTrainer, ABC):
         if output_length > input_length:
             raise Exception("Input-Length must be greater than Output-Length")
 
-        if len(data[0]) != input_length + output_length:
-            raise Exception(f"Length of Data must be {input_length + output_length}, but was {len(data[0])}")
-
         input_data_np = [df[:input_length, :] for df in reduced_data]
-        output_data_np = [df[:, target_column_idx].reshape(-1, 1)[input_length:, :] for df in data]
+        output_data_np = [df.to_numpy()[:, target_column_idx].reshape(-1, 1)[input_length:, :] for df in data]
 
         input_sequences = np.stack(input_data_np)
         output_sequences = np.stack(output_data_np)

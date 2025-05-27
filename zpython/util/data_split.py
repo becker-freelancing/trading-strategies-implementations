@@ -28,7 +28,7 @@ def train_data(time_frame=1):
         (data["closeTime"].dt.day != 20)
         ]
     data = data.drop_duplicates()
-    return data  # .iloc[:10000]
+    return data.iloc[:2000]
 
 
 def analysis_data(time_frame=1):

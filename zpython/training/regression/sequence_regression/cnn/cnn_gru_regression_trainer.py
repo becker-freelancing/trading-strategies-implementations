@@ -71,6 +71,10 @@ class CNNRegressionTrainer(SequenceRegressionModelTrainer):
                 "num_units"]
 
 
-if __name__ == "__main__":
+def train_cnn_gru():
     trainer = CNNRegressionTrainer()
     trainer.train_model()
+
+
+if __name__ == "__main__":
+    train_cnn_gru()

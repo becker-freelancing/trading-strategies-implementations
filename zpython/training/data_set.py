@@ -6,12 +6,12 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 from zpython.training.train_util import get_device
-from zpython.util.market_regime import MarketRegime
+from zpython.util.model_data_creator import ModelMarketRegime
 
 
 class RegimeDataSet(Dataset):
 
-    def __init__(self, regime: MarketRegime):
+    def __init__(self, regime: ModelMarketRegime):
         self.regime = regime
 
 

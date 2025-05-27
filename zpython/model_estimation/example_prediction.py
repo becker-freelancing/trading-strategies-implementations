@@ -14,9 +14,10 @@ from zpython.util.indicator_creator import create_indicators
 from random import randint
 import matplotlib.pyplot as plt
 from concurrent.futures.thread import ThreadPoolExecutor
-
+import traceback
+from zpython.util.market_regime import market_regime_to_number
 ######################################
-STUDY_NAME = None
+STUDY_NAME = "bilstm_2025-05-25_19-47-17"
 RANDOM_SELECT = False
 INDEX = 500
 
@@ -35,12 +36,12 @@ def model_name(name):
 
 def best_trial(name):
     metrics = pd.read_csv(from_relative_path(f"models-bybit/{name}/a-metrics_{model_name(name)}.csv"))
-    min = metrics.iloc[metrics["val_root_mean_squared_error"].argmin()]
+    min = metrics.iloc[metrics["val_loss"].argmin()]
     return int(min["trial"]), int(min["epoch"])
 
 
 def input_length(trial, name):
-    trials = pd.read_csv(from_relative_path(f"models-bybit/{name}/a-trials_{model_name(name)}.csv"), quotechar='(',
+    trials = pd.read_csv(from_relative_path(f"models-bybit/{name}/a-trials_{model_name(name)}.csv"), quotechar='\'',
                          dtype=str)
     trials["trial"] = trials["trial"].apply(eval)
     best = trials[trials["trial"] == trial].iloc[0]
@@ -48,7 +49,8 @@ def input_length(trial, name):
 
 
 def get_model(trial, epoch, name):
-    return load_model(from_relative_path(f"models-bybit/{name}/trial_{trial}_epoch_{epoch}_{model_name(name)}.keras"))
+    return load_model(
+        from_relative_path(f"models-bybit/{name}/trial_{trial}_epoch_{epoch}_{model_name(name)}_DOWN_HIGH_VOLA.keras"))
 
 
 def get_input_data_plot(length, idx, data):
@@ -77,7 +79,9 @@ def retransform(prediction, scaler):
 def predict_and_plot(name, model, input_length, data, split_idx, scaler, xs):
     try:
         print(f"\tPredict with model {name}...")
+        data["regime"] = data["regime"].apply(market_regime_to_number)
         input_data = get_input_data(input_length, split_idx, data, scaler)
+        pca = joblib.load(from_relative_path("data-bybit/a-regime-pca_nn.dump"))
         input_data = torch.tensor(input_data).unsqueeze(0)
         prediction = model.predict(input_data)[0]
         print(prediction)
@@ -85,7 +89,7 @@ def predict_and_plot(name, model, input_length, data, split_idx, scaler, xs):
         print(prediction)
         plt.plot(xs, prediction, label=name)
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
 
 
 if __name__ == "__main__":
@@ -93,10 +97,10 @@ if __name__ == "__main__":
     trials = [best_trial(name) for name in names]
     input_lengths = [input_length(trial[0], name) for trial, name in zip(trials, names)]
     models = [get_model(trial[0], trial[1], name) for trial, name in zip(trials, names)]
-    scaler = joblib.load(from_relative_path("data-bybit/a-scaler.scaler"))
+    scaler = joblib.load(from_relative_path("data-bybit/a-scaler_nn.dump"))
     # Load Input and Expected Output
     max_input_length = np.max(input_lengths)
-    data = create_indicators(data_read_function=validation_data, limit=10000)
+    data = create_indicators(data_read_function=validation_data, limit=10000)[0]
     data = data.dropna()
     split_idx = INDEX
     if RANDOM_SELECT:
