@@ -158,15 +158,17 @@ def create_indicators(data_read_function=train_data,
                       momentum_lags=(1, 2, 3, 6, 9, 12),
                       limit=100_000_000,
                       time_frame=1,
-                      regime_detector=None):
+                      regime_detector=None,
+                      data=None):
     cache_content = DataCache.indicators_cache.get(data_read_function)
-    if cache_content is not None:
+    if data is None and cache_content is not None:
         print("Using Cache Content for data")
         return cache_content, regime_detector
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
-        print(f"Reading data (M{time_frame})...")
-        data = data_read_function(time_frame=time_frame)
+        if data is None:
+            print(f"Reading data (M{time_frame})...")
+            data = data_read_function(time_frame=time_frame)
         print("Creating indicators...")
         data = data.reset_index(drop=True)
         data = data.iloc[:limit]

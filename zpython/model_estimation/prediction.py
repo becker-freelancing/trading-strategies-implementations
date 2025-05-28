@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from keras.api.models import load_model
+from keras.api.models import load_model, Model
 
 from zpython.util.model_market_regime import ModelMarketRegime
 from zpython.util.path_util import from_relative_path
@@ -47,7 +47,7 @@ def _load_best_models(base_path, metrics_by_regime):
     return models
 
 
-def load_best_models(base_path: str):
+def load_best_models(base_path: str) -> dict[ModelMarketRegime, Model]:
     metrics_by_regime = _get_metrics_by_regime(base_path)
     models = _load_best_models(base_path, metrics_by_regime)
     return models

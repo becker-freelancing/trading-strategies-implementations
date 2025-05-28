@@ -1,6 +1,6 @@
 import warnings
 
-from zpython.model.regime_model import RegimeModel, ModelProvider
+from zpython.model.regime_model import ModelProvider, RegimeTrainModel
 from zpython.util.model_data_creator import ModelMarketRegime
 from zpython.util.regime_pca import MarketRegimePCA
 from zpython.util.regime_scaler import MarketRegimeScaler
@@ -227,7 +227,7 @@ class ModelTrainer:
         data_providers = [self._get_train_validation_data(input_length, regime) for regime in list(ModelMarketRegime)]
 
         input_dimensions = {provider[0].regime: provider[0].feature_shape()[2] for provider in data_providers}
-        model = RegimeModel(model_provider, input_dimensions)
+        model = RegimeTrainModel(model_provider=model_provider, input_dimensions=input_dimensions)
 
         self._save_trial_params(optuna_trial.number, params, data_providers)
 
