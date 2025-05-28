@@ -1,32 +1,27 @@
-import os
-
-import pandas as pd
+import matplotlib
+import numpy as np
 
 from zpython.util.model_data_creator import ModelMarketRegime
 
-BASE_PATH = "C:/Users/jasb/AppData/Roaming/krypto-java/models-bybit/SEQUENCE_REGRESSION"
+matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+from zpython.model_estimation.prediction import _get_metrics_by_regime
 
-all_metrics = None
+metrics_by_regime = _get_metrics_by_regime("models-bybit/SEQUENCE_REGRESSION")
 
-for root, dirs, files in os.walk(BASE_PATH):
-    path = root.split(os.sep)
-    print((len(path) - 1) * '---', os.path.basename(root))
-    for file in files:
-        if "a-metrics" in file:
-            read_path = root + "/" + file
-            read = pd.read_csv(read_path)
-            read["model_name"] = path[1]
-            if all_metrics is not None:
-                all_metrics = pd.concat([all_metrics, read], ignore_index=True)
-            else:
-                all_metrics = read
+fig, axs = plt.subplots(6, 3)
 
-for regime in list(ModelMarketRegime):
-    regime_data = all_metrics[all_metrics["regime_id"] == regime.value]
-    min_idx = regime_data.nsmallest(3, 'val_loss').index
-    min_values = regime_data.loc[min_idx]
-    print(regime)
-    for idx, row in min_values.iterrows():
-        print(
-            f"\t Model: {row['model_name']}, Epoch: {row['epoch']}, Trial: {row['trial']}, Val_Loss: {row['val_loss']}")
-    print()
+for regime, row, col in zip(list(ModelMarketRegime), list(range(3)) * 3, [0, 1] * 6):
+    metr = metrics_by_regime[regime]
+    studies = np.unique(metr["study"].values)
+    for study in studies:
+        metr_for_study = metr[metr["study"] == study]
+        min_for_study = metr_for_study.loc[metr_for_study["val_loss"].idxmin()]
+        min_trial = min_for_study["trial"]
+        mins = metr_for_study[metr_for_study["trial"] == min_trial]
+        axs[row, col].plot(mins["epoch"].values, mins["val_loss"].values, label=f"{study}_trial_{min_trial}")
+    axs[row, col].set_title(regime.name)
+
+plt.tight_layout()
+plt.legend()
+plt.show()

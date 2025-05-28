@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import torch
 from keras.api.models import load_model
-
 from zpython.util.path_util import from_relative_path
 from zpython.util.data_split import validation_data
 from zpython.util.indicator_creator import create_indicators
@@ -17,7 +16,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import traceback
 from zpython.util.market_regime import market_regime_to_number
 ######################################
-STUDY_NAME = "bilstm_2025-05-25_19-47-17"
+STUDY_NAME = None
 RANDOM_SELECT = False
 INDEX = 500
 
@@ -27,7 +26,7 @@ INDEX = 500
 def get_names():
     if STUDY_NAME is not None:
         return [STUDY_NAME]
-    return os.listdir(from_relative_path("models-bybit"))
+    return os.listdir(from_relative_path("models-bybit/SEQUENCE_REGRESSION"))
 
 
 def model_name(name):
