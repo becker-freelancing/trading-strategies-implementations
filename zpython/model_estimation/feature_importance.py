@@ -190,7 +190,7 @@ def calc_and_save(name):
     df.to_csv(from_relative_path(f"models-bybit/{name}/a-feature_importance_{model_name(name)}.csv"), index=False)
 
 
-with ThreadPoolExecutor(max_workers=2) as pool:
+with ThreadPoolExecutor(max_workers=5) as pool:
     for n in names:
         if os.path.exists(from_relative_path(f"models-bybit/{n}/a-feature_importance_{model_name(n)}.csv")):
             print(f"Skip model: {n}")

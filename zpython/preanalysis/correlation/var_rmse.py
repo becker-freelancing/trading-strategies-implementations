@@ -54,7 +54,7 @@ def calc_rmse(model_lag, train_length, split_idx) -> np.ndarray | None:
             return None
 
 
-split_idxs = np.random.randint(2000, len(df), size=500)
+split_idxs = np.random.randint(2000, len(df), size=200)
 
 results = pd.DataFrame(columns=["input_length", "model_lag", "avg_rmse", "num_tries"])
 write_path = from_relative_path("models-bybit/var/var-results.csv")

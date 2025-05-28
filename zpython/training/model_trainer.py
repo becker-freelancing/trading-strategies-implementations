@@ -51,7 +51,7 @@ def _get_optuna_optimization_metric_direction() -> str:
 def _get_optuna_processes() -> int:
     if "Win" in platform.system() or "win" in platform.system():
         return 1
-    return 10
+    return 1
 
 
 def _get_optuna_trials() -> int:
@@ -257,7 +257,7 @@ class ModelTrainer:
     def _create_train_val_data_tensor(self, chunk_size=15000):
         regimes = list(ModelMarketRegime)
 
-        for regime in tqdm(regimes, "Creating train Tensors"):
+        for regime in regimes:
             x_train, y_train = self._get_train_data(regime)
             i = -1
             for chunk in tqdm(range(0, len(x_train), chunk_size), f"Writing train tensors for regime {regime.name}"):
@@ -269,7 +269,7 @@ class ModelTrainer:
         self._save_regime_detector()
         self._save_pca()
 
-        for regime in tqdm(regimes, "Creating Validation Tensors"):
+        for regime in regimes:
             x_val, y_val = self._get_validation_data(regime)
             i = -1
             for chunk in tqdm(range(0, len(x_val), chunk_size), f"Writing val tensors for regime {regime.name}"):
