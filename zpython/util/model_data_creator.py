@@ -63,8 +63,9 @@ def _model_market_regime_estimator(counts, regimes):
     return find_model_regime
 
 
-def get_model_data_by_regime(data_read_function, input_length, output_length, regime_detector) -> \
-        tuple[dict[ModelMarketRegime, list[pd.DataFrame]], pd.DataFrame, MarketRegimeDetector]:
+def get_model_data_for_regime(data_read_function, regime: ModelMarketRegime, input_length, output_length,
+                              regime_detector) -> \
+        tuple[list[pd.DataFrame], pd.DataFrame, MarketRegimeDetector]:
     # Alle Daten einlesen
     data, regime_detector = create_indicators(data_read_function, regime_detector=regime_detector)
     # Regimes extrahieren und umwandeln
@@ -76,7 +77,7 @@ def get_model_data_by_regime(data_read_function, input_length, output_length, re
     counts = regimes.groupby(group).cumcount() + 1
     model_market_regime_estimator = _model_market_regime_estimator(counts, regimes)
 
-    slices = {r: [] for r in list(ModelMarketRegime)}
+    slices = []
     input_start_shift = pd.Timedelta(minutes=input_length - 1)
     output_end_shift = pd.Timedelta(minutes=output_length)
     expected_len = input_length + output_length
@@ -90,6 +91,8 @@ def get_model_data_by_regime(data_read_function, input_length, output_length, re
         current_regime = regimes_non_number.loc[idx]
         current_count = counts.loc[idx]
         current_model_market_regime = model_market_regime_estimator(current_regime, current_count)
-        slices[current_model_market_regime].append(window)
+        if not current_model_market_regime == regime:
+            continue
+        slices.append(window)
 
     return slices, data, regime_detector

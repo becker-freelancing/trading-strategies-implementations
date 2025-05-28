@@ -87,11 +87,11 @@ class ModelTrainer:
         pass
 
     @abstractmethod
-    def _get_train_data(self) -> dict[ModelMarketRegime, tuple[np.ndarray, np.ndarray]]:
+    def _get_train_data(self, regime: ModelMarketRegime) -> tuple[np.ndarray, np.ndarray]:
         pass
 
     @abstractmethod
-    def _get_validation_data(self) -> dict[ModelMarketRegime, tuple[np.ndarray, np.ndarray]]:
+    def _get_validation_data(self, regime: ModelMarketRegime) -> tuple[np.ndarray, np.ndarray]:
         pass
 
     @abstractmethod
@@ -255,20 +255,22 @@ class ModelTrainer:
                     f"Data Shape for regime {train_provider.regime}: X_train {train_provider.feature_shape()}\tY_train {train_provider.label_shape()}\tX_valid {val_provider.feature_shape()}\tY_valid {val_provider.label_shape()}")
 
     def _create_train_val_data_tensor(self, chunk_size=15000):
-        train_data = self._get_train_data()
-        val_data = self._get_validation_data()
-        data_selector = self._get_data_selector()
+        regimes = list(ModelMarketRegime)
 
-        for regime in train_data.keys():
-            x_train, y_train = train_data[regime]
+        for regime in tqdm(regimes, "Creating train Tensors"):
+            x_train, y_train = self._get_train_data(regime)
             i = -1
             for chunk in tqdm(range(0, len(x_train), chunk_size), f"Writing train tensors for regime {regime.name}"):
                 i += 1
                 torch.save((x_train[chunk:chunk + chunk_size], y_train[chunk:chunk + chunk_size]),
                            _tensor_data_path(i, regime, self._get_data_selector(), True))
 
-        for regime in val_data.keys():
-            x_val, y_val = val_data[regime]
+        self._save_scaler()
+        self._save_regime_detector()
+        self._save_pca()
+
+        for regime in tqdm(regimes, "Creating Validation Tensors"):
+            x_val, y_val = self._get_validation_data(regime)
             i = -1
             for chunk in tqdm(range(0, len(x_val), chunk_size), f"Writing val tensors for regime {regime.name}"):
                 i += 1

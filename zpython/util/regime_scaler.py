@@ -10,26 +10,18 @@ class MarketRegimeScaler:
     def __init__(self):
         self.scalers = {key: MinMaxScaler() for key in list(ModelMarketRegime)}
 
-    def fit(self, data: dict[ModelMarketRegime, list[pd.DataFrame]]):
+    def fit(self, data: list[pd.DataFrame], regime: ModelMarketRegime):
+        data_by_regime = pd.concat(data)
+        data_by_regime = data_by_regime[~data_by_regime.index.duplicated(keep='first')]
+        self.scalers[regime].fit(data_by_regime)
 
-        for regime in tqdm(self.scalers.keys(), "Fitting scalers"):
-            data_by_regime = data[regime]
-            data_by_regime = pd.concat(data_by_regime)
-            data_by_regime = data_by_regime[~data_by_regime.index.duplicated(keep='first')]
-            self.scalers[regime].fit(data_by_regime)
-
-    def transform(self, data: dict[ModelMarketRegime, list[pd.DataFrame]]) -> dict[
-        ModelMarketRegime, list[pd.DataFrame]]:
-        transformed = {}
-        for regime in tqdm(data.keys(), "Transforming data"):
-            data_by_regime = data[regime]
-            scaler = self.scalers[regime]
-            transformed[regime] = [pd.DataFrame(data=scaler.transform(df), columns=df.columns, index=df.index) for df in
-                                   data_by_regime]
+    def transform(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[pd.DataFrame]:
+        scaler = self.scalers[regime]
+        transformed = [pd.DataFrame(data=scaler.transform(df), columns=df.columns, index=df.index) for df in
+                       tqdm(data, f"Transforming Data for regime {regime.name}")]
 
         return transformed
 
-    def fit_transform(self, data: dict[ModelMarketRegime, list[pd.DataFrame]]) -> dict[
-        ModelMarketRegime, list[pd.DataFrame]]:
-        self.fit(data)
-        return self.transform(data)
+    def fit_transform(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[pd.DataFrame]:
+        self.fit(data, regime)
+        return self.transform(data, regime)
