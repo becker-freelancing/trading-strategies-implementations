@@ -8,8 +8,8 @@ from zpython.util.training.loss_metric_util import _simulate_trades_sequence, _p
 
 class PNLLoss(Loss):
 
-    def __init__(self):
-        super().__init__("pnl", "sum_over_batch_size", None)
+    def __init__(self, name="pnl", reduction="sum_over_batch_size", dtype=None):
+        super().__init__(name, reduction, dtype)
 
     def call(self, y_true, y_pred):
         direction_factor, sl_reached_indices, sls, tp_reached_indices, tps = _simulate_trades_sequence(y_pred, y_true)

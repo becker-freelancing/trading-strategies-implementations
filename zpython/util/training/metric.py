@@ -141,12 +141,18 @@ def _transform_y_true(y_true, y_pred):
 
 class MSE(MeanSquaredError):
 
+    def __init__(self, name="mean_squared_error", dtype=None):
+        super().__init__(name, dtype)
+
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_true, y_pred = _transform_y_true(y_true, y_pred)
         return super().update_state(y_true, y_pred, sample_weight)
 
 
 class RMSE(RootMeanSquaredError):
+
+    def __init__(self, name="root_mean_squared_error", dtype=None):
+        super().__init__(name, dtype)
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_true, y_pred = _transform_y_true(y_true, y_pred)
@@ -155,12 +161,18 @@ class RMSE(RootMeanSquaredError):
 
 class MAE(MeanAbsoluteError):
 
+    def __init__(self, name="mean_absolute_error", dtype=None):
+        super().__init__(name, dtype)
+
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_true, y_pred = _transform_y_true(y_true, y_pred)
         return super().update_state(y_true, y_pred, sample_weight)
 
 
 class MAPE(MeanAbsolutePercentageError):
+
+    def __init__(self, name="mean_absolute_percentage_error", dtype=None):
+        super().__init__(name, dtype)
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_true, y_pred = _transform_y_true(y_true, y_pred)
@@ -169,12 +181,18 @@ class MAPE(MeanAbsolutePercentageError):
 
 class MSLE(MeanSquaredLogarithmicError):
 
+    def __init__(self, name="mean_squared_logarithmic_error", dtype=None):
+        super().__init__(name, dtype)
+
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_true, y_pred = _transform_y_true(y_true, y_pred)
         return super().update_state(y_true, y_pred, sample_weight)
 
 
 class LogCosh(LogCoshError):
+
+    def __init__(self, name="logcosh", dtype=None):
+        super().__init__(name, dtype)
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_true, y_pred = _transform_y_true(y_true, y_pred)
