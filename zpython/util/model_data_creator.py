@@ -46,6 +46,8 @@ def get_model_data_for_regime(
         (data.index <= data.index[-1] - output_shift)
         ]
 
+    regimes_non_number = regimes_non_number[~regimes_non_number.index.duplicated(keep='first')]
+    regime_durations = regime_durations[~regime_durations.index.duplicated(keep='first')]
     results = {}
     for index in valid_idx.values:
         results[index] = regime_estimator.transform(regimes_non_number.loc[index], regime_durations.loc[index])
