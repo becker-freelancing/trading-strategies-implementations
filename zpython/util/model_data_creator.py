@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
 
 import numpy as np
@@ -63,36 +64,58 @@ def _model_market_regime_estimator(counts, regimes):
     return find_model_regime
 
 
-def get_model_data_for_regime(data_read_function, regime: ModelMarketRegime, input_length, output_length,
-                              regime_detector) -> \
-        tuple[list[pd.DataFrame], pd.DataFrame, MarketRegimeDetector]:
-    # Alle Daten einlesen
+def get_model_data_for_regime(
+        data_read_function,
+        regime: ModelMarketRegime,
+        input_length: int,
+        output_length: int,
+        regime_detector
+) -> tuple[list[pd.DataFrame], pd.DataFrame, MarketRegimeDetector]:
+    # Daten und Indikatoren laden
     data, regime_detector = create_indicators(data_read_function, regime_detector=regime_detector)
-    # Regimes extrahieren und umwandeln
+
+    # Regime zu numerischen Werten konvertieren
     regimes_non_number = data["regime"]
-    regimes = data["regime"].apply(market_regime_to_number)
-    data["regime"] = regimes
-    # Dauer der Regimes berechnen
-    group = (regimes != regimes.shift()).cumsum()
-    counts = regimes.groupby(group).cumcount() + 1
-    model_market_regime_estimator = _model_market_regime_estimator(counts, regimes)
+    data["regime"] = regimes = regimes_non_number.apply(market_regime_to_number)
 
-    slices = []
-    input_start_shift = pd.Timedelta(minutes=input_length - 1)
-    output_end_shift = pd.Timedelta(minutes=output_length)
-    expected_len = input_length + output_length
+    # Dauer jedes Regime-Zustands berechnen
+    regime_groups = (regimes != regimes.shift()).cumsum()
+    regime_durations = regimes.groupby(regime_groups).cumcount() + 1
 
-    for idx in tqdm(data.index.values, "Slicing data in regimes"):
-        raw_window = data.loc[idx - input_start_shift:idx + output_end_shift]
-        window = raw_window.dropna()
-        if len(window) != expected_len or len(window) != len(raw_window):
-            continue
+    # Regime-Schätzer vorbereiten
+    regime_estimator = _model_market_regime_estimator(regime_durations, regimes)
+
+    # Zeitverschiebungen berechnen
+    input_shift = pd.Timedelta(minutes=input_length - 1)
+    output_shift = pd.Timedelta(minutes=output_length)
+    window_length = input_length + output_length
+
+    # Gültige Indizes bestimmen (nur die, bei denen ein vollständiges Fenster möglich ist)
+    valid_idx = data.index[
+        (data.index >= data.index[0] + input_shift) &
+        (data.index <= data.index[-1] - output_shift)
+        ]
+
+    # Funktion zur Verarbeitung eines einzelnen Index
+    def process_idx(idx):
+        start = idx - input_shift
+        end = idx + output_shift
+        window = data.loc[start:end]
+
+        if window.isnull().values.any() or len(window) != window_length:
+            return None
 
         current_regime = regimes_non_number.loc[idx]
-        current_count = counts.loc[idx]
-        current_model_market_regime = model_market_regime_estimator(current_regime, current_count)
-        if not current_model_market_regime == regime:
-            continue
-        slices.append(window)
+        current_duration = regime_durations.loc[idx]
+        estimated_regime = regime_estimator(current_regime, current_duration)
+
+        return window if estimated_regime == regime else None
+
+    # Parallelisierte Verarbeitung
+    with ThreadPoolExecutor() as executor:
+        results = list(tqdm(executor.map(process_idx, valid_idx), total=len(valid_idx), desc="Slicing data in regimes"))
+
+    # Nur gültige Fenster zurückgeben
+    slices = [r for r in results if r is not None]
 
     return slices, data, regime_detector
