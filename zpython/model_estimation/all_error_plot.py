@@ -2,9 +2,9 @@ import os
 
 import pandas as pd
 
-from zpython.util.market_regime import MarketRegime
+from zpython.util.model_data_creator import ModelMarketRegime
 
-BASE_PATH = "C:/Users/jasb/AppData/Roaming/krypto-java/models-bybit/sequence"
+BASE_PATH = "C:/Users/jasb/AppData/Roaming/krypto-java/models-bybit/SEQUENCE_REGRESSION"
 
 all_metrics = None
 
@@ -21,7 +21,7 @@ for root, dirs, files in os.walk(BASE_PATH):
             else:
                 all_metrics = read
 
-for regime in list(MarketRegime):
+for regime in list(ModelMarketRegime):
     regime_data = all_metrics[all_metrics["regime_id"] == regime.value]
     min_idx = regime_data.nsmallest(3, 'val_loss').index
     min_values = regime_data.loc[min_idx]

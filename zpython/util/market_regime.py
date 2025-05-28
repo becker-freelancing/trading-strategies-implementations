@@ -29,8 +29,12 @@ class MarketRegime(Enum):
     UP_LOW_VOLA = 6
 
 
-def market_regime_to_number(regime: MarketRegime):
-    return regime.value
+def number_to_market_regime(regime: MarketRegime | int):
+    return MarketRegime(regime) if isinstance(regime, int) else regime
+
+
+def market_regime_to_number(regime: MarketRegime | int):
+    return regime.value if isinstance(regime, MarketRegime) else regime
 
 
 def market_regime_to_number_if_needed(df: pd.DataFrame, regime_column="regime"):

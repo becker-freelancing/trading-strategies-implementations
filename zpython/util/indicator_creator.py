@@ -11,6 +11,9 @@ from zpython.util.data_split import train_data
 from zpython.util.market_regime import MarketRegimeDetector
 
 
+class DataCache:
+    indicators_cache = {}
+
 def _add_returns(data,
                  lags_to_add,
                  column_name,
@@ -156,6 +159,10 @@ def create_indicators(data_read_function=train_data,
                       limit=100_000_000,
                       time_frame=1,
                       regime_detector=None):
+    cache_content = DataCache.indicators_cache.get(data_read_function)
+    if cache_content is not None:
+        print("Using Cache Content for data")
+        return cache_content, regime_detector
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
         print(f"Reading data (M{time_frame})...")
@@ -182,6 +189,7 @@ def create_indicators(data_read_function=train_data,
         exclude_columns = ["lowBid", "lowAsk", "highBid", "highAsk", "openBid", "openAsk", "closeAsk", "closeBid"]
         data = data.drop(columns=exclude_columns)
         data.set_index("closeTime", inplace=True)
+        DataCache.indicators_cache[data_read_function] = data
         return data, regime_detector
 
 

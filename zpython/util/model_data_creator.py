@@ -1,68 +1,16 @@
 from concurrent.futures import ThreadPoolExecutor
-from enum import Enum
 
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
 from zpython.util.indicator_creator import create_indicators
-from zpython.util.market_regime import MarketRegime, MarketRegimeDetector, market_regime_to_number
+from zpython.util.market_regime import MarketRegimeDetector, market_regime_to_number, \
+    number_to_market_regime
+from zpython.util.model_market_regime import ModelMarketRegime, ModelMarketRegimeDetector
 
 
-class ModelMarketRegime(Enum):
-    UP_LOW_VOLA_033 = 1
-    UP_LOW_VOLA_066 = 2
-    UP_LOW_VOLA_1 = 3
-    UP_HIGH_VOLA_033 = 4
-    UP_HIGH_VOLA_066 = 5
-    UP_HIGH_VOLA_1 = 6
-    SIDE_LOW_VOLA_033 = 7
-    SIDE_LOW_VOLA_066 = 8
-    SIDE_LOW_VOLA_1 = 9
-    SIDE_HIGH_VOLA_033 = 10
-    SIDE_HIGH_VOLA_066 = 11
-    SIDE_HIGH_VOLA_1 = 12
-    DOWN_LOW_VOLA_033 = 13
-    DOWN_LOW_VOLA_066 = 14
-    DOWN_LOW_VOLA_1 = 15
-    DOWN_HIGH_VOLA_033 = 16
-    DOWN_HIGH_VOLA_066 = 17
-    DOWN_HIGH_VOLA_1 = 18
-
-
-def model_market_regime(regime: MarketRegime, quantile: float) -> ModelMarketRegime:
-    if quantile <= 0.33:
-        suffix = "033"
-    elif quantile <= 0.66:
-        suffix = "066"
-    else:
-        suffix = "1"
-
-    regime_name = regime.name  # z.B. "UP_LOW_VOLA"
-    enum_name = f"{regime_name}_{suffix}"  # z.B. "UP_LOW_VOLA_033"
-
-    return ModelMarketRegime[enum_name]
-
-
-def _model_market_regime_estimator(counts, regimes):
-    all_regimes = list(MarketRegime)
-    quantiles = {}
-    quantil_values = [0.33, 0.66, 1]
-    for r in all_regimes:
-        quantiles[r] = np.array([
-            np.quantile(counts[regimes == r.value].values, q) for q in quantil_values
-        ])
-
-    def find_model_regime(last_regime, regime_duration):
-        q = quantiles[last_regime]
-        idxs = np.argwhere(q > regime_duration)
-        if len(idxs) == 0:
-            return model_market_regime(last_regime, 1)
-
-        return model_market_regime(last_regime, quantil_values[idxs[0][0]])
-
-    return find_model_regime
-
+def get_regime(x, estimator):
+    return None
 
 def get_model_data_for_regime(
         data_read_function,
@@ -75,6 +23,7 @@ def get_model_data_for_regime(
     data, regime_detector = create_indicators(data_read_function, regime_detector=regime_detector)
 
     # Regime zu numerischen Werten konvertieren
+    data["regime"] = data["regime"].apply(number_to_market_regime)
     regimes_non_number = data["regime"]
     data["regime"] = regimes = regimes_non_number.apply(market_regime_to_number)
 
@@ -83,7 +32,8 @@ def get_model_data_for_regime(
     regime_durations = regimes.groupby(regime_groups).cumcount() + 1
 
     # Regime-Schätzer vorbereiten
-    regime_estimator = _model_market_regime_estimator(regime_durations, regimes)
+    regime_estimator = ModelMarketRegimeDetector()
+    regime_estimator.fit(regime_durations, regimes)
 
     # Zeitverschiebungen berechnen
     input_shift = pd.Timedelta(minutes=input_length - 1)
@@ -96,6 +46,12 @@ def get_model_data_for_regime(
         (data.index <= data.index[-1] - output_shift)
         ]
 
+    results = {}
+    for index in valid_idx.values:
+        results[index] = regime_estimator.transform(regimes_non_number.loc[index], regime_durations.loc[index])
+
+    model_market_regimes = pd.Series(results)
+    valid_idx = model_market_regimes[model_market_regimes == regime].index
     # Funktion zur Verarbeitung eines einzelnen Index
     def process_idx(idx):
         start = idx - input_shift
@@ -105,11 +61,7 @@ def get_model_data_for_regime(
         if window.isnull().values.any() or len(window) != window_length:
             return None
 
-        current_regime = regimes_non_number.loc[idx]
-        current_duration = regime_durations.loc[idx]
-        estimated_regime = regime_estimator(current_regime, current_duration)
-
-        return window if estimated_regime == regime else None
+        return window
 
     # Parallelisierte Verarbeitung
     with ThreadPoolExecutor() as executor:
