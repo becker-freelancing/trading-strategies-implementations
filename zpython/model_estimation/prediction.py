@@ -36,6 +36,7 @@ def _load_best_models(base_path, metrics_by_regime):
     models = {}
     for regime in metrics_by_regime.keys():
         metrics = metrics_by_regime[regime]
+        metrics = metrics[metrics["epoch"] != 0]
         min_row = metrics.loc[metrics["val_loss"].idxmin()]
         trial = min_row["trial"]
         epoch = min_row["epoch"]
