@@ -1,12 +1,12 @@
 import matplotlib
 import numpy as np
 
-from zpython.model_estimation.prediction import _model_name
+from zpython.model.best_model_loader import _model_name
 from zpython.util.model_data_creator import ModelMarketRegime
 
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
-from zpython.model_estimation.prediction import _get_metrics_by_regime
+from zpython.model.best_model_loader import _get_metrics_by_regime
 
 metrics_by_regime = _get_metrics_by_regime("models-bybit/SEQUENCE_REGRESSION")
 
