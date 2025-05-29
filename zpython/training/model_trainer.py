@@ -2,6 +2,7 @@ import warnings
 
 from zpython.model.regime_model import ModelProvider, RegimeTrainModel
 from zpython.util.model_data_creator import ModelMarketRegime
+from zpython.util.model_market_regime import ModelMarketRegimeDetector
 from zpython.util.regime_pca import MarketRegimePCA
 from zpython.util.regime_scaler import MarketRegimeScaler
 
@@ -81,6 +82,7 @@ class ModelTrainer:
         self.val_data_loader_provider = None
         self.regime_detector = None
         self.regime_pca = None
+        self.model_regime_detector = None
 
     @abstractmethod
     def _get_max_input_length(self) -> int:
@@ -135,6 +137,11 @@ class ModelTrainer:
         path = from_relative_path(f"data-bybit/a-regime_detector_{self._get_data_selector()}.dump")
         joblib.dump(scaler, path)
 
+    def _save_model_regime_detector(self):
+        scaler = self._get_model_regime_detector()
+        path = from_relative_path(f"data-bybit/a-model-regime_detector_{self._get_data_selector()}.dump")
+        joblib.dump(scaler, path)
+
     def _save_pca(self):
         scaler = self._get_regime_pca()
         path = from_relative_path(f"data-bybit/a-regime_pca_{self._get_data_selector()}.dump")
@@ -160,6 +167,12 @@ class ModelTrainer:
             self.regime_detector = MarketRegimeDetector()
 
         return self.regime_detector
+
+    def _get_model_regime_detector(self):
+        if not self.model_regime_detector:
+            self.model_regime_detector = ModelMarketRegimeDetector()
+
+        return self.model_regime_detector
 
     def _get_regime_pca(self):
         if not self.regime_pca:
@@ -268,6 +281,7 @@ class ModelTrainer:
         self._save_scaler()
         self._save_regime_detector()
         self._save_pca()
+        self._save_model_regime_detector()
 
         for regime in regimes:
             x_val, y_val = self._get_validation_data(regime)

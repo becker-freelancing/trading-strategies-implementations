@@ -11,6 +11,7 @@ from zpython.training.model_trainer import ModelTrainer
 from zpython.util.data_split import validation_data, train_data
 from zpython.util.market_regime import MarketRegimeDetector
 from zpython.util.model_data_creator import ModelMarketRegime
+from zpython.util.model_market_regime import ModelMarketRegimeDetector
 
 
 class RegressionModelTrainer(ModelTrainer):
@@ -31,10 +32,14 @@ class RegressionModelTrainer(ModelTrainer):
         pass
 
     @abstractmethod
-    def _load_model_data_for_regime(self, data_read_fn, regime: ModelMarketRegime, max_input_length: int,
+    def _load_model_data_for_regime(self, data_read_fn,
+                                    regime: ModelMarketRegime,
+                                    max_input_length: int,
                                     output_length: int,
-                                    regime_detector: MarketRegimeDetector, train) -> tuple[
-        list[pd.DataFrame], pd.DataFrame, MarketRegimeDetector]:
+                                    regime_detector: MarketRegimeDetector,
+                                    model_regime_detector: ModelMarketRegimeDetector,
+                                    train: bool) -> tuple[
+        list[pd.DataFrame], pd.DataFrame, MarketRegimeDetector, ModelMarketRegimeDetector]:
         pass
 
 
@@ -45,22 +50,26 @@ class RegressionModelTrainer(ModelTrainer):
     def _create_unsplited_data(self, regime: ModelMarketRegime, load_train_data=True) -> tuple[
         list[np.ndarray], list[np.ndarray], int]:
         if load_train_data:
-            slices, complete_data, self.regime_detector = self._load_model_data_for_regime(train_data,
+            slices, complete_data, self.regime_detector, self.model_regime_detector = self._load_model_data_for_regime(
+                train_data,
                                                                                            regime,
                                                                                            self._get_max_input_length(),
                                                                                            self._get_output_length(),
                                                                                            self._get_regime_detector(),
+                self._get_model_regime_detector(),
                                                                                            True)
             slices = self._get_scaler().fit_transform(slices, regime)
             reduced_slices = self._get_regime_pca().fit_transform(slices, regime)
 
             return slices, reduced_slices, self._get_target_column_idx(complete_data)
         else:
-            slices, complete_data, self.regime_detector = self._load_model_data_for_regime(validation_data,
+            slices, complete_data, self.regime_detector, self.model_regime_detector = self._load_model_data_for_regime(
+                validation_data,
                                                                                            regime,
                                                                                            self._get_max_input_length(),
                                                                                            self._get_output_length(),
                                                                                            self._get_regime_detector(),
+                self._get_model_regime_detector(),
                                                                                            False)
             slices = self._get_scaler().transform(slices, regime)
             reduced_slices = self._get_regime_pca().transform(slices, regime)

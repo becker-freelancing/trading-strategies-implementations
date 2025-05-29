@@ -60,3 +60,9 @@ class ModelMarketRegimeDetector:
             return model_market_regime(last_regime, 1)
 
         return model_market_regime(last_regime, self.quantil_values[idxs[0][0]])
+
+    def is_fitted(self):
+        for q in self.quantiles.values():
+            if len(q) == 0:
+                return False
+        return True

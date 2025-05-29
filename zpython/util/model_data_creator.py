@@ -9,16 +9,14 @@ from zpython.util.market_regime import MarketRegimeDetector, market_regime_to_nu
 from zpython.util.model_market_regime import ModelMarketRegime, ModelMarketRegimeDetector
 
 
-def get_regime(x, estimator):
-    return None
-
 def get_model_data_for_regime(
         data_read_function,
         regime: ModelMarketRegime,
         input_length: int,
         output_length: int,
-        regime_detector
-) -> tuple[list[pd.DataFrame], pd.DataFrame, MarketRegimeDetector]:
+        regime_detector,
+        model_regime_detector
+) -> tuple[list[pd.DataFrame], pd.DataFrame, MarketRegimeDetector, ModelMarketRegimeDetector]:
     # Daten und Indikatoren laden
     data, regime_detector = create_indicators(data_read_function, regime_detector=regime_detector)
 
@@ -32,8 +30,8 @@ def get_model_data_for_regime(
     regime_durations = regimes.groupby(regime_groups).cumcount() + 1
 
     # Regime-Schätzer vorbereiten
-    regime_estimator = ModelMarketRegimeDetector()
-    regime_estimator.fit(regime_durations, regimes)
+    if not model_regime_detector.is_fitted():
+        model_regime_detector.fit(regime_durations, regimes)
 
     # Zeitverschiebungen berechnen
     input_shift = pd.Timedelta(minutes=input_length - 1)
@@ -50,7 +48,7 @@ def get_model_data_for_regime(
     regime_durations = regime_durations[~regime_durations.index.duplicated(keep='first')]
     results = {}
     for index in valid_idx.values:
-        results[index] = regime_estimator.transform(regimes_non_number.loc[index], regime_durations.loc[index])
+        results[index] = model_regime_detector.transform(regimes_non_number.loc[index], regime_durations.loc[index])
 
     model_market_regimes = pd.Series(results)
     valid_idx = model_market_regimes[model_market_regimes == regime].index
@@ -72,4 +70,4 @@ def get_model_data_for_regime(
     # Nur gültige Fenster zurückgeben
     slices = [r for r in results if r is not None]
 
-    return slices, data, regime_detector
+    return slices, data, regime_detector, model_regime_detector

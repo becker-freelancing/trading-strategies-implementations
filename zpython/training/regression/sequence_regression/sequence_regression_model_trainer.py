@@ -7,6 +7,7 @@ from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsolu
 from zpython.training.regression.regression_model_trainer import RegressionModelTrainer
 from zpython.util.market_regime import MarketRegimeDetector
 from zpython.util.model_data_creator import get_model_data_for_regime, ModelMarketRegime
+from zpython.util.model_market_regime import ModelMarketRegimeDetector
 from zpython.util.training.metric import ProfitHitRatioMetric, LossHitRatioMetric, NoneHitRatioMetric
 
 
@@ -15,14 +16,19 @@ class SequenceRegressionModelTrainer(RegressionModelTrainer, ABC):
     def __init__(self, model_name: str, scaler_provider):
         super().__init__(model_name, scaler_provider)
 
-    def _load_model_data_for_regime(self, data_read_fn, regime: ModelMarketRegime, max_input_length: int,
+    def _load_model_data_for_regime(self, data_read_fn,
+                                    regime: ModelMarketRegime,
+                                    max_input_length: int,
                                     output_length: int,
-                                    regime_detector: MarketRegimeDetector, train):
+                                    regime_detector: MarketRegimeDetector,
+                                    model_regime_detector: ModelMarketRegimeDetector,
+                                    train: bool):
         return get_model_data_for_regime(data_read_fn,
                                          regime,
                                          max_input_length,
                                          output_length,
-                                         regime_detector)
+                                         regime_detector,
+                                         model_regime_detector)
 
     def _create_input_output_sequences(self, data: list[np.ndarray], reduced_data: list[np.ndarray], target_column_idx):
 
