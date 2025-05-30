@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
@@ -25,3 +26,21 @@ class MarketRegimeScaler:
     def fit_transform(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[pd.DataFrame]:
         self.fit(data, regime)
         return self.transform(data, regime)
+
+    def _reshape(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[pd.DataFrame]:
+        scaler = self.scalers[regime]
+        result = []
+        for unshaped in data:
+            reshaped = np.zeros((len(unshaped), len(scaler.feature_names_in_)))
+            reshaped = pd.DataFrame(data=reshaped, columns=scaler.feature_names_in_, index=unshaped.index)
+            reshaped[unshaped.columns] = unshaped[unshaped.columns]
+            result.append(reshaped)
+        return result
+
+    def inverse_transform(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[pd.DataFrame]:
+        scaler = self.scalers[regime]
+        reshaped = self._reshape(data, regime)
+        inverse = [pd.DataFrame(data=scaler.inverse_transform(df), columns=df.columns, index=df.index) for df in
+                   tqdm(reshaped, f"Inverse transforming Data for regime {regime.name}")]
+        inverse = [inv[df.columns] for inv, df in zip(inverse, data)]
+        return inverse
