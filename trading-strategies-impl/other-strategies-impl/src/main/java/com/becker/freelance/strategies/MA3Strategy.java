@@ -4,7 +4,6 @@ import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
@@ -12,7 +11,6 @@ import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -63,8 +61,8 @@ public class MA3Strategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Bar currentBar = timeSeries.getEntryForTimeAsBar(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Bar currentBar = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentBar);
 
         Optional<Direction> trendDirection = getTrendDirection();
@@ -81,16 +79,16 @@ public class MA3Strategy extends BaseStrategy {
         Direction direction = trendDirection.get();
 
         if (currentShortSma > currentMidSma && lastShortSmaValue < lastMidSmaValue && Direction.BUY.equals(direction)){
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice()));
         } else if (currentShortSma < currentMidSma && lastShortSmaValue > lastMidSmaValue && Direction.SELL.equals(direction)){
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice()));
         }
 
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

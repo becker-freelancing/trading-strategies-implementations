@@ -2,7 +2,6 @@ package com.becker.freelance.strategies;
 
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.indicators.ta.supportresistence.Zone;
 import com.becker.freelance.indicators.ta.swing.SwingPoint;
 import com.becker.freelance.indicators.ta.trend.TrendChanel;
@@ -16,7 +15,6 @@ import org.ta4j.core.indicators.trend.DownTrendIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +51,8 @@ public class TrendTest extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Bar currentPrice = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentPrice);
         int barCount = barSeries.getBarCount();
 
@@ -79,7 +77,7 @@ public class TrendTest extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

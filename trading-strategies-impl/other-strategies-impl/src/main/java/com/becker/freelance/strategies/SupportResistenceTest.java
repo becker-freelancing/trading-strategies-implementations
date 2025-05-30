@@ -2,7 +2,6 @@ package com.becker.freelance.strategies;
 
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.indicators.ta.supportresistence.*;
 import com.becker.freelance.indicators.ta.swing.SwingPoint;
 import com.becker.freelance.math.Decimal;
@@ -14,7 +13,6 @@ import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
 import org.ta4j.core.num.DecimalNum;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +49,8 @@ public class SupportResistenceTest extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Bar currentPrice = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentPrice);
         int barCount = barSeries.getBarCount();
 
@@ -83,7 +81,7 @@ public class SupportResistenceTest extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

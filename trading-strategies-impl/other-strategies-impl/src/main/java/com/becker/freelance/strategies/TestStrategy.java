@@ -4,10 +4,8 @@ import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,19 +28,19 @@ public class TestStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
         Random rand = new Random();
         if (rand.nextDouble() < 0) {
             return Optional.empty();
         }
         Direction direction = rand.nextDouble() > 0.5 ? Direction.BUY : Direction.SELL;
         return Optional.of(entrySignalFactory.fromAmount(
-                new Decimal(0.01), direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)
+                new Decimal(0.01), direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT, entryParameter.currentPrice()
         ));
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

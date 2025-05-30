@@ -5,7 +5,6 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,6 @@ import org.ta4j.core.Indicator;
 import org.ta4j.core.indicators.candles.*;
 import org.ta4j.core.num.DecimalNum;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -73,24 +71,24 @@ public class ChartPatternStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Bar currentPrice = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentPrice);
         int index = barSeries.getBarCount() - 1;
         for (Indicator<Boolean> bullish : bullishIndicator) {
             if (bullish.getValue(index)) {
-                logger.info("Try to open buy position on {} bullish indicator {} is true", timeSeries.getPair().technicalName(), bullish.getClass().getName());
+                logger.info("Try to open buy position on {} bullish indicator {} is true", entryParameter.pair().technicalName(), bullish.getClass().getName());
                 return Optional.of(
-                        entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
+                        entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice())
                 );
             }
         }
 
         for (Indicator<Boolean> baerish : bearischIndicator) {
             if (baerish.getValue(index)) {
-                logger.info("Try to open sell position on {} baerish indicator {} is true", timeSeries.getPair().technicalName(), baerish.getClass().getName());
+                logger.info("Try to open sell position on {} baerish indicator {} is true", entryParameter.pair().technicalName(), baerish.getClass().getName());
                 return Optional.of(
-                        entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
+                        entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice())
                 );
             }
         }
@@ -99,7 +97,7 @@ public class ChartPatternStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

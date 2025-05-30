@@ -4,7 +4,6 @@ import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.indicators.ta.stochasticrsi.RsiResult;
 import com.becker.freelance.indicators.ta.stochasticrsi.StochasticRsiIndicator;
@@ -17,7 +16,6 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.supertrend.SuperTrendIndicator;
 import org.ta4j.core.num.Num;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -87,8 +85,8 @@ public class SuperTrendStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Bar currentPrice = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentPrice);
         int barCount = barSeries.getBarCount() - 1;
 
@@ -99,15 +97,15 @@ public class SuperTrendStrategy extends BaseStrategy {
         RsiResult currentRsi = updateRsiCrosses(barCount);
 
         // Sind bereits Positionen geöffnet? -> Keine neuen mehr öffnen
-        if (getOpenPositionRequestor().isPositionOpen(timeSeries.getPair())) {
+        if (getOpenPositionRequestor().isPositionOpen(entryParameter.pair())) {
             return Optional.empty();
         }
 
         //Ist EMA über den Kerzen? -> Nur Short, sonst nur Long
         if (emaIndicator.getValue(barCount).isGreaterThan(currentPrice.getClosePrice())) {
-            return lookForShortPosition(barCount, currentPrice, currentRsi, timeSeries.getEntryForTime(time));
+            return lookForShortPosition(barCount, currentPrice, currentRsi, entryParameter.currentPrice());
         } else if (emaIndicator.getValue(barCount).isLessThan(currentPrice.getClosePrice())) {
-            return lookForLongPosition(barCount, currentPrice, currentRsi, timeSeries.getEntryForTime(time));
+            return lookForLongPosition(barCount, currentPrice, currentRsi, entryParameter.currentPrice());
         }
 
         return Optional.empty();
@@ -200,7 +198,7 @@ public class SuperTrendStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

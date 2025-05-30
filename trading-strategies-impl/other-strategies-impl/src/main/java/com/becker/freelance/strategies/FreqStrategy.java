@@ -5,7 +5,6 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -18,7 +17,6 @@ import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.UnderIndicatorRule;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -78,20 +76,20 @@ public class FreqStrategy extends BaseStrategy {
 
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
         int index = series.getBarCount() - 1;
 
         if (entryRule.isSatisfied(index)) {
             return Optional.of(
-                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time))
+                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice())
             );
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
-        series.addBar(timeSeries.getEntryForTimeAsBar(time));
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
+        series.addBar(exitParameter.currentPriceAsBar());
 
         return Optional.empty();
     }

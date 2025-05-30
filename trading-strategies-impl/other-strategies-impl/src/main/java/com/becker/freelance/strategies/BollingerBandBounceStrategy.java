@@ -6,7 +6,6 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
@@ -21,7 +20,6 @@ import org.ta4j.core.indicators.statistics.StandardDeviationIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -69,12 +67,12 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
 
-        Bar currentBar = timeSeries.getEntryForTimeAsBar(time);
+        Bar currentBar = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentBar);
 
-        TimeSeriesEntry currentPrice = timeSeries.getEntryForTime(time);
+        TimeSeriesEntry currentPrice = entryParameter.currentPrice();
 
         Optional<EntrySignal> buyEntrySignal = toBuyEntrySignal(barSeries, bollingerBandsLowerIndicator, bollingerBandsMiddleIndicator, currentPrice, size);
         if (buyEntrySignal.isPresent()) {
@@ -114,7 +112,7 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 }

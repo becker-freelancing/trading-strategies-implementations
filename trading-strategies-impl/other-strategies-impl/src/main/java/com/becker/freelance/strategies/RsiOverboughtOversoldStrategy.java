@@ -4,7 +4,6 @@ import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import org.ta4j.core.Bar;
@@ -13,7 +12,6 @@ import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,21 +51,21 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
 
-        Bar currentBar = timeSeries.getEntryForTimeAsBar(time);
+        Bar currentBar = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentBar);
 
         int barCount = barSeries.getBarCount();
         double value = rsiIndicator.getValue(barCount - 1).doubleValue();
 
-        TimeSeriesEntry currentEntry = timeSeries.getEntryForTime(time);
-        TimeSeriesEntry lastEntry = timeSeries.getLastEntryForTime(time);
+        TimeSeriesEntry currentEntry = entryParameter.currentPrice();
+        TimeSeriesEntry lastEntry = entryParameter.timeSeries().getLastEntryForTime(entryParameter.time());
 
         if (value > 70 && isBearishEngulfing(currentEntry, lastEntry)){
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice()));
         } else if (value < 30 && isBullishEngulfing(currentEntry, lastEntry)) {
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice()));
         }
 
         return Optional.empty();
@@ -82,7 +80,7 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy{
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 }

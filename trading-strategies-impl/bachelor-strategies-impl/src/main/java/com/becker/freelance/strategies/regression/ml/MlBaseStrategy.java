@@ -4,16 +4,12 @@ import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.BaseStrategy;
-import com.becker.freelance.strategies.PermutableStrategyParameter;
-import com.becker.freelance.strategies.StrategyParameter;
+import com.becker.freelance.strategies.*;
 import com.becker.freelance.strategies.regression.shared.BufferedPredictor;
 import com.becker.freelance.strategies.regression.shared.PredictionToEntrySignalConverter;
 import com.becker.freelance.strategies.regression.shared.TrailingStepFilter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,19 +50,19 @@ public abstract class MlBaseStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Optional<List<Decimal>> prediction = predictor.getPrediction(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Optional<List<Decimal>> prediction = predictor.getPrediction(entryParameter.time());
 
         if (prediction.isEmpty()) {
             return Optional.empty();
         }
 
         return predictionToEntrySignalConverter.toEntrySignal(prediction.get(),
-                timeSeries.getPair(), timeSeries.getEntryForTime(time));
+                entryParameter.pair(), entryParameter.currentPrice());
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

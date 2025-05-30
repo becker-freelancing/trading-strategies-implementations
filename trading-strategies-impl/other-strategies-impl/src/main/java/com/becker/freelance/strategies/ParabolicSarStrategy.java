@@ -60,19 +60,19 @@ public class ParabolicSarStrategy extends BaseStrategy{
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
 
-        if (!lastUpdate.equals(time)){
-            calculateAndExtractInformation(timeSeries, time);
+        if (!lastUpdate.equals(entryParameter.time())) {
+            calculateAndExtractInformation(entryParameter.timeSeries(), entryParameter.time());
         }
         if (lastSarValue.isNaN()){
             return Optional.empty();
         }
 
         if(currentCloseMid.isLessThan(currentSarValue) && lastCloseMid.isGreaterThan(lastSarValue)){
-            return toSellEntrySignal(timeSeries.getEntryForTime(time));
+            return toSellEntrySignal(entryParameter.currentPrice());
         } else if (currentCloseMid.isGreaterThan(currentSarValue) && lastCloseMid.isLessThan(lastSarValue)) {
-            return toBuyEntrySignal(timeSeries.getEntryForTime(time));
+            return toBuyEntrySignal(entryParameter.currentPrice());
         }
 
         return Optional.empty();
@@ -94,8 +94,8 @@ public class ParabolicSarStrategy extends BaseStrategy{
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
-        calculateAndExtractInformation(timeSeries, time);
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
+        calculateAndExtractInformation(exitParameter.timeSeries(), exitParameter.time());
 
         if(currentCloseMid.isLessThan(currentSarValue) && lastCloseMid.isGreaterThan(lastSarValue)){
             //Alle Buy schließen

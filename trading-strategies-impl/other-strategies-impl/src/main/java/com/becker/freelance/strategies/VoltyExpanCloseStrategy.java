@@ -47,19 +47,19 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
 
         if (direction != null) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionType.HARD_LIMIT, entryParameter.currentPrice()));
         }
 
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
 
-        updateData(timeSeries, time);
+        updateData(exitParameter.timeSeries(), exitParameter.time());
 
         if (direction != null) {
             return Optional.of(new ExitSignal(direction.negate()));

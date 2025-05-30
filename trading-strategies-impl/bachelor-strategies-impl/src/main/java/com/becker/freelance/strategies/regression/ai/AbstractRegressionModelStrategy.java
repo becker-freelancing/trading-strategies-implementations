@@ -3,15 +3,11 @@ package com.becker.freelance.strategies.regression.ai;
 import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.BaseStrategy;
-import com.becker.freelance.strategies.PermutableStrategyParameter;
-import com.becker.freelance.strategies.StrategyParameter;
+import com.becker.freelance.strategies.*;
 import com.becker.freelance.strategies.regression.shared.BufferedPredictor;
 import com.becker.freelance.strategies.regression.shared.PredictionToEntrySignalConverter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,20 +39,20 @@ public abstract class AbstractRegressionModelStrategy extends BaseStrategy {
 
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Optional<List<Decimal>> optionalPrediction = predictor.getPrediction(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Optional<List<Decimal>> optionalPrediction = predictor.getPrediction(entryParameter.time());
 
         if (optionalPrediction.isEmpty()) {
             return Optional.empty();
         }
 
         List<Decimal> prediction = optionalPrediction.get();
-        return predictionToEntrySignalConverter.toEntrySignal(prediction, timeSeries.getPair(), timeSeries.getEntryForTime(time));
+        return predictionToEntrySignalConverter.toEntrySignal(prediction, entryParameter.pair(), entryParameter.currentPrice());
     }
 
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 

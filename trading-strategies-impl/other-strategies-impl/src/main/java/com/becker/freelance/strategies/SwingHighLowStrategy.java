@@ -53,24 +53,24 @@ public class SwingHighLowStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
 
         if (lastSwingLowOrNull == null || lastSwingHighOrNull == null) {
             return Optional.empty();
         }
 
         if (lastSwingHighOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice()));
         } else if (lastSwingLowOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, timeSeries.getEntryForTime(time)));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice()));
         }
 
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
-        updateData(timeSeries, time);
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
+        updateData(exitParameter.timeSeries(), exitParameter.time());
 
         if (lastSwingLowOrNull == null || lastSwingHighOrNull == null) {
             return Optional.empty();

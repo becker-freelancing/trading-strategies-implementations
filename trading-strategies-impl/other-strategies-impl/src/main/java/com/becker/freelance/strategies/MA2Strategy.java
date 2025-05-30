@@ -5,7 +5,6 @@ import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
-import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.algorithm.SwingDetection;
@@ -15,7 +14,6 @@ import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,20 +72,20 @@ public class MA2Strategy extends BaseStrategy{
     }
 
     @Override
-    public Optional<EntrySignal> shouldEnter(TimeSeries timeSeries, LocalDateTime time) {
-        Bar currentPrice = timeSeries.getEntryForTimeAsBar(time);
+    public Optional<EntrySignal> shouldEnter(EntryParameter entryParameter) {
+        Bar currentPrice = entryParameter.currentPriceAsBar();
         barSeries.addBar(currentPrice);
         int barCount = barSeries.getBarCount();
         LastTwoMaResults lastShortMaValues = lastTwoMaValuesForTime(shortSma, barCount);
         LastTwoMaResults lastLongMaValues = lastTwoMaValuesForTime(longSma, barCount);
 
         int swingDataCount = swingHighLowMaxAge + swingHighLowOrder;
-        Optional<List<TimeSeriesEntry>> optionalSwingHighLowData = timeSeries.getLastNCloseForTimeAsEntryIfExist(time, swingDataCount);
+        Optional<List<TimeSeriesEntry>> optionalSwingHighLowData = entryParameter.timeSeries().getLastNCloseForTimeAsEntryIfExist(entryParameter.time(), swingDataCount);
 
         if (optionalSwingHighLowData.isEmpty()) {
             return Optional.empty();
         }
-        return toEntrySignal(lastShortMaValues, lastLongMaValues, optionalSwingHighLowData.get(), swingHighLowOrder, timeSeries.getEntryForTime(time));
+        return toEntrySignal(lastShortMaValues, lastLongMaValues, optionalSwingHighLowData.get(), swingHighLowOrder, entryParameter.currentPrice());
     }
 
     private Optional<EntrySignal> toEntrySignal(LastTwoMaResults lastShortMaValues, LastTwoMaResults lastLongMaValues, List<TimeSeriesEntry> swingData, int swingOrder, TimeSeriesEntry current) {
@@ -113,7 +111,7 @@ public class MA2Strategy extends BaseStrategy{
     }
 
     @Override
-    public Optional<ExitSignal> shouldExit(TimeSeries timeSeries, LocalDateTime time) {
+    public Optional<ExitSignal> shouldExit(ExitParameter exitParameter) {
         return Optional.empty();
     }
 }
