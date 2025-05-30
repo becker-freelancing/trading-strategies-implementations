@@ -5,6 +5,10 @@ import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.indicators.ta.supportresistence.*;
 import com.becker.freelance.indicators.ta.swing.SwingPoint;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -26,8 +30,8 @@ public class SupportResistenceTest extends BaseStrategy {
     private int period;
 
     public SupportResistenceTest() {
-        super("support_resistence", new PermutableStrategyParameter(List.of(
-                new StrategyParameter("period", 5, 5, 5, 1)
+        super("support_resistence", new PermutableStrategyInitParameter(List.of(
+                new StrategyInitParameter("period", 5, 5, 5, 1)
         )));
 
     }

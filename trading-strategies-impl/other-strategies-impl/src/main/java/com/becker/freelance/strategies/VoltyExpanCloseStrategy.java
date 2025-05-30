@@ -7,6 +7,10 @@ import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -28,9 +32,9 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
     private Direction direction;
 
     public VoltyExpanCloseStrategy() {
-        super("voltan_expan_close_strategy", new PermutableStrategyParameter(
-                new StrategyParameter("length", 5, 2, 10, 1),
-                new StrategyParameter("num_atrs", 0.75, 0.5, 1., 0.1)
+        super("voltan_expan_close_strategy", new PermutableStrategyInitParameter(
+                new StrategyInitParameter("length", 5, 2, 10, 1),
+                new StrategyInitParameter("num_atrs", 0.75, 0.5, 1., 0.1)
         ));
     }
 

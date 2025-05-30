@@ -8,6 +8,10 @@ import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.indicators.ta.stochasticrsi.RsiResult;
 import com.becker.freelance.indicators.ta.stochasticrsi.StochasticRsiIndicator;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -38,22 +42,22 @@ public class SuperTrendStrategy extends BaseStrategy {
     private int lastRsiUpper80CrossAge;
     private int lastRsiLower20CrossAge;
     public SuperTrendStrategy() {
-        super("super_trend", new PermutableStrategyParameter(
-                new StrategyParameter("rsi_k", 3),
-                new StrategyParameter("rsi_d", 3),
-                new StrategyParameter("rsi_length", 14, 13, 15, 1),
-                new StrategyParameter("rsi_stoch_length", 14),
-                new StrategyParameter("rsi_cross_max_age", 5, 5, 15, 5),
-                new StrategyParameter("size", 0.2, 0.2, 1.2, 0.2),
-                new StrategyParameter("risk_ratio", 1.5, 1., 2., 0.2),
-                new StrategyParameter("max_rsi_diff", 20, 0, 30, 10),
-                new StrategyParameter("ema_period", 200),
-                new StrategyParameter("supertrend_1_atr", 10),
-                new StrategyParameter("supertrend_1_multiplier", 1),
-                new StrategyParameter("supertrend_2_atr", 11),
-                new StrategyParameter("supertrend_2_multiplier", 2),
-                new StrategyParameter("supertrend_3_atr", 12),
-                new StrategyParameter("supertrend_3_multiplier", 3)
+        super("super_trend", new PermutableStrategyInitParameter(
+                new StrategyInitParameter("rsi_k", 3),
+                new StrategyInitParameter("rsi_d", 3),
+                new StrategyInitParameter("rsi_length", 14, 13, 15, 1),
+                new StrategyInitParameter("rsi_stoch_length", 14),
+                new StrategyInitParameter("rsi_cross_max_age", 5, 5, 15, 5),
+                new StrategyInitParameter("size", 0.2, 0.2, 1.2, 0.2),
+                new StrategyInitParameter("risk_ratio", 1.5, 1., 2., 0.2),
+                new StrategyInitParameter("max_rsi_diff", 20, 0, 30, 10),
+                new StrategyInitParameter("ema_period", 200),
+                new StrategyInitParameter("supertrend_1_atr", 10),
+                new StrategyInitParameter("supertrend_1_multiplier", 1),
+                new StrategyInitParameter("supertrend_2_atr", 11),
+                new StrategyInitParameter("supertrend_2_multiplier", 2),
+                new StrategyInitParameter("supertrend_3_atr", 12),
+                new StrategyInitParameter("supertrend_3_multiplier", 3)
         ));
     }
 

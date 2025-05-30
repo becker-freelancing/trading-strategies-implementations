@@ -6,6 +6,10 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.Bar;
@@ -32,14 +36,14 @@ public class ChartPatternStrategy extends BaseStrategy {
     private EntrySignalFactory entrySignalFactory;
 
     public ChartPatternStrategy() {
-        super("chart_pattern", new PermutableStrategyParameter(
-                new StrategyParameter("size", 1, 0.02, 0.02, 0.02),
-                new StrategyParameter("stop", 50, 10, 100, 15),
-                new StrategyParameter("limit", 120, 10, 100, 15),
-                new StrategyParameter("bw_bull", 0.1, 0.1, 3., 0.5),
-                new StrategyParameter("buw_bull", 0.1, 0.1, 3., 0.5),
-                new StrategyParameter("bc_bull", 10, 2, 50, 10),
-                new StrategyParameter("fac_bull", 1., 0.5, 4., 1.)
+        super("chart_pattern", new PermutableStrategyInitParameter(
+                new StrategyInitParameter("size", 1, 0.02, 0.02, 0.02),
+                new StrategyInitParameter("stop", 50, 10, 100, 15),
+                new StrategyInitParameter("limit", 120, 10, 100, 15),
+                new StrategyInitParameter("bw_bull", 0.1, 0.1, 3., 0.5),
+                new StrategyInitParameter("buw_bull", 0.1, 0.1, 3., 0.5),
+                new StrategyInitParameter("bc_bull", 10, 2, 50, 10),
+                new StrategyInitParameter("fac_bull", 1., 0.5, 4., 1.)
         ));
     }
 

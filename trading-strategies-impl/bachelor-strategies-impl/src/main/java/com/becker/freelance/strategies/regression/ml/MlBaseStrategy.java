@@ -5,7 +5,11 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.*;
+import com.becker.freelance.strategies.BaseStrategy;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import com.becker.freelance.strategies.regression.shared.BufferedPredictor;
 import com.becker.freelance.strategies.regression.shared.PredictionToEntrySignalConverter;
 import com.becker.freelance.strategies.regression.shared.TrailingStepFilter;
@@ -22,12 +26,12 @@ public abstract class MlBaseStrategy extends BaseStrategy {
 
 
     public MlBaseStrategy(String name) {
-        super(name, new PermutableStrategyParameter(List.of(
-                new StrategyParameter("stop_in_euro", new Decimal(10), new Decimal(10), new Decimal(100), new Decimal(10)),
-                new StrategyParameter("limit_in_euro", new Decimal(10), new Decimal(10), new Decimal(200), new Decimal(10)),
-                new StrategyParameter("size", new Decimal(1), new Decimal(0.2), new Decimal(1.2), new Decimal(0.2)),
-                new StrategyParameter("trailing_enabled", new Decimal(1), new Decimal(0), new Decimal(1), new Decimal(1)),
-                new StrategyParameter("trailing_step_euro", new Decimal(3), new Decimal(1), new Decimal(20), new Decimal(2))),
+        super(name, new PermutableStrategyInitParameter(List.of(
+                new StrategyInitParameter("stop_in_euro", new Decimal(10), new Decimal(10), new Decimal(100), new Decimal(10)),
+                new StrategyInitParameter("limit_in_euro", new Decimal(10), new Decimal(10), new Decimal(200), new Decimal(10)),
+                new StrategyInitParameter("size", new Decimal(1), new Decimal(0.2), new Decimal(1.2), new Decimal(0.2)),
+                new StrategyInitParameter("trailing_enabled", new Decimal(1), new Decimal(0), new Decimal(1), new Decimal(1)),
+                new StrategyInitParameter("trailing_step_euro", new Decimal(3), new Decimal(1), new Decimal(20), new Decimal(2))),
                 MlBaseStrategy.stopLossLessThanTakeProfitFilter()));
     }
     public MlBaseStrategy(String name, String filename, Map<String, Decimal> parameters) {

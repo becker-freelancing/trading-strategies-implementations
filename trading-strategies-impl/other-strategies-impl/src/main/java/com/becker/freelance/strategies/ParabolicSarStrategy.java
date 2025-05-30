@@ -7,6 +7,10 @@ import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -21,11 +25,11 @@ public class ParabolicSarStrategy extends BaseStrategy{
 
     public ParabolicSarStrategy(){
         super("Parabolic_SAR",
-                new PermutableStrategyParameter(
-                        new StrategyParameter("acceleration_factor", 0.04, 0.01, 0.07, 0.01),
-                        new StrategyParameter("max_acceleration_factor", 0.2, 0.1, 0.5, 0.1),
-                        new StrategyParameter("period", 100, 80, 400, 40),
-                        new StrategyParameter("size", 0.5, 0.2, 1., 0.2)
+                new PermutableStrategyInitParameter(
+                        new StrategyInitParameter("acceleration_factor", 0.04, 0.01, 0.07, 0.01),
+                        new StrategyInitParameter("max_acceleration_factor", 0.2, 0.1, 0.5, 0.1),
+                        new StrategyInitParameter("period", 100, 80, 400, 40),
+                        new StrategyInitParameter("size", 0.5, 0.2, 1., 0.2)
                 ));
     }
 

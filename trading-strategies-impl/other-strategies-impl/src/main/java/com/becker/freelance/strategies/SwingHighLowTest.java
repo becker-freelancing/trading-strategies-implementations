@@ -7,6 +7,10 @@ import com.becker.freelance.indicators.ta.swing.SwingHighPoint;
 import com.becker.freelance.indicators.ta.swing.SwingLowIndicator;
 import com.becker.freelance.indicators.ta.swing.SwingLowPoint;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -25,8 +29,8 @@ public class SwingHighLowTest extends BaseStrategy {
     private SwingLowIndicator swingHighLowIndicator;
     private int period;
     public SwingHighLowTest() {
-        super("Swing_High_Low_Test", new PermutableStrategyParameter(List.of(
-                new StrategyParameter("period", 5, 5, 5, 1)
+        super("Swing_High_Low_Test", new PermutableStrategyInitParameter(List.of(
+                new StrategyInitParameter("period", 5, 5, 5, 1)
         )));
 
     }

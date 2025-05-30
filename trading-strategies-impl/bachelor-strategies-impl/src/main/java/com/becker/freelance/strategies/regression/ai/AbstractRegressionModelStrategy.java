@@ -4,7 +4,11 @@ import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.*;
+import com.becker.freelance.strategies.BaseStrategy;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import com.becker.freelance.strategies.regression.shared.BufferedPredictor;
 import com.becker.freelance.strategies.regression.shared.PredictionToEntrySignalConverter;
 
@@ -21,10 +25,10 @@ public abstract class AbstractRegressionModelStrategy extends BaseStrategy {
     private PredictionToEntrySignalConverter predictionToEntrySignalConverter;
 
     public AbstractRegressionModelStrategy(String name) {
-        super(name, new PermutableStrategyParameter(
-                new StrategyParameter("size", 0.5, 0.2, 3., 0.2),
-                new StrategyParameter("limit_in_euros", 150, 130, 220, 30),
-                new StrategyParameter("stop_in_euros", 80, 60, 120, 20)
+        super(name, new PermutableStrategyInitParameter(
+                new StrategyInitParameter("size", 0.5, 0.2, 3., 0.2),
+                new StrategyInitParameter("limit_in_euros", 150, 130, 220, 30),
+                new StrategyInitParameter("stop_in_euros", 80, 60, 120, 20)
         ));
     }
 

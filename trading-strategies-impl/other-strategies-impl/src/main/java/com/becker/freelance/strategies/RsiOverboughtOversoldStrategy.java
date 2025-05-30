@@ -6,6 +6,10 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -18,11 +22,11 @@ import java.util.Optional;
 public class RsiOverboughtOversoldStrategy extends BaseStrategy{
 
     public RsiOverboughtOversoldStrategy(){
-        super("Rsi_Overbought_Oversold", new PermutableStrategyParameter(
-                new StrategyParameter("rsi_period", 12, 5, 17, 1),
-                new StrategyParameter("stop_in_euros", 90, 50, 150, 20),
-                new StrategyParameter("limit_in_euros", 110, 90, 220, 20),
-                new StrategyParameter("size", 0.5, 0.2, 1., 0.2)
+        super("Rsi_Overbought_Oversold", new PermutableStrategyInitParameter(
+                new StrategyInitParameter("rsi_period", 12, 5, 17, 1),
+                new StrategyInitParameter("stop_in_euros", 90, 50, 150, 20),
+                new StrategyInitParameter("limit_in_euros", 110, 90, 220, 20),
+                new StrategyInitParameter("size", 0.5, 0.2, 1., 0.2)
             ));
     }
 

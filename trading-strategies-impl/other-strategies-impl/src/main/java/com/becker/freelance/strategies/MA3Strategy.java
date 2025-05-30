@@ -5,6 +5,10 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -22,15 +26,15 @@ public class MA3Strategy extends BaseStrategy {
     }
 
     public MA3Strategy() {
-        super("3_Ma_Strategy", new PermutableStrategyParameter(MA3Strategy::validateParameter,
-                new StrategyParameter("short_period", 5, 3, 9, 3),
-                new StrategyParameter("mid_period", 20, 10, 30, 10),
-                new StrategyParameter("long_period", 200, 150, 250, 50),
-                new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
-                new StrategyParameter("min_slope", 1, 0.4, 0.8, 0.4),
-                new StrategyParameter("min_slope_window", 20, 20, 40, 20),
-                new StrategyParameter("stop_in_euros", 90, 50, 150, 50),
-                new StrategyParameter("limit_in_euros", 110, 90, 200, 50)
+        super("3_Ma_Strategy", new PermutableStrategyInitParameter(MA3Strategy::validateParameter,
+                new StrategyInitParameter("short_period", 5, 3, 9, 3),
+                new StrategyInitParameter("mid_period", 20, 10, 30, 10),
+                new StrategyInitParameter("long_period", 200, 150, 250, 50),
+                new StrategyInitParameter("size", 0.5, 0.2, 1., 0.2),
+                new StrategyInitParameter("min_slope", 1, 0.4, 0.8, 0.4),
+                new StrategyInitParameter("min_slope_window", 20, 20, 40, 20),
+                new StrategyInitParameter("stop_in_euros", 90, 50, 150, 50),
+                new StrategyInitParameter("limit_in_euros", 110, 90, 200, 50)
                 ));
     }
 

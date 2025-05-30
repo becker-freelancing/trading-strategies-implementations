@@ -5,6 +5,10 @@ import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -24,13 +28,13 @@ public class MACDScalping extends BaseStrategy{
 
 
     public MACDScalping() {
-        super("MACD_Scalping", new PermutableStrategyParameter(List.of(
-                new StrategyParameter("short_bar_count", 6, 5, 9, 2),
-                new StrategyParameter("long_bar_count", 13, 11, 17, 2),
-                new StrategyParameter("signal_line_period", 5, 2, 7, 2),
-                new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
-                new StrategyParameter("limit_in_euros", 150, 130, 220, 30),
-                new StrategyParameter("stop_in_euros", 80, 60, 120, 20)
+        super("MACD_Scalping", new PermutableStrategyInitParameter(List.of(
+                new StrategyInitParameter("short_bar_count", 6, 5, 9, 2),
+                new StrategyInitParameter("long_bar_count", 13, 11, 17, 2),
+                new StrategyInitParameter("signal_line_period", 5, 2, 7, 2),
+                new StrategyInitParameter("size", 0.5, 0.2, 1., 0.2),
+                new StrategyInitParameter("limit_in_euros", 150, 130, 220, 30),
+                new StrategyInitParameter("stop_in_euros", 80, 60, 120, 20)
         ), MACDScalping::shortBarCountLessThanLongBarCountValidation));
     }
 

@@ -8,6 +8,10 @@ import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -26,10 +30,10 @@ import java.util.Optional;
 public class BollingerBandBounceStrategy extends BaseStrategy {
 
     public BollingerBandBounceStrategy() {
-        super("Bollinger_Band_Bounce", new PermutableStrategyParameter(
-                new StrategyParameter("period", 14, 10, 25, 1),
-                new StrategyParameter("std", 2, 1.5, 3.0, 0.5),
-                new StrategyParameter("size", 0.5, 0.2, 1., 0.2)
+        super("Bollinger_Band_Bounce", new PermutableStrategyInitParameter(
+                new StrategyInitParameter("period", 14, 10, 25, 1),
+                new StrategyInitParameter("std", 2, 1.5, 3.0, 0.5),
+                new StrategyInitParameter("size", 0.5, 0.2, 1., 0.2)
         ));
     }
 

@@ -8,6 +8,10 @@ import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -26,13 +30,13 @@ import java.util.Optional;
 public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
 
     public BollingerBandBounceMinSlopeStrategy() {
-        super("Bollinger_Band_Bounce_Min_Slope", new PermutableStrategyParameter(
-                new StrategyParameter("period", 14, 15, 20, 1),
-                new StrategyParameter("std", 2, 1., 1.8, 0.2),
-                new StrategyParameter("size", 0.5, 0.2, 1., 0.2),
-                new StrategyParameter("min_slope", 1, 0.2, 1.0, 0.4),
-                new StrategyParameter("min_slope_window", 20, 20, 70, 10),
-                new StrategyParameter("min_slope_period", 20, 20, 40, 10)
+        super("Bollinger_Band_Bounce_Min_Slope", new PermutableStrategyInitParameter(
+                new StrategyInitParameter("period", 14, 15, 20, 1),
+                new StrategyInitParameter("std", 2, 1., 1.8, 0.2),
+                new StrategyInitParameter("size", 0.5, 0.2, 1., 0.2),
+                new StrategyInitParameter("min_slope", 1, 0.2, 1.0, 0.4),
+                new StrategyInitParameter("min_slope_window", 20, 20, 70, 10),
+                new StrategyInitParameter("min_slope_period", 20, 20, 40, 10)
         ));
     }
 

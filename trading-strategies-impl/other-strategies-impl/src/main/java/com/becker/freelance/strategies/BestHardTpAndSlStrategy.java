@@ -6,6 +6,10 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 
 import java.util.List;
 import java.util.Map;
@@ -14,10 +18,10 @@ import java.util.Optional;
 public class BestHardTpAndSlStrategy extends BaseStrategy{
 
     public BestHardTpAndSlStrategy(){
-        super("Best_Hard_TP_and_SL", new PermutableStrategyParameter(List.of(
-                new StrategyParameter("tp", 30, 50, 1000, 50),
-                new StrategyParameter("sl", 15, 50, 1000, 50),
-                new StrategyParameter("all_buy", 0, 0, 1, 1)
+        super("Best_Hard_TP_and_SL", new PermutableStrategyInitParameter(List.of(
+                new StrategyInitParameter("tp", 30, 50, 1000, 50),
+                new StrategyInitParameter("sl", 15, 50, 1000, 50),
+                new StrategyInitParameter("all_buy", 0, 0, 1, 1)
         )));
     }
 

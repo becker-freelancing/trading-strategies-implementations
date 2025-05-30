@@ -6,6 +6,10 @@ import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.EntrySignalFactory;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.Rule;
@@ -23,17 +27,17 @@ import java.util.Optional;
 public class FreqStrategy extends BaseStrategy {
 
     public FreqStrategy() {
-        super("freq_strategy", new PermutableStrategyParameter(FreqStrategy::stopLessThanLimit,
-                new StrategyParameter("size", 1),//, 0.2, 1.2, 0.2),
-                new StrategyParameter("sma", 40, 30, 50, 10),
-                new StrategyParameter("rsi", 14, 10, 18, 4),
-                new StrategyParameter("stochk", 14, 10, 18, 4),
-                new StrategyParameter("macd_short", 12, 10, 14, 2),
-                new StrategyParameter("macd_long", 26, 24, 28, 2),
-                new StrategyParameter("ema", 9, 7, 11, 2),
-                new StrategyParameter("minusdi", 14, 12, 16, 2),
-                new StrategyParameter("stop", 10, 10, 40, 15),
-                new StrategyParameter("limit", 20, 20, 60, 15)
+        super("freq_strategy", new PermutableStrategyInitParameter(FreqStrategy::stopLessThanLimit,
+                new StrategyInitParameter("size", 1),//, 0.2, 1.2, 0.2),
+                new StrategyInitParameter("sma", 40, 30, 50, 10),
+                new StrategyInitParameter("rsi", 14, 10, 18, 4),
+                new StrategyInitParameter("stochk", 14, 10, 18, 4),
+                new StrategyInitParameter("macd_short", 12, 10, 14, 2),
+                new StrategyInitParameter("macd_long", 26, 24, 28, 2),
+                new StrategyInitParameter("ema", 9, 7, 11, 2),
+                new StrategyInitParameter("minusdi", 14, 12, 16, 2),
+                new StrategyInitParameter("stop", 10, 10, 40, 15),
+                new StrategyInitParameter("limit", 20, 20, 60, 15)
         ));
     }
 

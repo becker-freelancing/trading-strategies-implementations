@@ -8,6 +8,10 @@ import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.algorithm.SwingDetection;
+import com.becker.freelance.strategies.init.PermutableStrategyInitParameter;
+import com.becker.freelance.strategies.init.StrategyInitParameter;
+import com.becker.freelance.strategies.parameter.EntryParameter;
+import com.becker.freelance.strategies.parameter.ExitParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
@@ -29,11 +33,11 @@ public class MA2Strategy extends BaseStrategy{
 
 
     public MA2Strategy() {
-        super("2_MA_Strategy", new PermutableStrategyParameter(List.of(
-                new StrategyParameter("short_ma_period", 5, 1, 10, 1),
-                new StrategyParameter("long_ma_period", 20, 2, 20, 1),
-                new StrategyParameter("swing_high_low_order", 2, 1, 10, 1),
-                new StrategyParameter("swing_high_low_max_age", 10, 5, 45, 10)
+        super("2_MA_Strategy", new PermutableStrategyInitParameter(List.of(
+                new StrategyInitParameter("short_ma_period", 5, 1, 10, 1),
+                new StrategyInitParameter("long_ma_period", 20, 2, 20, 1),
+                new StrategyInitParameter("swing_high_low_order", 2, 1, 10, 1),
+                new StrategyInitParameter("swing_high_low_max_age", 10, 5, 45, 10)
         ), MA2Strategy::shortMaLessThanLongMaValidation));
 
     }
