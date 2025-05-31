@@ -38,7 +38,8 @@ class SingleRegressionModelTrainer(RegressionModelTrainer, ABC):
             raise Exception("Input-Length must be greater than Output-Length")
 
         input_data_np = [df[:input_length, :] for df in reduced_data]
-        output_data_np = [df[:, target_column_idx].reshape(-1, 1)[input_length:, :] for df in data]
+        output_data_np = [np.cumsum(df.to_numpy()[input_length:, target_column_idx]) for df in data]
+        output_data_np = [np.array([np.max(df), np.min(df)]).reshape(-1, 1) for df in output_data_np]
 
         input_sequences = np.stack(input_data_np)
         output_sequences = np.stack(output_data_np)
