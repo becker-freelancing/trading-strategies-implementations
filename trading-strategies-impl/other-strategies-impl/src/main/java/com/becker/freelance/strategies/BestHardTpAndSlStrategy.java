@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -17,8 +18,8 @@ public class BestHardTpAndSlStrategy extends BaseStrategy{
     private final Decimal tp;
     private final Decimal sl;
 
-    public BestHardTpAndSlStrategy(StrategyCreator strategyCreator, boolean allBuy, Decimal tp, Decimal sl) {
-        super(strategyCreator);
+    public BestHardTpAndSlStrategy(StrategyCreator strategyCreator, Pair pair, boolean allBuy, Decimal tp, Decimal sl) {
+        super(strategyCreator, pair);
         this.allBuy = allBuy;
         this.tp = tp;
         this.sl = sl;

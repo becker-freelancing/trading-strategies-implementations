@@ -1,7 +1,7 @@
 [
   {
     "pair": "ETH/USDT M1",
-    "modelRegimeDetector": {
+    "quantileRegimeDetector": {
       "DOWN_HIGH_VOLA": [
         15.0,
         44.0,

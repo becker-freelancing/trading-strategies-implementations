@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -28,8 +29,8 @@ public class ChartPatternStrategy extends BaseStrategy {
     private final List<Indicator<Boolean>> bearischIndicator;
 
 
-    public ChartPatternStrategy(StrategyCreator strategyCreator, Decimal stop, Decimal limit, Decimal size) {
-        super(strategyCreator);
+    public ChartPatternStrategy(StrategyCreator strategyCreator, Pair pair, Decimal stop, Decimal limit, Decimal size) {
+        super(strategyCreator, pair);
 
         this.stop = stop;
         this.limit = limit;

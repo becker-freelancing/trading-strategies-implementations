@@ -32,8 +32,8 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
     private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
     private final BollingerBandsLowerIndicator bollingerBandsLowerIndicator;
 
-    public BollingerBandBounceStrategy(StrategyCreator strategyCreator, int period, Decimal std, Decimal size) {
-        super(strategyCreator);
+    public BollingerBandBounceStrategy(StrategyCreator strategyCreator, Pair pair, int period, Decimal std, Decimal size) {
+        super(strategyCreator, pair);
         this.size = size;
         smaIndicator = new SMAIndicator(closePrice, period);
         standardDeviationIndicator = new StandardDeviationIndicator(closePrice, period);

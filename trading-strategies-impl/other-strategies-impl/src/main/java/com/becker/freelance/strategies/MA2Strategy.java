@@ -25,8 +25,9 @@ public class MA2Strategy extends BaseStrategy {
     private final SwingDetection swingDetection;
     private final SMAIndicator shortSma;
     private final SMAIndicator longSma;
-    public MA2Strategy(StrategyCreator strategyCreator, int shortMaPeriod, int longMaPeriod, int swingHighLowMaxAge, int swingHighLowOrder) {
-        super(strategyCreator);
+
+    public MA2Strategy(StrategyCreator strategyCreator, Pair pair, int shortMaPeriod, int longMaPeriod, int swingHighLowMaxAge, int swingHighLowOrder) {
+        super(strategyCreator, pair);
 
         this.swingHighLowMaxAge = swingHighLowMaxAge;
         this.swingHighLowOrder = swingHighLowOrder;

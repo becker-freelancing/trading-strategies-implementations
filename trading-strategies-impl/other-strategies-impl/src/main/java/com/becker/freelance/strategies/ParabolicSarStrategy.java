@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -27,8 +28,8 @@ public class ParabolicSarStrategy extends BaseStrategy {
     private Decimal currentCloseMid;
     private Decimal lastCloseMid;
 
-    public ParabolicSarStrategy(StrategyCreator strategyCreator, Double accelerationFactor, Double maxAccelerationFactor, int period, Decimal size) {
-        super(strategyCreator);
+    public ParabolicSarStrategy(StrategyCreator strategyCreator, Pair pair, Double accelerationFactor, Double maxAccelerationFactor, int period, Decimal size) {
+        super(strategyCreator, pair);
         this.size = size;
         this.barSeries.setMaximumBarCount(period);
         this.parabolicSarIndicator = new ParabolicSarIndicator(barSeries, DecimalNum.valueOf(accelerationFactor), DecimalNum.valueOf(maxAccelerationFactor));

@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -15,8 +16,8 @@ import java.util.Random;
 public class TestStrategy extends BaseStrategy {
 
 
-    public TestStrategy(StrategyCreator strategyCreator) {
-        super(strategyCreator);
+    public TestStrategy(StrategyCreator strategyCreator, Pair pair) {
+        super(strategyCreator, pair);
     }
 
     @Override

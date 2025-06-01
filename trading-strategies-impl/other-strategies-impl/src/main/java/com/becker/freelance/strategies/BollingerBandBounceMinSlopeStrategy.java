@@ -35,8 +35,8 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     private final Decimal minSlope;
 
 
-    public BollingerBandBounceMinSlopeStrategy(StrategyCreator strategyCreator, int period, Decimal std, Decimal size, Decimal minSlope, int minSlopeWindow, int minSlopePeriod) {
-        super(strategyCreator);
+    public BollingerBandBounceMinSlopeStrategy(StrategyCreator strategyCreator, Pair pair, int period, Decimal std, Decimal size, Decimal minSlope, int minSlopeWindow, int minSlopePeriod) {
+        super(strategyCreator, pair);
         this.size = size;
         this.minSlope = minSlope;
         this.slopeWindow = minSlopeWindow;

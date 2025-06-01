@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
 import com.becker.freelance.strategies.creation.StrategyParameter;
@@ -31,9 +32,9 @@ public class ParabolicSarStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new ParabolicSarStrategy(
-                this,
+                this, pair,
                 parameter.getParameterAsDouble(ACC_FACTOR),
                 parameter.getParameterAsDouble(MAX_ACC_FAcTOR),
                 parameter.getParameterAsInt(PERIOD),

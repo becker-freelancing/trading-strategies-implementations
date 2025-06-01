@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -25,8 +26,8 @@ public class SwingHighLowStrategy extends BaseStrategy {
     private SwingLowPoint lastSwingLowOrNull;
     private int index;
 
-    public SwingHighLowStrategy(StrategyCreator strategyCreator, int swingPeriod) {
-        super(strategyCreator);
+    public SwingHighLowStrategy(StrategyCreator strategyCreator, Pair pair, int swingPeriod) {
+        super(strategyCreator, pair);
 
         swingHighIndicator = new SwingHighIndicator(swingPeriod, closePrice);
         swingLowIndicator = new SwingLowIndicator(swingPeriod, closePrice);

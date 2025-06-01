@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -37,7 +38,7 @@ public class SuperTrendStrategy extends BaseStrategy {
     private int lastRsiLower20CrossAge;
 
 
-    public SuperTrendStrategy(StrategyCreator strategyCreator,
+    public SuperTrendStrategy(StrategyCreator strategyCreator, Pair pair,
                               Double maxRsiDiff,
                               int maxRsiCrossAge,
                               double riskRatio,
@@ -53,7 +54,7 @@ public class SuperTrendStrategy extends BaseStrategy {
                               double supertrend2Multiplier,
                               int supertrend3AtrPeriod,
                               double supertrend3Multiplier) {
-        super(strategyCreator);
+        super(strategyCreator, pair);
 
         this.maxRsiDiff = maxRsiDiff;
         this.maxRsiCrossAge = maxRsiCrossAge;

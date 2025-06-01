@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -25,8 +26,8 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
     private Direction direction;
 
 
-    public VoltyExpanCloseStrategy(StrategyCreator strategyCreator, int period, Num numAtrs) {
-        super(strategyCreator);
+    public VoltyExpanCloseStrategy(StrategyCreator strategyCreator, Pair pair, int period, Num numAtrs) {
+        super(strategyCreator, pair);
         TRIndicator trIndicator = new TRIndicator(barSeries);
         SMAIndicator smaIndicator = new SMAIndicator(trIndicator, period);
         atrs = new TransformIndicator(smaIndicator, value -> value.multipliedBy(numAtrs));

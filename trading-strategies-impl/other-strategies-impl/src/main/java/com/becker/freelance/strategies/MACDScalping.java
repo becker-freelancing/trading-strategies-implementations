@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -23,8 +24,8 @@ public class MACDScalping extends BaseStrategy {
     private final Decimal size;
     private final int longBarCount;
 
-    public MACDScalping(StrategyCreator strategyCreator, int longBarCount, int shortBarCount, int signalLinePeriod, Decimal stop, Decimal limit, Decimal size) {
-        super(strategyCreator);
+    public MACDScalping(StrategyCreator strategyCreator, Pair pair, int longBarCount, int shortBarCount, int signalLinePeriod, Decimal stop, Decimal limit, Decimal size) {
+        super(strategyCreator, pair);
 
         barSeries.setMaximumBarCount(longBarCount + 3);
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);

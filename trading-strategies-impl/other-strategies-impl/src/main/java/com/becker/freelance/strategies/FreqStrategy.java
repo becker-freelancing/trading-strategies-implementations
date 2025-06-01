@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -29,8 +30,8 @@ public class FreqStrategy extends BaseStrategy {
     private final Decimal limit;
 
 
-    public FreqStrategy(StrategyCreator strategyCreator, int smaPeriod, int rsiPeriod, int stochKPeriod, Decimal size, Decimal stop, Decimal limit) {
-        super(strategyCreator);
+    public FreqStrategy(StrategyCreator strategyCreator, Pair pair, int smaPeriod, int rsiPeriod, int stochKPeriod, Decimal size, Decimal stop, Decimal limit) {
+        super(strategyCreator, pair);
 
         VolumeIndicator volume = new VolumeIndicator(barSeries);
         SMAIndicator sma40 = new SMAIndicator(closePrice, smaPeriod);

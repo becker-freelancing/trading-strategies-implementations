@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
 import com.becker.freelance.strategies.creation.StrategyParameter;
@@ -29,9 +30,9 @@ public class VoltyExpanCloseStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new VoltyExpanCloseStrategy(
-                this,
+                this, pair,
                 parameter.getParameterAsInt(PERIOD),
                 DecimalNum.valueOf(parameter.getParameterAsDouble(NUM_ATRS))
         );

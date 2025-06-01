@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
 import com.becker.freelance.strategies.creation.StrategyParameter;
@@ -51,9 +52,9 @@ public class SuperTrendStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new SuperTrendStrategy(
-                this,
+                this, pair,
                 parameter.getParameterAsDouble(max_rsi_diff),
                 parameter.getParameterAsInt(rsi_cross_max_age),
                 parameter.getParameterAsDouble(risk_ratio),

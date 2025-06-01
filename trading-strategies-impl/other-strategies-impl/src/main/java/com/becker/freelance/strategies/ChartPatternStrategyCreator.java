@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.StrategyCreator;
 import com.becker.freelance.strategies.creation.StrategyParameter;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
@@ -24,9 +25,9 @@ public class ChartPatternStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new ChartPatternStrategy(
-                this,
+                this, pair,
                 parameter.getParameter(SIZE),
                 parameter.getParameter(STOP_LOSS),
                 parameter.getParameter(TAKE_PROFIT)

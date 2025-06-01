@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.*;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
@@ -25,9 +26,9 @@ public class BestHardTpAndSlStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new BestHardTpAndSlStrategy(
-                this,
+                this, pair,
                 parameter.getParameterAsBool(ALL_BUY),
                 parameter.getParameter(DefaultParameterNames.TAKE_PROFIT),
                 parameter.getParameter(DefaultParameterNames.STOP_LOSS)

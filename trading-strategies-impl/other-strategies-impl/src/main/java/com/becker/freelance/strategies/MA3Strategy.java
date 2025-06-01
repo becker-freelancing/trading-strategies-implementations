@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -24,8 +25,8 @@ public class MA3Strategy extends BaseStrategy {
     private final Decimal minSlope;
     private final int minSlopeWindow;
 
-    public MA3Strategy(StrategyCreator strategyCreator, Decimal size, int longMaPeriod, int shortMaPeriod, int midMaPeriod, Decimal minSlope, int minSlopeWindow, Decimal stop, Decimal limit) {
-        super(strategyCreator);
+    public MA3Strategy(StrategyCreator strategyCreator, Pair pair, Decimal size, int longMaPeriod, int shortMaPeriod, int midMaPeriod, Decimal minSlope, int minSlopeWindow, Decimal stop, Decimal limit) {
+        super(strategyCreator, pair);
         this.size = size;
         this.minSlope = minSlope;
         this.minSlopeWindow = minSlopeWindow;

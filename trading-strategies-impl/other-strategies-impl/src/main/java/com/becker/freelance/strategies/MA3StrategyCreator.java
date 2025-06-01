@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
 import com.becker.freelance.strategies.creation.StrategyParameter;
@@ -40,9 +41,9 @@ public class MA3StrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new MA3Strategy(
-                this,
+                this, pair,
                 parameter.getParameter(SIZE),
                 parameter.getParameterAsInt(LONG_MA_PERIOD),
                 parameter.getParameterAsInt(SHORT_MA_PERIOD),

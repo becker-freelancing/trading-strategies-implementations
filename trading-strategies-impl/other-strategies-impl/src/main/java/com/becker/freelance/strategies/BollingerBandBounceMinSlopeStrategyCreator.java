@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.*;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
@@ -28,9 +29,9 @@ public class BollingerBandBounceMinSlopeStrategyCreator implements StrategyCreat
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new BollingerBandBounceMinSlopeStrategy(
-                this,
+                this, pair,
                 parameter.getParameterAsInt(DefaultParameterNames.PERIOD),
                 parameter.getParameter(STD),
                 parameter.getParameter(DefaultParameterNames.SIZE),

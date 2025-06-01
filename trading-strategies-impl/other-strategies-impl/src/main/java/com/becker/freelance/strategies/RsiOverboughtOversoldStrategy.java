@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionType;
 import com.becker.freelance.commons.signal.EntrySignal;
@@ -22,8 +23,8 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
     private final Decimal stopInEuros;
 
 
-    public RsiOverboughtOversoldStrategy(StrategyCreator strategyCreator, int rsiPeriod, Decimal size, Decimal limit, Decimal stop) {
-        super(strategyCreator);
+    public RsiOverboughtOversoldStrategy(StrategyCreator strategyCreator, Pair pair, int rsiPeriod, Decimal size, Decimal limit, Decimal stop) {
+        super(strategyCreator, pair);
         barSeries.setMaximumBarCount(rsiPeriod + 1);
         rsiIndicator = new RSIIndicator(closePrice, rsiPeriod);
         this.size = size;

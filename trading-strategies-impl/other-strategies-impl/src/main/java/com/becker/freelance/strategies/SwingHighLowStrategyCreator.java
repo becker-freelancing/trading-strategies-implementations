@@ -1,5 +1,6 @@
 package com.becker.freelance.strategies;
 
+import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.DefaultParameterNames;
 import com.becker.freelance.strategies.creation.StrategyCreator;
 import com.becker.freelance.strategies.creation.StrategyParameter;
@@ -21,9 +22,9 @@ public class SwingHighLowStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(StrategyParameter parameter) {
+    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
         return new SwingHighLowStrategy(
-                this,
+                this, pair,
                 parameter.getParameterAsInt(DefaultParameterNames.SWING_HIGH_LOW_ORDER)
         );
     }
