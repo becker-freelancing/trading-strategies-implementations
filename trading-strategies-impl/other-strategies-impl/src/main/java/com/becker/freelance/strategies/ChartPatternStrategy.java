@@ -61,7 +61,7 @@ public class ChartPatternStrategy extends BaseStrategy {
             if (bullish.getValue(index)) {
                 logger.info("Try to open buy position on {} bullish indicator {} is true", entryParameter.pair().technicalName(), bullish.getClass().getName());
                 return Optional.of(
-                        entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice())
+                        entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
                 );
             }
         }
@@ -70,7 +70,7 @@ public class ChartPatternStrategy extends BaseStrategy {
             if (baerish.getValue(index)) {
                 logger.info("Try to open sell position on {} baerish indicator {} is true", entryParameter.pair().technicalName(), baerish.getClass().getName());
                 return Optional.of(
-                        entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice())
+                        entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
                 );
             }
         }

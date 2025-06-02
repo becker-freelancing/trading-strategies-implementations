@@ -127,7 +127,7 @@ public class SuperTrendStrategy extends BaseStrategy {
         Decimal diffToCurrentPrice = closePrice.subtract(secondTrendLineBelowPrice).abs();
         Decimal limitLevel = closePrice.add(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return entrySignalFactory.fromLevel(size, Direction.BUY, secondTrendLineBelowPrice, limitLevel, PositionType.HARD_LIMIT, price);
+        return entrySignalFactory.fromLevel(size, Direction.BUY, secondTrendLineBelowPrice, limitLevel, PositionType.HARD_LIMIT, price, currentMarketRegime());
     }
 
     private List<Num> getTrendLinesBelowPrice(int barCount, Bar currentPrice) {
@@ -160,7 +160,7 @@ public class SuperTrendStrategy extends BaseStrategy {
         Decimal diffToCurrentPrice = secondTrendLineAbovePrice.subtract(closePrice).abs();
         Decimal limitLevel = closePrice.subtract(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return entrySignalFactory.fromLevel(size, Direction.SELL, secondTrendLineAbovePrice, limitLevel, PositionType.HARD_LIMIT, price);
+        return entrySignalFactory.fromLevel(size, Direction.SELL, secondTrendLineAbovePrice, limitLevel, PositionType.HARD_LIMIT, price, currentMarketRegime());
     }
 
     private List<Num> getTrendLinesAbovePrice(int barCount, Bar currentPrice) {

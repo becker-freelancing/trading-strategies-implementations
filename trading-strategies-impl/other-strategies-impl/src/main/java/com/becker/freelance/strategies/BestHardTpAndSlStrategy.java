@@ -29,7 +29,7 @@ public class BestHardTpAndSlStrategy extends BaseStrategy{
     public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
 
 
-        return Optional.of(entrySignalFactory.fromDistance(Decimal.ONE, allBuy ? Direction.BUY : Direction.SELL, sl, tp, PositionType.HARD_LIMIT, entryParameter.currentPrice()));
+        return Optional.of(entrySignalFactory.fromDistance(Decimal.ONE, allBuy ? Direction.BUY : Direction.SELL, sl, tp, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
     }
 
     @Override

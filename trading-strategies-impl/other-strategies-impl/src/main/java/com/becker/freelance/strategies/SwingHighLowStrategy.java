@@ -41,9 +41,9 @@ public class SwingHighLowStrategy extends BaseStrategy {
         }
 
         if (lastSwingHighOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice()));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         } else if (lastSwingLowOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice()));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         }
 
         return Optional.empty();

@@ -37,7 +37,7 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
     public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
 
         if (direction != null) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionType.HARD_LIMIT, entryParameter.currentPrice()));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         }
 
         return Optional.empty();

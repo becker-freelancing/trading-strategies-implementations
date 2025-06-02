@@ -84,11 +84,11 @@ public class ParabolicSarStrategy extends BaseStrategy {
 
     private Optional<EntrySignal> toBuyEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.add(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice));
+        return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice, currentMarketRegime()));
     }
 
     private Optional<EntrySignal> toSellEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.subtract(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice));
+        return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice, currentMarketRegime()));
     }
 }

@@ -71,13 +71,13 @@ public class MA2Strategy extends BaseStrategy {
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingLow(swingData, swingOrder);
             Pair pair = current.pair();
             return lastSwingLow.map(swingValue -> swingValue.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
-                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionType.HARD_LIMIT, current));
+                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionType.HARD_LIMIT, current, currentMarketRegime()));
         } else if (lastShort > lastLong && currentShort < currentLong) {
             //SELL
             Optional<TimeSeriesEntry> lastSwingHigh = swingDetection.getLastSwingHigh(swingData, swingOrder);
             Pair pair = current.pair();
             return lastSwingHigh.map(swingValue -> swingValue.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
-                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionType.HARD_LIMIT, current));
+                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionType.HARD_LIMIT, current, currentMarketRegime()));
         }
         return Optional.empty();
     }

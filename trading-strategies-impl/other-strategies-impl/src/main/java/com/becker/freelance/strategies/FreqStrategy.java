@@ -59,7 +59,7 @@ public class FreqStrategy extends BaseStrategy {
 
         if (entryRule.isSatisfied(index)) {
             return Optional.of(
-                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice())
+                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
             );
         }
         return Optional.empty();

@@ -29,6 +29,7 @@ public class TestStrategy extends BaseStrategy {
         Direction direction = rand.nextDouble() > 0.5 ? Direction.BUY : Direction.SELL;
         return Optional.of(entrySignalFactory.fromAmount(
                 new Decimal(0.01), direction, Decimal.TEN, Decimal.ONE, PositionType.HARD_LIMIT, entryParameter.currentPrice()
+                , currentMarketRegime()
         ));
     }
 
