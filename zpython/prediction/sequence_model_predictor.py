@@ -1,6 +1,7 @@
 import joblib
 import numpy as np
 import pandas as pd
+import torch
 
 from zpython.model.best_model_loader import load_best_models
 from zpython.model.regime_model import RegimeLiveModel, LoadedModelProvider
@@ -41,6 +42,8 @@ class SequenceModelPredictor:
 
     def predict_all(self):
         data = self._load_data()
+        self.model.to(torch.device("cuda"))
+        self.model.summary()
         prediction = self.model.predict(data)
         reshaped = self._reshape(prediction)
         path = from_relative_path(f"prediction-bybit/{self.file_name}")
