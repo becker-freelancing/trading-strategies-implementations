@@ -57,7 +57,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     private Optional<EntrySignal> toEntry(EntryParameter entryParameter, RegressionPrediction prediction) {
         TimeSeriesEntry currentPrice = entryParameter.currentPrice();
         Decimal[] predictedPrice = prediction.transformLogReturnsToPrice(currentPrice);
-        Decimal[] predictedPriceAroundZero = transformAroundZero(predictedPrice);
+        Decimal[] predictedPriceAroundZero = transformAroundZero(predictedPrice, currentPrice.getCloseMid());
         SignificantPoint highAroundZero = findHigh(predictedPriceAroundZero);
         SignificantPoint lowAroundZero = findLow(predictedPriceAroundZero);
 
@@ -126,11 +126,10 @@ public class SequenceRegressionStrategy extends BaseStrategy {
                 positionType, currentPrice, marketRegime);
     }
 
-    private Decimal[] transformAroundZero(Decimal[] predictedPrice) {
-        Decimal first = predictedPrice[0];
+    private Decimal[] transformAroundZero(Decimal[] predictedPrice, Decimal currentPrice) {
         Decimal[] transformed = new Decimal[predictedPrice.length];
         for (int i = 0; i < predictedPrice.length; i++) {
-            transformed[i] = predictedPrice[i].subtract(first);
+            transformed[i] = predictedPrice[i].subtract(currentPrice);
         }
         return transformed;
     }

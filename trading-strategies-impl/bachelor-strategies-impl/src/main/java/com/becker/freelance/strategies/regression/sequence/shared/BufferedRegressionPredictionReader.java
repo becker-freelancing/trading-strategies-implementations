@@ -64,7 +64,7 @@ public class BufferedRegressionPredictionReader {
     }
 
     private Decimal[] parseDecimalList(String listContent) {
-        return Arrays.stream(listContent.replaceAll("[\\[\\]]", "").split(" "))
+        return Arrays.stream(listContent.replaceAll("[\\[\\]\"]", "").split(" "))
                 .map(String::trim)
                 .map(Decimal::new)
                 .toArray(Decimal[]::new);
