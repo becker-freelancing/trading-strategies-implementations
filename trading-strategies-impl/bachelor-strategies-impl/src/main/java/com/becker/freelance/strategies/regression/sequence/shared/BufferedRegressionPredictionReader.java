@@ -2,7 +2,6 @@ package com.becker.freelance.strategies.regression.sequence.shared;
 
 import com.becker.freelance.backtest.util.PathUtil;
 import com.becker.freelance.indicators.ta.regime.QuantileMarketRegime;
-import com.becker.freelance.math.Decimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +50,8 @@ public class BufferedRegressionPredictionReader {
     private RegressionPrediction mapLine(String[] line) {
         LocalDateTime closeTime = LocalDateTime.parse(line[0], PREDICTION_DATA_FORMAT);
         QuantileMarketRegime marketRegime = QuantileMarketRegime.fromId(Integer.parseInt(line[2]));
-        Decimal[] prediction = parseDecimalList(line[3]);
-        Decimal[] cumsumPrediction = parseDecimalList(line[4]);
+        Double[] prediction = parseDecimalList(line[3]);
+        Double[] cumsumPrediction = parseDecimalList(line[4]);
 
         return new RegressionPrediction(
                 closeTime,
@@ -63,10 +62,10 @@ public class BufferedRegressionPredictionReader {
         );
     }
 
-    private Decimal[] parseDecimalList(String listContent) {
+    private Double[] parseDecimalList(String listContent) {
         return Arrays.stream(listContent.replaceAll("[\\[\\]\"]", "").split(" "))
                 .map(String::trim)
-                .map(Decimal::new)
-                .toArray(Decimal[]::new);
+                .map(Double::parseDouble)
+                .toArray(Double[]::new);
     }
 }

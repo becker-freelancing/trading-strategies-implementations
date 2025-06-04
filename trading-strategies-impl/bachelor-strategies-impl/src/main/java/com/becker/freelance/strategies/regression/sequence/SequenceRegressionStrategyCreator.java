@@ -22,10 +22,9 @@ public class SequenceRegressionStrategyCreator implements StrategyCreator {
     @Override
     public ValidStrategyInitParameters strategyParameters() {
         return new ValidStrategyInitParameters(
-                new StrategyInitParameter(DefaultParameterNames.SIZE, 3., 0.5, 8., 0.5),
-                new StrategyInitParameter(TAKE_PROFIT_DELTA, 5., -20., 20., 1.),
-                new StrategyInitParameter(STOP_LOSS_DELTA, 5., -20., 20., 1.),
-                new StrategyInitParameter(STOP_LOSS_NOT_PREDICTED_DELTA, 5., 1., 20., 1.),
+                new StrategyInitParameter(TAKE_PROFIT_DELTA, 5., -20., 20., 2.),
+                new StrategyInitParameter(STOP_LOSS_DELTA, 5., -20., 20., 2.),
+                new StrategyInitParameter(STOP_LOSS_NOT_PREDICTED_DELTA, 5., 1., 20., 2.),
                 new StrategyInitParameter(DefaultParameterNames.TRAILING_STOP_ORDER, 0, 0, 1, 1)
         );
     }
@@ -36,7 +35,6 @@ public class SequenceRegressionStrategyCreator implements StrategyCreator {
                 this,
                 pair,
                 new BufferedRegressionPredictor(),
-                parameter.getParameter(DefaultParameterNames.SIZE),
                 parameter.getParameter(TAKE_PROFIT_DELTA),
                 parameter.getParameter(STOP_LOSS_DELTA),
                 parameter.getParameter(STOP_LOSS_NOT_PREDICTED_DELTA),
