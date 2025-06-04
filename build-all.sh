@@ -1,6 +1,6 @@
-cd trading-engine
+cd trading-engine || exit
 mvn clean install
-cd ../trading-strategies-impl
+cd ../trading-strategies-impl || exit
 mvn clean install
-cd ../apps
+cd ../apps || exit
 mvn clean install

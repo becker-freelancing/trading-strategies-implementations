@@ -1,8 +1,7 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.indicators.ta.swing.SwingHighIndicator;
@@ -10,9 +9,10 @@ import com.becker.freelance.indicators.ta.swing.SwingHighPoint;
 import com.becker.freelance.indicators.ta.swing.SwingLowIndicator;
 import com.becker.freelance.indicators.ta.swing.SwingLowPoint;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.Indicator;
 
 import java.util.Optional;
@@ -26,31 +26,31 @@ public class SwingHighLowStrategy extends BaseStrategy {
     private SwingLowPoint lastSwingLowOrNull;
     private int index;
 
-    public SwingHighLowStrategy(StrategyCreator strategyCreator, Pair pair, int swingPeriod) {
-        super(strategyCreator, pair);
+    public SwingHighLowStrategy(StrategyParameter parameter, int swingPeriod) {
+        super(parameter);
 
         swingHighIndicator = new SwingHighIndicator(swingPeriod, closePrice);
         swingLowIndicator = new SwingLowIndicator(swingPeriod, closePrice);
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         if (lastSwingLowOrNull == null || lastSwingHighOrNull == null) {
             return Optional.empty();
         }
 
         if (lastSwingHighOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         } else if (lastSwingLowOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         }
 
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         updateData();
 
         if (lastSwingLowOrNull == null || lastSwingHighOrNull == null) {

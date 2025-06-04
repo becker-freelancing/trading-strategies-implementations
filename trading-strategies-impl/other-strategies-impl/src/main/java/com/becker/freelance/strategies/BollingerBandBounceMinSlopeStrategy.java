@@ -2,14 +2,15 @@ package com.becker.freelance.strategies;
 
 import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.bollinger.BollingerBandsLowerIndicator;
@@ -35,8 +36,8 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     private final Decimal minSlope;
 
 
-    public BollingerBandBounceMinSlopeStrategy(StrategyCreator strategyCreator, Pair pair, int period, Decimal std, Decimal size, Decimal minSlope, int minSlopeWindow, int minSlopePeriod) {
-        super(strategyCreator, pair);
+    public BollingerBandBounceMinSlopeStrategy(StrategyParameter parameter, int period, Decimal std, Decimal size, Decimal minSlope, int minSlopeWindow, int minSlopePeriod) {
+        super(parameter);
         this.size = size;
         this.minSlope = minSlope;
         this.slopeWindow = minSlopeWindow;
@@ -50,7 +51,7 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         if (!isTrend()) {
             return Optional.empty();
@@ -89,7 +90,7 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
             Decimal middleValue = new Decimal(middleValueNum.doubleValue());
             Pair pair = currentPrice.pair();
             Decimal stop = lowValue.subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50"), size));
-            return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, stop, middleValue, PositionType.TRAILING, currentPrice, currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, stop, middleValue, PositionBehaviour.TRAILING, currentPrice, currentMarketRegime()));
         }
         return Optional.empty();
     }
@@ -102,13 +103,13 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
             Decimal middleValue = new Decimal(bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue());
             Pair pair = currentPrice.pair();
             Decimal stop = highValue.add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50"), size));
-            return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, stop, middleValue, PositionType.TRAILING, currentPrice, currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, stop, middleValue, PositionBehaviour.TRAILING, currentPrice, currentMarketRegime()));
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         return Optional.empty();
     }
 }

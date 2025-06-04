@@ -1,10 +1,10 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
 import com.becker.freelance.strategies.creation.StringParameterName;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 import org.ta4j.core.num.DecimalNum;
@@ -30,11 +30,11 @@ public class VoltyExpanCloseStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new VoltyExpanCloseStrategy(
-                this, pair,
-                parameter.getParameterAsInt(PERIOD),
-                DecimalNum.valueOf(parameter.getParameterAsDouble(NUM_ATRS))
+                strategyParameter,
+                strategyParameter.getParameterAsInt(PERIOD),
+                DecimalNum.valueOf(strategyParameter.getParameterAsDouble(NUM_ATRS))
         );
     }
 }

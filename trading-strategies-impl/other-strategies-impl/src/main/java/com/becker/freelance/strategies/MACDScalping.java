@@ -1,14 +1,14 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.MACDIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
@@ -24,8 +24,8 @@ public class MACDScalping extends BaseStrategy {
     private final Decimal size;
     private final int longBarCount;
 
-    public MACDScalping(StrategyCreator strategyCreator, Pair pair, int longBarCount, int shortBarCount, int signalLinePeriod, Decimal stop, Decimal limit, Decimal size) {
-        super(strategyCreator, pair);
+    public MACDScalping(StrategyParameter parameter, int longBarCount, int shortBarCount, int signalLinePeriod, Decimal stop, Decimal limit, Decimal size) {
+        super(parameter);
 
         barSeries.setMaximumBarCount(longBarCount + 3);
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
@@ -38,7 +38,7 @@ public class MACDScalping extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         int barCount = barSeries.getBarCount();
         if (barCount < longBarCount) {
@@ -51,17 +51,17 @@ public class MACDScalping extends BaseStrategy {
 
         if (currentMacd > currentSignal && lastMacd < lastSignal) {
             //BUY
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         } else if (currentMacd < currentSignal && lastMacd > lastSignal) {
             //SELL
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         }
 
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         return Optional.empty();
     }
 

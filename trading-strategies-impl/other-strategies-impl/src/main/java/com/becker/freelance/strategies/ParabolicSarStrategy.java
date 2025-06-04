@@ -1,16 +1,16 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.indicators.ParabolicSarIndicator;
 import org.ta4j.core.num.DecimalNum;
 
@@ -28,15 +28,15 @@ public class ParabolicSarStrategy extends BaseStrategy {
     private Decimal currentCloseMid;
     private Decimal lastCloseMid;
 
-    public ParabolicSarStrategy(StrategyCreator strategyCreator, Pair pair, Double accelerationFactor, Double maxAccelerationFactor, int period, Decimal size) {
-        super(strategyCreator, pair);
+    public ParabolicSarStrategy(StrategyParameter parameter, Double accelerationFactor, Double maxAccelerationFactor, int period, Decimal size) {
+        super(parameter);
         this.size = size;
         this.barSeries.setMaximumBarCount(period);
         this.parabolicSarIndicator = new ParabolicSarIndicator(barSeries, DecimalNum.valueOf(accelerationFactor), DecimalNum.valueOf(maxAccelerationFactor));
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         if (!lastUpdate.equals(entryParameter.time())) {
             calculateAndExtractInformation(entryParameter.timeSeries(), entryParameter.time());
@@ -67,7 +67,7 @@ public class ParabolicSarStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         calculateAndExtractInformation(exitParameter.timeSeries(), exitParameter.time());
 
         if (currentCloseMid.isLessThan(currentSarValue) && lastCloseMid.isGreaterThan(lastSarValue)) {
@@ -84,11 +84,11 @@ public class ParabolicSarStrategy extends BaseStrategy {
 
     private Optional<EntrySignal> toBuyEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.add(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice, currentMarketRegime()));
+        return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionBehaviour.HARD_LIMIT, currentPrice, currentMarketRegime()));
     }
 
     private Optional<EntrySignal> toSellEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.subtract(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionType.HARD_LIMIT, currentPrice, currentMarketRegime()));
+        return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionBehaviour.HARD_LIMIT, currentPrice, currentMarketRegime()));
     }
 }

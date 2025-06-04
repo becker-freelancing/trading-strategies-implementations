@@ -1,19 +1,18 @@
 package com.becker.freelance.strategies.regression.sequence;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.regime.TradeableQuantilMarketRegime;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.BaseStrategy;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
 import com.becker.freelance.strategies.regression.sequence.shared.RegressionPrediction;
 import com.becker.freelance.strategies.regression.sequence.shared.RegressionPredictor;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 
 import java.util.Optional;
 
@@ -23,15 +22,15 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     private final Double takeProfitDelta;
     private final Double stopLossDelta;
     private final Double stopLossNotPredictedDelta;
-    private final PositionType positionType;
+    private final PositionBehaviour positionBehaviour;
 
-    public SequenceRegressionStrategy(StrategyCreator strategyCreator, Pair pair, RegressionPredictor predictor, Decimal takeProfitDelta, Decimal stopLossDelta, Decimal stopLossNotPredictedDelta, PositionType positionType) {
-        super(strategyCreator, pair);
+    public SequenceRegressionStrategy(StrategyParameter parameter, RegressionPredictor predictor, Decimal takeProfitDelta, Decimal stopLossDelta, Decimal stopLossNotPredictedDelta, PositionBehaviour positionBehaviour) {
+        super(parameter);
         this.predictor = predictor;
         this.takeProfitDelta = takeProfitDelta.doubleValue();
         this.stopLossDelta = stopLossDelta.doubleValue();
         this.stopLossNotPredictedDelta = stopLossNotPredictedDelta.doubleValue();
-        this.positionType = positionType;
+        this.positionBehaviour = positionBehaviour;
     }
 
     private static SignificantPoint findHighInRange(Double[] cumsumPrediction, int maxIdx) {
@@ -47,12 +46,12 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     }
 
     @Override
-    protected Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    protected Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
         return predictor.predict(entryParameter)
                 .flatMap(prediction -> toEntry(entryParameter, prediction));
     }
 
-    private Optional<EntrySignal> toEntry(EntryParameter entryParameter, RegressionPrediction prediction) {
+    private Optional<EntrySignal> toEntry(EntryExecutionParameter entryParameter, RegressionPrediction prediction) {
         TimeSeriesEntry currentPrice = entryParameter.currentPrice();
         Double[] predictedPrice = prediction.transformLogReturnsToPrice(currentPrice);
         Double[] predictedPriceAroundZero = transformAroundZero(predictedPrice, currentPrice.getCloseMid().doubleValue());
@@ -81,7 +80,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         stopLevel = transformSellStopLevel(currentPrice, stopLevel);
         return entrySignalFactory.fromLevel(Decimal.ONE, Direction.SELL,
                 Decimal.valueOf(stopLevel), Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta),
-                positionType, currentPrice, marketRegime);
+                positionBehaviour, currentPrice, marketRegime);
     }
 
     private EntrySignal toSellEntryHighBeforeLow(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
@@ -89,7 +88,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         stopLevel = transformSellStopLevel(currentPrice, stopLevel);
         return entrySignalFactory.fromLevel(Decimal.ONE, Direction.SELL,
                 Decimal.valueOf(stopLevel), Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta),
-                positionType, currentPrice, marketRegime);
+                positionBehaviour, currentPrice, marketRegime);
     }
 
     private Double transformSellStopLevel(TimeSeriesEntry currentPrice, Double stopLevel) {
@@ -116,7 +115,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         stopLevel = transformBuyStopLevel(currentPrice, stopLevel);
         return entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY,
                 Decimal.valueOf(stopLevel), Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta),
-                positionType, currentPrice, marketRegime);
+                positionBehaviour, currentPrice, marketRegime);
     }
 
     private EntrySignal toBuyEntryHighBeforeLow(SignificantPoint highAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
@@ -124,7 +123,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         stopLevel = transformBuyStopLevel(currentPrice, stopLevel);
         return entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY,
                 Decimal.valueOf(stopLevel), Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta),
-                positionType, currentPrice, marketRegime);
+                positionBehaviour, currentPrice, marketRegime);
     }
 
     private Double transformBuyStopLevel(TimeSeriesEntry currentPrice, Double stopLevel) {
@@ -167,7 +166,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     }
 
     @Override
-    protected Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    protected Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         return Optional.empty();
     }
 

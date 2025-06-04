@@ -1,17 +1,17 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.indicators.ta.stochasticrsi.RsiResult;
 import com.becker.freelance.indicators.ta.stochasticrsi.StochasticRsiIndicator;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.Bar;
 import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.supertrend.SuperTrendIndicator;
@@ -38,7 +38,7 @@ public class SuperTrendStrategy extends BaseStrategy {
     private int lastRsiLower20CrossAge;
 
 
-    public SuperTrendStrategy(StrategyCreator strategyCreator, Pair pair,
+    public SuperTrendStrategy(StrategyParameter parameter,
                               Double maxRsiDiff,
                               int maxRsiCrossAge,
                               double riskRatio,
@@ -54,7 +54,7 @@ public class SuperTrendStrategy extends BaseStrategy {
                               double supertrend2Multiplier,
                               int supertrend3AtrPeriod,
                               double supertrend3Multiplier) {
-        super(strategyCreator, pair);
+        super(parameter);
 
         this.maxRsiDiff = maxRsiDiff;
         this.maxRsiCrossAge = maxRsiCrossAge;
@@ -79,7 +79,7 @@ public class SuperTrendStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         int barCount = barSeries.getBarCount() - 1;
         Bar currentPrice = entryParameter.currentPriceAsBar();
@@ -127,7 +127,7 @@ public class SuperTrendStrategy extends BaseStrategy {
         Decimal diffToCurrentPrice = closePrice.subtract(secondTrendLineBelowPrice).abs();
         Decimal limitLevel = closePrice.add(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return entrySignalFactory.fromLevel(size, Direction.BUY, secondTrendLineBelowPrice, limitLevel, PositionType.HARD_LIMIT, price, currentMarketRegime());
+        return entrySignalFactory.fromLevel(size, Direction.BUY, secondTrendLineBelowPrice, limitLevel, PositionBehaviour.HARD_LIMIT, price, currentMarketRegime());
     }
 
     private List<Num> getTrendLinesBelowPrice(int barCount, Bar currentPrice) {
@@ -160,7 +160,7 @@ public class SuperTrendStrategy extends BaseStrategy {
         Decimal diffToCurrentPrice = secondTrendLineAbovePrice.subtract(closePrice).abs();
         Decimal limitLevel = closePrice.subtract(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return entrySignalFactory.fromLevel(size, Direction.SELL, secondTrendLineAbovePrice, limitLevel, PositionType.HARD_LIMIT, price, currentMarketRegime());
+        return entrySignalFactory.fromLevel(size, Direction.SELL, secondTrendLineAbovePrice, limitLevel, PositionBehaviour.HARD_LIMIT, price, currentMarketRegime());
     }
 
     private List<Num> getTrendLinesAbovePrice(int barCount, Bar currentPrice) {
@@ -192,7 +192,7 @@ public class SuperTrendStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         return Optional.empty();
     }
 

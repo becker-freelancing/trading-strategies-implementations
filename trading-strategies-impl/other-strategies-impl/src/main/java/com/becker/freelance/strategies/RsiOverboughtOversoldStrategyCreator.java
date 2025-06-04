@@ -1,8 +1,8 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -26,13 +26,13 @@ public class RsiOverboughtOversoldStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new RsiOverboughtOversoldStrategy(
-                this, pair,
-                parameter.getParameterAsInt(RSI_PERIOD),
-                parameter.getParameter(SIZE),
-                parameter.getParameter(TAKE_PROFIT),
-                parameter.getParameter(STOP_LOSS)
+                strategyParameter,
+                strategyParameter.getParameterAsInt(RSI_PERIOD),
+                strategyParameter.getParameter(SIZE),
+                strategyParameter.getParameter(TAKE_PROFIT),
+                strategyParameter.getParameter(STOP_LOSS)
         );
     }
 }

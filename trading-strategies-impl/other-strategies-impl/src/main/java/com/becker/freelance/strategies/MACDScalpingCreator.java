@@ -1,8 +1,9 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
+import com.becker.freelance.strategies.creation.StrategyCreationParameter;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -10,7 +11,7 @@ import static com.becker.freelance.strategies.creation.DefaultParameterNames.*;
 
 public class MACDScalpingCreator implements StrategyCreator {
 
-    private static boolean shortBarCountLessThanLongBarCountValidation(StrategyParameter parameter) {
+    private static boolean shortBarCountLessThanLongBarCountValidation(StrategyCreationParameter parameter) {
         return parameter.getParameter(SHORT_MA_PERIOD).isLessThan(parameter.getParameter(LONG_MA_PERIOD));
     }
 
@@ -33,15 +34,15 @@ public class MACDScalpingCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new MACDScalping(
-                this, pair,
-                parameter.getParameterAsInt(LONG_MA_PERIOD),
-                parameter.getParameterAsInt(SHORT_MA_PERIOD),
-                parameter.getParameterAsInt(SIGNAL_LINE_PERIOD),
-                parameter.getParameter(STOP_LOSS),
-                parameter.getParameter(TAKE_PROFIT),
-                parameter.getParameter(SIZE)
+                strategyParameter,
+                strategyParameter.getParameterAsInt(LONG_MA_PERIOD),
+                strategyParameter.getParameterAsInt(SHORT_MA_PERIOD),
+                strategyParameter.getParameterAsInt(SIGNAL_LINE_PERIOD),
+                strategyParameter.getParameter(STOP_LOSS),
+                strategyParameter.getParameter(TAKE_PROFIT),
+                strategyParameter.getParameter(SIZE)
         );
     }
 }

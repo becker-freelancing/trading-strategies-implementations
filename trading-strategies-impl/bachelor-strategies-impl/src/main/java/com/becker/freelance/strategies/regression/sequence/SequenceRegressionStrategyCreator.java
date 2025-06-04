@@ -1,10 +1,13 @@
 package com.becker.freelance.strategies.regression.sequence;
 
-import com.becker.freelance.commons.pair.Pair;
-import com.becker.freelance.commons.position.PositionType;
-import com.becker.freelance.strategies.TradingStrategy;
-import com.becker.freelance.strategies.creation.*;
+import com.becker.freelance.commons.position.PositionBehaviour;
+import com.becker.freelance.strategies.creation.DefaultParameterNames;
+import com.becker.freelance.strategies.creation.ParameterName;
+import com.becker.freelance.strategies.creation.StrategyCreator;
+import com.becker.freelance.strategies.creation.StringParameterName;
 import com.becker.freelance.strategies.regression.sequence.shared.BufferedRegressionPredictor;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -30,15 +33,14 @@ public class SequenceRegressionStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new SequenceRegressionStrategy(
-                this,
-                pair,
+                strategyParameter,
                 new BufferedRegressionPredictor(),
-                parameter.getParameter(TAKE_PROFIT_DELTA),
-                parameter.getParameter(STOP_LOSS_DELTA),
-                parameter.getParameter(STOP_LOSS_NOT_PREDICTED_DELTA),
-                parameter.getParameterAsBool(DefaultParameterNames.TRAILING_STOP_ORDER) ? PositionType.TRAILING : PositionType.HARD_LIMIT
+                strategyParameter.getParameter(TAKE_PROFIT_DELTA),
+                strategyParameter.getParameter(STOP_LOSS_DELTA),
+                strategyParameter.getParameter(STOP_LOSS_NOT_PREDICTED_DELTA),
+                strategyParameter.getParameterAsBool(DefaultParameterNames.TRAILING_STOP_ORDER) ? PositionBehaviour.TRAILING : PositionBehaviour.HARD_LIMIT
         );
     }
 }

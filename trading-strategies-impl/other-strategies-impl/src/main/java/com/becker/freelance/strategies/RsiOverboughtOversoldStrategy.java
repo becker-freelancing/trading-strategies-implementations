@@ -1,15 +1,15 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.indicators.RSIIndicator;
 
 import java.util.Optional;
@@ -23,8 +23,8 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
     private final Decimal stopInEuros;
 
 
-    public RsiOverboughtOversoldStrategy(StrategyCreator strategyCreator, Pair pair, int rsiPeriod, Decimal size, Decimal limit, Decimal stop) {
-        super(strategyCreator, pair);
+    public RsiOverboughtOversoldStrategy(StrategyParameter parameter, int rsiPeriod, Decimal size, Decimal limit, Decimal stop) {
+        super(parameter);
         barSeries.setMaximumBarCount(rsiPeriod + 1);
         rsiIndicator = new RSIIndicator(closePrice, rsiPeriod);
         this.size = size;
@@ -34,7 +34,7 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
 
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         int barCount = barSeries.getBarCount();
         double value = rsiIndicator.getValue(barCount - 1).doubleValue();
@@ -43,9 +43,9 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
         TimeSeriesEntry lastEntry = entryParameter.timeSeries().getLastEntryForTime(entryParameter.time());
 
         if (value > 70 && isBearishEngulfing(currentEntry, lastEntry)) {
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         } else if (value < 30 && isBullishEngulfing(currentEntry, lastEntry)) {
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         }
 
         return Optional.empty();
@@ -60,7 +60,7 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         return Optional.empty();
     }
 }

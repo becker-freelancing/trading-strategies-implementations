@@ -1,8 +1,9 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
+import com.becker.freelance.strategies.creation.StrategyCreationParameter;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -10,7 +11,7 @@ import static com.becker.freelance.strategies.creation.DefaultParameterNames.*;
 
 public class MA2StrategyCreator implements StrategyCreator {
 
-    private static boolean shortMaLessThanLongMaValidation(StrategyParameter parameter) {
+    private static boolean shortMaLessThanLongMaValidation(StrategyCreationParameter parameter) {
         return parameter.getParameterAsInt(SHORT_MA_PERIOD) < parameter.getParameterAsInt(LONG_MA_PERIOD);
     }
 
@@ -31,13 +32,13 @@ public class MA2StrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new MA2Strategy(
-                this, pair,
-                parameter.getParameterAsInt(SHORT_MA_PERIOD),
-                parameter.getParameterAsInt(LONG_MA_PERIOD),
-                parameter.getParameterAsInt(SWING_HIGH_LOW_MAX_AGE),
-                parameter.getParameterAsInt(SWING_HIGH_LOW_ORDER)
+                strategyParameter,
+                strategyParameter.getParameterAsInt(SHORT_MA_PERIOD),
+                strategyParameter.getParameterAsInt(LONG_MA_PERIOD),
+                strategyParameter.getParameterAsInt(SWING_HIGH_LOW_MAX_AGE),
+                strategyParameter.getParameterAsInt(SWING_HIGH_LOW_ORDER)
         );
     }
 }

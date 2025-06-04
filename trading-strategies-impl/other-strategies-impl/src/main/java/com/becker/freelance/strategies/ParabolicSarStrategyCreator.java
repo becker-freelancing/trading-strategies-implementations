@@ -1,10 +1,10 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
 import com.becker.freelance.strategies.creation.StringParameterName;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -32,13 +32,13 @@ public class ParabolicSarStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new ParabolicSarStrategy(
-                this, pair,
-                parameter.getParameterAsDouble(ACC_FACTOR),
-                parameter.getParameterAsDouble(MAX_ACC_FAcTOR),
-                parameter.getParameterAsInt(PERIOD),
-                parameter.getParameter(SIZE)
+                strategyParameter,
+                strategyParameter.getParameterAsDouble(ACC_FACTOR),
+                strategyParameter.getParameterAsDouble(MAX_ACC_FAcTOR),
+                strategyParameter.getParameterAsInt(PERIOD),
+                strategyParameter.getParameter(SIZE)
         );
     }
 }

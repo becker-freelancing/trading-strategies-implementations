@@ -2,15 +2,16 @@ package com.becker.freelance.strategies;
 
 import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.algorithm.SwingDetection;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
@@ -26,8 +27,8 @@ public class MA2Strategy extends BaseStrategy {
     private final SMAIndicator shortSma;
     private final SMAIndicator longSma;
 
-    public MA2Strategy(StrategyCreator strategyCreator, Pair pair, int shortMaPeriod, int longMaPeriod, int swingHighLowMaxAge, int swingHighLowOrder) {
-        super(strategyCreator, pair);
+    public MA2Strategy(StrategyParameter parameter, int shortMaPeriod, int longMaPeriod, int swingHighLowMaxAge, int swingHighLowOrder) {
+        super(parameter);
 
         this.swingHighLowMaxAge = swingHighLowMaxAge;
         this.swingHighLowOrder = swingHighLowOrder;
@@ -45,7 +46,7 @@ public class MA2Strategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         int barCount = barSeries.getBarCount();
         LastTwoMaResults lastShortMaValues = lastTwoMaValuesForTime(shortSma, barCount);
@@ -71,19 +72,19 @@ public class MA2Strategy extends BaseStrategy {
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingLow(swingData, swingOrder);
             Pair pair = current.pair();
             return lastSwingLow.map(swingValue -> swingValue.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
-                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionType.HARD_LIMIT, current, currentMarketRegime()));
+                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionBehaviour.HARD_LIMIT, current, currentMarketRegime()));
         } else if (lastShort > lastLong && currentShort < currentLong) {
             //SELL
             Optional<TimeSeriesEntry> lastSwingHigh = swingDetection.getLastSwingHigh(swingData, swingOrder);
             Pair pair = current.pair();
             return lastSwingHigh.map(swingValue -> swingValue.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
-                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionType.HARD_LIMIT, current, currentMarketRegime()));
+                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionBehaviour.HARD_LIMIT, current, currentMarketRegime()));
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         return Optional.empty();
     }
 

@@ -1,14 +1,14 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.Rule;
 import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.SMAIndicator;
@@ -30,8 +30,8 @@ public class FreqStrategy extends BaseStrategy {
     private final Decimal limit;
 
 
-    public FreqStrategy(StrategyCreator strategyCreator, Pair pair, int smaPeriod, int rsiPeriod, int stochKPeriod, Decimal size, Decimal stop, Decimal limit) {
-        super(strategyCreator, pair);
+    public FreqStrategy(StrategyParameter strategyParameter, int smaPeriod, int rsiPeriod, int stochKPeriod, Decimal size, Decimal stop, Decimal limit) {
+        super(strategyParameter);
 
         VolumeIndicator volume = new VolumeIndicator(barSeries);
         SMAIndicator sma40 = new SMAIndicator(closePrice, smaPeriod);
@@ -54,19 +54,19 @@ public class FreqStrategy extends BaseStrategy {
 
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
         int index = barSeries.getBarCount() - 1;
 
         if (entryRule.isSatisfied(index)) {
             return Optional.of(
-                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
+                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
             );
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
 
         return Optional.empty();
     }

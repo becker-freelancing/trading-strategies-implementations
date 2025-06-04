@@ -1,8 +1,9 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
+import com.becker.freelance.strategies.creation.StrategyCreationParameter;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -11,7 +12,7 @@ import static com.becker.freelance.strategies.creation.DefaultParameterNames.*;
 
 public class FreqStrategyCreator implements StrategyCreator {
 
-    private static boolean stopLessThanLimit(StrategyParameter parameters) {
+    private static boolean stopLessThanLimit(StrategyCreationParameter parameters) {
         return parameters.getParameter(TAKE_PROFIT).isLessThanOrEqualTo(parameters.getParameter(STOP_LOSS));
     }
 
@@ -33,15 +34,15 @@ public class FreqStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new FreqStrategy(
-                this, pair,
-                parameter.getParameterAsInt(SMA_PERIOD),
-                parameter.getParameterAsInt(RSI_PERIOD),
-                parameter.getParameterAsInt(STOCH_K_PERIOD),
-                parameter.getParameter(SIZE),
-                parameter.getParameter(STOP_LOSS),
-                parameter.getParameter(TAKE_PROFIT)
+                strategyParameter,
+                strategyParameter.getParameterAsInt(SMA_PERIOD),
+                strategyParameter.getParameterAsInt(RSI_PERIOD),
+                strategyParameter.getParameterAsInt(STOCH_K_PERIOD),
+                strategyParameter.getParameter(SIZE),
+                strategyParameter.getParameter(STOP_LOSS),
+                strategyParameter.getParameter(TAKE_PROFIT)
         );
     }
 }

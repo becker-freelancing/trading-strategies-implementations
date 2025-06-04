@@ -1,16 +1,16 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.TRIndicator;
@@ -26,25 +26,25 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
     private Direction direction;
 
 
-    public VoltyExpanCloseStrategy(StrategyCreator strategyCreator, Pair pair, int period, Num numAtrs) {
-        super(strategyCreator, pair);
+    public VoltyExpanCloseStrategy(StrategyParameter parameter, int period, Num numAtrs) {
+        super(parameter);
         TRIndicator trIndicator = new TRIndicator(barSeries);
         SMAIndicator smaIndicator = new SMAIndicator(trIndicator, period);
         atrs = new TransformIndicator(smaIndicator, value -> value.multipliedBy(numAtrs));
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         if (direction != null) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+            return Optional.of(entrySignalFactory.fromAmount(new Decimal(1), direction, Decimal.DOUBLE_MAX, Decimal.DOUBLE_MAX, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
         }
 
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
 
         updateData(exitParameter.timeSeries(), exitParameter.time());
 

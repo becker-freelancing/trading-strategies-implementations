@@ -1,10 +1,11 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
+import com.becker.freelance.strategies.creation.StrategyCreationParameter;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
 import com.becker.freelance.strategies.creation.StringParameterName;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -15,7 +16,7 @@ public class MA3StrategyCreator implements StrategyCreator {
     private static final ParameterName MIN_SLOPE = new StringParameterName("minSlope");
     private static final ParameterName MIN_SLOPE_WINDOW = new StringParameterName("minSlopeWindow");
 
-    private static boolean validateParameter(StrategyParameter parameters) {
+    private static boolean validateParameter(StrategyCreationParameter parameters) {
         return parameters.getParameter(SHORT_MA_PERIOD).isLessThan(parameters.getParameter(MID_MA_PERIOD)) &&
                 parameters.getParameter(MID_MA_PERIOD).isLessThan(parameters.getParameter(LONG_MA_PERIOD));
     }
@@ -41,17 +42,17 @@ public class MA3StrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new MA3Strategy(
-                this, pair,
-                parameter.getParameter(SIZE),
-                parameter.getParameterAsInt(LONG_MA_PERIOD),
-                parameter.getParameterAsInt(SHORT_MA_PERIOD),
-                parameter.getParameterAsInt(MID_MA_PERIOD),
-                parameter.getParameter(MIN_SLOPE),
-                parameter.getParameterAsInt(MIN_SLOPE_WINDOW),
-                parameter.getParameter(STOP_LOSS),
-                parameter.getParameter(TAKE_PROFIT)
+                strategyParameter,
+                strategyParameter.getParameter(SIZE),
+                strategyParameter.getParameterAsInt(LONG_MA_PERIOD),
+                strategyParameter.getParameterAsInt(SHORT_MA_PERIOD),
+                strategyParameter.getParameterAsInt(MID_MA_PERIOD),
+                strategyParameter.getParameter(MIN_SLOPE),
+                strategyParameter.getParameterAsInt(MIN_SLOPE_WINDOW),
+                strategyParameter.getParameter(STOP_LOSS),
+                strategyParameter.getParameter(TAKE_PROFIT)
         );
     }
 }

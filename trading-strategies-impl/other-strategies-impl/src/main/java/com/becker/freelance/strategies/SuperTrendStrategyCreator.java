@@ -1,10 +1,10 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.creation.StrategyParameter;
 import com.becker.freelance.strategies.creation.StringParameterName;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
+import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
@@ -52,24 +52,24 @@ public class SuperTrendStrategyCreator implements StrategyCreator {
     }
 
     @Override
-    public TradingStrategy build(Pair pair, StrategyParameter parameter) {
+    public TradingStrategy build(StrategyParameter strategyParameter) {
         return new SuperTrendStrategy(
-                this, pair,
-                parameter.getParameterAsDouble(max_rsi_diff),
-                parameter.getParameterAsInt(rsi_cross_max_age),
-                parameter.getParameterAsDouble(risk_ratio),
-                parameter.getParameter(SIZE),
-                parameter.getParameterAsInt(EMA_PERIOD),
-                parameter.getParameterAsInt(RSI_PERIOD),
-                parameter.getParameterAsInt(rsi_stoch_length),
-                parameter.getParameterAsInt(rsi_k),
-                parameter.getParameterAsInt(rsi_d),
-                parameter.getParameterAsInt(supertrend_1_atr),
-                parameter.getParameterAsDouble(supertrend_1_multiplier),
-                parameter.getParameterAsInt(supertrend_2_atr),
-                parameter.getParameterAsDouble(supertrend_2_multiplier),
-                parameter.getParameterAsInt(supertrend_3_atr),
-                parameter.getParameterAsDouble(supertrend_3_multiplier)
+                strategyParameter,
+                strategyParameter.getParameterAsDouble(max_rsi_diff),
+                strategyParameter.getParameterAsInt(rsi_cross_max_age),
+                strategyParameter.getParameterAsDouble(risk_ratio),
+                strategyParameter.getParameter(SIZE),
+                strategyParameter.getParameterAsInt(EMA_PERIOD),
+                strategyParameter.getParameterAsInt(RSI_PERIOD),
+                strategyParameter.getParameterAsInt(rsi_stoch_length),
+                strategyParameter.getParameterAsInt(rsi_k),
+                strategyParameter.getParameterAsInt(rsi_d),
+                strategyParameter.getParameterAsInt(supertrend_1_atr),
+                strategyParameter.getParameterAsDouble(supertrend_1_multiplier),
+                strategyParameter.getParameterAsInt(supertrend_2_atr),
+                strategyParameter.getParameterAsDouble(supertrend_2_multiplier),
+                strategyParameter.getParameterAsInt(supertrend_3_atr),
+                strategyParameter.getParameterAsDouble(supertrend_3_multiplier)
         );
     }
 }

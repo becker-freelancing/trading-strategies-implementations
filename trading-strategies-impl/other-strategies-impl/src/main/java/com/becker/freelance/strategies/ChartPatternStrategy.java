@@ -1,14 +1,14 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.PositionType;
+import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignal;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.math.Decimal;
-import com.becker.freelance.strategies.creation.StrategyCreator;
-import com.becker.freelance.strategies.executionparameter.EntryParameter;
-import com.becker.freelance.strategies.executionparameter.ExitParameter;
+import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.strategy.BaseStrategy;
+import com.becker.freelance.strategies.strategy.StrategyParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.Indicator;
@@ -29,8 +29,8 @@ public class ChartPatternStrategy extends BaseStrategy {
     private final List<Indicator<Boolean>> bearischIndicator;
 
 
-    public ChartPatternStrategy(StrategyCreator strategyCreator, Pair pair, Decimal stop, Decimal limit, Decimal size) {
-        super(strategyCreator, pair);
+    public ChartPatternStrategy(StrategyParameter parameter, Decimal stop, Decimal limit, Decimal size) {
+        super(parameter);
 
         this.stop = stop;
         this.limit = limit;
@@ -54,14 +54,14 @@ public class ChartPatternStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<EntrySignal> internalShouldEnter(EntryParameter entryParameter) {
+    public Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
         int index = barSeries.getBarCount() - 1;
         for (Indicator<Boolean> bullish : bullishIndicator) {
             if (bullish.getValue(index)) {
                 logger.info("Try to open buy position on {} bullish indicator {} is true", entryParameter.pair().technicalName(), bullish.getClass().getName());
                 return Optional.of(
-                        entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
+                        entrySignalFactory.fromDistance(size, Direction.BUY, stop, limit, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
                 );
             }
         }
@@ -70,7 +70,7 @@ public class ChartPatternStrategy extends BaseStrategy {
             if (baerish.getValue(index)) {
                 logger.info("Try to open sell position on {} baerish indicator {} is true", entryParameter.pair().technicalName(), baerish.getClass().getName());
                 return Optional.of(
-                        entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionType.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
+                        entrySignalFactory.fromDistance(size, Direction.SELL, stop, limit, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
                 );
             }
         }
@@ -79,7 +79,7 @@ public class ChartPatternStrategy extends BaseStrategy {
     }
 
     @Override
-    public Optional<ExitSignal> internalShouldExit(ExitParameter exitParameter) {
+    public Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         return Optional.empty();
     }
 
