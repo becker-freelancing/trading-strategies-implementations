@@ -9,8 +9,6 @@ import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
 import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
-import com.becker.freelance.strategies.regression.sequence.shared.RegressionPrediction;
-import com.becker.freelance.strategies.regression.sequence.shared.RegressionPredictor;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
 

@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.regression.sequence;
+package com.becker.freelance.strategies.regression.single;
 
 import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.strategies.creation.DefaultParameterNames;
@@ -10,7 +10,7 @@ import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
-public class SequenceRegressionStrategyCreator implements StrategyCreator {
+public class SingleRegressionStrategyCreator implements StrategyCreator {
 
     private static final ParameterName TAKE_PROFIT_DELTA = new StringParameterName("takeProfitDelta");
     private static final ParameterName STOP_LOSS_DELTA = new StringParameterName("stopLossDelta");
@@ -18,7 +18,7 @@ public class SequenceRegressionStrategyCreator implements StrategyCreator {
 
     @Override
     public String strategyName() {
-        return "sequence_regression";
+        return "single_regression";
     }
 
     @Override
@@ -33,9 +33,9 @@ public class SequenceRegressionStrategyCreator implements StrategyCreator {
 
     @Override
     public TradingStrategy build(StrategyParameter strategyParameter) {
-        return new SequenceRegressionStrategy(
+        return new SingleRegressionStrategy(
                 strategyParameter,
-                new BufferedRegressionPredictor(),
+                new BufferedSingleRegressionPredictor(),
                 strategyParameter.getParameter(TAKE_PROFIT_DELTA),
                 strategyParameter.getParameter(STOP_LOSS_DELTA),
                 strategyParameter.getParameter(STOP_LOSS_NOT_PREDICTED_DELTA),

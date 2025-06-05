@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.regression.sequence.shared;
+package com.becker.freelance.strategies.regression.sequence;
 
 import com.becker.freelance.backtest.util.PathUtil;
 import com.becker.freelance.indicators.ta.regime.QuantileMarketRegime;

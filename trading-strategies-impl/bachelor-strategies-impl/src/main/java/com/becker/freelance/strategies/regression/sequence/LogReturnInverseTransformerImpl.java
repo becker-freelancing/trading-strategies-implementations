@@ -1,9 +1,10 @@
-package com.becker.freelance.strategies.regression.sequence.shared;
+package com.becker.freelance.strategies.regression.sequence;
 
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
+import com.becker.freelance.strategies.regression.shared.LogReturnInverseTransformer;
 
 
-public class LogReturnInverseTransformerImpl implements LogReturnInverseTransformer {
+public class LogReturnInverseTransformerImpl implements LogReturnInverseTransformer<Double[]> {
 
     private final Double[] logReturns;
 
