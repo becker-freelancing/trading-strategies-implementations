@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface Predictor<T> {
 
-    public Optional<T> predict(EntryExecutionParameter parameter)
+    public Optional<T> predict(EntryExecutionParameter parameter);
 }

@@ -14,7 +14,7 @@ def _to_string(arr):
     return np.array2string(arr, formatter={'float_kind': lambda x: f"{x:.15f}"})
 
 
-class SequenceModelPredictor:
+class SingleModelPredictor:
 
     def __init__(self, model: RegimeLiveModel, file_name: str):
         self.model = model
@@ -28,13 +28,11 @@ class SequenceModelPredictor:
         for regime, predictions in all_predictions.items():
             for time, prediction in predictions:
                 prediction = prediction["logReturn_closeBid_1min"].values
-                cumsum = np.cumsum(prediction)
                 data = {
                     "closeTime": time,
                     "regimeName": regime.name,
                     "regimeId": regime.value,
-                    "prediction": _to_string(prediction),
-                    "predictionCumsum": _to_string(cumsum)
+                    "prediction": _to_string(prediction)
                 }
                 reshaped_data.append(data)
 
@@ -51,15 +49,15 @@ class SequenceModelPredictor:
 
 
 def main():
-    best_models = load_best_models("models-bybit/SEQUENCE_REGRESSION")
+    best_models = load_best_models("models-bybit/SINGLE_REGRESSION")
     model_provider = LoadedModelProvider(best_models)
     model_regime_detector = joblib.load(
-        from_relative_path("data-bybit/a-model-regime_detector_SEQUENCE_REGRESSION.dump"))
-    regime_detector = joblib.load(from_relative_path("data-bybit/a-regime_detector_SEQUENCE_REGRESSION.dump"))
-    pca = joblib.load(from_relative_path("data-bybit/a-regime_pca_SEQUENCE_REGRESSION.dump"))
-    scaler = joblib.load(from_relative_path("data-bybit/a-scaler_SEQUENCE_REGRESSION.dump"))
+        from_relative_path("data-bybit/a-model-regime_detector_SINGLE_REGRESSION.dump"))
+    regime_detector = joblib.load(from_relative_path("data-bybit/a-regime_detector_SINGLE_REGRESSION.dump"))
+    pca = joblib.load(from_relative_path("data-bybit/a-regime_pca_SINGLE_REGRESSION.dump"))
+    scaler = joblib.load(from_relative_path("data-bybit/a-scaler_SINGLE_REGRESSION.dump"))
     model = RegimeLiveModel(model_provider, scaler, pca, model_regime_detector, regime_detector)
-    predictor = SequenceModelPredictor(model, "BACKTEST_PREDICTION_SEQUENCE_REGRESSION.csv")
+    predictor = SingleModelPredictor(model, "BACKTEST_PREDICTION_SINGLE_REGRESSION.csv")
     predictor.predict_all()
 
 
