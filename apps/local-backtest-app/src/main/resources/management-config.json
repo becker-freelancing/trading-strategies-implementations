@@ -8,5 +8,6 @@
       "drawdown": 0.1,
       "durationSec": 86400
     }
-  ]
+  ],
+  "maxPositionSize": 100
 }
