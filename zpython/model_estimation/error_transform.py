@@ -6,7 +6,10 @@ from zpython.util.path_util import from_relative_path
 
 
 def _model_name(name):
-    return name.split("_")[0]
+    split = name.split("_")
+    if "202" in split[1]:
+        return split[0]
+    return split[0] + "_" + split[1]
 
 
 def _get_all_metrics(base_path: str, studies: list[str]):
@@ -24,7 +27,7 @@ def _transform(metrics):
         valid.to_csv(path, index=False)
 
 
-base = "models-bybit/SEQUENCE_REGRESSION"
+base = "models-bybit/SINGLE_REGRESSION"
 studies = os.listdir(from_relative_path(base))
 m = _get_all_metrics(base, studies)
 _transform(m)

@@ -8,7 +8,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from zpython.model.best_model_loader import _get_metrics_by_regime
 
-metrics_by_regime = _get_metrics_by_regime("models-bybit/SEQUENCE_REGRESSION")
+metrics_by_regime = _get_metrics_by_regime("models-bybit/SINGLE_REGRESSION")
 
 regime_groups = [
     [ModelMarketRegime.UP_LOW_VOLA_033, ModelMarketRegime.UP_LOW_VOLA_066, ModelMarketRegime.UP_LOW_VOLA_1],
@@ -32,7 +32,20 @@ colors = {
     "nndropout": "#008000",
     "nn": "#2E8B57",
     "nnresidual": "#32CD32",
-    "transformer": "#FF8C00"
+    "transformer": "#FF8C00",
+    "attentioncnn_single": "#FF0000",
+    "cnngru_single": "#B22222",
+    "deepcnn_single": "#DC143C",
+    "multiscalecnn_single": "#DC143C",
+    "simplecnn_single": "#CD5C5C",
+    "bilstm_single": "#0000FF",
+    "dropoutlstm_single": "#4169E1",
+    "encodedecodelstm_single": "#00BFFF",
+    "lstm_single": "#000080",
+    "nndropout_single": "#008000",
+    "nn_single": "#2E8B57",
+    "nnresidual_single": "#32CD32",
+    "transformer_single": "#FF8C00"
 }
 
 names = {
@@ -48,7 +61,20 @@ names = {
     "nndropout": "Dropout NN",
     "nn": "NN",
     "nnresidual": "Residual NN",
-    "transformer": "Transformer"
+    "transformer": "Transformer",
+    "attentioncnn_single": "Attention CNN",
+    "cnngru_single": "CNN + GRU",
+    "deepcnn_single": "Deep CNN",
+    "multiscalecnn_single": "Multi-Scale CNN",
+    "simplecnn_single": "CNN",
+    "bilstm_single": "Bi-LSTM",
+    "dropoutlstm_single": "Dropout LSTM",
+    "encodedecodelstm_single": "Encode-Decode LSTM",
+    "lstm_single": "LSTM",
+    "nndropout_single": "Dropout NN",
+    "nn_single": "NN",
+    "nnresidual_single": "Residual NN",
+    "transformer_single": "Transformer"
 }
 
 

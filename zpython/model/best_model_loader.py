@@ -9,7 +9,10 @@ from zpython.util.training import custom_objects
 
 
 def _model_name(name):
-    return name.split("_")[0]
+    split = name.split("_")
+    if "202" in split[1]:
+        return split[0]
+    return split[0] + "_" + split[1]
 
 
 def _get_all_metrics(base_path: str, studies: list[str]):
