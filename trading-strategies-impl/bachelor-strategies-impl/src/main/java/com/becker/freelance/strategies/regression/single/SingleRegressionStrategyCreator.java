@@ -1,6 +1,5 @@
 package com.becker.freelance.strategies.regression.single;
 
-import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.strategies.creation.DefaultParameterNames;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
@@ -33,13 +32,15 @@ public class SingleRegressionStrategyCreator implements StrategyCreator {
 
     @Override
     public TradingStrategy build(StrategyParameter strategyParameter) {
-        return new SingleRegressionStrategy(
-                strategyParameter,
-                new BufferedSingleRegressionPredictor(),
-                strategyParameter.getParameter(TAKE_PROFIT_DELTA),
-                strategyParameter.getParameter(STOP_LOSS_DELTA),
-                strategyParameter.getParameter(STOP_LOSS_NOT_PREDICTED_DELTA),
-                strategyParameter.getParameterAsBool(DefaultParameterNames.TRAILING_STOP_ORDER) ? PositionBehaviour.TRAILING : PositionBehaviour.HARD_LIMIT
-        );
+//        return new SingleRegressionStrategy(
+//                strategyParameter,
+//                new BufferedSingleRegressionPredictor(),
+//                strategyParameter.getParameter(TAKE_PROFIT_DELTA),
+//                strategyParameter.getParameter(STOP_LOSS_DELTA),
+//                strategyParameter.getParameter(STOP_LOSS_NOT_PREDICTED_DELTA),
+//                strategyParameter.getParameterAsBool(DefaultParameterNames.TRAILING_STOP_ORDER) ? PositionBehaviour.TRAILING : PositionBehaviour.HARD_LIMIT
+//        );
+
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

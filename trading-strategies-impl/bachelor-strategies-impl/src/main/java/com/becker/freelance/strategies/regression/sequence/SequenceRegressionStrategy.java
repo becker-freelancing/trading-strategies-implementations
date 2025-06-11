@@ -1,9 +1,10 @@
 package com.becker.freelance.strategies.regression.sequence;
 
+import com.becker.freelance.commons.order.TriggerDirection;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.regime.TradeableQuantilMarketRegime;
-import com.becker.freelance.commons.signal.EntrySignal;
+import com.becker.freelance.commons.signal.EntrySignalBuilder;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
@@ -44,12 +45,12 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     }
 
     @Override
-    protected Optional<EntrySignal> internalShouldEnter(EntryExecutionParameter entryParameter) {
+    protected Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
         return predictor.predict(entryParameter)
                 .flatMap(prediction -> toEntry(entryParameter, prediction));
     }
 
-    private Optional<EntrySignal> toEntry(EntryExecutionParameter entryParameter, RegressionPrediction prediction) {
+    private Optional<EntrySignalBuilder> toEntry(EntryExecutionParameter entryParameter, RegressionPrediction prediction) {
         TimeSeriesEntry currentPrice = entryParameter.currentPrice();
         Double[] predictedPrice = prediction.transformLogReturnsToPrice(currentPrice);
         Double[] predictedPriceAroundZero = transformAroundZero(predictedPrice, currentPrice.getCloseMid().doubleValue());
@@ -65,7 +66,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         return Optional.empty();
     }
 
-    private EntrySignal toSellEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toSellEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
         if (highAroundZero.index() < lowAroundZero.index()) {
             return toSellEntryHighBeforeLow(predictedPrice, currentPrice, marketRegime);
         } else {
@@ -73,20 +74,31 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         }
     }
 
-    private EntrySignal toSellEntryLowBeforeHigh(SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toSellEntryLowBeforeHigh(SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
         Double stopLevel = findHighInRange(predictedPrice, lowAroundZero.index()).value();
+        Decimal limitLevel = Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta);
         stopLevel = transformSellStopLevel(currentPrice, stopLevel);
-        return entrySignalFactory.fromLevel(Decimal.ONE, Direction.SELL,
-                Decimal.valueOf(stopLevel), Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta),
-                positionBehaviour, currentPrice, marketRegime);
+        Decimal stopOrderPrice = Decimal.valueOf(stopLevel);
+        return entrySignalBuilder()
+                .withPositionBehaviour(positionBehaviour)
+                .withOpenMarketRegime(marketRegime)
+                .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.SELL))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.UP_CROSS).withThresholdPrice(stopOrderPrice))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
-    private EntrySignal toSellEntryHighBeforeLow(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toSellEntryHighBeforeLow(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
         Double stopLevel = findHigh(predictedPrice).value();
         stopLevel = transformSellStopLevel(currentPrice, stopLevel);
-        return entrySignalFactory.fromLevel(Decimal.ONE, Direction.SELL,
-                Decimal.valueOf(stopLevel), Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta),
-                positionBehaviour, currentPrice, marketRegime);
+        Decimal limitLevel = Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta);
+
+        Decimal stopOrderPrice = Decimal.valueOf(stopLevel);
+        return entrySignalBuilder()
+                .withPositionBehaviour(positionBehaviour)
+                .withOpenMarketRegime(marketRegime)
+                .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.SELL))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.UP_CROSS).withThresholdPrice(stopOrderPrice))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
     private Double transformSellStopLevel(TimeSeriesEntry currentPrice, Double stopLevel) {
@@ -100,7 +112,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         return stopLevel;
     }
 
-    private EntrySignal toBuyEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toBuyEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
         if (highAroundZero.index() < lowAroundZero.index()) {
             return toBuyEntryHighBeforeLow(highAroundZero, predictedPrice, currentPrice, marketRegime);
         } else {
@@ -108,20 +120,32 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         }
     }
 
-    private EntrySignal toBuyEntryLowBeforeHigh(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toBuyEntryLowBeforeHigh(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
         Double stopLevel = findLow(predictedPrice).value();
         stopLevel = transformBuyStopLevel(currentPrice, stopLevel);
-        return entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY,
-                Decimal.valueOf(stopLevel), Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta),
-                positionBehaviour, currentPrice, marketRegime);
+        Decimal limitLevel = Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta);
+
+        Decimal stopOrderPrice = Decimal.valueOf(stopLevel);
+        return entrySignalBuilder()
+                .withPositionBehaviour(positionBehaviour)
+                .withOpenMarketRegime(marketRegime)
+                .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.BUY))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.DOWN_CROSS).withThresholdPrice(stopOrderPrice))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
-    private EntrySignal toBuyEntryHighBeforeLow(SignificantPoint highAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toBuyEntryHighBeforeLow(SignificantPoint highAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
         Double stopLevel = findLowInRange(predictedPrice, highAroundZero.index()).value();
         stopLevel = transformBuyStopLevel(currentPrice, stopLevel);
-        return entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY,
-                Decimal.valueOf(stopLevel), Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta),
-                positionBehaviour, currentPrice, marketRegime);
+        Decimal limitLevel = Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta);
+
+        Decimal stopOrderPrice = Decimal.valueOf(stopLevel);
+        return entrySignalBuilder()
+                .withPositionBehaviour(positionBehaviour)
+                .withOpenMarketRegime(marketRegime)
+                .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.BUY))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.DOWN_CROSS).withThresholdPrice(stopOrderPrice))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
     private Double transformBuyStopLevel(TimeSeriesEntry currentPrice, Double stopLevel) {
