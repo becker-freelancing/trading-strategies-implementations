@@ -8,7 +8,7 @@ def get_base_path():
         user_home = os.path.expanduser("~")
         app_data_path = os.path.join(user_home, ".config")
 
-    return (app_data_path + "\\krypto-java/").replace("\\", "/")
+    return (app_data_path + "/krypto-java/").replace("\\", "/")
 
 
 def from_relative_path(path):

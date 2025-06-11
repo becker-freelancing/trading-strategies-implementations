@@ -8,7 +8,7 @@ public class PredictionTransformer {
 
     public static void main(String[] args) throws Exception {
 
-        Path path = Path.of("C:\\Users\\jasb\\AppData\\Roaming\\krypto-java\\prediction-bybit\\BACKTEST_PREDICTION_SEQUENCE_REGRESSION.csv");
+        Path path = Path.of("C:/Users/jasb/AppData/Roaming/krypto-java/prediction-bybit/BACKTEST_PREDICTION_SEQUENCE_REGRESSION.csv");
 
         List<String> lines = Files.readAllLines(path);
         String header = lines.remove(0);

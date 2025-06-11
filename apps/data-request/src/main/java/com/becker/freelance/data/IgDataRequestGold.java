@@ -88,7 +88,7 @@ public class IgDataRequestGold {
     }
 
     private static Path getCsvPath(String filename) {
-        String pathString = "C:\\Users\\jasb\\AppData\\Roaming\\krypto-java\\.data-ig\\" + filename;
+        String pathString = "C:/Users/jasb/AppData/Roaming/krypto-java/.data-ig/" + filename;
         Path path = Path.of(pathString);
         return path;
     }
