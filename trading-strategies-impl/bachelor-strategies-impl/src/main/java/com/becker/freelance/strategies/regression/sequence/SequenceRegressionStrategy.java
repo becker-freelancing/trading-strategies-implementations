@@ -1,6 +1,5 @@
 package com.becker.freelance.strategies.regression.sequence;
 
-import com.becker.freelance.commons.order.TriggerDirection;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.regime.TradeableQuantilMarketRegime;
@@ -83,7 +82,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
                 .withPositionBehaviour(positionBehaviour)
                 .withOpenMarketRegime(marketRegime)
                 .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.SELL))
-                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.UP_CROSS).withThresholdPrice(stopOrderPrice))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopOrderPrice))
                 .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
@@ -97,7 +96,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
                 .withPositionBehaviour(positionBehaviour)
                 .withOpenMarketRegime(marketRegime)
                 .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.SELL))
-                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.UP_CROSS).withThresholdPrice(stopOrderPrice))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopOrderPrice))
                 .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
@@ -130,7 +129,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
                 .withPositionBehaviour(positionBehaviour)
                 .withOpenMarketRegime(marketRegime)
                 .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.BUY))
-                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.DOWN_CROSS).withThresholdPrice(stopOrderPrice))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopOrderPrice))
                 .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
@@ -144,7 +143,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
                 .withPositionBehaviour(positionBehaviour)
                 .withOpenMarketRegime(marketRegime)
                 .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(Direction.BUY))
-                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withTriggerDirection(TriggerDirection.DOWN_CROSS).withThresholdPrice(stopOrderPrice))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopOrderPrice))
                 .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
