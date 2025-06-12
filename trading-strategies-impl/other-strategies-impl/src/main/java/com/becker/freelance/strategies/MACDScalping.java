@@ -19,21 +19,19 @@ public class MACDScalping extends BaseStrategy {
 
     private final MACDIndicator macdIndicator;
     private final EMAIndicator macdSignal;
-    private final Decimal stopInEuros;
-    private final Decimal limitInEuros;
-    private final Decimal size;
+    private final Decimal stopDistance;
+    private final Decimal limitDistance;
     private final int longBarCount;
 
-    public MACDScalping(StrategyParameter parameter, int longBarCount, int shortBarCount, int signalLinePeriod, Decimal stop, Decimal limit, Decimal size) {
+    public MACDScalping(StrategyParameter parameter, int longBarCount, int shortBarCount, int signalLinePeriod, Decimal stop, Decimal limit) {
         super(parameter);
 
         barSeries.setMaximumBarCount(longBarCount + 3);
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
         macdIndicator = new MACDIndicator(closePriceIndicator, shortBarCount, longBarCount);
         macdSignal = new EMAIndicator(macdIndicator, signalLinePeriod);
-        stopInEuros = stop;
-        limitInEuros = limit;
-        this.size = size;
+        stopDistance = stop;
+        limitDistance = limit;
         this.longBarCount = longBarCount;
     }
 
@@ -51,10 +49,22 @@ public class MACDScalping extends BaseStrategy {
 
         if (currentMacd > currentSignal && lastMacd < lastSignal) {
             //BUY
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+
+            return Optional.of(entrySignalBuilder()
+                    .withOpenMarketRegime(currentMarketRegime())
+                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(entryParameter.pair()))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.BUY)))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.BUY))));
         } else if (currentMacd < currentSignal && lastMacd > lastSignal) {
             //SELL
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+
+            return Optional.of(entrySignalBuilder()
+                    .withOpenMarketRegime(currentMarketRegime())
+                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(entryParameter.pair()))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.SELL)))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.SELL))));
         }
 
         return Optional.empty();

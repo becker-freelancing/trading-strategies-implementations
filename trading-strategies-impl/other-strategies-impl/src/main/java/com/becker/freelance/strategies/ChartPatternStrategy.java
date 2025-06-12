@@ -22,19 +22,17 @@ public class ChartPatternStrategy extends BaseStrategy {
 
     private static final Logger logger = LoggerFactory.getLogger(ChartPatternStrategy.class);
 
-    private final Decimal size;
     private final Decimal stop;
     private final Decimal limit;
     private final List<Indicator<Boolean>> bullishIndicator;
     private final List<Indicator<Boolean>> bearischIndicator;
 
 
-    public ChartPatternStrategy(StrategyParameter parameter, Decimal stop, Decimal limit, Decimal size) {
+    public ChartPatternStrategy(StrategyParameter parameter, Decimal stop, Decimal limit) {
         super(parameter);
 
         this.stop = stop;
         this.limit = limit;
-        this.size = size;
 
         bullishIndicator = List.of(
                 new BullishEngulfingIndicator(barSeries),
@@ -65,8 +63,8 @@ public class ChartPatternStrategy extends BaseStrategy {
                         .withOpenMarketRegime(currentMarketRegime())
                         .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
                         .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(entryParameter.pair()))
-                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limit))
-                        .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stop)));
+                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limit, Direction.BUY)))
+                        .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stop, Direction.BUY))));
             }
         }
 
@@ -78,8 +76,8 @@ public class ChartPatternStrategy extends BaseStrategy {
                         .withOpenMarketRegime(currentMarketRegime())
                         .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
                         .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(entryParameter.pair()))
-                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limit))
-                        .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stop)));
+                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limit, Direction.SELL)))
+                        .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stop, Direction.SELL))));
             }
         }
 

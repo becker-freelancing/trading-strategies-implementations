@@ -23,8 +23,8 @@ public class BestHardTpAndSlStrategyCreator implements StrategyCreator {
     @Override
     public ValidStrategyInitParameters strategyParameters() {
         return new ValidStrategyInitParameters(List.of(
-                new StrategyInitParameter(DefaultParameterNames.TAKE_PROFIT, 30, 50, 1000, 50),
-                new StrategyInitParameter(DefaultParameterNames.STOP_LOSS, 15, 50, 1000, 50),
+                new StrategyInitParameter(DefaultParameterNames.TAKE_PROFIT, 30, 20, 300, 50),
+                new StrategyInitParameter(DefaultParameterNames.STOP_LOSS, 15, 20, 300, 50),
                 new StrategyInitParameter(ALL_BUY, 0, 0, 1, 1)
         ));
     }

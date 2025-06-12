@@ -23,7 +23,7 @@ public class BollingerBandBounceStrategyCreator implements StrategyCreator {
         return new ValidStrategyInitParameters(
                 new StrategyInitParameter(DefaultParameterNames.PERIOD, 14, 10, 25, 1),
                 new StrategyInitParameter(STD, 2, 1.5, 3.0, 0.5),
-                new StrategyInitParameter(DefaultParameterNames.SIZE, 0.5, 0.2, 1., 0.2)
+                new StrategyInitParameter(DefaultParameterNames.STOP_LOSS, 15, 10, 100, 20)
         );
     }
 
@@ -33,7 +33,7 @@ public class BollingerBandBounceStrategyCreator implements StrategyCreator {
                 strategyParameter,
                 strategyParameter.getParameterAsInt(DefaultParameterNames.PERIOD),
                 strategyParameter.getParameter(STD),
-                strategyParameter.getParameter(DefaultParameterNames.SIZE)
+                strategyParameter.getParameter(DefaultParameterNames.STOP_LOSS)
         );
     }
 }

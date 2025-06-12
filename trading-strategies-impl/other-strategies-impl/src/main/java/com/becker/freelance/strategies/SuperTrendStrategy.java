@@ -33,7 +33,6 @@ public class SuperTrendStrategy extends BaseStrategy {
     private final double maxRsiDiff;
     private final int maxRsiCrossAge;
     private final double riskRatio;
-    private final Decimal size;
     private int lastRsiUpper80CrossAge;
     private int lastRsiLower20CrossAge;
 
@@ -42,7 +41,6 @@ public class SuperTrendStrategy extends BaseStrategy {
                               Double maxRsiDiff,
                               int maxRsiCrossAge,
                               double riskRatio,
-                              Decimal size,
                               int emaPeriod,
                               int rsiPeriod,
                               int rsiStochPeriod,
@@ -59,7 +57,6 @@ public class SuperTrendStrategy extends BaseStrategy {
         this.maxRsiDiff = maxRsiDiff;
         this.maxRsiCrossAge = maxRsiCrossAge;
         this.riskRatio = riskRatio;
-        this.size = size;
         emaIndicator = new EMAIndicator(closePrice, emaPeriod);
         stochasticRsiIndicator = new StochasticRsiIndicator(closePrice,
                 rsiPeriod,
@@ -127,7 +124,12 @@ public class SuperTrendStrategy extends BaseStrategy {
         Decimal diffToCurrentPrice = closePrice.subtract(secondTrendLineBelowPrice).abs();
         Decimal limitLevel = closePrice.add(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return entrySignalFactory.fromLevel(size, Direction.BUY, secondTrendLineBelowPrice, limitLevel, PositionBehaviour.HARD_LIMIT, price, currentMarketRegime());
+        return entrySignalBuilder()
+                .withOpenMarketRegime(currentMarketRegime())
+                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(price.pair()))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(secondTrendLineBelowPrice));
     }
 
     private List<Num> getTrendLinesBelowPrice(int barCount, Bar currentPrice) {
@@ -160,7 +162,12 @@ public class SuperTrendStrategy extends BaseStrategy {
         Decimal diffToCurrentPrice = secondTrendLineAbovePrice.subtract(closePrice).abs();
         Decimal limitLevel = closePrice.subtract(diffToCurrentPrice.multiply(new Decimal(riskRatio)));
 
-        return entrySignalFactory.fromLevel(size, Direction.SELL, secondTrendLineAbovePrice, limitLevel, PositionBehaviour.HARD_LIMIT, price, currentMarketRegime());
+        return entrySignalBuilder()
+                .withOpenMarketRegime(currentMarketRegime())
+                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(price.pair()))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(secondTrendLineAbovePrice));
     }
 
     private List<Num> getTrendLinesAbovePrice(int barCount, Bar currentPrice) {

@@ -18,18 +18,16 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
 
 
     private final RSIIndicator rsiIndicator;
-    private final Decimal size;
-    private final Decimal limitInEuros;
-    private final Decimal stopInEuros;
+    private final Decimal limitDistance;
+    private final Decimal stopDistance;
 
 
-    public RsiOverboughtOversoldStrategy(StrategyParameter parameter, int rsiPeriod, Decimal size, Decimal limit, Decimal stop) {
+    public RsiOverboughtOversoldStrategy(StrategyParameter parameter, int rsiPeriod, Decimal limit, Decimal stop) {
         super(parameter);
         barSeries.setMaximumBarCount(rsiPeriod + 1);
         rsiIndicator = new RSIIndicator(closePrice, rsiPeriod);
-        this.size = size;
-        this.limitInEuros = limit;
-        this.stopInEuros = stop;
+        this.limitDistance = limit;
+        this.stopDistance = stop;
     }
 
 
@@ -43,9 +41,21 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
         TimeSeriesEntry lastEntry = entryParameter.timeSeries().getLastEntryForTime(entryParameter.time());
 
         if (value > 70 && isBearishEngulfing(currentEntry, lastEntry)) {
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.SELL, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+
+            return Optional.of(entrySignalBuilder()
+                    .withOpenMarketRegime(currentMarketRegime())
+                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(entryParameter.pair()))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.SELL)))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.SELL))));
         } else if (value < 30 && isBullishEngulfing(currentEntry, lastEntry)) {
-            return Optional.of(entrySignalFactory.fromAmount(size, Direction.BUY, stopInEuros, limitInEuros, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+
+            return Optional.of(entrySignalBuilder()
+                    .withOpenMarketRegime(currentMarketRegime())
+                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(entryParameter.pair()))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.BUY)))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.BUY))));
         }
 
         return Optional.empty();

@@ -25,12 +25,11 @@ import java.util.Optional;
 public class FreqStrategy extends BaseStrategy {
 
     private final Rule entryRule;
-    private final Decimal size;
     private final Decimal stop;
     private final Decimal limit;
 
 
-    public FreqStrategy(StrategyParameter strategyParameter, int smaPeriod, int rsiPeriod, int stochKPeriod, Decimal size, Decimal stop, Decimal limit) {
+    public FreqStrategy(StrategyParameter strategyParameter, int smaPeriod, int rsiPeriod, int stochKPeriod, Decimal stop, Decimal limit) {
         super(strategyParameter);
 
         VolumeIndicator volume = new VolumeIndicator(barSeries);
@@ -47,7 +46,6 @@ public class FreqStrategy extends BaseStrategy {
                 .and(new OverIndicatorRule(stochD, Decimal.valueOf(30))); // Stoch-D > 30
 
 
-        this.size = size;
         this.stop = stop;
         this.limit = limit;
     }
@@ -63,11 +61,9 @@ public class FreqStrategy extends BaseStrategy {
                     .withOpenMarketRegime(currentMarketRegime())
                     .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
                     .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(entryParameter.pair()))
-                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limit))
-                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stop)));
-            return Optional.of(
-                    entrySignalFactory.fromAmount(size, Direction.BUY, stop, limit, PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime())
-            );
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limit, Direction.BUY)))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stop, Direction.BUY))));
+
         }
         return Optional.empty();
     }

@@ -72,13 +72,28 @@ public class MA2Strategy extends BaseStrategy {
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingLow(swingData, swingOrder);
             Pair pair = current.pair();
             return lastSwingLow.map(swingValue -> swingValue.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
-                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionBehaviour.HARD_LIMIT, current, currentMarketRegime()));
+                    .map(stopLevel -> {
+                        return entrySignalBuilder()
+                                .withOpenMarketRegime(currentMarketRegime())
+                                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                                .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(current.pair()))
+                                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE))))
+                                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopLevel));
+                    });
         } else if (lastShort > lastLong && currentShort < currentLong) {
             //SELL
             Optional<TimeSeriesEntry> lastSwingHigh = swingDetection.getLastSwingHigh(swingData, swingOrder);
             Pair pair = current.pair();
             return lastSwingHigh.map(swingValue -> swingValue.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
-                    .map(stopLevel -> entrySignalFactory.fromLevel(Decimal.ONE, Direction.BUY, stopLevel, current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE)), PositionBehaviour.HARD_LIMIT, current, currentMarketRegime()));
+                    .map(stopLevel -> {
+
+                        return entrySignalBuilder()
+                                .withOpenMarketRegime(currentMarketRegime())
+                                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                                .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(current.pair()))
+                                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE))))
+                                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopLevel));
+                    });
         }
         return Optional.empty();
     }

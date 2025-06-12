@@ -8,7 +8,8 @@ import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
-import static com.becker.freelance.strategies.creation.DefaultParameterNames.*;
+import static com.becker.freelance.strategies.creation.DefaultParameterNames.EMA_PERIOD;
+import static com.becker.freelance.strategies.creation.DefaultParameterNames.RSI_PERIOD;
 
 public class SuperTrendStrategyCreator implements StrategyCreator {
 
@@ -38,7 +39,6 @@ public class SuperTrendStrategyCreator implements StrategyCreator {
                 new StrategyInitParameter(RSI_PERIOD, 14, 13, 15, 1),
                 new StrategyInitParameter(rsi_stoch_length, 14),
                 new StrategyInitParameter(rsi_cross_max_age, 5, 5, 15, 5),
-                new StrategyInitParameter(SIZE, 0.2, 0.2, 1.2, 0.2),
                 new StrategyInitParameter(risk_ratio, 1.5, 1., 2., 0.2),
                 new StrategyInitParameter(max_rsi_diff, 20, 0, 30, 10),
                 new StrategyInitParameter(EMA_PERIOD, 200),
@@ -58,7 +58,6 @@ public class SuperTrendStrategyCreator implements StrategyCreator {
                 strategyParameter.getParameterAsDouble(max_rsi_diff),
                 strategyParameter.getParameterAsInt(rsi_cross_max_age),
                 strategyParameter.getParameterAsDouble(risk_ratio),
-                strategyParameter.getParameter(SIZE),
                 strategyParameter.getParameterAsInt(EMA_PERIOD),
                 strategyParameter.getParameterAsInt(RSI_PERIOD),
                 strategyParameter.getParameterAsInt(rsi_stoch_length),

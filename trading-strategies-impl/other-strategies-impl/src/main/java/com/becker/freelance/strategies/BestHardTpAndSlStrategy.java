@@ -32,7 +32,7 @@ public class BestHardTpAndSlStrategy extends BaseStrategy {
         return Optional.of(entrySignalBuilder()
                 .withOpenMarketRegime(currentMarketRegime())
                 .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
-                .withOpenOrder(orderBuilder().withDirection(direction).withPair(entryParameter.pair()))
+                .withOpenOrder(orderBuilder().asMarketOrder().withDirection(direction).withPair(entryParameter.pair()))
                 .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(tpPrice(entryParameter.currentPrice())))
                 .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(slPrice(entryParameter.currentPrice()))));
     }

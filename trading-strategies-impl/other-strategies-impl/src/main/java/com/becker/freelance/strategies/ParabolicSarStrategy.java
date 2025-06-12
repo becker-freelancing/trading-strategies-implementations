@@ -20,7 +20,6 @@ import java.util.Optional;
 public class ParabolicSarStrategy extends BaseStrategy {
 
 
-    private final Decimal size;
     private final ParabolicSarIndicator parabolicSarIndicator;
     private LocalDateTime lastUpdate = LocalDateTime.MIN;
     private Double currentSarValue;
@@ -28,9 +27,8 @@ public class ParabolicSarStrategy extends BaseStrategy {
     private Decimal currentCloseMid;
     private Decimal lastCloseMid;
 
-    public ParabolicSarStrategy(StrategyParameter parameter, Double accelerationFactor, Double maxAccelerationFactor, int period, Decimal size) {
+    public ParabolicSarStrategy(StrategyParameter parameter, Double accelerationFactor, Double maxAccelerationFactor, int period) {
         super(parameter);
-        this.size = size;
         this.barSeries.setMaximumBarCount(period);
         this.parabolicSarIndicator = new ParabolicSarIndicator(barSeries, DecimalNum.valueOf(accelerationFactor), DecimalNum.valueOf(maxAccelerationFactor));
     }
@@ -84,11 +82,23 @@ public class ParabolicSarStrategy extends BaseStrategy {
 
     private Optional<EntrySignalBuilder> toBuyEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.add(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(entrySignalFactory.fromLevel(size, Direction.BUY, new Decimal(currentSarValue), limit, PositionBehaviour.HARD_LIMIT, currentPrice, currentMarketRegime()));
+
+        return Optional.of(entrySignalBuilder()
+                .withOpenMarketRegime(currentMarketRegime())
+                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(currentPrice.pair()))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limit))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(new Decimal(currentSarValue))));
     }
 
     private Optional<EntrySignalBuilder> toSellEntrySignal(TimeSeriesEntry currentPrice) {
         Decimal limit = currentCloseMid.subtract(currentCloseMid.subtract(currentSarValue).abs().multiply(2));
-        return Optional.of(entrySignalFactory.fromLevel(size, Direction.SELL, new Decimal(currentSarValue), limit, PositionBehaviour.HARD_LIMIT, currentPrice, currentMarketRegime()));
+
+        return Optional.of(entrySignalBuilder()
+                .withOpenMarketRegime(currentMarketRegime())
+                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(currentPrice.pair()))
+                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limit))
+                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(new Decimal(currentSarValue))));
     }
 }

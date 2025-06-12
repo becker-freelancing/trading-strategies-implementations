@@ -25,7 +25,6 @@ import java.util.Optional;
 public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
 
 
-    private final Decimal size;
 
     private final BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator;
     private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
@@ -34,13 +33,14 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
     private final SMAIndicator slopeSma;
     private final int slopeWindow;
     private final Decimal minSlope;
+    private final Decimal stopDistance;
 
 
-    public BollingerBandBounceMinSlopeStrategy(StrategyParameter parameter, int period, Decimal std, Decimal size, Decimal minSlope, int minSlopeWindow, int minSlopePeriod) {
+    public BollingerBandBounceMinSlopeStrategy(StrategyParameter parameter, int period, Decimal std, Decimal minSlope, int minSlopeWindow, int minSlopePeriod, Decimal stopDistance) {
         super(parameter);
-        this.size = size;
         this.minSlope = minSlope;
         this.slopeWindow = minSlopeWindow;
+        this.stopDistance = stopDistance;
 
         SMAIndicator smaIndicator = new SMAIndicator(closePrice, period);
         StandardDeviationIndicator standardDeviationIndicator = new StandardDeviationIndicator(closePrice, period);
@@ -59,12 +59,12 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
 
         TimeSeriesEntry currentPrice = entryParameter.currentPrice();
 
-        Optional<EntrySignalBuilder> buyEntrySignal = toBuyEntrySignal(barSeries, bollingerBandsLowerIndicator, bollingerBandsMiddleIndicator, currentPrice, size);
+        Optional<EntrySignalBuilder> buyEntrySignal = toBuyEntrySignal(barSeries, bollingerBandsLowerIndicator, bollingerBandsMiddleIndicator, currentPrice);
         if (buyEntrySignal.isPresent()) {
             return buyEntrySignal;
         }
 
-        Optional<EntrySignalBuilder> sellEntrySignal = toSellEntrySignal(barSeries, bollingerBandsUpperIndicator, bollingerBandsMiddleIndicator, currentPrice, size);
+        Optional<EntrySignalBuilder> sellEntrySignal = toSellEntrySignal(barSeries, bollingerBandsUpperIndicator, bollingerBandsMiddleIndicator, currentPrice);
         return sellEntrySignal;
     }
 
@@ -80,7 +80,7 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
         return minSlope.isLessThanOrEqualTo(Math.abs(current - last));
     }
 
-    private Optional<EntrySignalBuilder> toBuyEntrySignal(BarSeries series, BollingerBandsLowerIndicator bollingerBandsLowerIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Decimal size) {
+    private Optional<EntrySignalBuilder> toBuyEntrySignal(BarSeries series, BollingerBandsLowerIndicator bollingerBandsLowerIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice) {
         int barCount = series.getBarCount();
         Num lowValueNum = bollingerBandsLowerIndicator.getValue(barCount - 1);
         Decimal lowValue = new Decimal(lowValueNum.doubleValue());
@@ -89,32 +89,30 @@ public class BollingerBandBounceMinSlopeStrategy extends BaseStrategy {
             Num middleValueNum = bollingerBandsMiddleIndicator.getValue(barCount - 1);
             Decimal middleValue = new Decimal(middleValueNum.doubleValue());
             Pair pair = currentPrice.pair();
-            Decimal stop = lowValue.subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50"), size));
 
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
                     .withPositionBehaviour(PositionBehaviour.TRAILING)
                     .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(currentPrice.pair()))
                     .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(middleValue))
-                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stop)));
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(currentPrice, stopDistance, Direction.BUY))));
         }
         return Optional.empty();
     }
 
-    private Optional<EntrySignalBuilder> toSellEntrySignal(BarSeries series, BollingerBandsUpperIndicator bollingerBandsUpperIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice, Decimal size) {
+    private Optional<EntrySignalBuilder> toSellEntrySignal(BarSeries series, BollingerBandsUpperIndicator bollingerBandsUpperIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice) {
         int barCount = series.getBarCount();
         Decimal highValue = new Decimal(bollingerBandsUpperIndicator.getValue(barCount - 1).doubleValue());
         Decimal closeMid = currentPrice.getCloseMid();
         if (currentPrice.getOpenMid().isGreaterThan(highValue) && closeMid.isLessThan(highValue)) {
             Decimal middleValue = new Decimal(bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue());
             Pair pair = currentPrice.pair();
-            Decimal stop = highValue.add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal("50"), size));
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
                     .withPositionBehaviour(PositionBehaviour.TRAILING)
                     .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(currentPrice.pair()))
                     .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(middleValue))
-                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stop)));
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(currentPrice, stopDistance, Direction.SELL))));
         }
         return Optional.empty();
     }

@@ -26,7 +26,7 @@ public class BollingerBandBounceMinSlopeStrategyCreator implements StrategyCreat
         return new ValidStrategyInitParameters(
                 new StrategyInitParameter(DefaultParameterNames.PERIOD, 14, 15, 20, 1),
                 new StrategyInitParameter(STD, 2, 1., 1.8, 0.2),
-                new StrategyInitParameter(DefaultParameterNames.SIZE, 0.5, 0.2, 1., 0.2),
+                new StrategyInitParameter(DefaultParameterNames.STOP_LOSS, 15, 10, 100, 20),
                 new StrategyInitParameter(MIN_SLOPE, 1, 0.2, 1.0, 0.4),
                 new StrategyInitParameter(MIN_SLOPE_WINDOW, 20, 20, 70, 10),
                 new StrategyInitParameter(MIN_SLOPE_PERIOD, 20, 20, 40, 10));
@@ -38,10 +38,10 @@ public class BollingerBandBounceMinSlopeStrategyCreator implements StrategyCreat
                 strategyParameter,
                 strategyParameter.getParameterAsInt(DefaultParameterNames.PERIOD),
                 strategyParameter.getParameter(STD),
-                strategyParameter.getParameter(DefaultParameterNames.SIZE),
                 strategyParameter.getParameter(MIN_SLOPE),
                 strategyParameter.getParameterAsInt(MIN_SLOPE_WINDOW),
-                strategyParameter.getParameterAsInt(MIN_SLOPE_PERIOD)
+                strategyParameter.getParameterAsInt(MIN_SLOPE_PERIOD),
+                strategyParameter.getParameter(DefaultParameterNames.STOP_LOSS)
         );
     }
 }

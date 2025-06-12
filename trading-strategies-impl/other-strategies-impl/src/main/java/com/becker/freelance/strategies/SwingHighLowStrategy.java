@@ -22,15 +22,20 @@ public class SwingHighLowStrategy extends BaseStrategy {
 
     private final Indicator<Optional<SwingHighPoint>> swingHighIndicator;
     private final Indicator<Optional<SwingLowPoint>> swingLowIndicator;
+    private final Decimal stopDistance;
+    private final Decimal limitDistance;
     private SwingHighPoint lastSwingHighOrNull;
     private SwingLowPoint lastSwingLowOrNull;
     private int index;
 
-    public SwingHighLowStrategy(StrategyParameter parameter, int swingPeriod) {
+
+    public SwingHighLowStrategy(StrategyParameter parameter, int swingPeriod, Decimal stopDistance, Decimal limitDistance) {
         super(parameter);
 
         swingHighIndicator = new SwingHighIndicator(swingPeriod, closePrice);
         swingLowIndicator = new SwingLowIndicator(swingPeriod, closePrice);
+        this.stopDistance = stopDistance;
+        this.limitDistance = limitDistance;
     }
 
     @Override
@@ -41,9 +46,21 @@ public class SwingHighLowStrategy extends BaseStrategy {
         }
 
         if (lastSwingHighOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.SELL, new Decimal(20), new Decimal(15), PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+
+            return Optional.of(entrySignalBuilder()
+                    .withOpenMarketRegime(currentMarketRegime())
+                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(entryParameter.pair()))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.SELL)))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.SELL))));
         } else if (lastSwingLowOrNull.index() == index - 1) {
-            return Optional.of(entrySignalFactory.fromAmount(new Decimal("1"), Direction.BUY, new Decimal(20), new Decimal(15), PositionBehaviour.HARD_LIMIT, entryParameter.currentPrice(), currentMarketRegime()));
+
+            return Optional.of(entrySignalBuilder()
+                    .withOpenMarketRegime(currentMarketRegime())
+                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(entryParameter.pair()))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.BUY)))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.BUY))));
         }
 
         return Optional.empty();

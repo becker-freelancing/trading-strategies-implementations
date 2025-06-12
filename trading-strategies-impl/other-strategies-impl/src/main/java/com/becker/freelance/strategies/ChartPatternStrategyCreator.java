@@ -6,7 +6,8 @@ import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
-import static com.becker.freelance.strategies.creation.DefaultParameterNames.*;
+import static com.becker.freelance.strategies.creation.DefaultParameterNames.STOP_LOSS;
+import static com.becker.freelance.strategies.creation.DefaultParameterNames.TAKE_PROFIT;
 
 public class ChartPatternStrategyCreator implements StrategyCreator {
 
@@ -18,7 +19,6 @@ public class ChartPatternStrategyCreator implements StrategyCreator {
     @Override
     public ValidStrategyInitParameters strategyParameters() {
         return new ValidStrategyInitParameters(
-                new StrategyInitParameter(SIZE, 1, 0.02, 0.02, 0.02),
                 new StrategyInitParameter(STOP_LOSS, 50, 10, 100, 15),
                 new StrategyInitParameter(TAKE_PROFIT, 120, 10, 100, 15)
         );
@@ -28,7 +28,6 @@ public class ChartPatternStrategyCreator implements StrategyCreator {
     public TradingStrategy build(StrategyParameter strategyParameter) {
         return new ChartPatternStrategy(
                 strategyParameter,
-                strategyParameter.getParameter(SIZE),
                 strategyParameter.getParameter(STOP_LOSS),
                 strategyParameter.getParameter(TAKE_PROFIT)
         );

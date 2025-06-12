@@ -9,7 +9,6 @@ import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
 import com.becker.freelance.strategies.validinitparameter.ValidStrategyInitParameters;
 
 import static com.becker.freelance.strategies.creation.DefaultParameterNames.PERIOD;
-import static com.becker.freelance.strategies.creation.DefaultParameterNames.SIZE;
 
 public class ParabolicSarStrategyCreator implements StrategyCreator {
 
@@ -26,8 +25,7 @@ public class ParabolicSarStrategyCreator implements StrategyCreator {
         return new ValidStrategyInitParameters(
                 new StrategyInitParameter(ACC_FACTOR, 0.04, 0.01, 0.07, 0.01),
                 new StrategyInitParameter(MAX_ACC_FAcTOR, 0.2, 0.1, 0.5, 0.1),
-                new StrategyInitParameter(PERIOD, 100, 80, 400, 40),
-                new StrategyInitParameter(SIZE, 0.5, 0.2, 1., 0.2)
+                new StrategyInitParameter(PERIOD, 100, 80, 400, 40)
         );
     }
 
@@ -37,8 +35,7 @@ public class ParabolicSarStrategyCreator implements StrategyCreator {
                 strategyParameter,
                 strategyParameter.getParameterAsDouble(ACC_FACTOR),
                 strategyParameter.getParameterAsDouble(MAX_ACC_FAcTOR),
-                strategyParameter.getParameterAsInt(PERIOD),
-                strategyParameter.getParameter(SIZE)
+                strategyParameter.getParameterAsInt(PERIOD)
         );
     }
 }
