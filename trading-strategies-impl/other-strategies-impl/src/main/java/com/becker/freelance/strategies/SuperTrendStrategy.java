@@ -78,7 +78,7 @@ public class SuperTrendStrategy extends BaseStrategy {
     @Override
     public Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
-        int barCount = barSeries.getBarCount() - 1;
+        int barCount = barSeries.getEndIndex();
         Bar currentPrice = entryParameter.currentPriceAsBar();
 
         if (barCount < stochasticRsiIndicator.getUnstableBars()) {

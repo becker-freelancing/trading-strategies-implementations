@@ -58,12 +58,12 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
     }
 
     private Optional<EntrySignalBuilder> toBuyEntrySignal(BarSeries series, BollingerBandsLowerIndicator bollingerBandsLowerIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice) {
-        int barCount = series.getBarCount();
-        Num lowValueNum = bollingerBandsLowerIndicator.getValue(barCount - 1);
+        int barCount = series.getEndIndex();
+        Num lowValueNum = bollingerBandsLowerIndicator.getValue(barCount);
         Decimal lowValue = new Decimal(lowValueNum.doubleValue());
         Decimal closeMid = currentPrice.getCloseMid();
         if (currentPrice.getOpenMid().isLessThan(lowValue) && closeMid.isGreaterThan(lowValue)) {
-            Num middleValueNum = bollingerBandsMiddleIndicator.getValue(barCount - 1);
+            Num middleValueNum = bollingerBandsMiddleIndicator.getValue(barCount);
             Decimal middleValue = new Decimal(middleValueNum.doubleValue());
             Pair pair = currentPrice.pair();
             return Optional.of(entrySignalBuilder()
@@ -77,11 +77,11 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
     }
 
     private Optional<EntrySignalBuilder> toSellEntrySignal(BarSeries series, BollingerBandsUpperIndicator bollingerBandsUpperIndicator, BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator, TimeSeriesEntry currentPrice) {
-        int barCount = series.getBarCount();
-        Decimal highValue = new Decimal(bollingerBandsUpperIndicator.getValue(barCount - 1).doubleValue());
+        int barCount = series.getEndIndex();
+        Decimal highValue = new Decimal(bollingerBandsUpperIndicator.getValue(barCount).doubleValue());
         Decimal closeMid = currentPrice.getCloseMid();
         if (currentPrice.getOpenMid().isGreaterThan(highValue) && closeMid.isLessThan(highValue)) {
-            Decimal middleValue = new Decimal(bollingerBandsMiddleIndicator.getValue(barCount - 1).doubleValue());
+            Decimal middleValue = new Decimal(bollingerBandsMiddleIndicator.getValue(barCount).doubleValue());
             Pair pair = currentPrice.pair();
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())

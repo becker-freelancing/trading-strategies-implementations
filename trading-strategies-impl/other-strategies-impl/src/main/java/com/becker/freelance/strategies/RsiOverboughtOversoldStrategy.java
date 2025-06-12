@@ -34,8 +34,8 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
     @Override
     public Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
-        int barCount = barSeries.getBarCount();
-        double value = rsiIndicator.getValue(barCount - 1).doubleValue();
+        int barCount = barSeries.getEndIndex();
+        double value = rsiIndicator.getValue(barCount).doubleValue();
 
         TimeSeriesEntry currentEntry = entryParameter.currentPrice();
         TimeSeriesEntry lastEntry = entryParameter.timeSeries().getLastEntryForTime(entryParameter.time());

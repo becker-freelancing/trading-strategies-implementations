@@ -54,9 +54,9 @@ public class ParabolicSarStrategy extends BaseStrategy {
 
     public void calculateAndExtractInformation(TimeSeries timeSeries, LocalDateTime time) {
 
-        int barCount = barSeries.getBarCount();
-        currentSarValue = parabolicSarIndicator.getValue(barCount - 1).doubleValue();
-        lastSarValue = parabolicSarIndicator.getValue(barCount - 2).doubleValue();
+        int barCount = barSeries.getEndIndex();
+        currentSarValue = parabolicSarIndicator.getValue(barCount).doubleValue();
+        lastSarValue = parabolicSarIndicator.getValue(barCount - 1).doubleValue();
 
         currentCloseMid = timeSeries.getEntryForTime(time).getCloseMid();
         lastCloseMid = timeSeries.getLastEntryForTime(time).getCloseMid();

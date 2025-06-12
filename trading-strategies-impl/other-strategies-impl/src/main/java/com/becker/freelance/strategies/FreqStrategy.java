@@ -53,7 +53,7 @@ public class FreqStrategy extends BaseStrategy {
 
     @Override
     public Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
-        int index = barSeries.getBarCount() - 1;
+        int index = barSeries.getEndIndex();
 
         if (entryRule.isSatisfied(index)) {
 

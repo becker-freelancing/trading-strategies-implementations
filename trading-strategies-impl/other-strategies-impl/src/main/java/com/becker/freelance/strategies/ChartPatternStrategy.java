@@ -54,7 +54,7 @@ public class ChartPatternStrategy extends BaseStrategy {
     @Override
     public Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
-        int index = barSeries.getBarCount() - 1;
+        int index = barSeries.getEndIndex();
         for (Indicator<Boolean> bullish : bullishIndicator) {
             if (bullish.getValue(index)) {
                 logger.info("Try to open buy position on {} bullish indicator {} is true", entryParameter.pair().technicalName(), bullish.getClass().getName());

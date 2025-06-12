@@ -45,11 +45,11 @@ public class MA3Strategy extends BaseStrategy {
             return Optional.empty();
         }
 
-        int barCount = barSeries.getBarCount();
-        double currentShortSma = shortSma.getValue(barCount - 1).doubleValue();
-        double lastShortSmaValue = shortSma.getValue(barCount - 2).doubleValue();
-        double currentMidSma = midSma.getValue(barCount - 1).doubleValue();
-        double lastMidSmaValue = midSma.getValue(barCount - 2).doubleValue();
+        int barCount = barSeries.getEndIndex();
+        double currentShortSma = shortSma.getValue(barCount).doubleValue();
+        double lastShortSmaValue = shortSma.getValue(barCount - 1).doubleValue();
+        double currentMidSma = midSma.getValue(barCount).doubleValue();
+        double lastMidSmaValue = midSma.getValue(barCount - 1).doubleValue();
 
         Direction direction = trendDirection.get();
 
@@ -80,13 +80,13 @@ public class MA3Strategy extends BaseStrategy {
     }
 
     private Optional<Direction> getTrendDirection() {
-        int barCount = barSeries.getBarCount();
+        int barCount = barSeries.getEndIndex();
         if (barCount < minSlopeWindow) {
             return Optional.empty();
         }
 
-        double current = longSma.getValue(barCount - 1).doubleValue();
-        double last = longSma.getValue(barCount - minSlopeWindow - 1).doubleValue();
+        double current = longSma.getValue(barCount).doubleValue();
+        double last = longSma.getValue(barCount - minSlopeWindow).doubleValue();
 
         double slope = (current - last) / minSlopeWindow;
         if (minSlope.negate().isGreaterThanOrEqualTo(slope)) {

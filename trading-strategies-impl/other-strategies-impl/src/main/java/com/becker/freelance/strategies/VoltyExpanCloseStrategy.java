@@ -63,7 +63,7 @@ public class VoltyExpanCloseStrategy extends BaseStrategy {
 
     private void updateData(TimeSeries timeSeries, LocalDateTime time) {
         TimeSeriesEntry lastPrice = timeSeries.getLastEntryForTime(time);
-        int endIndex = barSeries.getBarCount() - 1;
+        int endIndex = barSeries.getEndIndex();
 
         Num atr = atrs.getValue(endIndex - 1);
         Decimal upper = lastPrice.getCloseMid().add(atr.doubleValue());

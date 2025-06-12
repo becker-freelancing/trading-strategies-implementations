@@ -38,14 +38,14 @@ public class MACDScalping extends BaseStrategy {
     @Override
     public Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
-        int barCount = barSeries.getBarCount();
+        int barCount = barSeries.getEndIndex();
         if (barCount < longBarCount) {
             return Optional.empty();
         }
-        double currentMacd = macdIndicator.getValue(barCount - 1).doubleValue();
-        double lastMacd = macdIndicator.getValue(barCount - 2).doubleValue();
-        double currentSignal = macdSignal.getValue(barCount - 1).doubleValue();
-        double lastSignal = macdSignal.getValue(barCount - 2).doubleValue();
+        double currentMacd = macdIndicator.getValue(barCount).doubleValue();
+        double lastMacd = macdIndicator.getValue(barCount - 1).doubleValue();
+        double currentSignal = macdSignal.getValue(barCount).doubleValue();
+        double lastSignal = macdSignal.getValue(barCount - 1).doubleValue();
 
         if (currentMacd > currentSignal && lastMacd < lastSignal) {
             //BUY

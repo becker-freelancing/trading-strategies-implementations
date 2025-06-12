@@ -84,7 +84,7 @@ public class SwingHighLowStrategy extends BaseStrategy {
     }
 
     private void updateData() {
-        index = barSeries.getBarCount() - 1;
+        index = barSeries.getEndIndex();
 
         Optional<SwingLowPoint> optionalSwingLowPoint = swingLowIndicator.getValue(index);
         Optional<SwingHighPoint> optionalSwingHighPoint = swingHighIndicator.getValue(index);

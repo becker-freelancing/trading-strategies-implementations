@@ -40,15 +40,15 @@ public class MA2Strategy extends BaseStrategy {
     }
 
     private LastTwoMaResults lastTwoMaValuesForTime(SMAIndicator smaIndicator, int barCount) {
-        double last = smaIndicator.getValue(barCount - 2).doubleValue();
-        double current = smaIndicator.getValue(barCount - 1).doubleValue();
+        double last = smaIndicator.getValue(barCount - 1).doubleValue();
+        double current = smaIndicator.getValue(barCount).doubleValue();
         return new LastTwoMaResults(last, current);
     }
 
     @Override
     public Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
 
-        int barCount = barSeries.getBarCount();
+        int barCount = barSeries.getEndIndex();
         LastTwoMaResults lastShortMaValues = lastTwoMaValuesForTime(shortSma, barCount);
         LastTwoMaResults lastLongMaValues = lastTwoMaValuesForTime(longSma, barCount);
 
