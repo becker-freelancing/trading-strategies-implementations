@@ -3,6 +3,8 @@ package com.becker.freelance.app.backtest;
 import com.becker.freelance.app.AbstractLocalBacktestAppBuilder;
 import com.becker.freelance.math.Decimal;
 
+import javax.swing.*;
+import java.awt.*;
 import java.time.LocalDateTime;
 
 public class BacktestApp {

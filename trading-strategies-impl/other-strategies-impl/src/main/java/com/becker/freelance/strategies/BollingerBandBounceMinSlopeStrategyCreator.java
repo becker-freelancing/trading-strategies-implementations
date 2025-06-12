@@ -24,12 +24,12 @@ public class BollingerBandBounceMinSlopeStrategyCreator implements StrategyCreat
     @Override
     public ValidStrategyInitParameters strategyParameters() {
         return new ValidStrategyInitParameters(
-                new StrategyInitParameter(DefaultParameterNames.PERIOD, 14, 15, 20, 1),
+                new StrategyInitParameter(DefaultParameterNames.PERIOD, 14, 15, 20, 2),
                 new StrategyInitParameter(STD, 2, 1., 1.8, 0.2),
                 new StrategyInitParameter(DefaultParameterNames.STOP_LOSS, 15, 10, 100, 20),
                 new StrategyInitParameter(MIN_SLOPE, 1, 0.2, 1.0, 0.4),
-                new StrategyInitParameter(MIN_SLOPE_WINDOW, 20, 20, 70, 10),
-                new StrategyInitParameter(MIN_SLOPE_PERIOD, 20, 20, 40, 10));
+                new StrategyInitParameter(MIN_SLOPE_WINDOW, 20, 20, 70, 15),
+                new StrategyInitParameter(MIN_SLOPE_PERIOD, 20, 20, 40, 15));
     }
 
     @Override

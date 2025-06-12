@@ -10,7 +10,7 @@ from zpython.util.training import custom_objects
 
 def _model_name(name):
     split = name.split("_")
-    if "202" in split[1]:
+    if len(split) <= 1 or "202" in split[1]:
         return split[0]
     return split[0] + "_" + split[1]
 

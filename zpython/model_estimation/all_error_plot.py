@@ -8,7 +8,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from zpython.model.best_model_loader import _get_metrics_by_regime
 
-metrics_by_regime = _get_metrics_by_regime("models-bybit/SINGLE_REGRESSION")
+metrics_by_regime = _get_metrics_by_regime("models-bybit/SEQUENCE_REGRESSION")
 
 regime_groups = [
     [ModelMarketRegime.UP_LOW_VOLA_033, ModelMarketRegime.UP_LOW_VOLA_066, ModelMarketRegime.UP_LOW_VOLA_1],
