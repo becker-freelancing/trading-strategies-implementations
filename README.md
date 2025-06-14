@@ -146,6 +146,4 @@ Minuten-Takt durchläuft.
 ## Noch Ausstehende TODOs
 
 1. Vorhersage im Live-Betrieb
-2. Untersuchungsmöglichkeit bei den Backtest-Ergebnissen, wie die Strategien in den einzelnen Regimes abgeschnitten
-   haben
-3. Strategien nur in bestimmten Regimen aktivierbar machen
+2. Strategien nur in bestimmten Regimen aktivierbar machen
