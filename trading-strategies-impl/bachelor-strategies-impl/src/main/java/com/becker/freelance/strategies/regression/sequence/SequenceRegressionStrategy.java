@@ -56,9 +56,11 @@ public class SequenceRegressionStrategy extends BaseStrategy {
         SignificantPoint highAroundZero = findHigh(predictedPriceAroundZero);
         SignificantPoint lowAroundZero = findLow(predictedPriceAroundZero);
 
+        // Falls der |Hoch| > |Low| kann man durch eine Long-Position mehr gewinn machen
         if (highAroundZero.absValue() > lowAroundZero.absValue()) {
             return Optional.ofNullable(toBuyEntry(highAroundZero, lowAroundZero, predictedPrice, currentPrice, prediction.regime()));
         } else if (highAroundZero.absValue() < lowAroundZero.absValue()) {
+            // Falls der |Low| > |High| kann man durch eine Long-Position mehr gewinn machen
             return Optional.ofNullable(toSellEntry(highAroundZero, lowAroundZero, predictedPrice, currentPrice, prediction.regime()));
         }
 
@@ -74,6 +76,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     }
 
     private EntrySignalBuilder toSellEntryLowBeforeHigh(SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+        // Falls das Tiefste Tief in der Vorhersage vor den Höchsten Hoch war muss das SL auf das höchste Hoch vor den tiefsten Tief gesetzt werden
         Double stopLevel = findHighInRange(predictedPrice, lowAroundZero.index()).value();
         Decimal limitLevel = Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta);
         stopLevel = transformSellStopLevel(currentPrice, stopLevel);
@@ -87,6 +90,7 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     }
 
     private EntrySignalBuilder toSellEntryHighBeforeLow(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+        // Falls das höchste Hoch vor dem tiefsten Tief kam kann man einfach bei dem höchsten Hoch das SL setzen
         Double stopLevel = findHigh(predictedPrice).value();
         stopLevel = transformSellStopLevel(currentPrice, stopLevel);
         Decimal limitLevel = Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta);
@@ -102,9 +106,11 @@ public class SequenceRegressionStrategy extends BaseStrategy {
 
     private Double transformSellStopLevel(TimeSeriesEntry currentPrice, Double stopLevel) {
         double closeMid = currentPrice.getCloseMid().doubleValue();
+        // Falls SL unter dem aktuellen Kurs liegt (z.B. weil Vorhersage nur nach unten ging bis zum tiefsten tief) wird es um ein Delta über dem aktuellen Kurs gesetzt
         if (stopLevel < closeMid) {
             stopLevel = closeMid + stopLossNotPredictedDelta;
         }
+        // Falls das SL + ein bestimmtes Delta nicht über dem aktuellen Kurs liegt wird es verschoben
         if (stopLevel + stopLossDelta > closeMid) {
             stopLevel = stopLevel + stopLossDelta;
         }
