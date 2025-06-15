@@ -18,7 +18,9 @@ class MarketRegimeScaler:
 
     def transform(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[pd.DataFrame]:
         scaler = self.scalers[regime]
-        transformed = [pd.DataFrame(data=scaler.transform(df), columns=df.columns, index=df.index) for df in
+        transformed = [
+            pd.DataFrame(data=scaler.transform(df[scaler.feature_names_in_]), columns=df.columns, index=df.index) for df
+            in
                        tqdm(data, f"Transforming Data for regime {regime.name}")]
 
         return transformed

@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from zpython.prediction.classification.base_prediction import BasePrediction
+from zpython.backtest_prediction.classification.base_prediction import BasePrediction
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair
 

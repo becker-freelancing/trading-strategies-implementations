@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from zpython.prediction.base_prediction import BasePrediction
+from zpython.backtest_prediction.base_prediction import BasePrediction
 from zpython.training.regression.data_preparation import read_data
 
 from zpython.util.data_source import DataSource

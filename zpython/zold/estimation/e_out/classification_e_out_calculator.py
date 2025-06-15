@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from zpython.prediction.classification.classification_limit_30_stop_10_multi_dim import ClassificationLimit30Stop10
+from zpython.backtest_prediction.classification.classification_limit_30_stop_10_multi_dim import \
+    ClassificationLimit30Stop10
 from zpython.training.classification.classification_limit_30_stop_10_multi_dim import \
     ClassificationLimit30Stop10Training
 from zpython.training.e_out.error_calculation import classification_mean_errors

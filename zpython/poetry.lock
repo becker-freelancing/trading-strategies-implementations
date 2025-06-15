@@ -1044,13 +1044,13 @@ test-extra = ["curio", "ipython[test]", "matplotlib (!=3.2.0)", "nbformat", "num
 
 [[package]]
 name = "japy"
-version = "1.0"
+version = "2.0"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    { file = "japy-1.0-py3-none-any.whl", hash = "sha256:04e18e14619ccd8a892df4ffc046cdb6d0a4bdbe02675e502d411fd90e94586b" },
-    { file = "japy-1.0.tar.gz", hash = "sha256:2d6b39220c7191b2ce5c95c2ff5a1dc1005e2f85a3b514cf1886c32d64277320" },
+    { file = "japy-2.0-py3-none-any.whl", hash = "sha256:c1997154b49f7f6ea91ca1292112748a5ad3b05cefbd5c1e0eb1c0b900228195" },
+    { file = "japy-2.0.tar.gz", hash = "sha256:6d52622832b9aa185df32636868a15a1ad2eab72239f55f255ef5f495dd61d1e" },
 ]
 
 [package.dependencies]
@@ -3385,4 +3385,4 @@ repair = ["scipy (>=1.6.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5246e9c0f1ccdca717ff1b2989e6af49b74fbe7a32d9af772ecbe39c369ad584"
+content-hash = "cd58844da0aa263f66fb13fd6f6b54cf88f9bd9d0c5d4e953b4f8af792d251db"

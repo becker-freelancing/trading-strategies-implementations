@@ -1,1 +1,2 @@
 com.becker.freelance.strategies.regression.sequence.SequenceRegressionStrategyCreator
+com.becker.freelance.strategies.regression.sequence.SequenceLiveRegressionStrategyCreator

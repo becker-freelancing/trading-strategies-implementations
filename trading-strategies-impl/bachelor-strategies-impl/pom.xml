@@ -23,5 +23,10 @@
             <artifactId>json</artifactId>
             <version>20241224</version>
         </dependency>
+        <dependency>
+            <groupId>com.becker-freelance.japy</groupId>
+            <artifactId>japy-adapter-java</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

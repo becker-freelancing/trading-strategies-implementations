@@ -6,29 +6,133 @@ import com.becker.freelance.commons.regime.TradeableQuantilMarketRegime;
 import com.becker.freelance.commons.signal.EntrySignalBuilder;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
+import com.becker.freelance.indicators.ta.barseries.LogReturnBarSeries;
+import com.becker.freelance.indicators.ta.cache.CachedIndicator;
+import com.becker.freelance.indicators.ta.regime.MarketRegime;
+import com.becker.freelance.indicators.ta.regime.QuantileMarketRegime;
+import com.becker.freelance.indicators.ta.regime.RegimeIndicatorFactory;
+import com.becker.freelance.indicators.ta.util.*;
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
 import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.regression.shared.DefaultPredictionParameter;
+import com.becker.freelance.strategies.regression.shared.PredictionParameter;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
+import org.ta4j.core.Indicator;
+import org.ta4j.core.indicators.*;
+import org.ta4j.core.indicators.bollinger.BollingerBandsLowerIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsMiddleIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsUpperIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.indicators.helpers.HighPriceIndicator;
+import org.ta4j.core.indicators.helpers.LowPriceIndicator;
+import org.ta4j.core.indicators.helpers.VolumeIndicator;
+import org.ta4j.core.indicators.statistics.StandardDeviationIndicator;
+import org.ta4j.core.num.DecimalNum;
+import org.ta4j.core.num.Num;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class SequenceRegressionStrategy extends BaseStrategy {
+public class SequenceLiveRegressionStrategy extends BaseStrategy {
 
     private final RegressionPredictor predictor;
     private final Double takeProfitDelta;
     private final Double stopLossDelta;
     private final Double stopLossNotPredictedDelta;
     private final PositionBehaviour positionBehaviour;
+    private final Map<String, CachedIndicator<Num>> predictionIndicators;
+    private boolean initiated = false;
 
-    public SequenceRegressionStrategy(StrategyParameter parameter, RegressionPredictor predictor, Decimal takeProfitDelta, Decimal stopLossDelta, Decimal stopLossNotPredictedDelta, PositionBehaviour positionBehaviour) {
+    public SequenceLiveRegressionStrategy(StrategyParameter parameter, RegressionPredictor predictor, Decimal takeProfitDelta, Decimal stopLossDelta, Decimal stopLossNotPredictedDelta, PositionBehaviour positionBehaviour) {
         super(parameter);
         this.predictor = predictor;
         this.takeProfitDelta = takeProfitDelta.doubleValue();
         this.stopLossDelta = stopLossDelta.doubleValue();
         this.stopLossNotPredictedDelta = stopLossNotPredictedDelta.doubleValue();
         this.positionBehaviour = positionBehaviour;
+
+        Map<String, Indicator<Num>> predictionIndicators = new HashMap<>();
+        ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(super.barSeries);
+        LowPriceIndicator lowPriceIndicator = new LowPriceIndicator(super.barSeries);
+        HighPriceIndicator highPriceIndicator = new HighPriceIndicator(super.barSeries);
+        LogReturnIndicator logReturnClose = new LogReturnIndicator(closePriceIndicator);
+        for (Integer momentumLag : new Integer[]{1, 2, 3, 6, 9, 12}) {
+            predictionIndicators.put("logReturn_closeBid_" + momentumLag + "min", new LaggedLogReturnIndicator(closePriceIndicator, momentumLag));
+            predictionIndicators.put("logReturn_lowBid_" + momentumLag + "min", new LaggedLogReturnIndicator(lowPriceIndicator, momentumLag));
+            predictionIndicators.put("logReturn_highBid_" + momentumLag + "min", new LaggedLogReturnIndicator(highPriceIndicator, momentumLag));
+        }
+
+        LogReturnBarSeries logReturnBarSeries = new LogReturnBarSeries(super.barSeries);
+
+        for (Integer atrPeriod : new Integer[]{5, 7, 10, 14, 18}) {
+            predictionIndicators.put("ATR_" + atrPeriod, new ATRIndicator(logReturnBarSeries, atrPeriod));
+        }
+
+        for (Integer emaPeriod : new Integer[]{5, 10, 20, 30, 50, 200}) {
+            predictionIndicators.put("EMA_" + emaPeriod, new EMAIndicator(logReturnClose, emaPeriod));
+        }
+        for (Integer rsiPeriod : new Integer[]{7, 14, 20}) {
+            predictionIndicators.put("RSI_" + rsiPeriod, new RSIIndicator(logReturnClose, rsiPeriod) {
+                @Override
+                public int getUnstableBars() {
+                    return rsiPeriod;
+                }
+            });
+        }
+        MACDIndicator macd = new MACDIndicator(logReturnClose, 12, 26) {
+            @Override
+            public int getUnstableBars() {
+                return 26;
+            }
+        };
+        predictionIndicators.put("MACD_12_26_9", macd);
+        predictionIndicators.put("MACD_Signal_12_26_9", macd.getSignalLine(9));
+
+
+        for (Integer bbPeriod : new Integer[]{15, 20, 25}) {
+            SMAIndicator sma = new SMAIndicator(logReturnClose, bbPeriod);
+            BollingerBandsMiddleIndicator middleIndicator = new BollingerBandsMiddleIndicator(sma) {
+                @Override
+                public int getUnstableBars() {
+                    return sma.getUnstableBars();
+                }
+            };
+            StandardDeviationIndicator deviationIndicator = new StandardDeviationIndicator(logReturnClose, bbPeriod);
+            predictionIndicators.put("BB_Upper_" + bbPeriod, new BollingerBandsUpperIndicator(middleIndicator, deviationIndicator) {
+                @Override
+                public int getUnstableBars() {
+                    return sma.getUnstableBars();
+                }
+            });
+            predictionIndicators.put("BB_Lower_" + bbPeriod, new BollingerBandsLowerIndicator(middleIndicator, deviationIndicator) {
+                @Override
+                public int getUnstableBars() {
+                    return sma.getUnstableBars();
+                }
+            });
+            predictionIndicators.put("BB_Middle_" + bbPeriod, middleIndicator);
+        }
+        for (Integer momentumLag : new Integer[]{2, 3, 6, 9, 12}) {
+            predictionIndicators.put("momentum_" + momentumLag,
+                    new MomentumIndicator(predictionIndicators.get("logReturn_closeBid_" + momentumLag + "min"), predictionIndicators.get("logReturn_closeBid_1min")));
+        }
+
+        for (int i = 1; i < 7; i++) {
+            predictionIndicators.put("logReturn_1m_t-" + i, new ShiftedIndicator(logReturnClose, i));
+        }
+        predictionIndicators.put("volume", new VolumeIndicator(barSeries, 1));
+        Indicator<MarketRegime> marketRegimeIndicator = new RegimeIndicatorFactory().marketRegimeIndicatorFromConfigFile(getPair().technicalName(), closePriceIndicator);
+        predictionIndicators.put("regime", new TransformerIndicator<>(marketRegimeIndicator, regime -> DecimalNum.valueOf(regime.getId())));
+
+
+        this.predictionIndicators = predictionIndicators.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> new CachedIndicator<>(predictor.getMaxRequiredInputLength(), entry.getValue())));
     }
 
     private static SignificantPoint findHighInRange(Double[] cumsumPrediction, int maxIdx) {
@@ -44,9 +148,44 @@ public class SequenceRegressionStrategy extends BaseStrategy {
     }
 
     @Override
+    public int unstableBars() {
+        return Math.max(super.unstableBars(), predictor.getMaxRequiredInputLength());
+    }
+
+    @Override
     protected Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
-        return predictor.predict(entryParameter, null)
+        if (!initiated) {
+            for (int i = 0; i < barSeries.getEndIndex(); i++) {
+                int finalI = i;
+                predictionIndicators.values().forEach(ind -> {
+                    if (finalI > ind.getUnstableBars()) {
+                        ind.getValue(finalI);
+                    }
+                });
+            }
+            initiated = true;
+        }
+        if (barSeries.getEndIndex() < unstableBars()) {
+            return Optional.empty();
+        }
+        PredictionParameter predictionParameter = null;
+        if (predictor.requiresPredictionParameter()) {
+            predictionParameter = buildPredictionParameter();
+        }
+        return predictor.predict(entryParameter, predictionParameter)
                 .flatMap(prediction -> toEntry(entryParameter, prediction));
+    }
+
+    private PredictionParameter buildPredictionParameter() {
+        QuantileMarketRegime marketRegime = currentMarketRegime();
+        int inputLength = predictor.requiredInputLengthForRegime(marketRegime);
+        return new DefaultPredictionParameter(
+                marketRegime,
+                predictionIndicators.entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> entry.getValue().getLastNValues(inputLength).map(Num::doubleValue).toList()))
+        );
     }
 
     private Optional<EntrySignalBuilder> toEntry(EntryExecutionParameter entryParameter, RegressionPrediction prediction) {

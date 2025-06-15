@@ -18,7 +18,8 @@ class MarketRegimePCA:
 
     def transform(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[np.ndarray]:
         pca = self.pcas[regime]
-        transformed = [pca.transform(X) for X in tqdm(data, f"Transforming data for regime {regime.name} with PCA")]
+        transformed = [pca.transform(X[pca.feature_names_in_]) for X in
+                       tqdm(data, f"Transforming data for regime {regime.name} with PCA")]
         return transformed
 
     def fit_transform(self, data: list[pd.DataFrame], regime: ModelMarketRegime) -> list[np.ndarray]:

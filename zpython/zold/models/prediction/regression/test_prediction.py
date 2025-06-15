@@ -2,7 +2,7 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
-from zpython.prediction.cnn_model_prediction import CnnModelPrediction
+from zpython.backtest_prediction.cnn_model_prediction import CnnModelPrediction
 import matplotlib.pyplot as plt
 import pandas as pd
 

@@ -80,8 +80,8 @@ class RegimeTrainModel(RegimeModel):
 class RegimeLiveModel(RegimeModel):
 
     def __init__(self, model_provider: LoadedModelProvider, scaler: MarketRegimeScaler, pca: MarketRegimePCA,
-                 model_regime_detector: ModelMarketRegimeDetector,
-                 regime_detector: MarketRegimeDetector):
+                 model_regime_detector: ModelMarketRegimeDetector = None,
+                 regime_detector: MarketRegimeDetector = None):
         super().__init__({regime: model_provider.get(regime) for regime in list(ModelMarketRegime)})
         self.scaler = scaler
         self.pca = pca
@@ -89,6 +89,9 @@ class RegimeLiveModel(RegimeModel):
         self.model_regime_detector = model_regime_detector
         self.input_lengths = {key.value: val.input_shape[1] for key, val in self.regime_models.items()}
         self.input_shifts = {key: pd.Timedelta(minutes=val) for key, val in self.input_lengths.items()}
+        self.init_models()
+
+
 
     def _transform_data(self, data: dict[ModelMarketRegime, list[tuple[pd.Timestamp, pd.DataFrame]]]) -> dict[
         ModelMarketRegime, list[tuple[pd.Timestamp, np.ndarray]]]:
@@ -118,6 +121,23 @@ class RegimeLiveModel(RegimeModel):
             results[ModelMarketRegime(regime)].append((end_time, slice))
         results = self._transform_data(results)
         return results
+
+    def init_models(self):
+        for regime in self.regime_models.keys():
+            input_length = self.input_lengths[regime.value]
+            feature_names = self.scaler.scalers[regime].feature_names_in_
+            x = pd.DataFrame(data=np.random.random((input_length, len(feature_names))), columns=feature_names)
+            self.predict_with_data(x, regime)
+
+    def predict_with_data(self, x: pd.DataFrame, regime: ModelMarketRegime) -> pd.DataFrame:
+        x_scaled = self.scaler.transform([x], regime)
+        x_reduced = self.pca.transform(x_scaled, regime)[0]
+        x_reduced = np.expand_dims(x_reduced, axis=0)
+        model = self.regime_models[regime]
+        prediction = model.predict(x_reduced)[0]
+        prediction = pd.DataFrame(prediction, columns=["logReturn_closeBid_1min"])
+        inverse_transform = self.scaler.inverse_transform([prediction], regime)[0]
+        return inverse_transform
 
     def predict(self, x: pd.DataFrame, predict_times: pd.Series = None) -> dict[
         ModelMarketRegime, list[tuple[pd.Timestamp, pd.DataFrame]]]:

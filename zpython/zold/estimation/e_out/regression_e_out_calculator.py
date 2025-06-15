@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from zpython.prediction.cnn_five_year_m5_model_prediction import CnnModelPrediction
+from zpython.backtest_prediction.cnn_five_year_m5_model_prediction import CnnModelPrediction
 from zpython.training.e_out.error_calculation import mean_errors
 from zpython.training.regression.data_preparation import read_data
 

@@ -21,7 +21,7 @@ class SequenceModelPredictor:
         self.file_name = file_name
 
     def _load_data(self) -> pd.DataFrame:
-        return backtest_data()
+        return backtest_data().iloc[:1000]
 
     def _reshape(self, all_predictions: dict[ModelMarketRegime, list[tuple[pd.Timestamp, pd.DataFrame]]]):
         reshaped_data = []
