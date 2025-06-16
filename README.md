@@ -147,3 +147,4 @@ Minuten-Takt durchläuft.
 
 1. Strategien nur in bestimmten Regimen aktivierbar machen
 2. Stresstesting
+3. Strategien nur zu bestimmten Uhrzeiten und Wochentage aktivierbar machen
