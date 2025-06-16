@@ -19,6 +19,8 @@ import com.becker.freelance.strategies.regression.shared.DefaultPredictionParame
 import com.becker.freelance.strategies.regression.shared.PredictionParameter;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.indicators.*;
 import org.ta4j.core.indicators.bollinger.BollingerBandsLowerIndicator;
@@ -38,6 +40,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SequenceLiveRegressionStrategy extends BaseStrategy {
+
+    private static final Logger logger = LoggerFactory.getLogger(SequenceLiveRegressionStrategy.class);
 
     private final RegressionPredictor predictor;
     private final Double takeProfitDelta;
@@ -189,6 +193,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
     }
 
     private Optional<EntrySignalBuilder> toEntry(EntryExecutionParameter entryParameter, RegressionPrediction prediction) {
+        logger.debug("Prediction: {}", prediction);
         TimeSeriesEntry currentPrice = entryParameter.currentPrice();
         Double[] predictedPrice = prediction.transformLogReturnsToPrice(currentPrice);
         Double[] predictedPriceAroundZero = transformAroundZero(predictedPrice, currentPrice.getCloseMid().doubleValue());

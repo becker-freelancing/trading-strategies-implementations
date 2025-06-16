@@ -9,14 +9,12 @@
         </Console>
 
         <!-- Datei-Appender mit Startdatum im Dateinamen -->
-        <RollingFile name="FileLogger" fileName="logs/remote-backtest-app-${date:yyyy-MM-dd_HH-mm-ss}.log"
-                     filePattern="logs/remote-backtest-app-%d{yyyy-MM-dd}.log.gz">
-            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+        <File name="FileLogger"
+              fileName="logs/remote-backtest-app-${date:yyyy-MM-dd_HH-mm-ss}.log"
+              append="false">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-        </RollingFile>
+        </File>
+
     </Appenders>
 
     <Loggers>

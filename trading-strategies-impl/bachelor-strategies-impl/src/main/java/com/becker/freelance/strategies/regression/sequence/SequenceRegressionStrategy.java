@@ -49,6 +49,11 @@ public class SequenceRegressionStrategy extends BaseStrategy {
                 .flatMap(prediction -> toEntry(entryParameter, prediction));
     }
 
+    @Override
+    public int unstableBars() {
+        return Math.max(super.unstableBars(), predictor.getMaxRequiredInputLength());
+    }
+
     private Optional<EntrySignalBuilder> toEntry(EntryExecutionParameter entryParameter, RegressionPrediction prediction) {
         TimeSeriesEntry currentPrice = entryParameter.currentPrice();
         Double[] predictedPrice = prediction.transformLogReturnsToPrice(currentPrice);
