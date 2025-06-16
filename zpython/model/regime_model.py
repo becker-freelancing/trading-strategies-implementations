@@ -156,8 +156,13 @@ class RegimeLiveModel(RegimeModel):
         # Dauer jedes Regime-Zustands berechnen
         regime_groups = (regimes != regimes.shift()).cumsum()
         regime_durations = regimes.groupby(regime_groups).cumcount() + 1
+        for idx in x.index:
+            regime = regimes_non_number[idx]
+            duration = regime_durations[idx]
+            model_regime = self.model_regime_detector.transform(regime, duration)
+            x.loc[idx, "regime"] = model_regime.value
 
-        sliced_data = self._slice_data_by_regime(x, predict_times, regimes)
+        sliced_data = self._slice_data_by_regime(x, predict_times, x["regime"])
         predicted = {}
         for regime, prediction_data in sliced_data.items():
             if len(prediction_data) == 0:
