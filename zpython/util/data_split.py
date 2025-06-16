@@ -65,8 +65,7 @@ def test_data(time_frame=1):
 def backtest_data(time_frame=1):
     data = read_data(time_frame)
     data = data[
-        (data["closeTime"] >= pd.to_datetime("2024-05-01")) &
-        (data["closeTime"] < pd.to_datetime("2025-04-01"))
+        (data["closeTime"] >= pd.to_datetime("2024-05-01"))
         ]
     return data
 
