@@ -1,0 +1,14 @@
+[
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [],
+    "parameters": {
+      "takeProfitDelta": 3,
+      "stopLossDelta": 3,
+      "stopLossNotPredictedDelta": 3,
+      "trailingStopOrder": 1
+    }
+  }
+]

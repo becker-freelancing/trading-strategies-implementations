@@ -1,3 +1,5 @@
+import datetime
+
 import joblib
 import pandas as pd
 from japy.japy_function import japy_function
@@ -18,6 +20,7 @@ class Cache:
 
 @japy_function
 def predict(regime_id: int, data: dict[str, list[float]]):
+    print(f"{datetime.datetime.now()} - Start predicting ")
     regime = ModelMarketRegime(regime_id)
     x = pd.DataFrame(data=data)
     prediction = Cache.model.predict_with_data(x, regime)
