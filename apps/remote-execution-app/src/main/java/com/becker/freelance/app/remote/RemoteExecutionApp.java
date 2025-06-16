@@ -1,8 +1,8 @@
-package com.becker.freelance.app.backtest;
+package com.becker.freelance.app.remote;
 
 import com.becker.freelance.app.AbstractRemoteBacktestAppBuilder;
 
-public class RemoteBacktestApp {
+public class RemoteExecutionApp {
 
     public static void main(String[] args) {
         Runnable remoteBacktestApp = new AbstractRemoteBacktestAppBuilder().build();

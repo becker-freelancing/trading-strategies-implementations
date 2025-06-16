@@ -19,7 +19,7 @@
         <module>backtest-result-viewer-app</module>
         <module>data-request</module>
         <module>local-backtest-app</module>
-        <module>remote-backtest-app</module>
+        <module>remote-execution-app</module>
     </modules>
 
     <dependencies>

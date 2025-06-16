@@ -47,8 +47,8 @@ Enthält alle ausführbaren Applikationen.
     1. Die Ergebnisse werden unter `krypto-java/results/<strategie-name>/` gespeichert.
 2. Die Ergebnisse aus den lokalen Backtests können mit der Klasse
    `com.becker.freelance.backtest.resultviewer.app.ResultViewerApp` unter `backtest-result-viewer-app` angesehen werden.
-3. Für einen Remote-Backtest mit ByBit muss die Klasse `com.becker.freelance.app.backtest.RemoteBacktestApp` unter
-   `remote-backtest-app` gestartet werden. Die App benötigt folgende Umgebungsvariablen (Strategien und Pairs können
+3. Für eine Remote-Ausführung mit ByBit muss die Klasse `com.becker.freelance.app.remote.RemoteExecutionApp` unter
+   `remote-execution-app` gestartet werden. Die App benötigt folgende Umgebungsvariablen (Strategien und Pairs können
    geändert werden):
     1. APPMODE=BYBIT_REMOTE_DEMO
     2. BYBIT_API_KEY=<...>
@@ -145,5 +145,5 @@ Minuten-Takt durchläuft.
 
 ## Noch Ausstehende TODOs
 
-1. Vorhersage im Live-Betrieb
-2. Strategien nur in bestimmten Regimen aktivierbar machen
+1. Strategien nur in bestimmten Regimen aktivierbar machen
+2. Stresstesting
