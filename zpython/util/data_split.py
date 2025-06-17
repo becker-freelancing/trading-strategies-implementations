@@ -8,7 +8,7 @@ class DataCache:
 
 
 def read_data(time_frame):
-    path = from_relative_path(f"data-bybit/ETHUSDT_{time_frame}.csv")
+    path = from_relative_path(f"data-bybit/ETHPERP_{time_frame}.csv")
 
     if not time_frame in list(DataCache.cache.keys()):
         df = pd.read_csv(path)

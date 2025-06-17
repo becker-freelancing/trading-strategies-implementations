@@ -1,6 +1,7 @@
 from abc import ABC
 
 import numpy as np
+import pandas as pd
 from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
     MeanSquaredLogarithmicError, LogCoshError
 
@@ -30,7 +31,8 @@ class SequenceRegressionModelTrainer(RegressionModelTrainer, ABC):
                                          regime_detector,
                                          model_regime_detector)
 
-    def _create_input_output_sequences(self, data: list[np.ndarray], reduced_data: list[np.ndarray], target_column_idx):
+    def _create_input_output_sequences(self, data: list[pd.DataFrame], original_data: list[pd.DataFrame],
+                                       reduced_data: list[np.ndarray], target_column_idx):
 
         input_length = self._get_max_input_length()
         output_length = self._get_output_length()
@@ -39,7 +41,7 @@ class SequenceRegressionModelTrainer(RegressionModelTrainer, ABC):
             raise Exception("Input-Length must be greater than Output-Length")
 
         input_data_np = [df[:input_length, :] for df in reduced_data]
-        output_data_np = [df.to_numpy()[:, target_column_idx].reshape(-1, 1)[input_length:, :] for df in data]
+        output_data_np = [df.to_numpy()[:, target_column_idx].reshape(-1, 1)[input_length:, :] for df in original_data]
 
         input_sequences = np.stack(input_data_np)
         output_sequences = np.stack(output_data_np)
