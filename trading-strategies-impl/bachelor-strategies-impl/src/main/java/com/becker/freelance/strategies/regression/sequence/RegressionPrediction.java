@@ -5,6 +5,7 @@ import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.strategies.regression.shared.LogReturnInverseTransformer;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public record RegressionPrediction(LocalDateTime closeTime,
                                    TradeableQuantilMarketRegime regime,
@@ -14,5 +15,16 @@ public record RegressionPrediction(LocalDateTime closeTime,
     @Override
     public Double[] transformLogReturnsToPrice(TimeSeriesEntry initialPrice) {
         return inverseTransformer().transformLogReturnsToPrice(initialPrice);
+    }
+
+    @Override
+    public String toString() {
+        return "RegressionPrediction{" +
+                "closeTime=" + closeTime +
+                ", regime=" + regime +
+                ", logReturns=" + Arrays.toString(logReturns) +
+                ", cumulativeLogReturns=" + Arrays.toString(cumulativeLogReturns) +
+                ", inverseTransformer=" + inverseTransformer +
+                '}';
     }
 }

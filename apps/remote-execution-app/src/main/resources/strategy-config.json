@@ -3,12 +3,252 @@
     "strategyName": "live_sequence_regression",
     "priority": 100,
     "pair": "ETHUSDT_1",
-    "regimes": [],
+    "regimes": [
+      "DOWN_LOW_VOLA_1"
+    ],
     "parameters": {
-      "takeProfitDelta": 3,
-      "stopLossDelta": 3,
-      "stopLossNotPredictedDelta": 3,
-      "trailingStopOrder": 1
+      "takeProfitDelta": 6.0,
+      "stopLossDelta": -10.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "SIDE_HIGH_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": 12.0,
+      "stopLossDelta": 20.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 9.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": 10.0,
+      "stopLossDelta": 2.0,
+      "trailingStopOrder": 1,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "SIDE_HIGH_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": -12.0,
+      "stopLossDelta": 2.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 19.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "UP_HIGH_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": -2.0,
+      "stopLossDelta": 2.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 5.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "UP_HIGH_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": 10.0,
+      "stopLossDelta": -10.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 13.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": -14.0,
+      "stopLossDelta": 10.0,
+      "trailingStopOrder": 1,
+      "stopLossNotPredictedDelta": 15.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "DOWN_HIGH_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": -20.0,
+      "stopLossDelta": -18.0,
+      "trailingStopOrder": 1,
+      "stopLossNotPredictedDelta": 17.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "UP_HIGH_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": -16.0,
+      "stopLossDelta": 10.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "SIDE_HIGH_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": 10.0,
+      "stopLossDelta": 8.0,
+      "trailingStopOrder": 1,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": 14.0,
+      "stopLossDelta": 4.0,
+      "trailingStopOrder": 1,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "UP_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": -14.0,
+      "stopLossDelta": -10.0,
+      "trailingStopOrder": 1,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "UP_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": -10.0,
+      "stopLossDelta": -2.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 3.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "DOWN_HIGH_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": 0.0,
+      "stopLossDelta": -10.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 5.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "UP_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": 12.0,
+      "stopLossDelta": -12.0,
+      "trailingStopOrder": 1,
+      "stopLossNotPredictedDelta": 9.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "DOWN_HIGH_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": 8.0,
+      "stopLossDelta": -16.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": -4.0,
+      "stopLossDelta": 2.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 1.0
+    }
+  },
+  {
+    "strategyName": "live_sequence_regression",
+    "priority": 100,
+    "pair": "ETHUSDT_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": 0.0,
+      "stopLossDelta": -8.0,
+      "trailingStopOrder": 0,
+      "stopLossNotPredictedDelta": 3.0
     }
   }
 ]

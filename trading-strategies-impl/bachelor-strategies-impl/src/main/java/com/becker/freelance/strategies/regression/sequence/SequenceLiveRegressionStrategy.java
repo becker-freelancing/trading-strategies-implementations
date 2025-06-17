@@ -158,17 +158,17 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
 
     @Override
     protected Optional<EntrySignalBuilder> internalShouldEnter(EntryExecutionParameter entryParameter) {
-        if (!initiated) {
-            for (int i = 0; i < barSeries.getEndIndex(); i++) {
-                int finalI = i;
-                predictionIndicators.values().forEach(ind -> {
-                    if (finalI > ind.getUnstableBars()) {
-                        ind.getValue(finalI);
-                    }
-                });
-            }
-            initiated = true;
-        }
+//        if (!initiated) {
+//            for (int i = 0; i < barSeries.getEndIndex(); i++) {
+//                int finalI = i;
+//                predictionIndicators.values().forEach(ind -> {
+//                    if (finalI > ind.getUnstableBars()) {
+//                        ind.getValue(finalI);
+//                    }
+//                });
+//            }
+//            initiated = true;
+//        }
         if (barSeries.getEndIndex() < unstableBars()) {
             return Optional.empty();
         }
