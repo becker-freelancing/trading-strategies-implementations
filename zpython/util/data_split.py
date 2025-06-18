@@ -21,24 +21,19 @@ def read_data(time_frame):
 
 def train_data(time_frame=1):
     data = read_data(time_frame)
-    data = data[data["closeTime"] < pd.to_datetime("2023-08-01")]
-    data = data[
-        (data["closeTime"].dt.day != 1) &
-        (data["closeTime"].dt.day != 10) &
-        (data["closeTime"].dt.day != 20)
-        ]
+    data = data[data["closeTime"] < pd.to_datetime("2024-05-01")]
     data = data.drop_duplicates()
     return data  # .iloc[:6000]
 
 
 def analysis_data(time_frame=1):
     data = read_data(time_frame)
-    data = data[data["closeTime"] < pd.to_datetime("2023-09-01")]
+    data = data[data["closeTime"] < pd.to_datetime("2024-05-01")]
     data = pd.concat([
         data[data["closeTime"].dt.day == 1],
         data[data["closeTime"].dt.day == 10],
         data[data["closeTime"].dt.day == 20],
-        data[(data["closeTime"] >= pd.to_datetime("2023-08-01")) & (data["closeTime"] < pd.to_datetime("2023-09-01"))]
+        data[(data["closeTime"] >= pd.to_datetime("2024-04-01")) & (data["closeTime"] < pd.to_datetime("2024-05-01"))]
     ])
     data = data.drop_duplicates()
     return data
@@ -47,8 +42,8 @@ def analysis_data(time_frame=1):
 def validation_data(time_frame=1):
     data = read_data(time_frame)
     data = data[
-        (data["closeTime"] >= pd.to_datetime("2023-09-01")) &
-        (data["closeTime"] < pd.to_datetime("2024-02-01"))
+        (data["closeTime"] >= pd.to_datetime("2024-05-01")) &
+        (data["closeTime"] < pd.to_datetime("2024-10-01"))
         ]
     return data
 
@@ -56,8 +51,8 @@ def validation_data(time_frame=1):
 def test_data(time_frame=1):
     data = read_data(time_frame)
     data = data[
-        (data["closeTime"] >= pd.to_datetime("2024-02-01")) &
-        (data["closeTime"] < pd.to_datetime("2024-05-01"))
+        (data["closeTime"] >= pd.to_datetime("2024-10-01")) &
+        (data["closeTime"] < pd.to_datetime("2025-01-01"))
         ]
     return data
 
@@ -65,7 +60,7 @@ def test_data(time_frame=1):
 def backtest_data(time_frame=1):
     data = read_data(time_frame)
     data = data[
-        (data["closeTime"] >= pd.to_datetime("2024-05-01"))
+        (data["closeTime"] >= pd.to_datetime("2025-01-01"))
         ]
     return data
 
