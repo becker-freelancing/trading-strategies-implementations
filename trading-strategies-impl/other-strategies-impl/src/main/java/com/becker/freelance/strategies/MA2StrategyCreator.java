@@ -25,9 +25,9 @@ public class MA2StrategyCreator implements StrategyCreator {
         return new ValidStrategyInitParameters(
                 MA2StrategyCreator::shortMaLessThanLongMaValidation,
                 new StrategyInitParameter(SHORT_MA_PERIOD, 5, 1, 10, 1),
-                new StrategyInitParameter(LONG_MA_PERIOD, 20, 2, 20, 1),
+                new StrategyInitParameter(LONG_MA_PERIOD, 7, 2, 20, 1),
                 new StrategyInitParameter(SWING_HIGH_LOW_ORDER, 2, 1, 10, 1),
-                new StrategyInitParameter(SWING_HIGH_LOW_MAX_AGE, 10, 5, 45, 10)
+                new StrategyInitParameter(SWING_HIGH_LOW_MAX_AGE, 50, 5, 45, 10)
         );
     }
 
