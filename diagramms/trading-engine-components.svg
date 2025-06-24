@@ -1,0 +1,472 @@
+<svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css"
+     height="688px" preserveAspectRatio="none" style="width:1140px;height:688px;background:#FFFFFF;" version="1.1"
+     viewBox="0 0 1140 688" width="1140.8px" zoomAndPan="magnify">
+    <defs/>
+    <g><!--cluster Trading Engine-->
+        <g id="cluster_Trading Engine">
+            <rect fill="none" height="440.8" rx="2" ry="2" style="stroke:#181818;stroke-width:0.8000000000000002;"
+                  width="770.4" x="224" y="106.4"/>
+            <path d="M313.5117,106.4 L313.5117,115.6969 L305.5117,123.6969 L224,123.6969 " fill="none"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" font-weight="bold" lengthAdjust="spacing"
+                  textLength="81.5117" x="226.4" y="119.2859">Trading Engine
+            </text>
+        </g><!--cluster Applications-->
+        <g id="cluster_Applications">
+            <rect fill="none" height="81.6" rx="2" ry="2" style="stroke:#181818;stroke-width:0.8000000000000002;"
+                  width="331.2" x="392.8" y="5.6"/>
+            <path d="M468.0055,5.6 L468.0055,14.8969 L460.0055,22.8969 L392.8,22.8969 " fill="none"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" font-weight="bold" lengthAdjust="spacing"
+                  textLength="67.2055" x="395.2" y="18.4859">Applications
+            </text>
+        </g><!--cluster Adapters-->
+        <g id="cluster_Adapters">
+            <rect fill="none" height="81.6" rx="2" ry="2" style="stroke:#181818;stroke-width:0.8000000000000002;"
+                  width="1130.4" x="5.6" y="601.6"/>
+            <path d="M62.1461,601.6 L62.1461,610.8969 L54.1461,618.8969 L5.6,618.8969 " fill="none"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" font-weight="bold" lengthAdjust="spacing"
+                  textLength="48.5461" x="8" y="614.4859">Adapters
+            </text>
+        </g><!--entity Data-Provider-->
+        <g id="elem_Data-Provider">
+            <ellipse cx="648" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+                     style="stroke:#181818;stroke-width:0.4000000000000001;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="69.0922"
+                  x="613.4539" y="535.2859">Data-Provider
+            </text>
+        </g><!--entity Trading-Strategy-->
+        <g id="elem_Trading-Strategy">
+            <ellipse cx="284.8" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+                     style="stroke:#181818;stroke-width:0.4000000000000001;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="83.4148"
+                  x="243.0926" y="535.2859">Trading-Strategy
+            </text>
+        </g><!--entity Broker-Requestor-->
+        <g id="elem_Broker-Requestor">
+            <ellipse cx="411.2" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+                     style="stroke:#181818;stroke-width:0.4000000000000001;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="88.3914"
+                  x="367.0043" y="535.2859">Broker-Requestor
+            </text>
+        </g><!--entity Trade-Executor-->
+        <g id="elem_Trade-Executor">
+            <ellipse cx="534.4" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+                     style="stroke:#181818;stroke-width:0.4000000000000001;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="77.1859"
+                  x="495.807" y="535.2859">Trade-Executor
+            </text>
+        </g><!--entity Entry-Signal-Adaptor-->
+        <g id="elem_Entry-Signal-Adaptor">
+            <ellipse cx="924" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+                     style="stroke:#181818;stroke-width:0.4000000000000001;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="103.9609"
+                  x="872.0195" y="535.2859">Entry-Signal-Adaptor
+            </text>
+        </g><!--entity Entry-Signal-Validator-->
+        <g id="elem_Entry-Signal-Validator">
+            <ellipse cx="777.6" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+                     style="stroke:#181818;stroke-width:0.4000000000000001;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="108.9375"
+                  x="723.1313" y="535.2859">Entry-Signal-Validator
+            </text>
+        </g><!--entity Strategy-Engine-->
+        <g id="elem_Strategy-Engine">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="112.3141" x="507.2" y="310.4"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="603.5141" y="314.4"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="601.9141" y="316"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="601.9141" y="319.2"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="80.3141"
+                  x="519.2" y="338.4859">Strategy-Engine
+            </text>
+        </g><!--entity Datasource-API-->
+        <g id="elem_Datasource-API">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="111.0563" x="585.2" y="397.6"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="680.2563" y="401.6"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="678.6563" y="403.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="678.6563" y="406.4"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="79.0563"
+                  x="597.2" y="425.6859">Datasource-API
+            </text>
+        </g><!--entity Strategies-API-->
+        <g id="elem_Strategies-API">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="104.2094" x="263.2" y="397.6"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="351.4094" y="401.6"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="349.8094" y="403.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="349.8094" y="406.4"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="72.2094"
+                  x="275.2" y="425.6859">Strategies-API
+            </text>
+        </g><!--entity Broker-Connector-API-->
+        <g id="elem_Broker-Connector-API">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="142.1734" x="414.4" y="397.6"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="540.5734" y="401.6"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="538.9734" y="403.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="538.9734" y="406.4"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="110.1734"
+                  x="426.4" y="425.6859">Broker-Connector-API
+            </text>
+        </g><!--entity Management-API-->
+        <g id="elem_Management-API">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="119.1555" x="724.4" y="397.6"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="827.5555" y="401.6"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="825.9555" y="403.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="825.9555" y="406.4"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="87.1555"
+                  x="736.4" y="425.6859">Management-API
+            </text>
+        </g><!--entity Backtest-Engine-->
+        <g id="elem_Backtest-Engine">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="113.5555" x="600.8" y="223.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="698.3555" y="227.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="696.7555" y="228.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="696.7555" y="232"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="81.5555"
+                  x="612.8" y="251.2859">Backtest-Engine
+            </text>
+        </g><!--entity Remote-Execution-Engine-->
+        <g id="elem_Remote-Execution-Engine">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="162.7359" x="387.6" y="223.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="534.3359" y="227.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="532.7359" y="228.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="532.7359" y="232"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="130.7359"
+                  x="399.6" y="251.2859">Remote-Execution-Engine
+            </text>
+        </g><!--entity Abstract-Local-Backtest-App-->
+        <g id="elem_Abstract-Local-Backtest-App">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="173.925" x="582" y="136"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="739.925" y="140"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="738.325" y="141.6"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="738.325" y="144.8"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="141.925"
+                  x="594" y="164.0859">Abstract-Local-Backtest-App
+            </text>
+        </g><!--entity Abstract-Remote-Execution-App-->
+        <g id="elem_Abstract-Remote-Execution-App">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="192.6008" x="361.2" y="136"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="537.8008" y="140"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="536.2008" y="141.6"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="536.2008" y="144.8"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="160.6008"
+                  x="373.2" y="164.0859">Abstract-Remote-Execution-App
+            </text>
+        </g><!--entity Local-Backtest-App-->
+        <g id="elem_Local-Backtest-App">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="129.1141" x="582" y="35.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="695.1141" y="39.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="693.5141" y="40.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="693.5141" y="44"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="97.1141"
+                  x="594" y="63.2859">Local-Backtest-App
+            </text>
+        </g><!--entity Remote-Execution-App-->
+        <g id="elem_Remote-Execution-App">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="147.7898" x="406" y="35.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="537.7898" y="39.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="536.1898" y="40.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="536.1898" y="44"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="115.7898"
+                  x="418" y="63.2859">Remote-Execution-App
+            </text>
+        </g><!--entity Local-CSV-Datasource-->
+        <g id="elem_Local-CSV-Datasource">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="146.5375" x="574.8" y="631.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="705.3375" y="635.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="703.7375" y="636.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="703.7375" y="640"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="114.5375"
+                  x="586.8" y="659.2859">Local-CSV-Datasource
+            </text>
+        </g><!--entity ByBit-Remote-Datasource-->
+        <g id="elem_ByBit-Remote-Datasource">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="162.0906" x="749.2" y="631.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="895.2906" y="635.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="893.6906" y="636.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="893.6906" y="640"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="130.0906"
+                  x="761.2" y="659.2859">ByBit-Remote-Datasource
+            </text>
+        </g><!--entity Strategies-Implementations-->
+        <g id="elem_Strategies-Implementations">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="168.3305" x="18.4" y="631.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="170.7305" y="635.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="169.1305" y="636.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="169.1305" y="640"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="136.3305"
+                  x="30.4" y="659.2859">Strategies-Implementations
+            </text>
+        </g><!--entity Demo-Broker-Connector-->
+        <g id="elem_Demo-Broker-Connector">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="153.9969" x="214.4" y="631.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="352.3969" y="635.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="350.7969" y="636.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="350.7969" y="640"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="121.9969"
+                  x="226.4" y="659.2859">Demo-Broker-Connector
+            </text>
+        </g><!--entity ByBit-Broker-Connector-->
+        <g id="elem_ByBit-Broker-Connector">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="150.2617" x="396" y="631.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="530.2617" y="635.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="528.6617" y="636.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="528.6617" y="640"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="118.2617"
+                  x="408" y="659.2859">ByBit-Broker-Connector
+            </text>
+        </g><!--entity Management-Implementations-->
+        <g id="elem_Management-Implementations">
+            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="183.2766" x="939.6" y="631.2"/>
+            <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
+                  x="1106.8766" y="635.2"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="1105.2766" y="636.8"/>
+            <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
+                  x="1105.2766" y="640"/>
+            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="151.2766"
+                  x="951.6" y="659.2859">Management-Implementations
+            </text>
+        </g><!--link Datasource-API to Data-Provider-->
+        <g id="link_Datasource-API_Data-Provider">
+            <path d="M642.288,436.816 C643.912,457.28 646.424,488.88 647.488,502.352 " fill="none"
+                  id="Datasource-API-Data-Provider" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Strategies-API to Trading-Strategy-->
+        <g id="link_Strategies-API_Trading-Strategy">
+            <path d="M308.904,436.816 C302.048,457.28 291.472,488.88 286.96,502.352 " fill="none"
+                  id="Strategies-API-Trading-Strategy" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Broker-Connector-API to Broker-Requestor-->
+        <g id="link_Broker-Connector-API_Broker-Requestor">
+            <path d="M470.184,436.816 C453.416,457.28 427.528,488.88 416.48,502.352 " fill="none"
+                  id="Broker-Connector-API-Broker-Requestor" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Broker-Connector-API to Trade-Executor-->
+        <g id="link_Broker-Connector-API_Trade-Executor">
+            <path d="M495.712,436.816 C506.712,457.28 523.696,488.88 530.936,502.352 " fill="none"
+                  id="Broker-Connector-API-Trade-Executor" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Management-API to Entry-Signal-Adaptor-->
+        <g id="link_Management-API_Entry-Signal-Adaptor">
+            <path d="M813.008,436.816 C846.008,458.216 897.768,491.784 916.728,504.08 " fill="none"
+                  id="Management-API-Entry-Signal-Adaptor" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Management-API to Entry-Signal-Validator-->
+        <g id="link_Management-API_Entry-Signal-Validator">
+            <path d="M782.672,436.816 C781.232,457.28 779.008,488.88 778.056,502.352 " fill="none"
+                  id="Management-API-Entry-Signal-Validator" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Backtest-Engine to Strategy-Engine-->
+        <g id="link_Backtest-Engine_Strategy-Engine">
+            <path d="M636.648,262.6 C621.008,276.784 603.2757,292.8555 587.6437,307.0315 " fill="none"
+                  id="Backtest-Engine-to-Strategy-Engine"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="584.088,310.256,591.5711,307.7897,587.0511,307.5689,587.2718,303.0488,584.088,310.256"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Remote-Execution-Engine to Strategy-Engine-->
+        <g id="link_Remote-Execution-Engine_Strategy-Engine">
+            <path d="M489.752,262.6 C505.392,276.784 523.1243,292.8555 538.7563,307.0315 " fill="none"
+                  id="Remote-Execution-Engine-to-Strategy-Engine"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="542.312,310.256,539.1282,303.0488,539.3489,307.5689,534.8289,307.7897,542.312,310.256"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Abstract-Local-Backtest-App to Backtest-Engine-->
+        <g id="link_Abstract-Local-Backtest-App_Backtest-Engine">
+            <path d="M666.312,175.4 C664.456,189.584 662.5591,204.1206 660.7031,218.2966 " fill="none"
+                  id="Abstract-Local-Backtest-App-to-Backtest-Engine"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="660.08,223.056,664.1876,216.3323,660.5993,219.0898,657.8418,215.5015,660.08,223.056"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Abstract-Remote-Execution-App to Remote-Execution-Engine-->
+        <g id="link_Abstract-Remote-Execution-App_Remote-Execution-Engine">
+            <path d="M460.088,175.4 C461.944,189.584 463.8409,204.1206 465.6969,218.2966 " fill="none"
+                  id="Abstract-Remote-Execution-App-to-Remote-Execution-Engine"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="466.32,223.056,468.5582,215.5015,465.8007,219.0898,462.2124,216.3323,466.32,223.056"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Local-Backtest-App to Abstract-Local-Backtest-App-->
+        <g id="link_Local-Backtest-App_Abstract-Local-Backtest-App">
+            <path d="M650.664,74.496 C654.648,92.144 659.5096,113.6701 663.4936,131.2941 " fill="none"
+                  id="Local-Backtest-App-to-Abstract-Local-Backtest-App"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="664.552,135.976,666.0857,128.2476,663.67,132.0744,659.8432,129.6588,664.552,135.976"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Remote-Execution-App to Abstract-Remote-Execution-App-->
+        <g id="link_Remote-Execution-App_Abstract-Remote-Execution-App">
+            <path d="M475.736,74.496 C471.752,92.144 466.8904,113.6701 462.9064,131.2941 " fill="none"
+                  id="Remote-Execution-App-to-Abstract-Remote-Execution-App"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="461.848,135.976,466.5568,129.6588,462.73,132.0744,460.3143,128.2476,461.848,135.976"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Strategy-Engine to Datasource-API-->
+        <g id="link_Strategy-Engine_Datasource-API">
+            <path d="M580.424,349.8 C593.28,363.984 607.5526,379.7234 620.4006,393.8994 " fill="none"
+                  id="Strategy-Engine-to-Datasource-API"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="623.624,397.456,621.1599,389.9721,620.9378,394.4922,616.4178,394.27,623.624,397.456"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Strategy-Engine to Strategies-API-->
+        <g id="link_Strategy-Engine_Strategies-API">
+            <path d="M508.472,349.688 C466.392,364.216 413.1776,382.5866 371.7856,396.8666 " fill="none"
+                  id="Strategy-Engine-to-Strategies-API"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="367.248,398.432,375.098,399.1089,371.0293,397.1275,373.0107,393.0588,367.248,398.432"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Strategy-Engine to Broker-Connector-API-->
+        <g id="link_Strategy-Engine_Broker-Connector-API">
+            <path d="M545.976,349.8 C533.12,363.984 518.8474,379.7234 505.9994,393.8994 " fill="none"
+                  id="Strategy-Engine-to-Broker-Connector-API"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="502.776,397.456,509.9822,394.27,505.4622,394.4922,505.2401,389.9721,502.776,397.456"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--link Strategy-Engine to Management-API-->
+        <g id="link_Strategy-Engine_Management-API">
+            <path d="M611.928,349.688 C648.632,363.92 694.2448,381.6002 730.9168,395.8242 " fill="none"
+                  id="Strategy-Engine-to-Management-API"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="735.392,397.56,729.8364,391.9729,731.6627,396.1135,727.5221,397.9398,735.392,397.56"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Entry-Signal-Adaptor to Management-Implementations-->
+        <g id="link_Entry-Signal-Adaptor_Management-Implementations">
+            <path d="M932.0923,520.9424 C947.8203,541.4144 992.552,599.672 1016.76,631.192 " fill="none"
+                  id="Entry-Signal-Adaptor-backto-Management-Implementations"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="929.168,517.136,931.0169,524.7951,931.6049,520.308,936.092,520.896,929.168,517.136"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Entry-Signal-Validator to Management-Implementations-->
+        <g id="link_Entry-Signal-Validator_Management-Implementations">
+            <path d="M788.9682,517.054 C802.3282,524.862 827.68,539.6 852.8,553.6 C902,581.024 959.392,611.824 995.512,631.064 "
+                  fill="none" id="Entry-Signal-Validator-backto-Management-Implementations"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="784.824,514.632,789.4256,521.0277,788.2775,516.6503,792.6549,515.5022,784.824,514.632"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Data-Provider to Local-CSV-Datasource-->
+        <g id="link_Data-Provider_Local-CSV-Datasource">
+            <path d="M648,521.936 C648,542.408 648,599.672 648,631.192 " fill="none"
+                  id="Data-Provider-backto-Local-CSV-Datasource"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818" points="648,517.136,644.8,524.336,648,521.136,651.2,524.336,648,517.136"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Data-Provider to ByBit-Remote-Datasource-->
+        <g id="link_Data-Provider_ByBit-Remote-Datasource">
+            <path d="M659.2387,519.2792 C669.8227,527.6392 686.04,540.384 703.2,553.6 C738.432,580.736 779.488,611.736 805.216,631.088 "
+                  fill="none" id="Data-Provider-backto-ByBit-Remote-Datasource"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="655.472,516.304,659.1386,523.278,658.6109,518.7833,663.1055,518.2557,655.472,516.304"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Trade-Executor to ByBit-Broker-Connector-->
+        <g id="link_Trade-Executor_ByBit-Broker-Connector">
+            <path d="M529.3717,521.5084 C520.0997,541.9804 493.984,599.672 479.712,631.192 " fill="none"
+                  id="Trade-Executor-backto-ByBit-Broker-Connector"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="531.352,517.136,525.4665,522.3744,529.7017,520.7797,531.2965,525.0149,531.352,517.136"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Broker-Requestor to ByBit-Broker-Connector-->
+        <g id="link_Broker-Requestor_ByBit-Broker-Connector">
+            <path d="M415.9916,521.5458 C424.7916,542.0178 449.568,599.672 463.112,631.192 " fill="none"
+                  id="Broker-Requestor-backto-ByBit-Broker-Connector"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="414.096,517.136,413.9995,525.0145,415.6757,520.8109,419.8793,522.487,414.096,517.136"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Trade-Executor to Demo-Broker-Connector-->
+        <g id="link_Trade-Executor_Demo-Broker-Connector">
+            <path d="M523.3778,519.5733 C512.5298,528.4773 495.024,542.136 475.2,553.6 C435.792,576.392 421.944,574.112 381.6,595.2 C360.536,606.208 337.648,620.104 320.176,631.144 "
+                  fill="none" id="Trade-Executor-backto-Demo-Broker-Connector"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="527.088,516.528,519.4924,518.6225,523.9961,519.0658,523.5529,523.5695,527.088,516.528"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Broker-Requestor to Demo-Broker-Connector-->
+        <g id="link_Broker-Requestor_Demo-Broker-Connector">
+            <path d="M402.286,520.7751 C384.678,541.2471 334.464,599.672 307.368,631.192 " fill="none"
+                  id="Broker-Requestor-backto-Demo-Broker-Connector"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="405.416,517.136,398.2949,520.508,402.8077,520.1686,403.1471,524.6813,405.416,517.136"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--reverse link Trading-Strategy to Strategies-Implementations-->
+        <g id="link_Trading-Strategy_Strategies-Implementations">
+            <path d="M273.6123,518.9653 C248.4843,538.1973 169.28,598.816 127.248,630.984 " fill="none"
+                  id="Trading-Strategy-backto-Strategies-Implementations"
+                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+            <polygon fill="#181818"
+                     points="277.424,516.048,269.7615,517.8829,274.2476,518.4791,273.6513,522.9651,277.424,516.048"
+                     style="stroke:#181818;stroke-width:0.8000000000000002;"/>
+        </g><!--SRC=[bLGzJyCm4DtpAwmimE1sPwYKbWwLGAfQr2LYC8u9LXFRE0wYGlntdCJvikCKAbLLxzwxU_VXktbNIXJtowN845DbdYqmpvVwApWZJC64ebIYF0Y2D_r3GFWiKK9P2hOifOo4u3i0-dDx1y87f13SI_v94oB3pcm8yAWaKYIzz9wrv6SYuO5ybAHGtE8GkFqYk1pPjqp92ppIbA4CHWaIVky9PJH1jRy6n6r-s2X_gQsMQ01B0K5S6GjUIanWjDyPf5E70Pl_b1GDkCbcQjjmnWZMAWQ1dB9De1cArOzPGfF_2J6KahmQOHzcidqcs7L2tr4FnLIEy5dfmje-WyLYvUb-V20vLsrXbBE_SABNGjknWeySQrLTkaW8mxCLM3mdQS_qwGb-kltNu8nYL7cBTljZhvGviPuMJ90dCKDDrIY9BCAHdCtn1FjDDkdMbpNj0ZhUmIxlSf7LisrADO07JOJster2Uvo3NN4Ywq82PzXD2-oNw87PRz03ctum7h2ptLhaJ1Nrcu0htutwFtLumAOdsl6io-iTieyG-6RN4Uo3V9NWtdRFxlXJNC6x6OAv_Htb6TtnNm00]-->
+    </g>
+</svg>

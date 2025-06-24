@@ -1,0 +1,65 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+frame "Trading Engine" {
+    () "Data-Provider"
+    () "Trading-Strategy"
+    () "Broker-Requestor"
+    () "Trade-Executor"
+    () "Entry-Signal-Adaptor"
+    () "Entry-Signal-Validator"
+
+    [Strategy-Engine]
+    "Data-Provider" -up- [Datasource-API]
+    "Trading-Strategy" -up- [Strategies-API]
+
+    [Broker-Connector-API]
+    "Broker-Requestor" -up- [Broker-Connector-API]
+    "Trade-Executor" -up- [Broker-Connector-API]
+
+    [Management-API]
+    "Entry-Signal-Adaptor" -up- [Management-API]
+    "Entry-Signal-Validator" -up- [Management-API]
+
+    [Backtest-Engine] ..> [Strategy-Engine]
+    [Remote-Execution-Engine] ..> [Strategy-Engine]
+    [Abstract-Local-Backtest-App] ..> [Backtest-Engine]
+    [Abstract-Remote-Execution-App] ..> [Remote-Execution-Engine]
+}
+
+frame "Applications" {
+    [Local-Backtest-App] ..> [Abstract-Local-Backtest-App]
+    [Remote-Execution-App] ..> [Abstract-Remote-Execution-App]
+}
+
+frame "Adapters"{
+    [Local-CSV-Datasource]
+    [ByBit-Remote-Datasource]
+    [Strategies-Implementations]
+    [Demo-Broker-Connector]
+    [ByBit-Broker-Connector]
+    [Management-Implementations]
+}
+
+
+[Strategy-Engine] ..> [Datasource-API]
+[Strategy-Engine] ..> [Strategies-API]
+[Strategy-Engine] ..> [Broker-Connector-API]
+[Strategy-Engine] ..> [Management-API]
+
+
+
+[Management-Implementations] -up--> "Entry-Signal-Adaptor"
+[Management-Implementations] -up--> "Entry-Signal-Validator"
+
+[Local-CSV-Datasource] -up--> "Data-Provider"
+[ByBit-Remote-Datasource] -up--> "Data-Provider"
+
+[ByBit-Broker-Connector] -up--> "Trade-Executor"
+[ByBit-Broker-Connector] -up--> "Broker-Requestor"
+[Demo-Broker-Connector] -up--> "Trade-Executor"
+[Demo-Broker-Connector] -up--> "Broker-Requestor"
+
+[Strategies-Implementations] -up--> "Trading-Strategy"
+@enduml

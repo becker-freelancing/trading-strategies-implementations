@@ -38,6 +38,8 @@ Module, welche diesem Prinzip folgen werden in dieser Doku mit (Plugin-Architekt
 
 ## Module
 
+![Komponente](/diagramms/trading-engine-components.svg)
+
 ### Apps
 
 Enthält alle ausführbaren Applikationen.
