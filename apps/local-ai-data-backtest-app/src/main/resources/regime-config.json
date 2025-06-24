@@ -1,0 +1,82 @@
+[
+  {
+    "pair": "ETH/USDT M1",
+    "quantileRegimeDetector": {
+      "DOWN_HIGH_VOLA": [
+        15.0,
+        44.0,
+        454.0
+      ],
+      "DOWN_LOW_VOLA": [
+        14.0,
+        38.0,
+        346.0
+      ],
+      "SIDE_HIGH_VOLA": [
+        5.0,
+        12.0,
+        129.0
+      ],
+      "SIDE_LOW_VOLA": [
+        4.0,
+        10.0,
+        70.0
+      ],
+      "UP_HIGH_VOLA": [
+        13.0,
+        35.0,
+        325.0
+      ],
+      "UP_LOW_VOLA": [
+        15.0,
+        45.0,
+        514.0
+      ]
+    },
+    "regimeDetector": {
+      "trendReversalSlopeThreshold": 0.05,
+      "trendSlopeShift": 15,
+      "volaSplitThreshold": 0.0008240357152655379
+    }
+  },
+  {
+    "pair": "ETH/USDC M1",
+    "quantileRegimeDetector": {
+      "DOWN_HIGH_VOLA": [
+        17.0,
+        49,
+        442
+      ],
+      "DOWN_LOW_VOLA": [
+        14,
+        37,
+        319
+      ],
+      "SIDE_HIGH_VOLA": [
+        4,
+        11,
+        116
+      ],
+      "SIDE_LOW_VOLA": [
+        3,
+        9,
+        74
+      ],
+      "UP_HIGH_VOLA": [
+        14,
+        37,
+        274
+      ],
+      "UP_LOW_VOLA": [
+        17,
+        50,
+        367
+      ]
+    },
+    "regimeDetector": {
+      "trendReversalSlopeThreshold": 0.05,
+      "trendSlopeShift": 15,
+      "volaSplitThreshold": 0.0005497362448184632
+    }
+  }
+]

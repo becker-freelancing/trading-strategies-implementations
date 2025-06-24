@@ -1,0 +1,128 @@
+[
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "longMaPeriod": 13,
+      "swingHighLowOrder": 10,
+      "shortMaPeriod": 9,
+      "swingHighLowMaxAge": 25
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "longMaPeriod": 12,
+      "swingHighLowOrder": 6,
+      "shortMaPeriod": 4,
+      "swingHighLowMaxAge": 15
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "longMaPeriod": 9,
+      "swingHighLowOrder": 5,
+      "shortMaPeriod": 3,
+      "swingHighLowMaxAge": 5
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "longMaPeriod": 14,
+      "swingHighLowOrder": 10,
+      "shortMaPeriod": 5,
+      "swingHighLowMaxAge": 35
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "longMaPeriod": 14,
+      "swingHighLowOrder": 3,
+      "shortMaPeriod": 1,
+      "swingHighLowMaxAge": 5
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "longMaPeriod": 9,
+      "swingHighLowOrder": 4,
+      "shortMaPeriod": 6,
+      "swingHighLowMaxAge": 5
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "longMaPeriod": 14,
+      "swingHighLowOrder": 10,
+      "shortMaPeriod": 1,
+      "swingHighLowMaxAge": 25
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "longMaPeriod": 20,
+      "swingHighLowOrder": 8,
+      "shortMaPeriod": 4,
+      "swingHighLowMaxAge": 45
+    }
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "longMaPeriod": 14,
+      "swingHighLowOrder": 3,
+      "shortMaPeriod": 1,
+      "swingHighLowMaxAge": 5
+    }
+  }
+]

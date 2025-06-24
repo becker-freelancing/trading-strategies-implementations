@@ -20,6 +20,7 @@
         <module>data-request</module>
         <module>local-backtest-app</module>
         <module>remote-execution-app</module>
+        <module>local-ai-data-backtest-app</module>
     </modules>
 
     <dependencies>
