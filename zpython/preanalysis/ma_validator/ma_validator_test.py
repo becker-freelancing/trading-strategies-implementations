@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import pandas as pd
 from joblib import Parallel, delayed
 from sklearn.ensemble import RandomForestClassifier
@@ -34,11 +33,11 @@ y_train = (res_train["profitInEurosWithFees"] > 0).astype(int)
 y_val = (res_val["profitInEurosWithFees"] > 0).astype(int)
 
 # Feature verteilung
-plt.hist(y_train.values, label="Train")
-plt.hist(y_val.values, label="Val")
-plt.legend()
-plt.title("Feature verteilung")
-plt.show()
+# plt.hist(y_train.values, label="Train")
+# plt.hist(y_val.values, label="Val")
+# plt.legend()
+# plt.title("Feature verteilung")
+# plt.show()
 
 # Random forest
 
@@ -54,47 +53,51 @@ param_grid = [(d, c) for d in max_depths for c in criteria]
 
 # 🔹 Funktion, die für ein Parameterpaar trainiert & evaluiert
 def evaluate_rf(max_depth, criterion):
-    print(f"Random Forest - {max_depth}, {criterion}")
-    forest = RandomForestClassifier(max_depth=max_depth, criterion=criterion, random_state=42)
-    forest.fit(df_train_scaled, y_train)
+    try:
+        print(f"Random Forest - {max_depth}, {criterion}")
+        forest = RandomForestClassifier(max_depth=max_depth, criterion=criterion, random_state=42)
+        forest.fit(df_train_scaled, y_train)
 
-    # Training Metrics
-    train_pred = forest.predict(df_train_scaled)
-    train_conf = confusion_matrix(y_train, train_pred)
-    train_metrics = {
-        "train_acc": accuracy_score(y_train, train_pred),
-        "train_f1": f1_score(y_train, train_pred),
-        "train_tp": train_conf[1, 1],
-        "train_fp": train_conf[0, 1],
-        "train_tn": train_conf[0, 0],
-        "train_fn": train_conf[1, 0],
-        "train_precision": precision_score(y_train, train_pred),
-        "train_recall": recall_score(y_train, train_pred),
-        "train_roc_auc": roc_auc_score(y_train, train_pred),
-    }
+        # Training Metrics
+        train_pred = forest.predict(df_train_scaled)
+        train_conf = confusion_matrix(y_train, train_pred)
+        train_metrics = {
+            "train_acc": accuracy_score(y_train, train_pred),
+            "train_f1": f1_score(y_train, train_pred),
+            "train_tp": train_conf[1, 1],
+            "train_fp": train_conf[0, 1],
+            "train_tn": train_conf[0, 0],
+            "train_fn": train_conf[1, 0],
+            "train_precision": precision_score(y_train, train_pred),
+            "train_recall": recall_score(y_train, train_pred),
+            "train_roc_auc": roc_auc_score(y_train, train_pred),
+        }
 
-    # Validation Metrics
-    val_pred = forest.predict(df_val_scaled)
-    val_conf = confusion_matrix(y_val, val_pred)
-    val_metrics = {
-        "val_acc": accuracy_score(y_val, val_pred),
-        "val_f1": f1_score(y_val, val_pred),
-        "val_tp": val_conf[1, 1],
-        "val_fp": val_conf[0, 1],
-        "val_tn": val_conf[0, 0],
-        "val_fn": val_conf[1, 0],
-        "val_precision": precision_score(y_val, val_pred),
-        "val_recall": recall_score(y_val, val_pred),
-        "val_roc_auc": roc_auc_score(y_val, val_pred),
-    }
+        # Validation Metrics
+        val_pred = forest.predict(df_val_scaled)
+        val_conf = confusion_matrix(y_val, val_pred)
+        val_metrics = {
+            "val_acc": accuracy_score(y_val, val_pred),
+            "val_f1": f1_score(y_val, val_pred),
+            "val_tp": val_conf[1, 1],
+            "val_fp": val_conf[0, 1],
+            "val_tn": val_conf[0, 0],
+            "val_fn": val_conf[1, 0],
+            "val_precision": precision_score(y_val, val_pred),
+            "val_recall": recall_score(y_val, val_pred),
+            "val_roc_auc": roc_auc_score(y_val, val_pred),
+        }
 
-    # Kombinieren
-    return pd.DataFrame({
-        "max_depth": [max_depth],
-        "criterion": [criterion],
-        **train_metrics,
-        **val_metrics
-    })
+        # Kombinieren
+        return pd.DataFrame({
+            "max_depth": [max_depth],
+            "criterion": [criterion],
+            **train_metrics,
+            **val_metrics
+        })
+    except Exception as e:
+        print(e)
+        return None
 
 
 # 🔹 Parallel ausführen (n_jobs=-1 nutzt alle CPUs)
@@ -103,7 +106,7 @@ results = Parallel(n_jobs=-1, verbose=10)(
 )
 
 # 🔹 Ergebnisse zusammenführen
-rand_for_res = pd.concat(results, ignore_index=True)
+rand_for_res = pd.concat([r for r in results if r is not None], ignore_index=True)
 
 rand_for_res.to_csv("./rand_for_results.csv", index=False)
 
@@ -127,53 +130,57 @@ param_grid = [
 
 # 🔹 Bewertung einer Parameterkombination
 def evaluate_lgbm(num_leaves, max_depth, learning_rate, n_estimators, min_child_samples):
-    print(
-        f"LightGBM - leaves={num_leaves}, depth={max_depth}, lr={learning_rate}, est={n_estimators}, min_child={min_child_samples}")
-    model = lgb.LGBMClassifier(
-        num_leaves=num_leaves,
-        max_depth=max_depth,
-        learning_rate=learning_rate,
-        n_estimators=n_estimators,
-        min_child_samples=min_child_samples,
-        random_state=42,
-        n_jobs=1  # wichtig! Kein internes Parallelisieren bei Parallel-Loop
-    )
-    model.fit(df_train_scaled, y_train)
+    try:
+        print(
+            f"LightGBM - leaves={num_leaves}, depth={max_depth}, lr={learning_rate}, est={n_estimators}, min_child={min_child_samples}")
+        model = lgb.LGBMClassifier(
+            num_leaves=num_leaves,
+            max_depth=max_depth,
+            learning_rate=learning_rate,
+            n_estimators=n_estimators,
+            min_child_samples=min_child_samples,
+            random_state=42,
+            n_jobs=1  # wichtig! Kein internes Parallelisieren bei Parallel-Loop
+        )
+        model.fit(df_train_scaled, y_train)
 
-    train_pred = model.predict(df_train_scaled)
-    val_pred = model.predict(df_val_scaled)
+        train_pred = model.predict(df_train_scaled)
+        val_pred = model.predict(df_val_scaled)
 
-    train_conf = confusion_matrix(y_train, train_pred)
-    val_conf = confusion_matrix(y_val, val_pred)
+        train_conf = confusion_matrix(y_train, train_pred)
+        val_conf = confusion_matrix(y_val, val_pred)
 
-    result = pd.DataFrame({
-        "num_leaves": [num_leaves],
-        "max_depth": [max_depth],
-        "learning_rate": [learning_rate],
-        "n_estimators": [n_estimators],
-        "min_child_samples": [min_child_samples],
-        # Training
-        "train_acc": [accuracy_score(y_train, train_pred)],
-        "train_f1": [f1_score(y_train, train_pred)],
-        "train_tp": [train_conf[1, 1]],
-        "train_fp": [train_conf[0, 1]],
-        "train_tn": [train_conf[0, 0]],
-        "train_fn": [train_conf[1, 0]],
-        "train_precision": [precision_score(y_train, train_pred)],
-        "train_recall": [recall_score(y_train, train_pred)],
-        "train_roc_auc": [roc_auc_score(y_train, train_pred)],
-        # Validation
-        "val_acc": [accuracy_score(y_val, val_pred)],
-        "val_f1": [f1_score(y_val, val_pred)],
-        "val_tp": [val_conf[1, 1]],
-        "val_fp": [val_conf[0, 1]],
-        "val_tn": [val_conf[0, 0]],
-        "val_fn": [val_conf[1, 0]],
-        "val_precision": [precision_score(y_val, val_pred)],
-        "val_recall": [recall_score(y_val, val_pred)],
-        "val_roc_auc": [roc_auc_score(y_val, val_pred)]
-    })
-    return result
+        result = pd.DataFrame({
+            "num_leaves": [num_leaves],
+            "max_depth": [max_depth],
+            "learning_rate": [learning_rate],
+            "n_estimators": [n_estimators],
+            "min_child_samples": [min_child_samples],
+            # Training
+            "train_acc": [accuracy_score(y_train, train_pred)],
+            "train_f1": [f1_score(y_train, train_pred)],
+            "train_tp": [train_conf[1, 1]],
+            "train_fp": [train_conf[0, 1]],
+            "train_tn": [train_conf[0, 0]],
+            "train_fn": [train_conf[1, 0]],
+            "train_precision": [precision_score(y_train, train_pred)],
+            "train_recall": [recall_score(y_train, train_pred)],
+            "train_roc_auc": [roc_auc_score(y_train, train_pred)],
+            # Validation
+            "val_acc": [accuracy_score(y_val, val_pred)],
+            "val_f1": [f1_score(y_val, val_pred)],
+            "val_tp": [val_conf[1, 1]],
+            "val_fp": [val_conf[0, 1]],
+            "val_tn": [val_conf[0, 0]],
+            "val_fn": [val_conf[1, 0]],
+            "val_precision": [precision_score(y_val, val_pred)],
+            "val_recall": [recall_score(y_val, val_pred)],
+            "val_roc_auc": [roc_auc_score(y_val, val_pred)]
+        })
+        return result
+    except Exception as e:
+        print(e)
+        return None
 
 
 # 🔹 Parallel ausführen
@@ -182,7 +189,7 @@ results = Parallel(n_jobs=-1, verbose=10)(
 )
 
 # 🔹 Zusammenführen
-lgb_res = pd.concat(results, ignore_index=True)
+lgb_res = pd.concat([r for r in results if r is not None], ignore_index=True)
 
 lgb_res.to_csv("./lgb.csv", index=False)
 
@@ -206,56 +213,60 @@ param_grid = [
 
 # 🔹 Bewertungsfunktion
 def evaluate_xgb(gamma, max_depth, learning_rate, n_estimators, min_child_weight):
-    print(
-        f"XGBoost - gamma={gamma}, depth={max_depth}, lr={learning_rate}, est={n_estimators}, min_child={min_child_weight}")
-    model = xgb.XGBClassifier(
-        learning_rate=learning_rate,
-        gamma=gamma,
-        max_depth=max_depth,
-        n_estimators=n_estimators,
-        min_child_weight=min_child_weight,
-        use_label_encoder=False,
-        eval_metric="logloss",
-        verbosity=0,
-        n_jobs=1,  # wichtig, kein paralleles Training im Modell selbst
-        random_state=42
-    )
-    model.fit(df_train_scaled, y_train)
+    try:
+        print(
+            f"XGBoost - gamma={gamma}, depth={max_depth}, lr={learning_rate}, est={n_estimators}, min_child={min_child_weight}")
+        model = xgb.XGBClassifier(
+            learning_rate=learning_rate,
+            gamma=gamma,
+            max_depth=max_depth,
+            n_estimators=n_estimators,
+            min_child_weight=min_child_weight,
+            use_label_encoder=False,
+            eval_metric="logloss",
+            verbosity=0,
+            n_jobs=1,  # wichtig, kein paralleles Training im Modell selbst
+            random_state=42
+        )
+        model.fit(df_train_scaled, y_train)
 
-    train_pred = model.predict(df_train_scaled)
-    val_pred = model.predict(df_val_scaled)
+        train_pred = model.predict(df_train_scaled)
+        val_pred = model.predict(df_val_scaled)
 
-    train_conf = confusion_matrix(y_train, train_pred)
-    val_conf = confusion_matrix(y_val, val_pred)
+        train_conf = confusion_matrix(y_train, train_pred)
+        val_conf = confusion_matrix(y_val, val_pred)
 
-    result = pd.DataFrame({
-        "gamma": [gamma],
-        "max_depth": [max_depth],
-        "learning_rate": [learning_rate],
-        "n_estimators": [n_estimators],
-        "min_child_weight": [min_child_weight],
-        # Training
-        "train_acc": [accuracy_score(y_train, train_pred)],
-        "train_f1": [f1_score(y_train, train_pred)],
-        "train_tp": [train_conf[1, 1]],
-        "train_fp": [train_conf[0, 1]],
-        "train_tn": [train_conf[0, 0]],
-        "train_fn": [train_conf[1, 0]],
-        "train_precision": [precision_score(y_train, train_pred)],
-        "train_recall": [recall_score(y_train, train_pred)],
-        "train_roc_auc": [roc_auc_score(y_train, train_pred)],
-        # Validation
-        "val_acc": [accuracy_score(y_val, val_pred)],
-        "val_f1": [f1_score(y_val, val_pred)],
-        "val_tp": [val_conf[1, 1]],
-        "val_fp": [val_conf[0, 1]],
-        "val_tn": [val_conf[0, 0]],
-        "val_fn": [val_conf[1, 0]],
-        "val_precision": [precision_score(y_val, val_pred)],
-        "val_recall": [recall_score(y_val, val_pred)],
-        "val_roc_auc": [roc_auc_score(y_val, val_pred)]
-    })
-    return result
+        result = pd.DataFrame({
+            "gamma": [gamma],
+            "max_depth": [max_depth],
+            "learning_rate": [learning_rate],
+            "n_estimators": [n_estimators],
+            "min_child_weight": [min_child_weight],
+            # Training
+            "train_acc": [accuracy_score(y_train, train_pred)],
+            "train_f1": [f1_score(y_train, train_pred)],
+            "train_tp": [train_conf[1, 1]],
+            "train_fp": [train_conf[0, 1]],
+            "train_tn": [train_conf[0, 0]],
+            "train_fn": [train_conf[1, 0]],
+            "train_precision": [precision_score(y_train, train_pred)],
+            "train_recall": [recall_score(y_train, train_pred)],
+            "train_roc_auc": [roc_auc_score(y_train, train_pred)],
+            # Validation
+            "val_acc": [accuracy_score(y_val, val_pred)],
+            "val_f1": [f1_score(y_val, val_pred)],
+            "val_tp": [val_conf[1, 1]],
+            "val_fp": [val_conf[0, 1]],
+            "val_tn": [val_conf[0, 0]],
+            "val_fn": [val_conf[1, 0]],
+            "val_precision": [precision_score(y_val, val_pred)],
+            "val_recall": [recall_score(y_val, val_pred)],
+            "val_roc_auc": [roc_auc_score(y_val, val_pred)]
+        })
+        return result
+    except Exception as e:
+        print(e)
+        return None
 
 
 # 🔹 Parallel ausführen
@@ -264,6 +275,6 @@ results = Parallel(n_jobs=-1, verbose=10)(
 )
 
 # 🔹 Zusammenführen
-xgb_res = pd.concat(results, ignore_index=True)
+xgb_res = pd.concat([r for r in results if r is not None], ignore_index=True)
 
 xgb_res.to_csv("./xgb.csv", index=False)
