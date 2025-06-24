@@ -40,7 +40,7 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
         TimeSeriesEntry currentEntry = entryParameter.currentPrice();
         TimeSeriesEntry lastEntry = entryParameter.timeSeries().getLastEntryForTime(entryParameter.time());
 
-        if (value > 70 && isBearishEngulfing(currentEntry, lastEntry)) {
+        if (value > 70 /*&& isBearishEngulfing(currentEntry, lastEntry)*/) {
 
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
@@ -48,7 +48,7 @@ public class RsiOverboughtOversoldStrategy extends BaseStrategy {
                     .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(entryParameter.pair()))
                     .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.SELL)))
                     .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.SELL))));
-        } else if (value < 30 && isBullishEngulfing(currentEntry, lastEntry)) {
+        } else if (value < 30 /*&& isBullishEngulfing(currentEntry, lastEntry)*/) {
 
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
