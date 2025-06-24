@@ -45,7 +45,7 @@ def validation_data(time_frame=1):
         (data["closeTime"] >= pd.to_datetime("2024-05-01")) &
         (data["closeTime"] < pd.to_datetime("2024-10-01"))
         ]
-    return data
+    return data.iloc[:6000]
 
 
 def test_data(time_frame=1):

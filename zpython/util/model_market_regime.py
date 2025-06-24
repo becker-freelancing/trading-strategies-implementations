@@ -27,6 +27,29 @@ class ModelMarketRegime(Enum):
     DOWN_HIGH_VOLA_1 = 18
 
 
+def to_str(regime: ModelMarketRegime):
+    mapping = {ModelMarketRegime.UP_LOW_VOLA_033: "Up + Low Volatility Q_33",
+               ModelMarketRegime.UP_LOW_VOLA_066: "Up + Low Volatility Q_66",
+               ModelMarketRegime.UP_LOW_VOLA_1: "Up + Low Volatility Q_1",
+               ModelMarketRegime.UP_HIGH_VOLA_033: "Up + High Volatility Q_33",
+               ModelMarketRegime.UP_HIGH_VOLA_066: "Up + High Volatility Q_66",
+               ModelMarketRegime.UP_HIGH_VOLA_1: "Up + High Volatility Q_1",
+               ModelMarketRegime.SIDE_LOW_VOLA_033: "Side + Low Volatility Q_33",
+               ModelMarketRegime.SIDE_LOW_VOLA_066: "Side + Low Volatility Q_66",
+               ModelMarketRegime.SIDE_LOW_VOLA_1: "Side + Low Volatility Q_1",
+               ModelMarketRegime.SIDE_HIGH_VOLA_033: "Side + High Volatility Q_33",
+               ModelMarketRegime.SIDE_HIGH_VOLA_066: "Side + High Volatility Q_66",
+               ModelMarketRegime.SIDE_HIGH_VOLA_1: "Side + High Volatility Q_1",
+               ModelMarketRegime.DOWN_LOW_VOLA_033: "Down + Low Volatility Q_33",
+               ModelMarketRegime.DOWN_LOW_VOLA_066: "Down + Low Volatility Q_66",
+               ModelMarketRegime.DOWN_LOW_VOLA_1: "Down + Low Volatility Q_1",
+               ModelMarketRegime.DOWN_HIGH_VOLA_033: "Down + High Volatility Q_33",
+               ModelMarketRegime.DOWN_HIGH_VOLA_066: "Down + High Volatility Q_66",
+               ModelMarketRegime.DOWN_HIGH_VOLA_1: "Down + High Volatility Q_1"}
+
+    return mapping[regime]
+
+
 def model_market_regime(regime: MarketRegime, quantile: float) -> ModelMarketRegime:
     if quantile <= 0.33:
         suffix = "033"
