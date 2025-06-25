@@ -16,9 +16,11 @@ from zpython.training.regression.sequence_regression.transformer.transformer_mod
 
 with ThreadPoolExecutor(max_workers=2) as pool:
     futures = []
-    for fn in [train_attention_cnn, train_cnn_gru, train_deep_cnn, train_multi_scale_cnn, train, train_bi_lstm,
-               train_dropout_lstm,
-               train_encode_decose_lstm, train_lstm, train_dropout_nn,
+    for fn in [
+        train_attention_cnn, train_cnn_gru, train_deep_cnn, train_multi_scale_cnn, train, train_bi_lstm,
+              train_dropout_lstm,
+              train_encode_decose_lstm,
+        train_lstm, train_dropout_nn,
                train_residual_nn, train_transformer]:
         f = pool.submit(fn)
         futures.append(f)

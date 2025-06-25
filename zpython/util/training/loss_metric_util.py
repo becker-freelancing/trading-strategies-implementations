@@ -149,20 +149,3 @@ def _simulate_trades_sequence(y_pred, y_true):
                                    _indices_greater_than_value(y_true_cumsum, sls))
     return direction_factor, sl_reached_indices, sls, tp_reached_indices, tps
 
-# def _simulate_trades(y_true, y_pred):
-#     # Falls |High| > |Low| Long Position (1), sonst Short (-1)
-#     direction_factor = ops.where((ops.abs(y_pred[:, 0]) > ops.abs(y_pred[:, 1])), 1, -1)
-#     # Für Long-Positionen ist globales Maximum TP. Für Short ist globales Minimum TP
-#     tps = ops.where(direction_factor == 1, y_pred[:, 0] + EPSILON, y_pred[:, 1] - EPSILON)
-#     sls = ops.where(direction_factor == 1,
-#                     _sls_for_long(y_pred, y_pred_min, y_pred_argmax, y_pred_argmin),
-#                     _sls_for_short(y_pred, y_pred_max, y_pred_argmax, y_pred_argmin))
-#     # Für jeden Trade P&L berechnen
-#     y_true_cumsum = ops.cumsum(y_true, axis=1)
-#     tp_reached_indices = ops.where(direction_factor == 1,
-#                                    _indices_greater_than_value(y_true_cumsum, tps),
-#                                    _indices_less_than_value(y_true_cumsum, tps))
-#     sl_reached_indices = ops.where(direction_factor == 1,
-#                                    _indices_less_than_value(y_true_cumsum, sls),
-#                                    _indices_greater_than_value(y_true_cumsum, sls))
-#     return direction_factor, sl_reached_indices, sls, tp_reached_indices, tps

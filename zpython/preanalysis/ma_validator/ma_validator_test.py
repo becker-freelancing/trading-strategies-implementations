@@ -101,12 +101,12 @@ def evaluate_rf(max_depth, criterion):
 
 
 # 🔹 Parallel ausführen (n_jobs=-1 nutzt alle CPUs)
-results = Parallel(n_jobs=-1, verbose=10)(
-    delayed(evaluate_rf)(d, c) for d, c in param_grid
-)
+#results = Parallel(n_jobs=-1, verbose=10)(
+#    delayed(evaluate_rf)(d, c) for d, c in param_grid
+#)
 
 # 🔹 Ergebnisse zusammenführen
-rand_for_res = pd.concat([r for r in results if r is not None], ignore_index=True)
+#rand_for_res = pd.concat([r for r in results if r is not None], ignore_index=True)
 
 rand_for_res.to_csv("./rand_for_results.csv", index=False)
 

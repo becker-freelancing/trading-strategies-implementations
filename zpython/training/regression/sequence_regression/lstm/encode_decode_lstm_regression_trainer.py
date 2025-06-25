@@ -57,7 +57,7 @@ class NNRegressionTrainer(SequenceRegressionModelTrainer):
         return ModelProvider(model_provider), input_length, params
 
     def _get_optuna_trial_params(self) -> list[str]:
-        return ["num_layers", "num_units", "learning_rate", "num_units_dropout"]
+        return ["num_units", "learning_rate", "input_length", "num_units_input"]
 
 
 def train_encode_decose_lstm():

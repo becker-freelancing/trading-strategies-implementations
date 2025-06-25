@@ -1,0 +1,1 @@
+max_depth,citerion,train_acc,train_f1,train_tp,train_fp,train_tn,train_fn,train_precision,train_recall,train_roc_auc,val_acc,val_f1,val_tp,val_fp,val_tn,val_fn,val_precision,val_recall,val_roc_auc

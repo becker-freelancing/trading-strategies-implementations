@@ -56,7 +56,7 @@ def _get_optuna_processes() -> int:
 
 
 def _get_optuna_trials() -> int:
-    return 30
+    return 20
 
 
 def _tensor_data_path(idx, regime: ModelMarketRegime, data_selector: str, train=True):
