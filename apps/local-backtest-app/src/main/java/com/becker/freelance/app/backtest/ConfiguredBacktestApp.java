@@ -39,6 +39,7 @@ public class ConfiguredBacktestApp {
                     .withNumberOfThreads(20)
                     .withPair("ETHPERP_1")
                     .withStrategyName(strategyName)
+                    .withParameterPermutationLimit(1000)
                     .build();
 
             try {
