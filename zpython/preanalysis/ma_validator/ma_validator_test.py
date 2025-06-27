@@ -1,4 +1,6 @@
+import matplotlib.pyplot as plt
 import pandas as pd
+from imblearn.over_sampling import SMOTE
 from joblib import Parallel, delayed
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, precision_score, recall_score, roc_auc_score
@@ -12,16 +14,20 @@ from zpython.util.path_util import from_relative_path
 # Daten laden
 res_train = pd.read_csv(from_relative_path("ai-data/2_MA_Strategy/2_MA_Strategy_TRAIN.csv"), delimiter=";")
 res_train["openTime"] = pd.to_datetime(res_train["openTime"])
+res_train.set_index("openTime", inplace=True)
 res_val = pd.read_csv(from_relative_path("ai-data/2_MA_Strategy/2_MA_Strategy_VAL.csv"), delimiter=";")
 res_val["openTime"] = pd.to_datetime(res_val["openTime"])
+
 
 df_train = create_indicators()[0]
 df_val = create_indicators(validation_data)[0]
 
-df_train = df_train.loc[res_train["openTime"].values]
+df_train = df_train.loc[res_train.index.values]
 df_val = df_val.loc[res_val["openTime"].values]
 df_train["regime"] = df_train["regime"].apply(market_regime_to_number)
 df_val["regime"] = df_val["regime"].apply(market_regime_to_number)
+df_train = df_train.dropna()
+res_train = res_train.loc[df_train.index.values]
 
 # Skalieren
 scaler = StandardScaler()
@@ -29,15 +35,18 @@ df_train_scaled = scaler.fit_transform(df_train)
 df_val_scaled = scaler.transform(df_val)
 
 # Features erstellen
-y_train = (res_train["profitInEurosWithFees"] > 0).astype(int)
-y_val = (res_val["profitInEurosWithFees"] > 0).astype(int)
+y_train = (res_train["profitInEurosWithFees"] > 0).astype(int).reset_index(drop=True)
+y_val = (res_val["profitInEurosWithFees"] > 0).astype(int).reset_index(drop=True)
+
+smote = SMOTE(random_state=42)
+df_train_scaled, y_train = smote.fit_resample(df_train_scaled, y_train)
 
 # Feature verteilung
-# plt.hist(y_train.values, label="Train")
-# plt.hist(y_val.values, label="Val")
-# plt.legend()
-# plt.title("Feature verteilung")
-# plt.show()
+plt.hist(y_train.values, label="Train")
+plt.hist(y_val.values, label="Val")
+plt.legend()
+plt.title("Feature verteilung")
+plt.show()
 
 # Random forest
 
