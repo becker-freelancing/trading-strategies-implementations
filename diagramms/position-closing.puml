@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Calculate Profit without Fees;
+:Calculate Fees;
+:Subtract Fees from Profit;
+:Remove Position Margin from Total Margin;
+:Update Account Balance;
+stop
+
+@enduml

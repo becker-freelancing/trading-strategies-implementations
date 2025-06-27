@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Calculate required Position Margin;
+if (Account Balance > 0) is (true) then
+    if (Total Margin + Position Margin < Account Balance) is (true) then
+        :Add Margin to Total Margin;
+        note left
+        Position can be opened
+        end note
+    endif
+
+endif
+
+stop
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+if (Is any Position open?) is (true) then
+    if (Are open Positions in same Direction as Position to Open?) is (true) then
+        :Open Position |
+    else
+        if (Is total Quantity of open Positions greater than Position to Open?) is (true) then
+            :Close (starting with oldest open Position) all Positions until Quantity of Position to Open is reached;
+        else
+            :Close all open Positions;
+            :Calculate remaining Quantity of Position to open;
+            :Open Position |
+        endif
+    endif
+
+endif
+stop
+
+@enduml
