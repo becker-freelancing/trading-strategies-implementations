@@ -10,8 +10,23 @@ public class ConfiguredBacktestApp {
 
     public static void main(String[] args) {
         List<String> strategyNames = List.of(
+                "2_EMA_Strategy_simple",
+                "2_MA_Strategy",
                 "2_MA_Strategy_simple",
-                "2_EMA_Strategy_simple"
+                "3_Ma_Strategy",
+                "Best_Hard_TP_and_SL",
+                "Bollinger_Band_Bounce",
+                "Bollinger_Band_Bounce_Min_Slope",
+                "MACD_Scalping",
+                "Parabolic_SAR",
+                "Rsi_Overbought_Oversold",
+                "chart_pattern",
+                "freq_strategy",
+                "live_sequence_regression",
+                "sequence_regression",
+                "super_trend",
+                "swing_high_low",
+                "voltan_expan_close_strategy"
         );
         for (String strategyName : strategyNames) {
 

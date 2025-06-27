@@ -6,13 +6,16 @@ import com.becker.freelance.commons.signal.EntrySignalBuilder;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeries;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
+import com.becker.freelance.indicators.ta.cache.CachedIndicator;
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
 import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
+import org.ta4j.core.Indicator;
 import org.ta4j.core.indicators.ParabolicSarIndicator;
 import org.ta4j.core.num.DecimalNum;
+import org.ta4j.core.num.Num;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -20,7 +23,7 @@ import java.util.Optional;
 public class ParabolicSarStrategy extends BaseStrategy {
 
 
-    private final ParabolicSarIndicator parabolicSarIndicator;
+    private final Indicator<Num> parabolicSarIndicator;
     private LocalDateTime lastUpdate = LocalDateTime.MIN;
     private Double currentSarValue;
     private Double lastSarValue;
@@ -30,7 +33,8 @@ public class ParabolicSarStrategy extends BaseStrategy {
     public ParabolicSarStrategy(StrategyParameter parameter, Double accelerationFactor, Double maxAccelerationFactor, int period) {
         super(parameter);
         this.barSeries.setMaximumBarCount(period);
-        this.parabolicSarIndicator = new ParabolicSarIndicator(barSeries, DecimalNum.valueOf(accelerationFactor), DecimalNum.valueOf(maxAccelerationFactor));
+        ParabolicSarIndicator parabolicSarIndicator = new ParabolicSarIndicator(barSeries, DecimalNum.valueOf(accelerationFactor), DecimalNum.valueOf(maxAccelerationFactor));
+        this.parabolicSarIndicator = new CachedIndicator<>(10, parabolicSarIndicator);
     }
 
     @Override

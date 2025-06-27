@@ -13,3 +13,6 @@ com.becker.freelance.strategies.SwingHighLowStrategyCreator
 com.becker.freelance.strategies.VoltyExpanCloseStrategyCreator
 com.becker.freelance.strategies.MA2SimpleStrategyCreator
 com.becker.freelance.strategies.EMA2SimpleStrategyCreator
+com.becker.freelance.strategies.EMA2WithRSIFilterStrategyCreator
+com.becker.freelance.strategies.EMA2MinAtrStrategyCreator
+com.becker.freelance.strategies.EMA2WithLongEmaFilterStrategyCreator
