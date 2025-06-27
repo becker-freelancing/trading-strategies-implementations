@@ -41,7 +41,11 @@ public class ConfiguredBacktestApp {
                     .withStrategyName(strategyName)
                     .build();
 
-            backtestApp.run();
+            try {
+                backtestApp.run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
