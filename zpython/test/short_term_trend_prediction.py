@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from imblearn.over_sampling import SMOTE
 from joblib import Parallel, delayed
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, precision_score, recall_score, roc_auc_score
@@ -13,10 +12,12 @@ from zpython.util.data_split import validation_data
 from zpython.util.indicator_creator import create_indicators
 from zpython.util.market_regime import market_regime_to_number
 
-def read(time_frame):
-    return train.iloc[-100000:]
 
-train, det = create_indicators(data_read_function=train_data)
+def read(time_frame):
+    return train_data().iloc[-100000:]
+
+
+train, det = create_indicators(data_read_function=read)
 
 
 def max_price_diff(x):
@@ -57,7 +58,11 @@ def prepare(df):
     return x_train, y_buy, y_sell
 
 
-val, _ = create_indicators(data_read_function=validation_data, regime_detector=det)
+def read_val(time_frame):
+    return validation_data().iloc[:100000]
+
+
+val, _ = create_indicators(data_read_function=read_val, regime_detector=det)
 val["regime"] = val["regime"].apply(market_regime_to_number)
 train["regime"] = train["regime"].apply(market_regime_to_number)
 
@@ -167,10 +172,10 @@ def lgb_t(x, y, x_val, y_val, buy):
                  "val_roc_auc"])
     param_grid = [
         (num_leaves, max_depth, lr / 100., n_est, min_child)
-        for num_leaves in range(20, 100, 5)
-        for max_depth in range(3, 15, 3)
-        for lr in range(1, 20, 2)
-        for n_est in range(100, 1000, 100)
+        for num_leaves in range(20, 100, 10)
+        for max_depth in range(3, 15, 4)
+        for lr in range(1, 20, 3)
+        for n_est in range(100, 1000, 150)
         for min_child in [20, 50, 100]
     ]
 
@@ -254,8 +259,8 @@ def xgb_t(x, y, x_val, y_val, buy):
         (gamma, max_depth, lr / 100., n_est, min_child)
         for gamma in [0, 1, 5, 10]
         for max_depth in [3, 5, 10, 14]
-        for lr in range(1, 30, 3)
-        for n_est in range(100, 1000, 100)
+        for lr in range(1, 30, 5)
+        for n_est in range(100, 1000, 150)
         for min_child in [20, 50, 100]
     ]
 
