@@ -11,6 +11,10 @@ from zpython.util import split_on_gaps
 from zpython.util.data_split import train_data
 from zpython.util.data_split import validation_data
 from zpython.util.indicator_creator import create_indicators
+from zpython.util.market_regime import market_regime_to_number
+
+def read(time_frame):
+    return train.iloc[-100000:]
 
 train, det = create_indicators(data_read_function=train_data)
 
@@ -34,6 +38,7 @@ def min_price_diff(x):
 def prepare(df):
     train_slices = []
     for slice in split_on_gaps(df, 1):
+        slice = slice[~slice.index.duplicated()]
         close = slice["logReturn_closeBid_1min"]
         future_close = close.shift(-240)
         train_max_price_diff = future_close.rolling(240, min_periods=240).apply(max_price_diff).dropna()
@@ -53,17 +58,19 @@ def prepare(df):
 
 
 val, _ = create_indicators(data_read_function=validation_data, regime_detector=det)
+val["regime"] = val["regime"].apply(market_regime_to_number)
+train["regime"] = train["regime"].apply(market_regime_to_number)
 
 x_train, y_train_buy, y_train_sell = prepare(train)
-x_val, y_val_buy, y_val_sell = prepare(train)
+x_val, y_val_buy, y_val_sell = prepare(val)
 
 scaler = StandardScaler()
-df_train_scaled = scaler.fit_transform(x_train)
-df_val_scaled = scaler.transform(x_val)
+x_train = scaler.fit_transform(x_train)
+x_val = scaler.transform(x_val)
 
-smote = SMOTE(random_state=42)
-df_train_scaled, y_train_buy = smote.fit_resample(df_train_scaled, y_train_buy)
-df_train_scaled, y_train_sell = smote.fit_resample(df_train_scaled, y_train_sell)
+#smote = SMOTE(random_state=42)
+#df_train_scaled, y_train_buy = smote.fit_resample(df_train_scaled, y_train_buy)
+#df_train_scaled, y_train_sell = smote.fit_resample(df_train_scaled, y_train_sell)
 
 # Feature verteilung
 plt.hist(y_train_buy.values, label="Train (Buy)", alpha=0.1)
@@ -83,7 +90,7 @@ def rand_for(x, y, x_val, y_val, buy):
                  "train_precision", "train_recall", "train_roc_auc",
                  "val_acc", "val_f1", "val_tp", "val_fp", "val_tn", "val_fn", "val_precision", "val_recall",
                  "val_roc_auc"])
-    max_depths = list(range(2, 20, 1)) + list(range(20, 150, 5))
+    max_depths = list(range(2, 20, 2)) + list(range(20, 150, 10))
     criteria = ["gini", "entropy", "log_loss"]
     param_grid = [(d, c) for d in max_depths for c in criteria]
 
