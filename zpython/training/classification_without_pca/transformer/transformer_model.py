@@ -6,11 +6,11 @@ from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 
 from zpython.model.regime_model import ModelProvider
-from zpython.training.classification.classification_model_trainer import \
-    ClassificationModelTrainer
+from zpython.training.classification_without_pca.classification_model_trainer import \
+    ClassificationWithoutPcaModelTrainer
 
 
-class TransformerModelTrainer(ClassificationModelTrainer):
+class TransformerModelTrainer(ClassificationWithoutPcaModelTrainer):
 
     def __init__(self):
         super().__init__("transformer", MinMaxScaler)
