@@ -15,8 +15,6 @@ class NNRegressionTrainer(SequenceRegressionModelTrainer):
     def __init__(self):
         super().__init__("nnresidual", MinMaxScaler)
 
-    def _get_output_length(self):
-        return 30
 
     def _get_target_column(self):
         return "logReturn_closeBid_1min"

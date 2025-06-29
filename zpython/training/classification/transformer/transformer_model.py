@@ -8,14 +8,12 @@ from sklearn.preprocessing import MinMaxScaler
 from zpython.model.regime_model import ModelProvider
 from zpython.training.regression.sequence_regression.sequence_regression_model_trainer import \
     SequenceRegressionModelTrainer
-from zpython.util.training.loss import PNLLoss
 
 
 class TransformerModelTrainer(SequenceRegressionModelTrainer):
 
     def __init__(self):
         super().__init__("transformer", MinMaxScaler)
-
 
     def _get_target_column(self):
         return "logReturn_closeBid_1min"
@@ -66,10 +64,11 @@ class TransformerModelTrainer(SequenceRegressionModelTrainer):
             x = GlobalAveragePooling1D()(x)
             x = Dense(128, activation="relu")(x)
             x = Dropout(0.2)(x)
-            outputs = Dense(self._get_output_length())(x)
+            outputs = Dense(self._get_output_length(), activation='softmax')(x)
 
             model = Model(inputs, outputs)
-            model.compile(optimizer=Adam(learning_rate=learning_rate), loss=PNLLoss(), metrics=self._get_metrics())
+            model.compile(optimizer=Adam(learning_rate=learning_rate), loss="categorical_crossentropy",
+                          metrics=self._get_metrics())
             return model
 
         return ModelProvider(model_provider), input_length, params

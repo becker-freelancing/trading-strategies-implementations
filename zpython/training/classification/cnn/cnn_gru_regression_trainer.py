@@ -8,14 +8,12 @@ from sklearn.preprocessing import MinMaxScaler
 from zpython.model.regime_model import ModelProvider
 from zpython.training.regression.sequence_regression.sequence_regression_model_trainer import \
     SequenceRegressionModelTrainer
-from zpython.util.training.loss import PNLLoss
 
 
 class CNNRegressionTrainer(SequenceRegressionModelTrainer):
 
     def __init__(self):
         super().__init__("cnngru", MinMaxScaler)
-
 
     def _get_target_column(self):
         return "logReturn_closeBid_1min"
@@ -50,10 +48,10 @@ class CNNRegressionTrainer(SequenceRegressionModelTrainer):
             model.add(MaxPooling1D(pool_size=pool_size))
             model.add(GRU(num_units_gru, return_sequences=False))
             model.add(Dense(num_units, activation="relu"))
-            model.add(Dense(self._get_output_length()))
+            model.add(Dense(self._get_output_length(), activation='softmax'))
 
             # Kompilieren des Modells
-            model.compile(optimizer=Adam(learning_rate=learning_rate), loss=PNLLoss(),
+            model.compile(optimizer=Adam(learning_rate=learning_rate), loss="categorical_crossentropy",
                           metrics=self._get_metrics())
             return model
 

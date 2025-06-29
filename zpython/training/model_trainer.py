@@ -192,8 +192,11 @@ class ModelTrainer:
 
     def _get_metric_columns(self):
         if self.header_content is None:
-            self.header_content = ["loss", "val_loss"] + [metric.name for metric in self._get_metrics()]
-            self.header_content.extend([f"val_{metric.name}" for metric in self._get_metrics()])
+            self.header_content = ["loss", "val_loss"] + [metric.name if hasattr(metric, "name") else metric for metric
+                                                          in self._get_metrics()]
+            self.header_content.extend(
+                [f"val_{metric.name}" if hasattr(metric, "name") else f"val_{metric}" for metric in
+                 self._get_metrics()])
         return self.header_content
 
     def _prepare_environment(self):

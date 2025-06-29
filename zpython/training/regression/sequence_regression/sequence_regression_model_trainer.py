@@ -49,9 +49,12 @@ class SequenceRegressionModelTrainer(RegressionModelTrainer, ABC):
         return input_sequences, output_sequences
 
     def _get_data_selector(self) -> str:
-        return "SEQUENCE_REGRESSION"
+        return "SEQUENCE_REGRESSION_240"
 
     def _get_metrics(self) -> list:
         return [MeanSquaredError(), RootMeanSquaredError(), MeanAbsoluteError(), MeanAbsolutePercentageError(),
                 MeanSquaredLogarithmicError(), LogCoshError(), ProfitHitRatioMetric(), LossHitRatioMetric(),
                 NoneHitRatioMetric()]
+
+    def _get_output_length(self) -> int:
+        return 240
