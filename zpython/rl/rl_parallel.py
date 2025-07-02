@@ -13,9 +13,9 @@ def run():
     EPISODE_MAX_LEN = 1440
     LOOKBACK_WINDOW_LEN = EPISODE_MAX_LEN
     TRAIN_START = 0
-    TRAIN_END = 160000
-    TEST_START = 160000
-    TEST_END = 199600
+    TRAIN_END = 10000
+    TEST_START = 10000
+    TEST_END = 20000
     FEATURE_DIM = 227
     LOGICAL_SEGMENTS = [2, 2, 57, 56, 55, 55]
 
@@ -118,11 +118,10 @@ def run():
 
         return _init
 
-
-    from stable_baselines3.common.vec_env import SubprocVecEnv
+    from stable_baselines3.common.vec_env import DummyVecEnv
 
     num_envs = 16  # oder so viele wie CPU-Kerne verfügbar sind
-    env = SubprocVecEnv([make_env(i) for i in range(num_envs)])
+    env = DummyVecEnv([make_env(i) for i in range(num_envs)])
     eval_env = make_env(999, regime="evaluation")()  # normal, nicht parallelisiert
 
     model = PPO(CustomActorCriticPolicy, env, verbose=2, tensorboard_log=f"./logs_{dt_str}/tensorboard/")
