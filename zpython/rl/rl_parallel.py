@@ -3,6 +3,8 @@ from stable_baselines3 import PPO
 
 from zpython.rl.data_reader import read_all
 from zpython.rl.env import TradingEnv
+
+
 def run():
     merged = read_all()
 
@@ -19,11 +21,6 @@ def run():
 
     from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback
     from stable_baselines3.common.monitor import Monitor
-
-    env = TradingEnv(merged, EPISODE_MAX_LEN, LOOKBACK_WINDOW_LEN, TRAIN_START, TRAIN_END, TEST_START, TEST_END)
-    eval_env = TradingEnv(merged, EPISODE_MAX_LEN, LOOKBACK_WINDOW_LEN, TRAIN_START, TRAIN_END, TEST_START, TEST_END,
-                          regime="evaluation")
-
     import datetime
     import joblib
 
@@ -31,18 +28,21 @@ def run():
 
 
     class InfoLoggerWrapper(gym.Wrapper):
-        def __init__(self, env: TradingEnv, file_path, file_name):
+        def __init__(self, env: TradingEnv, env_id, file_path, file_name):
             super().__init__(env)
             self.file_name = file_name
             self.file_path = file_path
             self.save_id = 0
+            self.subsave_id = 0
+            self.env_id = env_id
 
         def step(self, action):
             obs, reward, done, x, info = self.env.step(action)
+            path = f"{self.file_path}{self.env_id}_{self.save_id}_{self.subsave_id}_{self.file_name}"
+            joblib.dump(info, path, compress=1)
+            self.subsave_id = self.subsave_id + 1
             if done:
-                path = f"{self.file_path}{self.save_id}_{self.file_name}"
                 self.save_id = self.save_id + 1
-                joblib.dump(self.env.statistics_recorder, path, compress=3)
             return obs, reward, done, x, info
 
 
@@ -112,7 +112,7 @@ def run():
             env_log_dir = f"./logs_{dt_str}/env_{env_id}_{regime}/"
             os.makedirs(env_log_dir, exist_ok=True)
 
-            env = InfoLoggerWrapper(env, file_path=env_log_dir, file_name="info_logger.dump.gz")
+            env = InfoLoggerWrapper(env, env_id=env_id, file_path=env_log_dir, file_name="info_logger.dump.gz")
             env = Monitor(env, filename=os.path.join(env_log_dir, "monitor.csv"))
             return env
 

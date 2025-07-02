@@ -267,6 +267,24 @@ class TradingEnv(gym.Env):
         obs_step = self._get_observation_step(self.time_absolute)
         obs = self.scaler.step(obs_step).flatten()
 
+        info = {"action": action,
+                "reward": reward,
+                "reward_realized_pnl_short": self.reward_realized_pnl_short,
+                "reward_realized_pnl_long": self.reward_realized_pnl_long,
+                "unrealized_pnl_short": self.unrealized_pnl_short,
+                "unrealized_pnl_long": self.unrealized_pnl_long,
+                "margin_short_start": margin_short_start,
+                "margin_long_start": margin_long_start,
+                "margin_short_end": margin_short_end,
+                "margin_long_end": margin_long_end,
+                "num_steps": self.time_relative,
+                "coins_short": self.coins_short,
+                "coins_long": self.coins_long,
+                "equity": self.equity,
+                "wallet_balance": self.wallet_balance,
+                "average_price_short": self.average_price_short,
+                "average_price_long": self.average_price_long}
+
         self.statistics_recorder.update(
             action=action,
             reward=reward,
@@ -287,7 +305,6 @@ class TradingEnv(gym.Env):
             average_price_long=self.average_price_long,
         )
 
-        info = self.statistics_recorder.get()
 
         self.time_absolute += 1
         self.time_relative += 1
