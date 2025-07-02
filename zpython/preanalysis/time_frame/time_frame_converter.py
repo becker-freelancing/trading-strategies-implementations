@@ -1,10 +1,14 @@
-from zpython.util.hist_data_data_reader import read_data
+import pandas as pd
 
-input = read_data("EURUSD_1.csv.zip")
+pair = "BTCPERP"
+
+input = pd.read_csv(f"C:/Users/jasb/AppData/Roaming/krypto-java/data-bybit/{pair}_1.csv")
+input["closeTime"] = pd.to_datetime(input["closeTime"])
+input.set_index("closeTime", inplace=True)
 
 
 def for_tf(tf_min):
-    write_path = f"C:/Users/jasb/AppData/Roaming/krypto-java/data-histdata/EURUSD_{tf_min}.csv.zip"
+    write_path = f"C:/Users/jasb/AppData/Roaming/krypto-java/data-bybit/{pair}_{tf_min}.csv"
     in_re = input.resample(f'{tf_min}min').agg({
         "openBid": "first",
         "openAsk": "first",
@@ -20,7 +24,7 @@ def for_tf(tf_min):
     in_re = in_re.dropna()
     in_re.reset_index(inplace=True)
 
-    in_re.to_csv(write_path, compression="zip", index=False)
+    in_re.to_csv(write_path, index=False)
 
 
 for tf_min in [5, 15, 30, 60, 1440]:

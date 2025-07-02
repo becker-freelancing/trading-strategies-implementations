@@ -159,7 +159,8 @@ def create_indicators(data_read_function=train_data,
                       limit=100_000_000,
                       time_frame=1,
                       regime_detector=None,
-                      data=None):
+                      data=None,
+                      with_close=False):
     cache_content = DataCache.indicators_cache.get(data_read_function)
     if data is None and cache_content is not None:
         print("Using Cache Content for data")
@@ -188,7 +189,10 @@ def create_indicators(data_read_function=train_data,
         datas = [_create_indicator_for_part(part, close_column, momentum_lags) for part in datas]
 
         data = _concat(datas)
-        exclude_columns = ["lowBid", "lowAsk", "highBid", "highAsk", "openBid", "openAsk", "closeAsk", "closeBid"]
+        if with_close:
+            exclude_columns = ["lowBid", "lowAsk", "highBid", "highAsk", "openBid", "openAsk", "closeAsk"]
+        else:
+            exclude_columns = ["lowBid", "lowAsk", "highBid", "highAsk", "openBid", "openAsk", "closeAsk", "closeBid"]
         data = data.drop(columns=exclude_columns)
         data.set_index("closeTime", inplace=True)
         DataCache.indicators_cache[data_read_function] = data

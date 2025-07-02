@@ -7,8 +7,8 @@ class DataCache:
     cache = {}
 
 
-def read_data(time_frame):
-    path = from_relative_path(f"data-bybit/ETHPERP_{time_frame}.csv")
+def read_data(time_frame, pair="ETHPERP"):
+    path = from_relative_path(f"data-bybit/{pair}_{time_frame}.csv")
 
     if not time_frame in list(DataCache.cache.keys()):
         df = pd.read_csv(path)
@@ -19,8 +19,8 @@ def read_data(time_frame):
     return DataCache.cache[time_frame]
 
 
-def train_data(time_frame=1):
-    data = read_data(time_frame)
+def train_data(time_frame=1, pair="ETHPERP"):
+    data = read_data(time_frame, pair)
     data = data[data["closeTime"] < pd.to_datetime("2024-05-01")]
     data = data.drop_duplicates()
     return data  # .iloc[:6000]
