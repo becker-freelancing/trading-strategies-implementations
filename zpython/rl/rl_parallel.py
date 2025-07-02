@@ -1,3 +1,5 @@
+import tracemalloc
+
 import gymnasium as gym
 from stable_baselines3 import PPO
 
@@ -6,6 +8,7 @@ from zpython.rl.env import TradingEnv
 
 
 def run():
+    tracemalloc.start()
     merged = read_all()
 
     print(merged)
@@ -20,12 +23,12 @@ def run():
     LOGICAL_SEGMENTS = [2, 2, 57, 56, 55, 55]
 
     from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback
-    from stable_baselines3.common.monitor import Monitor
     import datetime
     import joblib
 
     dt_str = str(datetime.datetime.now()).replace(":", "_")
 
+    import gc
 
     class InfoLoggerWrapper(gym.Wrapper):
         def __init__(self, env: TradingEnv, env_id, file_path, file_name):
@@ -35,12 +38,18 @@ def run():
             self.save_id = 0
             self.subsave_id = 0
             self.env_id = env_id
+            self.buffer = []
 
         def step(self, action):
             obs, reward, done, x, info = self.env.step(action)
-            path = f"{self.file_path}{self.env_id}_{self.save_id}_{self.subsave_id}_{self.file_name}"
-            joblib.dump(info, path, compress=1)
-            self.subsave_id = self.subsave_id + 1
+            self.buffer.append(info)
+            if len(self.buffer) >= 20:
+                path = f"{self.file_path}{self.env_id}_{self.save_id}_{self.subsave_id}_{self.file_name}"
+                print(f"Saving Buffer {path}")
+                joblib.dump(self.buffer, path, compress=1)
+                self.subsave_id = self.subsave_id + 1
+                self.buffer = []
+                gc.collect()
             if done:
                 self.save_id = self.save_id + 1
             return obs, reward, done, x, info
@@ -113,7 +122,6 @@ def run():
             os.makedirs(env_log_dir, exist_ok=True)
 
             env = InfoLoggerWrapper(env, env_id=env_id, file_path=env_log_dir, file_name="info_logger.dump.gz")
-            env = Monitor(env, filename=os.path.join(env_log_dir, "monitor.csv"))
             return env
 
         return _init
@@ -124,12 +132,17 @@ def run():
     env = DummyVecEnv([make_env(i) for i in range(num_envs)])
     eval_env = make_env(999, regime="evaluation")()  # normal, nicht parallelisiert
 
-    model = PPO(CustomActorCriticPolicy, env, verbose=2, tensorboard_log=f"./logs_{dt_str}/tensorboard/")
+    model = PPO(CustomActorCriticPolicy, env, verbose=2,
+                n_steps=256,
+                batch_size=256 // num_envs
+                # tensorboard_log=f"./logs_{dt_str}/tensorboard/"
+                )
 
     checkpoint_callback = CheckpointCallback(
-        save_freq=1000,  # muss größer sein bei parallelisierten Umgebungen!
+        save_freq=10000 // num_envs,  # muss größer sein bei parallelisierten Umgebungen!
         save_path=f'./checkpoints_{dt_str}/',
-        name_prefix='ppo_model'
+        name_prefix='ppo_model',
+        verbose=2
     )
 
     eval_callback = EvalCallback(

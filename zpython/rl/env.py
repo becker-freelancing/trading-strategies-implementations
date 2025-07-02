@@ -27,7 +27,7 @@ class TradingEnv(gym.Env):
                  maintenance_margin_percentage: float = 0.012,
                  initial_random_allocated: float = 0,
                  regime: str = 'training',
-                 record_stats: bool = True,
+                 record_stats: bool = False,
                  ):
         self.scaler = Scaler(min_quantile=0.5, max_quantile=99.5, scale_coef=initial_capital)
         self.leverage = leverage
@@ -48,7 +48,6 @@ class TradingEnv(gym.Env):
         self.regime = regime
         self.record_stats = record_stats
         self.price = data["ETHPERP_1_closeBid"].values.reshape(-1, 1)
-        self.data_df = data
         self.data = data.values
         self.observation_dim = (data.shape[1] + 2) * lookback_window_len
         self.reward_realized_pnl_short = 0.
@@ -56,7 +55,7 @@ class TradingEnv(gym.Env):
 
         self.liquidation = False
         self.episode_maxstep_achieved = False
-        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(self.observation_dim,), dtype=np.float64)
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(self.observation_dim,), dtype=np.float32)
         self.action_space = spaces.Discrete(4)
 
         if self.regime == "training":
