@@ -81,10 +81,12 @@ class RegimeLiveModel(RegimeModel):
 
     def __init__(self, model_provider: LoadedModelProvider, scaler: MarketRegimeScaler, pca: MarketRegimePCA,
                  model_regime_detector: ModelMarketRegimeDetector = None,
-                 regime_detector: MarketRegimeDetector = None):
+                 regime_detector: MarketRegimeDetector = None,
+                 is_regression=True):
         super().__init__({regime: model_provider.get(regime) for regime in list(ModelMarketRegime)})
         self.scaler = scaler
         self.pca = pca
+        self.is_regression = is_regression
         self.regime_detector = regime_detector
         self.model_regime_detector = model_regime_detector
         self.input_lengths = {key.value: val.input_shape[1] for key, val in self.regime_models.items()}
@@ -135,9 +137,13 @@ class RegimeLiveModel(RegimeModel):
         x_reduced = np.expand_dims(x_reduced, axis=0)
         model = self.regime_models[regime]
         prediction = model.predict(x_reduced)[0]
-        prediction = pd.DataFrame(prediction, columns=["logReturn_closeBid_1min"])
-        inverse_transform = self.scaler.inverse_transform([prediction], regime)[0]
-        return inverse_transform
+        if self.is_regression:
+            prediction = pd.DataFrame(prediction, columns=["logReturn_closeBid_1min"])
+            inverse_transform = self.scaler.inverse_transform([prediction], regime)[0]
+            return inverse_transform
+        else:
+            prediction = pd.DataFrame(prediction, index=["buy", "sell", "none"])
+            return prediction
 
     def predict(self, x: pd.DataFrame, predict_times: pd.Series = None) -> dict[
         ModelMarketRegime, list[tuple[pd.Timestamp, pd.DataFrame]]]:
@@ -172,7 +178,10 @@ class RegimeLiveModel(RegimeModel):
             data = [v[1] for v in prediction_data]
             data = np.stack(data)
             prediction = self.regime_models[regime].predict(data)
-            prediction = [pd.DataFrame(a, columns=["logReturn_closeBid_1min"]) for a in list(prediction)]
-            transformed = self.scaler.inverse_transform(prediction, regime)
+            if self.is_regression:
+                prediction = [pd.DataFrame(a, columns=["logReturn_closeBid_1min"]) for a in list(prediction)]
+                transformed = self.scaler.inverse_transform(prediction, regime)
+            else:
+                transformed = [pd.DataFrame(a, index=["buy", "sell", "none"]) for a in list(prediction)]
             predicted[regime] = list(zip(times, transformed))
         return predicted
