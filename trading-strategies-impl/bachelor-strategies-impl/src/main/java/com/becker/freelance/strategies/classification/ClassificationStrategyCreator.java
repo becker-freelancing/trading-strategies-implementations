@@ -18,7 +18,7 @@ public class ClassificationStrategyCreator implements StrategyCreator {
 
     @Override
     public String strategyName() {
-        return "classification_regression";
+        return "classification_strategy";
     }
 
     @Override
