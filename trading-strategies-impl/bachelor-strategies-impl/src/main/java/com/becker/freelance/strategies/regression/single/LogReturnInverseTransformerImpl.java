@@ -1,7 +1,7 @@
 package com.becker.freelance.strategies.regression.single;
 
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
-import com.becker.freelance.strategies.regression.shared.LogReturnInverseTransformer;
+import com.becker.freelance.strategies.shared.LogReturnInverseTransformer;
 
 
 public class LogReturnInverseTransformerImpl implements LogReturnInverseTransformer<Double> {

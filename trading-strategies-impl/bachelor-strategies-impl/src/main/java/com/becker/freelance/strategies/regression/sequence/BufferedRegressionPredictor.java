@@ -1,7 +1,7 @@
 package com.becker.freelance.strategies.regression.sequence;
 
 import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
-import com.becker.freelance.strategies.regression.shared.PredictionParameter;
+import com.becker.freelance.strategies.shared.PredictionParameter;
 
 import java.util.Optional;
 

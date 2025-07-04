@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.regression.shared;
+package com.becker.freelance.strategies.shared;
 
 import com.becker.freelance.indicators.ta.regime.QuantileMarketRegime;
 import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;

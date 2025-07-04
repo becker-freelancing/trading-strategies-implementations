@@ -2,7 +2,7 @@ package com.becker.freelance.strategies.regression.sequence;
 
 import com.becker.freelance.indicators.ta.regime.QuantileMarketRegime;
 import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
-import com.becker.freelance.strategies.regression.shared.PredictionParameter;
+import com.becker.freelance.strategies.shared.PredictionParameter;
 import com.freelance.becker.japy.api.JapyPort;
 import com.freelance.becker.japy.api.MethodReturnValue;
 import com.freelance.becker.japy.api.PythonMethod;
