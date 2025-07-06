@@ -76,7 +76,7 @@ def read_all():
 
 path = from_relative_path("models-bybit/RL/best_model.zip")
 
-model = PPO.load(path)
+model = PPO.load(path, device="cuda")
 
 df = read_all()
 df = df[~df.index.duplicated()]
