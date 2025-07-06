@@ -82,11 +82,13 @@ class RegimeLiveModel(RegimeModel):
     def __init__(self, model_provider: LoadedModelProvider, scaler: MarketRegimeScaler, pca: MarketRegimePCA,
                  model_regime_detector: ModelMarketRegimeDetector = None,
                  regime_detector: MarketRegimeDetector = None,
-                 is_regression=True):
+                 is_regression=True,
+                 is_use_pca=True):
         super().__init__({regime: model_provider.get(regime) for regime in list(ModelMarketRegime)})
         self.scaler = scaler
         self.pca = pca
         self.is_regression = is_regression
+        self.is_use_pca = is_use_pca
         self.regime_detector = regime_detector
         self.model_regime_detector = model_regime_detector
         self.input_lengths = {key.value: val.input_shape[1] for key, val in self.regime_models.items()}
@@ -102,9 +104,12 @@ class RegimeLiveModel(RegimeModel):
             keys = [x[0] for x in xs]
             values = [x[1] for x in xs]
             scaled = self.scaler.transform(values, regime)
-            pca = self.pca.transform(scaled, regime)
-            pca = [(k, v) for k, v in zip(keys, pca)]
-            result[regime] = pca
+            if self.is_use_pca:
+                pca = self.pca.transform(scaled, regime)
+                pca = [(k, v) for k, v in zip(keys, pca)]
+                result[regime] = pca
+            else:
+                result[regime] = [(k, v.to_numpy()) for k, v in zip(keys, scaled)]
         return result
 
     def _slice_data_by_regime(self, x: pd.DataFrame, predict_times: pd.Series, regimes: pd.Series) -> dict[
@@ -133,7 +138,10 @@ class RegimeLiveModel(RegimeModel):
 
     def predict_with_data(self, x: pd.DataFrame, regime: ModelMarketRegime) -> pd.DataFrame:
         x_scaled = self.scaler.transform([x], regime)
-        x_reduced = self.pca.transform(x_scaled, regime)[0]
+        if self.is_use_pca:
+            x_reduced = self.pca.transform(x_scaled, regime)[0]
+        else:
+            x_reduced = x_scaled[0].to_numpy()
         x_reduced = np.expand_dims(x_reduced, axis=0)
         model = self.regime_models[regime]
         prediction = model.predict(x_reduced)[0]
