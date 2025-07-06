@@ -1,10 +1,11 @@
-package com.becker.freelance.strategies.rl;
+package com.becker.freelance.strategies.rl.longandshort;
 
 import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.strategies.creation.DefaultParameterNames;
 import com.becker.freelance.strategies.creation.ParameterName;
 import com.becker.freelance.strategies.creation.StrategyCreator;
 import com.becker.freelance.strategies.creation.StringParameterName;
+import com.becker.freelance.strategies.rl.read.BufferedRLOnlyLongPredictor;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
 import com.becker.freelance.strategies.strategy.TradingStrategy;
 import com.becker.freelance.strategies.validinitparameter.StrategyInitParameter;
@@ -18,7 +19,7 @@ public class AtrBasedRLStrategyCreator implements StrategyCreator {
 
     @Override
     public String strategyName() {
-        return "RL_Strategy_ATR";
+        return "RL_Strategy_ATR_Long_and_Short";
     }
 
     @Override
@@ -33,9 +34,9 @@ public class AtrBasedRLStrategyCreator implements StrategyCreator {
 
     @Override
     public TradingStrategy build(StrategyParameter strategyParameter) {
-        return new AtrBasedRLOnlyBuyStrategy(
+        return new AtrBasedRLLongAndShortStrategy(
                 strategyParameter,
-                new BufferedRLPredictor(),
+                new BufferedRLOnlyLongPredictor(),
                 strategyParameter.getParameterAsBool(DefaultParameterNames.TRAILING_STOP_ORDER) ? PositionBehaviour.TRAILING : PositionBehaviour.HARD_LIMIT,
                 strategyParameter.getParameterAsInt(DefaultParameterNames.ATR_PERIOD),
                 strategyParameter.getParameter(ATR_MULTIPLIER),

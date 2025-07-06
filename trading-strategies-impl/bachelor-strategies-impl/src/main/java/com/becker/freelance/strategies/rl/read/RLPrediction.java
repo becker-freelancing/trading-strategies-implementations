@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.rl;
+package com.becker.freelance.strategies.rl.read;
 
 import java.time.LocalDateTime;
 

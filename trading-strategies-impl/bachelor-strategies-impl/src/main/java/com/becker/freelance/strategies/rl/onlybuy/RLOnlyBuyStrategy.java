@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.rl;
+package com.becker.freelance.strategies.rl.onlybuy;
 
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionBehaviour;
@@ -8,6 +8,9 @@ import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.math.Decimal;
 import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
 import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
+import com.becker.freelance.strategies.rl.read.RLAction;
+import com.becker.freelance.strategies.rl.read.RLPrediction;
+import com.becker.freelance.strategies.rl.read.RLPredictor;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
 

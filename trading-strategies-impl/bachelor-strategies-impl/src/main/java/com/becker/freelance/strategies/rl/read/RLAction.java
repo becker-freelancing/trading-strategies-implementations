@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.rl;
+package com.becker.freelance.strategies.rl.read;
 
 public enum RLAction {
 

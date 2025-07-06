@@ -1,7 +1,7 @@
 package com.becker.freelance.strategies.regression.sequence;
 
 import com.becker.freelance.indicators.ta.regime.QuantileMarketRegime;
-import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.StrategyExecutionParameter;
 import com.becker.freelance.strategies.shared.PredictionParameter;
 import com.freelance.becker.japy.api.JapyPort;
 import com.freelance.becker.japy.api.MethodReturnValue;
@@ -42,7 +42,7 @@ public class LiveRegressionPredictor implements RegressionPredictor {
     }
 
     @Override
-    public Optional<RegressionPrediction> predict(EntryExecutionParameter parameter, PredictionParameter predictionParameter) {
+    public Optional<RegressionPrediction> predict(StrategyExecutionParameter parameter, PredictionParameter predictionParameter) {
         PythonMethod predict = new PythonMethod("predict", List.of(
                 new PythonMethodArgument<>(predictionParameter.regimeId()),
                 new PythonMethodArgument<>(predictionParameter.data())
@@ -56,7 +56,7 @@ public class LiveRegressionPredictor implements RegressionPredictor {
         }
     }
 
-    private RegressionPrediction map(MethodReturnValue methodReturnValue, EntryExecutionParameter parameter, PredictionParameter predictionParameter) {
+    private RegressionPrediction map(MethodReturnValue methodReturnValue, StrategyExecutionParameter parameter, PredictionParameter predictionParameter) {
         Double[] prediction = methodReturnValue.castListWithSameClassesExactly(Double.class).toArray(new Double[0]);
         return new RegressionPrediction(
                 parameter.time(),

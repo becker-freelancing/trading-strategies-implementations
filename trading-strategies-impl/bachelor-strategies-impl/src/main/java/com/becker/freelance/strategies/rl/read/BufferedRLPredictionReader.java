@@ -1,4 +1,4 @@
-package com.becker.freelance.strategies.rl;
+package com.becker.freelance.strategies.rl.read;
 
 import com.becker.freelance.backtest.util.PathUtil;
 import org.slf4j.Logger;
@@ -23,11 +23,11 @@ public class BufferedRLPredictionReader {
 
     private static Map<LocalDateTime, RLPrediction> PREDICTIONS = null;
 
-    public static synchronized Map<LocalDateTime, RLPrediction> getPredictionsSingleton() {
+    public static synchronized Map<LocalDateTime, RLPrediction> getPredictionsSingleton(String readPath) {
         if (PREDICTIONS == null) {
             logger.info("Start reading buffered prediction...");
             BufferedRLPredictionReader predictionReader = new BufferedRLPredictionReader();
-            String path = PathUtil.fromRelativePath("prediction-bybit/RL_ONLY_LONG.csv");
+            String path = PathUtil.fromRelativePath(readPath);
             PREDICTIONS = predictionReader.readPredictions(Path.of(path));
             logger.info("Finished reading buffered prediction.");
         }
