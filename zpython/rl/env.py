@@ -74,7 +74,7 @@ class TradingEnv(gym.Env):
         self._reset_env_state()
 
     def reset(self, seed=7, options={}):
-        self._reset_env_state()
+        self._reset_env_state(options.get("time_absolute"))
         state_array, reset_array = self._get_observation_reset()
         scaled_obs_reset = self.scaler.reset(state_array, reset_array).flatten()
 
@@ -128,7 +128,7 @@ class TradingEnv(gym.Env):
             self.position_value_long = 0.
             self.coins_long = 0.
 
-    def _reset_env_state(self):
+    def _reset_env_state(self, time_absolute=None):
         self.statistics_recorder = StatisticsRecorder(record_statistics=self.record_stats)
         self.state_que = collections.deque(maxlen=self.lookback_window_len)
         self.reset_que = collections.deque(
@@ -153,19 +153,21 @@ class TradingEnv(gym.Env):
 
         self.available_balance = max(self.wallet_balance - self.margin_short - self.margin_long, 0)
 
+        self.max_step = self.episode_max_len - 1
         if self.regime == "training":
-            self.max_step = self.episode_max_len - 1
             # Episode beginning random sampling
             self.time_absolute = random.randint(
                 self.train_start + self.lookback_window_len * 4 + 24,  # +24 für random init positions
                 self.train_end - self.episode_max_len - 1
             )
         elif self.regime == "evaluation":
-            self.max_step = self.episode_max_len - 1  # self.test_end[random_interval] - self.test_start[random_interval] - 1
             self.time_absolute = random.randint(
                 self.test_start + self.lookback_window_len * 4 + 24,  # +24 für random init positions
                 self.test_end - self.episode_max_len - 1
             )
+
+        if time_absolute:  # Set time_absolute fixed if present
+            self.time_absolute = time_absolute
 
         self.unrealized_pnl_short = (
                 -self.coins_short * (self.average_price_short - self.price_ask))  # - self.fee_to_close_short
