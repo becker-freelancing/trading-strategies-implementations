@@ -1,7 +1,7 @@
 from stable_baselines3 import PPO
 from tqdm import tqdm
 
-from zpython.rl.env import TradingEnv
+from zpython.rl.env_only_long import TradingEnvOnlyLong
 from zpython.util.data_split import backtest_data
 from zpython.util.path_util import from_relative_path
 
@@ -79,7 +79,7 @@ import multiprocessing as mp
 EPISODE_MAX_LEN = 1440
 LOOKBACK_WINDOW_LEN = EPISODE_MAX_LEN
 
-MODEL_PATH = from_relative_path("models-bybit/RL/best_model.zip")
+MODEL_PATH = from_relative_path("models-bybit/RL_ONLY_LONG/best_model.zip")
 DATA = read_all()
 DATA = DATA[~DATA.index.duplicated()]
 
@@ -87,7 +87,7 @@ time_absolute_range = list(range(LOOKBACK_WINDOW_LEN * 4 + 1, len(DATA)))
 
 
 def run_inference(time_absolute):
-    env = TradingEnv(
+    env = TradingEnvOnlyLong(
         DATA,
         EPISODE_MAX_LEN,
         LOOKBACK_WINDOW_LEN,
@@ -108,4 +108,4 @@ if __name__ == "__main__":
     with mp.Pool(mp.cpu_count()) as pool:
         results = list(tqdm(pool.imap(run_inference, time_absolute_range), total=len(time_absolute_range)))
 
-    pd.DataFrame(results).to_csv(from_relative_path("prediction-bybit/RL.csv"), index=False)
+    pd.DataFrame(results).to_csv(from_relative_path("prediction-bybit/RL_ONLY_LONG.csv"), index=False)

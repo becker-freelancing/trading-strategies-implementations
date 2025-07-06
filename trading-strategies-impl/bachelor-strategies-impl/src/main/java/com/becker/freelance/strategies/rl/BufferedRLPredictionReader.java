@@ -27,7 +27,7 @@ public class BufferedRLPredictionReader {
         if (PREDICTIONS == null) {
             logger.info("Start reading buffered prediction...");
             BufferedRLPredictionReader predictionReader = new BufferedRLPredictionReader();
-            String path = PathUtil.fromRelativePath("prediction-bybit/RL.csv");
+            String path = PathUtil.fromRelativePath("prediction-bybit/RL_ONLY_LONG.csv");
             PREDICTIONS = predictionReader.readPredictions(Path.of(path));
             logger.info("Finished reading buffered prediction.");
         }

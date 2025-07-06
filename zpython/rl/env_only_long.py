@@ -10,7 +10,7 @@ from zpython.rl.scaler import Scaler
 from zpython.rl.statistics_recorder import StatisticsRecorder
 
 
-class TradingEnv(gym.Env):
+class TradingEnvOnlyLong(gym.Env):
     def __init__(self,
                  data: pd.DataFrame,
                  episode_max_len: int,

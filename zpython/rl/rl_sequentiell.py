@@ -2,7 +2,7 @@ import gymnasium as gym
 from stable_baselines3 import PPO
 
 from zpython.rl.data_reader import read_all
-from zpython.rl.env import TradingEnv
+from zpython.rl.env_only_long import TradingEnvOnlyLong
 
 merged = read_all()
 
@@ -20,8 +20,9 @@ LOGICAL_SEGMENTS = [2, 2, 57, 56, 55, 55]
 from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback
 from stable_baselines3.common.monitor import Monitor
 
-env = TradingEnv(merged, EPISODE_MAX_LEN, LOOKBACK_WINDOW_LEN, TRAIN_START, TRAIN_END, TEST_START, TEST_END)
-eval_env = TradingEnv(merged, EPISODE_MAX_LEN, LOOKBACK_WINDOW_LEN, TRAIN_START, TRAIN_END, TEST_START, TEST_END,
+env = TradingEnvOnlyLong(merged, EPISODE_MAX_LEN, LOOKBACK_WINDOW_LEN, TRAIN_START, TRAIN_END, TEST_START, TEST_END)
+eval_env = TradingEnvOnlyLong(merged, EPISODE_MAX_LEN, LOOKBACK_WINDOW_LEN, TRAIN_START, TRAIN_END, TEST_START,
+                              TEST_END,
                       regime="evaluation")
 
 import datetime
@@ -31,7 +32,7 @@ dt_str = str(datetime.datetime.now()).replace(":", "_")
 
 
 class InfoLoggerWrapper(gym.Wrapper):
-    def __init__(self, env: TradingEnv, file_path, file_name):
+    def __init__(self, env: TradingEnvOnlyLong, file_path, file_name):
         super().__init__(env)
         self.file_name = file_name
         self.file_path = file_path
