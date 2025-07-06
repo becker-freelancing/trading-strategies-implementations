@@ -24,11 +24,11 @@ public class BufferedClassificationPredictionReader {
 
     private static Map<LocalDateTime, ClassificationPrediction> PREDICTIONS = null;
 
-    public static synchronized Map<LocalDateTime, ClassificationPrediction> getPredictionsSingleton() {
+    public static synchronized Map<LocalDateTime, ClassificationPrediction> getPredictionsSingleton(String predictionPath) {
         if (PREDICTIONS == null) {
             logger.info("Start reading buffered prediction...");
             BufferedClassificationPredictionReader predictionReader = new BufferedClassificationPredictionReader();
-            String path = PathUtil.fromRelativePath("prediction-bybit/BACKTEST_PREDICTION_CLASSIFICATION_240.csv");
+            String path = PathUtil.fromRelativePath(predictionPath);
             PREDICTIONS = predictionReader.readPredictions(Path.of(path));
             logger.info("Finished reading buffered prediction.");
         }
