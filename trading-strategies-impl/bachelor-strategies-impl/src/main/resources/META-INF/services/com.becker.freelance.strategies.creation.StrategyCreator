@@ -2,3 +2,5 @@ com.becker.freelance.strategies.regression.sequence.SequenceRegressionStrategyCr
 com.becker.freelance.strategies.regression.sequence.SequenceLiveRegressionStrategyCreator
 com.becker.freelance.strategies.classification.ClassificationStrategyCreator
 com.becker.freelance.strategies.classification.ClassificationStrategyWithoutPcaCreator
+com.becker.freelance.strategies.rl.HardTpRLStrategyCreator
+com.becker.freelance.strategies.rl.AtrBasedRLStrategyCreator

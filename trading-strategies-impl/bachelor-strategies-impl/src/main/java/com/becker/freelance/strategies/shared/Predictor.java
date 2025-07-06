@@ -1,13 +1,13 @@
 package com.becker.freelance.strategies.shared;
 
 import com.becker.freelance.indicators.ta.regime.QuantileMarketRegime;
-import com.becker.freelance.strategies.executionparameter.EntryExecutionParameter;
+import com.becker.freelance.strategies.executionparameter.StrategyExecutionParameter;
 
 import java.util.Optional;
 
 public interface Predictor<T> {
 
-    public Optional<T> predict(EntryExecutionParameter parameter, PredictionParameter predictionParameter);
+    public Optional<T> predict(StrategyExecutionParameter parameter, PredictionParameter predictionParameter);
 
     public default boolean requiresPredictionParameter() {
         return false;
