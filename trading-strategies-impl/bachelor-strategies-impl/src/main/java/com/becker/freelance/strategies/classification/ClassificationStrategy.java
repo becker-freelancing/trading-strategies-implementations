@@ -41,21 +41,21 @@ public class ClassificationStrategy extends BaseStrategy {
             if (classificationPrediction.buyProbability() > minProbabilityForEntry) {
                 Direction direction = Direction.BUY;
                 Decimal price = currentPrice.getClosePriceForDirection(direction);
-                entrySignalBuilder()
+                return Optional.of(entrySignalBuilder()
                         .withPositionBehaviour(positionBehaviour)
                         .withOpenMarketRegime(currentMarketRegime())
                         .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(direction))
                         .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(price.subtract(stopLossDelta)))
-                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(price.add(takeProfitDelta)));
+                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(price.add(takeProfitDelta))));
             } else if (classificationPrediction.sellProbability() > minProbabilityForEntry) {
                 Direction direction = Direction.SELL;
                 Decimal price = currentPrice.getClosePriceForDirection(direction);
-                entrySignalBuilder()
+                return Optional.of(entrySignalBuilder()
                         .withPositionBehaviour(positionBehaviour)
                         .withOpenMarketRegime(currentMarketRegime())
                         .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(direction))
                         .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(price.add(stopLossDelta)))
-                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(price.subtract(takeProfitDelta)));
+                        .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(price.subtract(takeProfitDelta))));
 
             }
         }
