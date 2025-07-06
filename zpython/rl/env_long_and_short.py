@@ -10,7 +10,7 @@ from zpython.rl.scaler import Scaler
 from zpython.rl.statistics_recorder import StatisticsRecorder
 
 
-class TradingEnvOnlyLong(gym.Env):
+class TradingEnvLongAndShort(gym.Env):
     def __init__(self,
                  data: pd.DataFrame,
                  episode_max_len: int,
@@ -232,6 +232,14 @@ class TradingEnvOnlyLong(gym.Env):
                     self.initial_margin_long += buy_num_coins * self.price_ask / self.leverage
                     self.coins_long += buy_num_coins
 
+            if -self.coins_short > 0:  # close/decreace short position by self.order_size
+                buy_num_coins = min(-self.coins_short, self.order_size / self.price_ask)
+                self.initial_margin_short *= min((-self.coins_short - buy_num_coins), 0.) / -self.coins_short
+                self.coins_short = min(self.coins_short + buy_num_coins, 0)  # cannot be positive
+                realized_pnl = buy_num_coins * (self.average_price_short - self.price_ask)  # buy_num_coins is positive
+                self.wallet_balance += realized_pnl
+                self.reward_realized_pnl_short = realized_pnl
+
         # similar to "SELL" button
         if action == 2:  # close/reduce long position by self.order_size
             if self.coins_long > 0:
@@ -241,6 +249,14 @@ class TradingEnvOnlyLong(gym.Env):
                 realized_pnl = sell_num_coins * (self.price_bid - self.average_price_long)
                 self.wallet_balance += realized_pnl
                 self.reward_realized_pnl_long = realized_pnl
+
+            if -self.coins_short >= 0:  # open/increase short position by self.order_size
+                if (self.available_balance > self.order_size):
+                    sell_num_coins = self.order_size / self.price_ask
+                    self.average_price_short = (self.position_value_short + sell_num_coins * self.price_bid) / (
+                                -self.coins_short + sell_num_coins)
+                    self.initial_margin_short += sell_num_coins * self.price_ask / self.leverage
+                    self.coins_short -= sell_num_coins
 
         self.liquidation = -self.unrealized_pnl_long - self.unrealized_pnl_short > self.margin_long + self.margin_short
         self.episode_maxstep_achieved = self.time_relative == self.max_step
@@ -257,6 +273,16 @@ class TradingEnvOnlyLong(gym.Env):
                 realized_pnl = sell_num_coins * (self.price_bid - self.average_price_long)
                 self.wallet_balance += realized_pnl
                 self.reward_realized_pnl_long = realized_pnl
+
+            if -self.coins_short > 0:
+                buy_num_coins = -self.coins_short
+                # becomes zero
+                self.initial_margin_short *= min((self.coins_short + buy_num_coins), 0.) / self.coins_short
+                # becomes zero
+                self.coins_short += buy_num_coins
+                realized_pnl = buy_num_coins * (self.average_price_short - self.price_ask)  # buy_num_coins is positive
+                self.wallet_balance += realized_pnl
+                self.reward_realized_pnl_short = realized_pnl
 
         self.margin_short, self.margin_long = self._calculate_margin_isolated()
         self.available_balance = max(self.wallet_balance - self.margin_short - self.margin_long, 0)
@@ -317,7 +343,6 @@ class TradingEnvOnlyLong(gym.Env):
             average_price_short=self.average_price_short,
             average_price_long=self.average_price_long,
         )
-
 
         self.time_absolute += 1
         self.time_relative += 1

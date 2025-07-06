@@ -4,7 +4,7 @@ import gymnasium as gym
 from stable_baselines3 import PPO
 
 from zpython.rl.data_reader import read_all
-from zpython.rl.env_only_long import TradingEnvOnlyLong
+from zpython.rl.env_long_and_short import TradingEnvLongAndShort
 
 
 def run():
@@ -16,9 +16,9 @@ def run():
     EPISODE_MAX_LEN = 1440
     LOOKBACK_WINDOW_LEN = EPISODE_MAX_LEN
     TRAIN_START = 0
-    TRAIN_END = 200000
-    TEST_START = 200000
-    TEST_END = 250600
+    TRAIN_END = 160000
+    TEST_START = 160000
+    TEST_END = 199600
     FEATURE_DIM = 227
     LOGICAL_SEGMENTS = [2, 2, 57, 56, 55, 55]
 
@@ -31,7 +31,7 @@ def run():
     import gc
 
     class InfoLoggerWrapper(gym.Wrapper):
-        def __init__(self, env: TradingEnvOnlyLong, env_id, file_path, file_name):
+        def __init__(self, env: TradingEnvLongAndShort, env_id, file_path, file_name):
             super().__init__(env)
             self.file_name = file_name
             self.file_path = file_path
@@ -107,7 +107,7 @@ def run():
 
     def make_env(env_id: int, regime="training"):
         def _init():
-            env = TradingEnvOnlyLong(
+            env = TradingEnvLongAndShort(
                 merged,
                 EPISODE_MAX_LEN,
                 LOOKBACK_WINDOW_LEN,
