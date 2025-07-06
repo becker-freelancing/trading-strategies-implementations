@@ -1,7 +1,6 @@
 package com.becker.freelance.strategies.rl;
 
 import com.becker.freelance.commons.position.Direction;
-import com.becker.freelance.commons.position.Position;
 import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignalBuilder;
 import com.becker.freelance.commons.signal.ExitSignal;
@@ -14,14 +13,14 @@ import com.becker.freelance.strategies.strategy.StrategyParameter;
 
 import java.util.Optional;
 
-public abstract class RLStrategy extends BaseStrategy {
+public abstract class RLOnlyBuyStrategy extends BaseStrategy {
 
     private final RLPredictor rlPredictor;
     private final PositionBehaviour positionBehaviour;
 
     private RLPrediction currentPrediction;
 
-    protected RLStrategy(StrategyParameter strategyParameter, RLPredictor rlPredictor, PositionBehaviour positionBehaviour) {
+    protected RLOnlyBuyStrategy(StrategyParameter strategyParameter, RLPredictor rlPredictor, PositionBehaviour positionBehaviour) {
         super(strategyParameter);
         this.rlPredictor = rlPredictor;
         this.positionBehaviour = positionBehaviour;
@@ -38,24 +37,10 @@ public abstract class RLStrategy extends BaseStrategy {
     }
 
     protected Optional<EntrySignalBuilder> toEntrySignal(RLPrediction prediction, TimeSeriesEntry currentPrice) {
-        return switch (prediction.rlAction()) {
-            case BUY -> toBuyEntrySignal(currentPrice);
-            case SELL -> toSellEntrySignal(currentPrice);
-            default -> Optional.empty();
-        };
-    }
-
-    private Optional<EntrySignalBuilder> toSellEntrySignal(TimeSeriesEntry currentPrice) {
-        Direction direction = Direction.SELL;
-        Decimal price = currentPrice.getClosePriceForDirection(direction);
-        Decimal stopDistance = getStopDistance();
-        Decimal limitDistance = getLimitDistance(stopDistance);
-        return Optional.of(entrySignalBuilder()
-                .withPositionBehaviour(positionBehaviour)
-                .withOpenMarketRegime(currentMarketRegime())
-                .withOpenOrder(orderBuilder().asMarketOrder().withPair(currentPrice.pair()).withDirection(direction))
-                .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(price.add(stopDistance)))
-                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(price.subtract(limitDistance))));
+        if (prediction.rlAction() == RLAction.BUY) {
+            return toBuyEntrySignal(currentPrice);
+        }
+        return Optional.empty();
     }
 
     private Optional<EntrySignalBuilder> toBuyEntrySignal(TimeSeriesEntry currentPrice) {
@@ -76,15 +61,15 @@ public abstract class RLStrategy extends BaseStrategy {
     protected Optional<ExitSignal> internalShouldExit(ExitExecutionParameter exitParameter) {
         this.currentPrediction = rlPredictor.predict(exitParameter, null).orElse(null);
 
-        if (currentPrediction == null || currentPrediction.rlAction() != RLAction.LIQUIDATE) {
+        if (currentPrediction == null) {
             return Optional.empty();
         }
 
-        Optional<Direction> direction = getOpenPositionRequestor().getOpenPositions().stream()
-                .filter(position -> position.getPair().equals(getPair()))
-                .map(Position::getDirection)
-                .findAny();
+        if (currentPrediction.rlAction() == RLAction.LIQUIDATE || currentPrediction.rlAction() == RLAction.SELL) {
 
-        return direction.map(ExitSignal::new);
+            return Optional.of(new ExitSignal(Direction.BUY));
+        }
+
+        return Optional.empty();
     }
 }

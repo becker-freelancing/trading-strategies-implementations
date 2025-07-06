@@ -7,13 +7,13 @@ import org.ta4j.core.Indicator;
 import org.ta4j.core.indicators.ATRIndicator;
 import org.ta4j.core.num.Num;
 
-public class AtrBasedRLStrategy extends RLStrategy {
+public class AtrBasedRLOnlyBuyStrategy extends RLOnlyBuyStrategy {
 
     private final Indicator<Num> atr;
     private final Decimal atrMultiplier;
     private final Decimal takeProfitMultiplier;
 
-    public AtrBasedRLStrategy(StrategyParameter strategyParameter, RLPredictor rlPredictor, PositionBehaviour positionBehaviour, int atrPeriod, Decimal atrMultiplier, Decimal takeProfitMultiplier) {
+    public AtrBasedRLOnlyBuyStrategy(StrategyParameter strategyParameter, RLPredictor rlPredictor, PositionBehaviour positionBehaviour, int atrPeriod, Decimal atrMultiplier, Decimal takeProfitMultiplier) {
         super(strategyParameter, rlPredictor, positionBehaviour);
         this.atr = new ATRIndicator(barSeries, atrPeriod);
         this.atrMultiplier = atrMultiplier;

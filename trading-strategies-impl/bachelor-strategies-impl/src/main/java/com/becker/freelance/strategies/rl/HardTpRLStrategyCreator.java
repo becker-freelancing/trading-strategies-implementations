@@ -25,7 +25,7 @@ public class HardTpRLStrategyCreator implements StrategyCreator {
 
     @Override
     public TradingStrategy build(StrategyParameter strategyParameter) {
-        return new HardTpRLStrategy(
+        return new HardTpRLOnlyBuyStrategy(
                 strategyParameter,
                 new BufferedRLPredictor(),
                 strategyParameter.getParameterAsBool(DefaultParameterNames.TRAILING_STOP_ORDER) ? PositionBehaviour.TRAILING : PositionBehaviour.HARD_LIMIT,
