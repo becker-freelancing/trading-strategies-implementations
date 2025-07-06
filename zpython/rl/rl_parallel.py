@@ -16,9 +16,9 @@ def run():
     EPISODE_MAX_LEN = 1440
     LOOKBACK_WINDOW_LEN = EPISODE_MAX_LEN
     TRAIN_START = 0
-    TRAIN_END = 10000
-    TEST_START = 10000
-    TEST_END = 20000
+    TRAIN_END = 200000
+    TEST_START = 200000
+    TEST_END = 250600
     FEATURE_DIM = 227
     LOGICAL_SEGMENTS = [2, 2, 57, 56, 55, 55]
 
@@ -128,7 +128,7 @@ def run():
 
     from stable_baselines3.common.vec_env import DummyVecEnv
 
-    num_envs = 16  # oder so viele wie CPU-Kerne verfügbar sind
+    num_envs = 3  # oder so viele wie CPU-Kerne verfügbar sind
     env = DummyVecEnv([make_env(i) for i in range(num_envs)])
     eval_env = make_env(999, regime="evaluation")()  # normal, nicht parallelisiert
 

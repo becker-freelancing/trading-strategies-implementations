@@ -2,6 +2,7 @@ from stable_baselines3 import PPO
 from tqdm import tqdm
 
 from zpython.rl.env_only_long import TradingEnvOnlyLong
+from zpython.util import from_relative_path
 from zpython.util.data_split import backtest_data
 from zpython.util.path_util import from_relative_path
 
@@ -75,18 +76,18 @@ def read_all():
 
 
 import multiprocessing as mp
-
-EPISODE_MAX_LEN = 1440
-LOOKBACK_WINDOW_LEN = EPISODE_MAX_LEN
-
+MODEL = None
+DATA = None
 MODEL_PATH = from_relative_path("models-bybit/RL_ONLY_LONG/best_model.zip")
-DATA = read_all()
-DATA = DATA[~DATA.index.duplicated()]
 
-time_absolute_range = list(range(LOOKBACK_WINDOW_LEN * 4 + 1, len(DATA)))
-
+def init_worker(model_path, data):
+    global MODEL, DATA
+    DATA = data
+    MODEL = PPO.load(model_path, device="cuda")  # Wird nur einmal pro Prozess geladen
 
 def run_inference(time_absolute):
+    global MODEL, DATA
+
     env = TradingEnvOnlyLong(
         DATA,
         EPISODE_MAX_LEN,
@@ -95,17 +96,25 @@ def run_inference(time_absolute):
         regime="evaluation"
     )
 
-    model = PPO.load(MODEL_PATH, device="cuda")  # CPU für parallele Nutzung
-
     time = DATA.iloc[time_absolute].name
     obs, _ = env.reset(options={"time_absolute": time_absolute + 1})
-    action, _ = model.predict(obs, deterministic=True)
+    action, _ = MODEL.predict(obs, deterministic=True)
 
     return {"closeTime": time, "action": action}
 
-
 if __name__ == "__main__":
-    with mp.Pool(mp.cpu_count()) as pool:
+    df = read_all()
+    df = df[~df.index.duplicated()]
+    EPISODE_MAX_LEN = 1440
+    LOOKBACK_WINDOW_LEN = EPISODE_MAX_LEN
+    time_absolute_range = range(LOOKBACK_WINDOW_LEN * 4 + 1, len(df))
+
+    with mp.Pool(
+        mp.cpu_count(),
+        initializer=init_worker,
+        initargs=(MODEL_PATH, df)
+    ) as pool:
         results = list(tqdm(pool.imap(run_inference, time_absolute_range), total=len(time_absolute_range)))
 
-    pd.DataFrame(results).to_csv(from_relative_path("prediction-bybit/RL_ONLY_LONG.csv"), index=False)
+    pd.DataFrame(results).to_csv("./result.csv", index=False)
+    pd.DataFrame(results).to_csv(from_relative_path("prediction-bybit/RL.csv"), index=False)

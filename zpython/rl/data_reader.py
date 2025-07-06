@@ -3,19 +3,19 @@ from zpython.util.data_split import train_data
 
 # Data Read definieren
 def read_short_train_eth(time_frame):
-    return train_data(1).iloc[-200_000:]
+    return train_data(1).iloc[-800000:]
 
 
 def read_short_train_eth_15(time_frame):
-    return train_data(15).iloc[-200_000:]
+    return train_data(15).iloc[-800000:]
 
 
 def read_short_train_data_btc(time_frame):
-    return train_data(1, "BTCPERP").iloc[-200_000:]
+    return train_data(1, "BTCPERP").iloc[-800000:]
 
 
 def read_short_train_data_btc_15(time_frame):
-    return train_data(15, "BTCPERP").iloc[-200_000:]
+    return train_data(15, "BTCPERP").iloc[-800000:]
 
 
 from zpython.util.indicator_creator import create_indicators

@@ -82,25 +82,37 @@ class TradingEnvOnlyLong(gym.Env):
         return scaled_obs_reset, {}
 
     def _get_observation_reset(self):
-        for current_time_absolute in range(self.time_absolute - self.lookback_window_len * 4, self.time_absolute):
-            self._get_observation_step(current_time_absolute)
+        self.state_que.clear()
+        self.reset_que.clear()
+
+        for current_time_absolute in range(
+                self.time_absolute - self.lookback_window_len * 4,
+                self.time_absolute
+        ):
+            obs = self._get_observation_step_fast(current_time_absolute)
+
+            # Schreibe je nach Zeitfenster in state_que oder reset_que
+            if current_time_absolute >= self.time_absolute - self.lookback_window_len:
+                self.state_que.append(obs)
+            self.reset_que.append(obs)
 
         return np.array(self.state_que), np.array(self.reset_que)
 
-    def _get_observation_step(self, current_time):
+    def _get_observation_step_fast(self, current_time):
         input_array = self.data[current_time]
 
+        # Manuelle Features extrahieren
         day_column = input_array[0]
         hour_column = input_array[1]
         available_balance = self.available_balance
         unrealized_pnl = self.unrealized_pnl_long + self.unrealized_pnl_short
 
-        current_observation = np.hstack(
-            (day_column, hour_column, available_balance, unrealized_pnl, input_array[2:])).astype(np.float32)
-        self.state_que.append(current_observation)
-        self.reset_que.append(current_observation)
-
-        return np.array(self.state_que)
+        # Schnelles Zusammenfügen
+        return np.concatenate((
+            [day_column, hour_column],
+            [available_balance, unrealized_pnl],
+            input_array[2:]
+        ), dtype=np.float32)
 
     def _reset_env_state_short(self, random_open_position):
         # Start episode with already open SHORT position
