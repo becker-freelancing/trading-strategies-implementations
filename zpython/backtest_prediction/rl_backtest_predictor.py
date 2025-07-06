@@ -74,31 +74,38 @@ def read_all():
     return merged
 
 
-path = from_relative_path("models-bybit/RL/best_model.zip")
-
-model = PPO.load(path, device="cuda")
-
-df = read_all()
-df = df[~df.index.duplicated()]
+import multiprocessing as mp
 
 EPISODE_MAX_LEN = 1440
 LOOKBACK_WINDOW_LEN = EPISODE_MAX_LEN
 
-env = TradingEnv(df, EPISODE_MAX_LEN, LOOKBACK_WINDOW_LEN, 0, 0, 0, len(df) - 1, regime="evaluation")
+MODEL_PATH = from_relative_path("models-bybit/RL/best_model.zip")
+DATA = read_all()
+DATA = DATA[~DATA.index.duplicated()]
 
-time_absolute_range = range(LOOKBACK_WINDOW_LEN * 4 + 1, len(df))
+time_absolute_range = list(range(LOOKBACK_WINDOW_LEN * 4 + 1, len(DATA)))
 
-result = []
 
-for time_absolute in tqdm(time_absolute_range):
-    time = df.iloc[time_absolute].name
+def run_inference(time_absolute):
+    env = TradingEnv(
+        DATA,
+        EPISODE_MAX_LEN,
+        LOOKBACK_WINDOW_LEN,
+        0, 0, 0, len(DATA) - 1,
+        regime="evaluation"
+    )
+
+    model = PPO.load(MODEL_PATH, device="cuda")  # CPU für parallele Nutzung
+
+    time = DATA.iloc[time_absolute].name
     obs, _ = env.reset(options={"time_absolute": time_absolute + 1})
-
     action, _ = model.predict(obs, deterministic=True)
-    result.append({
-        "closeTime": time,
-        "action": action
-    })
 
-pd.DataFrame(result).to_csv("./result.csv", index=False)
-pd.DataFrame(result).to_csv(from_relative_path("prediction-bybit/RL.csv"), index=False)
+    return {"closeTime": time, "action": action}
+
+
+if __name__ == "__main__":
+    with mp.Pool(mp.cpu_count()) as pool:
+        results = list(tqdm(pool.imap(run_inference, time_absolute_range), total=len(time_absolute_range)))
+
+    pd.DataFrame(results).to_csv(from_relative_path("prediction-bybit/RL.csv"), index=False)
