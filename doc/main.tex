@@ -1,0 +1,118 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{styles}
+
+\begin{document}
+
+% ====================  Deckblatt  ======================
+
+    \include{1-Deckblatt}
+
+
+    \newpage
+
+    \newpage
+
+    \include{2-Declaration-of-ownership}
+
+    \newpage
+
+% ====================  Abstract  ======================
+
+
+    \include{3-Abstract}
+
+    \newpage
+
+% ====================  Inhaltsverzeichniss  ======================
+    \pagestyle{plain}
+    \pagenumbering{roman}
+
+    \tableofcontents
+
+    \newpage
+
+
+% ====================  Listings  ======================
+
+    \pagenumbering{alph}
+
+    \newpage
+    \listoffigures
+
+
+    \vspace{1.5cm}
+
+    \listoftables
+
+
+    \newpage
+    \renewcommand{\thelstlisting}{\Alph{lstlisting}} % Code-Listings benuzen A, B, C, ...
+    \lstlistoflistings
+
+    \vspace{1.5cm}
+
+    \include{4-Abkuerzungsverzeichniss}
+
+    \newpage
+
+
+
+    \pagenumbering{arabic}
+
+    \include{A-A-Motivation}
+
+    \newpage
+
+    \include{A-Broker}
+
+    \newpage
+
+    \include{B-EDA}
+
+    \newpage
+
+    \include{C-Market-Regimes}
+
+    \newpage
+
+    \include{D-Money-Risiko-Management}
+
+    \newpage
+
+    \include{E-Models}
+
+    \newpage
+
+    \include{F-Trading-Strategies}
+
+    \newpage
+
+    \include{G-Trading-Engine}
+
+    \newpage
+
+    \include{H-Backtesting}
+
+    \newpage
+
+    \include{I-Stresstesting}
+
+    \newpage
+
+    \include{J-Live-Test}
+
+    \newpage
+
+    \include{K-Zusammenfassung}
+
+% ====================  Listings  ======================
+
+
+    \newpage
+
+
+    \section{References}
+    \printbibliography[title=~]
+
+
+\end{document}

@@ -1,0 +1,192 @@
+\usepackage{graphicx} % Required for inserting images
+\usepackage[utf8]{inputenc} % Dokument wird UTF-8 kodiert
+\usepackage[english]{babel} % Sprachspeziefische Details, wie z.B. Formatierung eines Datums
+\usepackage{csquotes} % Erweiterte Zitierfunktionen
+\usepackage{amsmath}
+\usepackage{hyperref} % Links werden Automatisch in die Quellen eingefügt
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue} % Optionen für die Hyperlinks
+\usepackage[backend=biber,
+    style=numeric-comp,
+    subentry,
+    sorting=none,
+    isbn=false,
+    url=false,
+    block=space,
+    pagetracker=true]{biblatex} % Verwaltung des Quellen-Verzeichnisses und von Zitaten
+
+\usepackage[nodayofweek, level]{datetime} % Formatierung von Datums
+\usepackage{listings}
+\usepackage{xcolor} % Formaterung der Farben für Code-Anhänge
+\usepackage{fmtcount} % For formatting numbers
+\usepackage{float}
+\usepackage{svg}
+\usepackage{enumitem}
+\usepackage{wrapfig}
+\usepackage[gen]{eurosym}
+\usepackage[T1]{fontenc}
+\usepackage{tabularx}
+\usepackage{tabularray}
+\usepackage{makecell}
+\usepackage{booktabs}
+\usepackage{mfirstuc}
+\UseTblrLibrary{diagbox}
+
+% --------------------  Quellen --------------------------------
+
+\addbibresource{AZ-broker.bib}
+\addbibresource{BZ-eda.bib}
+\addbibresource{CZ-market-regime.bib}
+\addbibresource{DZ-money-risiko-management.bib}
+\addbibresource{EZ-models.bib}
+\addbibresource{FZ-trading-strategies.bib}
+\addbibresource{GZ-trading-engine.bib}
+\addbibresource{HZ-backtesting.bib}
+\addbibresource{IZ-stresstesting.bib}
+\addbibresource{JZ-live-testing.bib}
+
+% ====================  Allg Einstellungen  ======================
+
+
+% --------------------  Zitierformat --------------------------------
+
+\DeclareFieldFormat{title}{\textnormal{#1}}
+
+
+\renewbibmacro*{cite}{
+    \ifentrytype{online}
+    {\printtext[bibhyperref]{\textnormal{\printfield{title} (\printfield{year})}}}
+    {\printtext[bibhyperref]{\printnames{labelname}}%
+    \space
+    \printtext[bibhyperref]{(\printfield{year})}}}
+
+
+% --------------------  Listings --------------------------------
+
+\renewcommand{\lstlistlistingname}{Code Listing} % Titel der Code-Listings verändern
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.6, 0.1, 0.1}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{keywordcolour}{rgb}{0.0,0.478,0.8}
+
+
+\lstdefinestyle{python}{
+    language=Python,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{keywordcolour},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{black}
+}
+
+\lstdefinestyle{java}{
+    language=Java,
+    backgroundcolor=\color{black!5},
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{violet},
+    stringstyle=\color{red},
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    stepnumber=1,
+    numbersep=10pt,
+    frame=single,
+    rulecolor=\color{black},
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    captionpos=b,
+    escapeinside={\%*}{*)}
+}
+
+
+% --------------------  Figures --------------------------------
+\newcommand{\figref}[1]{\hyperref[#1]{Figure~\ref*{#1}}}
+
+
+% --------------------  Datum --------------------------------
+
+\newcommand{\monthyear}{\ifcase
+                            \month\or
+                            January\or February\or March\or April\or May\or June\or
+                            July\or August\or September\or October\or November\or December
+\fi\ \the\year}
+
+
+% --------------------  Euro Formatierung  --------------------------------
+\let\texteuro\euro
+
+% --------------------  Abkürzungsverzeichnis  --------------------------------
+
+% --------------------  Tabellen  --------------------------------
+
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}} % zentrierte p-Spalte
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündige p-Spalte
+
+
+% ====================  Globale Variablen  ======================
+
+\title{Predicting the Bitcoin Price with Deep Learning Models and Developing a Profitable Trading Strategy}
+\author{Jason Becker}
+\date{\monthyear}
+\newcommand{\ethusdc}{ETH/USDC M1}
+
+% ETH Full Period
+\newcommand{\ethDateStart}{\formatdate{5}{8}{2022}}
+\newcommand{\ethTimeStart}{10:00 UTC+2}
+\newcommand{\ethDataStartDate}{\ethDateStart, \ethTimeStart}
+
+\newcommand{\ethDateEnd}{\formatdate{17}{6}{2025}}
+\newcommand{\ethTimeEnd}{11:30 UTC+2}
+\newcommand{\ethDataEndDate}{\ethDateEnd, \ethTimeEnd}
+
+% Train
+\newcommand{\ethTrainDateStart}{\formatdate{5}{8}{2022}}
+\newcommand{\ethTrainTimeStart}{10:00 UTC+2}
+\newcommand{\ethTrainDataStartDate}{\ethTrainDateStart, \ethTrainTimeStart}
+
+\newcommand{\ethTrainDateEnd}{\formatdate{30}{4}{2024}}
+\newcommand{\ethTrainTimeEnd}{23:59 UTC+2}
+\newcommand{\ethTrainDataEndDate}{\ethTrainDateEnd, \ethTrainTimeEnd}
+
+% Validation
+\newcommand{\ethValidationDateStart}{\formatdate{1}{5}{2024}}
+\newcommand{\ethValidationTimeStart}{00:00 UTC+2}
+\newcommand{\ethValidationDataStartDate}{\ethValidationDateStart, \ethValidationTimeStart}
+
+\newcommand{\ethValidationDateEnd}{\formatdate{30}{9}{2024}}
+\newcommand{\ethValidationTimeEnd}{23:59 UTC+2}
+\newcommand{\ethValidationDataEndDate}{\ethValidationDateEnd, \ethValidationTimeEnd}
+
+% Test
+\newcommand{\ethTestDateStart}{\formatdate{1}{10}{2024}}
+\newcommand{\ethTestTimeStart}{00:00 UTC+2}
+\newcommand{\ethTestDataStartDate}{\ethTestDateStart, \ethTestTimeStart}
+
+\newcommand{\ethTestDateEnd}{\formatdate{31}{12}{2024}}
+\newcommand{\ethTestTimeEnd}{23:59 UTC+2}
+\newcommand{\ethTestDataEndDate}{\ethTestDateEnd, \ethTestTimeEnd}
+
+% Backtest
+\newcommand{\ethBacktestDateStart}{\formatdate{1}{1}{2025}}
+\newcommand{\ethBacktestTimeStart}{00:00 UTC+2}
+\newcommand{\ethBacktestDataStartDate}{\ethBacktestDateStart, \ethBacktestTimeStart}
+
+\newcommand{\ethBacktestDateEnd}{\formatdate{17}{6}{2025}}
+\newcommand{\ethBacktestTimeEnd}{11:30 UTC+2}
+\newcommand{\ethBacktestDataEndDate}{\ethBacktestDateEnd, \ethBacktestTimeEnd}
+
