@@ -5,13 +5,15 @@
 
 \subsection{Dividing the Data}
 
-Unlike classic machine learning processes, where data is splitted in three subsets, named train-, validation-, and test-set, here the data is splitted in four subsets. The fourth data-set is used for backtesting the real trading strategy, and is therefore not part of the machine learning process but plays an important role in developing the final trading strategy.
+Unlike classic machine learning processes, where data is splitted in three subsets, named train-, validation-, and test-set, here the data is splitted in four subsets.
+The fourth data-set is used for backtesting the real trading strategy, and is therefore not part of the machine learning process but plays an important role in developing the final trading strategy.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{ L{1.5cm} >{\centering\arraybackslash}m{4cm} >{\centering\arraybackslash}m{2cm} P{2.5cm} P{1.5cm} }
         \toprule
-        Set & From & To & No. of Datapoints & \% of All Data
+        Set & From & To & No.
+        of Datapoints & \% of All Data
         \\
         \midrule
         \textbf{Complete} & \makecell{08/05/2022 \\ 10:00 UTC+2} & \makecell{06/17/2025 \\ 11:30 UTC+2} & $1,507,598$ & \\
@@ -120,7 +122,8 @@ After the splitting, the four subsets have the following summaries:
 
 \subsection{Using Log-Returns}
 
-In the summary statistics of the subsets (\autoref{tbl:train-data}, \autoref{tbl:validation-data}, \autoref{tbl:test-data}, \autoref{tbl:backtest-data}) it is noticeable that the mean values change over time. This becomes also clear when visualizing the data (\autoref{fig:eth-data}).
+In the summary statistics of the subsets (\autoref{tbl:train-data}, \autoref{tbl:validation-data}, \autoref{tbl:test-data}, \autoref{tbl:backtest-data}) it is noticeable that the mean values change over time.
+This becomes also clear when visualizing the data (\autoref{fig:eth-data}).
 
 \begin{figure}[H]
     \centering
@@ -129,7 +132,8 @@ In the summary statistics of the subsets (\autoref{tbl:train-data}, \autoref{tbl
     \label{fig:eth-data}
 \end{figure}
 
-To avoid this data drift, the price is transformed to its logarithmic returns (also called log-returns). These are calculated as follows:
+To avoid this data drift, the price is transformed to its logarithmic returns (also called log-returns).
+These are calculated as follows:
 
 \begin{equation}
     LogReturn_t = ln(\frac{Price_t}{Price_{t-1}})
@@ -153,53 +157,97 @@ To provide the machine learning models more context about the price, additional 
 
 \subsubsection{Trend Following Indicators}
 
-In financial analysis trend following indicators play an essential role while modeling an predicting future price movements. This occurs because markets move in trends that are repeatedly interrupted by outliers. This results in a zigzag movement that nevertheless moves in one direction. Trend-following indicators can be used to filter out these outliers \cite{investopia-trend-indicators}.
+In financial analysis trend following indicators play an essential role while modeling an predicting future price movements.
+This occurs because markets move in trends that are repeatedly interrupted by outliers.
+This results in a zigzag movement that nevertheless moves in one direction.
+Trend-following indicators can be used to filter out these outliers \cite{investopia-trend-indicators}.
 
-The exponential moving average (EMA) is one type of trend following indicator. It is a variation of the classic simple moving average (SMA), placing more emphasis on newer prices. It is often used by traders in length of 10-, 50-, and 200-period. One limitation is that many trades believe that new data better reflects the current trend, where many others believe that overweighting recent prices creates a bias \cite{investopia-ema}.
+The exponential moving average (EMA) is one type of trend following indicator.
+It is a variation of the classic simple moving average (SMA), placing more emphasis on newer prices.
+It is often used by traders in length of 10-, 50-, and 200-period.
+One limitation is that many trades believe that new data better reflects the current trend, where many others believe that overweighting recent prices creates a bias \cite{investopia-ema}.
 
 %TODO: Bild von EMA und SMA im Vergleich -> EMA regiert schneller
 
-Because the EMA reacts faster to price changes than the SMA, and the aim of this paper are short-term predictions, the EMA could provide more relevant context for the model. The EMA was added in 5, 10, 20, 30, 50, and 200 period to the data.
+Because the EMA reacts faster to price changes than the SMA, and the aim of this paper are short-term predictions, the EMA could provide more relevant context for the model.
+The EMA was added in 5, 10, 20, 30, 50, and 200 period to the data.
 
-Another Trend following indicator is the moving average convergence/divergence (MACD) which does not only help to identify price trends, but also helps to measure the trend momentum. It shows the relationship between two exponential moving averages. To calculate the MACD line, an EMA(12) is subtracted from an EMA(26). Additionally a signal line is calculated as an EMA(9) of the MACD line.
+Another Trend following indicator is the moving average convergence/divergence (MACD) which does not only help to identify price trends, but also helps to measure the trend momentum.
+It shows the relationship between two exponential moving averages.
+To calculate the MACD line, an EMA(12) is subtracted from an EMA(26).
+Additionally a signal line is calculated as an EMA(9) of the MACD line.
 
-Although the MACD can signal possible reversals, it is also known for creating many false positives. This often happens if the market moves sideways \cite{investopia-macd}.
+Although the MACD can signal possible reversals, it is also known for creating many false positives.
+This often happens if the market moves sideways \cite{investopia-macd}.
 
 \subsubsection{Volatility Indicators}
 
 To measure volatility there are also other indicators, and techniques to measure the volatility, in addition to those described in \autoref{chap:market-regime-categories}.
 
-One indicator is the average true range (ATR) which decomposes the entire range of an asset price for a period. It is calculated by determining the so-called true range (TR) for each candlestick - the maximum of: current high minus low; distance from the previous closing price up, and down. The ATR is then the moving average of these TR values, usually over 14 periods.
+One indicator is the average true range (ATR) which decomposes the entire range of an asset price for a period.
+It is calculated by determining the so-called true range (TR) for each candlestick - the maximum of: current high minus low; distance from the previous closing price up, and down.
+The ATR is then the moving average of these TR values, usually over 14 periods.
 
-The ATR has two main limitations. The first is that an ATR value must always be set into comparison to previous ATR values, because one single value is not enough to tell if a trend is going to reverse. The second limitation is that the ATR does not tell anything about the direction of the price \cite{investopia-atr}. The ATR was added in 5, 7, 10, 14, and 18 period to the data.
+The ATR has two main limitations.
+The first is that an ATR value must always be set into comparison to previous ATR values, because one single value is not enough to tell if a trend is going to reverse.
+The second limitation is that the ATR does not tell anything about the direction of the price \cite{investopia-atr}.
+The ATR was added in 5, 7, 10, 14, and 18 period to the data.
 
-Another volatility indicator are Bollinger Bands, which consist of three lines. The middle line is a SMA of the closing prices, the lower line is calculated by subtracting a certain number of standard deviations from the middle line, and the upper line is calculating by adding a certain number of standard deviations to the middle line. Usually the double of the standard deviation is added, and subtracted from the middle line.
+Another volatility indicator are Bollinger Bands, which consist of three lines.
+The middle line is a SMA of the closing prices, the lower line is calculated by subtracting a certain number of standard deviations from the middle line, and the upper line is calculating by adding a certain number of standard deviations to the middle line.
+Usually the double of the standard deviation is added, and subtracted from the middle line.
 
-The higher the volatility of the market is in the last closing prices, the wider the band gets. If the price of the market rises near the upper band, traders see the market as overbought. Similar if the market falls near the lower band, the market could be oversold. This allows to generate possible entry, and exit signals \cite{investopia-bb}. The three Lines where added to the data with a 15, 20, and 25 period SMA.
+The higher the volatility of the market is in the last closing prices, the wider the band gets.
+If the price of the market rises near the upper band, traders see the market as overbought.
+Similar if the market falls near the lower band, the market could be oversold.
+This allows to generate possible entry, and exit signals \cite{investopia-bb}.
+The three Lines where added to the data with a 15, 20, and 25 period SMA.
 
 \subsubsection{Momentum Indicators}
 
-Momentum measures the strength, and direction of a price movement over a certain period of time. Momentum indicators are useful because they give insights into the strength of trending prices. Therefore they can indicate possible reversals in the trend direction \cite{investopia-momentum}.
+Momentum measures the strength, and direction of a price movement over a certain period of time.
+Momentum indicators are useful because they give insights into the strength of trending prices.
+Therefore they can indicate possible reversals in the trend direction \cite{investopia-momentum}.
 
-A common momentum indicator is the relative strength index (RSI). It measures the speed, and magnitude of an assets price by comparing the average gains, and losses of the asset, and can be used to detect overbought, and oversold conditions. The RSI ranges between zero, and 100. Usually an RSI over 70 indicates an overbought, and an RSI below 30 indicates an oversold market. Commonly the default RSI period to compare the average gains, and losses is 14 \cite{investopia-rsi}. The RSI was added in periods 7, 14, and 20 to the data.
+A common momentum indicator is the relative strength index (RSI).
+It measures the speed, and magnitude of an assets price by comparing the average gains, and losses of the asset, and can be used to detect overbought, and oversold conditions.
+The RSI ranges between zero, and 100.
+Usually an RSI over 70 indicates an overbought, and an RSI below 30 indicates an oversold market.
+Commonly the default RSI period to compare the average gains, and losses is 14 \cite{investopia-rsi}.
+The RSI was added in periods 7, 14, and 20 to the data.
 
-To depict relative trend strength, a sophisticated momentum indicator was constructed that compares the log returns of two different time frames. This feature allows the model to distinguish phases of accelerating price movements from stable or declining trends. The use of logarithmic returns simultaneously achieves scale independence, and improved comparability, which is particularly advantageous for modeling financial market-related time series. This indicator was added for time frames M2, M3, M6, M9, and M12.
+To depict relative trend strength, a sophisticated momentum indicator was constructed that compares the log returns of two different time frames.
+This feature allows the model to distinguish phases of accelerating price movements from stable or declining trends.
+The use of logarithmic returns simultaneously achieves scale independence, and improved comparability, which is particularly advantageous for modeling financial market-related time series.
+This indicator was added for time frames M2, M3, M6, M9, and M12.
 
 \subsubsection{Price Transformation Indicators}
 
-Apart from the mentioned indicators shifted logarithmic returns for the last six minutes have been added to provide additional context about the last price movements in a compact form. This could help the models to recognize trend reversals, volatility changes or short-term patterns.
+Apart from the mentioned indicators shifted logarithmic returns for the last six minutes have been added to provide additional context about the last price movements in a compact form.
+This could help the models to recognize trend reversals, volatility changes or short-term patterns.
 
-Lastly the logarithmic returns of other time frames (M2, M3, M6, M9, and M12) have been added to the data providing another more stable trend context which helps to correctly classify short-term price movements. This creates a balanced feature set that takes into account both rapid reactions, and long-term patterns.
+Lastly the logarithmic returns of other time frames (M2, M3, M6, M9, and M12) have been added to the data providing another more stable trend context which helps to correctly classify short-term price movements.
+This creates a balanced feature set that takes into account both rapid reactions, and long-term patterns.
 
 \subsection{Scaling the Data}
 
 \subsection{Pricipal Component Analysis}
 
-The principal component analysis (PCA) is a process for dimensional reduction, by linearly transforming high dimensional datasets to a small number of uncorrelated principal components  (directions of the new coordinate system). During the transformation, it can be specified how much variance in the data can be eliminated. After a transformation using PCA, it is ensured that at least the specified variance is retained \cite{wikipedia-pca}.
+The principal component analysis (PCA) is a process for dimensional reduction, by linearly transforming high dimensional datasets to a small number of uncorrelated principal components  (directions of the new coordinate system).
+During the transformation, it can be specified how much variance in the data can be eliminated.
+After a transformation using PCA, it is ensured that at least the specified variance is retained \cite{wikipedia-pca}.
 
-Especially when processing numerous technical indicators or derived features in financial data, the high dimensionality can become problematic - a phenomenon known as the course of dimensionality. This term describes the increasing challenges in modeling as the number of dimensions or features increases. Data points become increasingly sparsely disturbed, computational costs increase, and many models lose their ability to generalize. Applying PCA allows redundant or correlated information to be condensed, making the model more robust, faster, and easier to interpret. At the same time, the risk of overfitting is reduced because the model focuses on the most important structures in the dataset \cite{wikipedia-curse-od-dimensionality}.
+Especially when processing numerous technical indicators or derived features in financial data, the high dimensionality can become problematic - a phenomenon known as the course of dimensionality.
+This term describes the increasing challenges in modeling as the number of dimensions or features increases.
+Data points become increasingly sparsely disturbed, computational costs increase, and many models lose their ability to generalize.
+Applying PCA allows redundant or correlated information to be condensed, making the model more robust, faster, and easier to interpret.
+At the same time, the risk of overfitting is reduced because the model focuses on the most important structures in the dataset \cite{wikipedia-curse-od-dimensionality}.
 
-\autoref{fig:explained-variance} shows the cumulative explained variance for the 56 added features in \autoref{chap:additional-features} for each quantile market regime. It shows that the cumulative variance increases rapidly at the beginning. In this case, the reduction of the project to just 3 to 6 principal components already explains at least 80\% of the variance. This means that the majority of the statistically relevant structures in the dataset are retained, even though the number of features has been massively reduced. Even if 20\% of the variance is lost, the benefit outweighs this: The remaining principal components capture the statistical essence of the original feature space in a significantly more compact, and robust form, which is particularly well-suited for machine learning.
+\autoref{fig:explained-variance} shows the cumulative explained variance for the 56 added features in \autoref{chap:additional-features} for each quantile market regime.
+It shows that the cumulative variance increases rapidly at the beginning.
+In this case, the reduction of the project to just 3 to 6 principal components already explains at least 80\% of the variance.
+This means that the majority of the statistically relevant structures in the dataset are retained, even though the number of features has been massively reduced.
+Even if 20\% of the variance is lost, the benefit outweighs this: The remaining principal components capture the statistical essence of the original feature space in a significantly more compact, and robust form, which is particularly well-suited for machine learning.
 
 
 \begin{figure}[H]

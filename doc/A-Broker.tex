@@ -1,9 +1,12 @@
 \section{Data Source and Broker Selection}
 
-Cryptocurrency brokers (also called crypto brokers) play an important role in cryptocurrency trading. Among other things, they act as intermediaries between different market participants. Their key tasks include:
+Cryptocurrency brokers (also called crypto brokers) play an important role in cryptocurrency trading.
+Among other things, they act as intermediaries between different market participants.
+Their key tasks include:
 
 \begin{enumerate}
-    \item \textbf{Providing access:} Individuals can participate in the market through a broker and thereby trade various cryptocurrencies. This includes executing orders such as buying cryptocurrencies at the lowest available price or selling them at the highest available price.
+    \item \textbf{Providing access:} Individuals can participate in the market through a broker and thereby trade various cryptocurrencies.
+    This includes executing orders such as buying cryptocurrencies at the lowest available price or selling them at the highest available price.
     \item \textbf{Security, and Compliance:} They also provide customers with a secure platform for executing transactions and adhere to the financial regulations established by authorities.
     \item \textbf{Leveraging:} Brokers offer customers the opportunity to borrow money, and thus trade with more capital than they actually have in their account.
 \end{enumerate}
@@ -14,13 +17,17 @@ This has the advantage that trading with cryptocurrencies is much easier and saf
 \subsection{Broker Selection}
 \label{chap:broker-selection}
 
-For this paper, one broker must be selected for data retrieval, and live testing. Since the process is fully automated in short time-frames, the broker must meet certain requirements.
+For this paper, one broker must be selected for data retrieval, and live testing.
+Since the process is fully automated in short time-frames, the broker must meet certain requirements.
 
 The API must be able to stream market data, request historical data, the current account balance, closed trades, and currently open positions, placing orders, and positions, as well as canceling unfilled orders.
 
-Apart from the API the broker must support leveraged long/short products like CFDs or margin trading. They also must provide data in high quality as well as a demo depot. The further they must be regulated in the European Union with the lowest possible fees.
+Apart from the API the broker must support leveraged long/short products like CFDs or margin trading.
+They also must provide data in high quality as well as a demo depot.
+The further they must be regulated in the European Union with the lowest possible fees.
 
-\autoref{tbl:broker-comparision} summarizes the required features for some potential brokers. All listed there meet the API functionality requirements.\footnote{Sources: \cite{bybit-home}, \cite{bybit-api-doc}, \cite{ig-home}, \cite{ig-api-doc}, \cite{capital-home}, \cite{capital-api-doc}}
+\autoref{tbl:broker-comparision} summarizes the required features for some potential brokers.
+All listed there meet the API functionality requirements.\footnote{Sources: \cite{bybit-home}, \cite{bybit-api-doc}, \cite{ig-home}, \cite{ig-api-doc}, \cite{capital-home}, \cite{capital-api-doc}}
 
 \begin{table}[H]
     \small
@@ -32,9 +39,11 @@ Apart from the API the broker must support leveraged long/short products like CF
         \midrule
         \textbf{ByBit} & Spot, Spot with leverage, Futures, Options & 0.02\% & 0.055\% & 10:1 \\
         \addlinespace[0.8em]
-        \textbf{IG} & CFDs, Knock-out-Options & \multicolumn{2}{c}{Spread (approx. \$1.30)} & 2:1 \\
+        \textbf{IG} & CFDs, Knock-out-Options & \multicolumn{2}{c}{Spread (approx.
+        \$1.30)} & 2:1 \\
         \addlinespace[0.8em]
-        \textbf{Capital.com} & CFDs & \multicolumn{2}{c}{Spread (approx. \$1.75)} & 2:1 \\
+        \textbf{Capital.com} & CFDs & \multicolumn{2}{c}{Spread (approx.
+        \$1.75)} & 2:1 \\
         \bottomrule
     \end{tabular}
     \caption{Broker Comparison}
@@ -47,4 +56,7 @@ Taking into account \autoref{tbl:broker-comparision}, ByBit is the best broker b
 \subsection{API Connection and Data Retrieval Process}
 
 Before starting with the Machine Learning process, and the backtests, the first step is to download historical \ethusdc via the ByBit API.
-The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \verb|linear|, symbol \verb|ETHPERP|, and interval \verb|1| at \ethDataEndDate. Since ByBit only returns 1000 candlesticks per request, the same request with different start-, and end-times was executed until the ByBit API does no longer return older candlestick data. This resulted in a candlestick data pool with data on a minute basis from \ethDataStartDate to \ethDataEndDate. Chapter \ref{chap:statistics} will go into more detail about the data.
+The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \verb|linear|, symbol \verb|ETHPERP|, and interval \verb|1| at \ethDataEndDate.
+Since ByBit only returns 1000 candlesticks per request, the same request with different start-, and end-times was executed until the ByBit API does no longer return older candlestick data.
+This resulted in a candlestick data pool with data on a minute basis from \ethDataStartDate to \ethDataEndDate.
+Chapter \ref{chap:statistics} will go into more detail about the data.
