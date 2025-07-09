@@ -2,7 +2,7 @@ from abc import ABC
 
 import numpy as np
 import pandas as pd
-from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
+from keras.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
     MeanSquaredLogarithmicError, LogCoshError
 
 from zpython.training.regression.regression_model_trainer import RegressionModelTrainer

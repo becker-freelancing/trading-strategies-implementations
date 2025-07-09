@@ -1,7 +1,7 @@
 from keras import Model
-from keras.api.layers import Dense, Conv1D, MaxPooling1D, InputLayer, GRU
-from keras.api.models import Sequential
-from keras.api.optimizers import Adam
+from keras.layers import Dense, Conv1D, MaxPooling1D, InputLayer, GRU
+from keras.models import Sequential
+from keras.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 

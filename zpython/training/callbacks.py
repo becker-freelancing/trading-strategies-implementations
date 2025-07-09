@@ -1,7 +1,7 @@
 from threading import Lock
 
-from keras.api.callbacks import Callback
-from keras.api.utils import Progbar
+from keras.callbacks import Callback
+from keras.utils import Progbar
 from optuna.trial import Trial
 
 

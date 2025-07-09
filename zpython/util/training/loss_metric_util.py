@@ -1,7 +1,7 @@
 import torch
 
 torch.set_printoptions(precision=3, sci_mode=False)
-from keras.api import ops
+from keras import ops
 from keras.src.losses.loss import squeeze_or_expand_to_same_rank
 
 EPSILON = 0.1

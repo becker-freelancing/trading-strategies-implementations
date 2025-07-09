@@ -507,9 +507,9 @@ print(y_train_Symbol.shape,
       y_test_Symbol.shape,
       y_val_Symbol.shape)
 
-from keras.api.models import Sequential
-from keras.api.metrics import RootMeanSquaredError, MeanAbsoluteError
-from keras.api.layers import (Dense,
+from keras.models import Sequential
+from keras.metrics import RootMeanSquaredError, MeanAbsoluteError
+from keras.layers import (Dense,
                               LSTM, Dropout)
 
 
@@ -778,7 +778,7 @@ def train_model_ts(model,
     return history
 
 
-from keras.api import ops as backend
+from keras import ops as backend
 
 
 def r_two(y_true, y_pred):
@@ -843,7 +843,7 @@ def plot_forecast_3(model, x_test, y_test, index, history):
     plt.show()
 
 
-from keras.api.backend import clear_session
+from keras.backend import clear_session
 
 clear_session()
 

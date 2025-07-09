@@ -1,6 +1,6 @@
 from keras import Model
-from keras.api.layers import Dense, Conv1D, Attention, Input, GlobalAveragePooling1D
-from keras.api.optimizers import Adam
+from keras.layers import Dense, Conv1D, Attention, Input, GlobalAveragePooling1D
+from keras.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 

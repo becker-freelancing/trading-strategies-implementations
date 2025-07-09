@@ -2,8 +2,8 @@ from abc import ABC
 
 import numpy as np
 import pandas as pd
-from keras.api.callbacks import Callback
-from keras.api.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
+from keras.callbacks import Callback
+from keras.metrics import MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, MeanAbsolutePercentageError, \
     MeanSquaredLogarithmicError, LogCoshError, R2Score
 from zpython.models.training.base_training import BaseTraining
 from zpython.util.data_source import DataSource

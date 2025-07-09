@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from keras.api.callbacks import Callback
-from keras.api.models import Model
+from keras.callbacks import Callback
+from keras.models import Model
 from torch import device
 
 from zpython.training.data_set import RegimeDataLoader

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 import pandas as pd
-from keras.api.callbacks import Callback
-from keras.api.metrics import F1Score, CategoricalCrossentropy
+from keras.callbacks import Callback
+from keras.metrics import F1Score, CategoricalCrossentropy
 from keras.src.metrics import CategoricalAccuracy
 from zpython.training.base_training import BaseTraining
 from zpython.util.data_source import DataSource

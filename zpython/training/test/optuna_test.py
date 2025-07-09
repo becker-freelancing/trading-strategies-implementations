@@ -10,14 +10,14 @@ Keras. We optimize the filter and kernel size, kernel stride and layer activatio
 import urllib
 
 import optuna
-from keras.api.backend import clear_session
-from keras.api.datasets import mnist
-from keras.api.layers import Conv2D
-from keras.api.layers import Dense
-from keras.api.layers import Flatten
-from keras.api.layers import Input
-from keras.api.models import Sequential
-from keras.api.optimizers import RMSprop
+from keras.backend import clear_session
+from keras.datasets import mnist
+from keras.layers import Conv2D
+from keras.layers import Dense
+from keras.layers import Flatten
+from keras.layers import Input
+from keras.models import Sequential
+from keras.optimizers import RMSprop
 
 # TODO(crcrpar): Remove the below three lines once everything is ok.
 # Register a global custom opener to avoid HTTP Error 403: Forbidden when downloading MNIST.

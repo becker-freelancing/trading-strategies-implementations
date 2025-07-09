@@ -4,9 +4,9 @@ from abc import abstractmethod
 import joblib
 import numpy as np
 import pandas as pd
-from keras.api.callbacks import Callback
-from keras.api.models import Model
-from keras.api.utils import Progbar
+from keras.callbacks import Callback
+from keras.models import Model
+from keras.utils import Progbar
 from sklearn.base import BaseEstimator
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair

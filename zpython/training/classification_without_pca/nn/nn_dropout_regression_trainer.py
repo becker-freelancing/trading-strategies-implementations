@@ -1,7 +1,7 @@
 from keras import Model
-from keras.api.layers import Dense, InputLayer, Flatten, BatchNormalization, Dropout
-from keras.api.models import Sequential
-from keras.api.optimizers import Adam
+from keras.layers import Dense, InputLayer, Flatten, BatchNormalization, Dropout
+from keras.models import Sequential
+from keras.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 

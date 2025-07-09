@@ -24,7 +24,7 @@ import joblib
 import numpy as np
 import optuna
 import torch
-from keras.api.callbacks import Callback
+from keras.callbacks import Callback
 from optuna.trial import Trial
 
 from zpython.training.optuna_env_provider import get_optuna_storage_url, get_optuna_study_name

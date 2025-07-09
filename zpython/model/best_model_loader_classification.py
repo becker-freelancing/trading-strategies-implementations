@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from keras.api.models import load_model, Model
+from keras.models import load_model, Model
 
 from zpython.util.model_market_regime import ModelMarketRegime
 from zpython.util.path_util import from_relative_path

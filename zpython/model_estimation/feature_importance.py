@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import torch
 import tqdm
-from keras.api.models import load_model
+from keras.models import load_model
 from torch.utils.data import DataLoader
 
 from zpython.training.data_set import FeatureShuffleTensorDataSet

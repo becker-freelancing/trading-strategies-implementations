@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
-from keras.api.layers import LSTM, Dense, Input
-from keras.api.models import Model
-from keras.api.models import Sequential
-from keras.api.optimizers import Adam
+from keras.layers import LSTM, Dense, Input
+from keras.models import Model
+from keras.models import Sequential
+from keras.optimizers import Adam
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import MinMaxScaler
 from zpython.training.classification.classification_base_training import ClassificationBaseTraining

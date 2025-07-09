@@ -1,7 +1,7 @@
 from keras import Model
-from keras.api.layers import Dense, MultiHeadAttention, LayerNormalization, Conv1D, \
+from keras.layers import Dense, MultiHeadAttention, LayerNormalization, Conv1D, \
     GlobalAveragePooling1D, Dropout, Input
-from keras.api.optimizers import Adam
+from keras.optimizers import Adam
 from optuna import Trial
 from sklearn.preprocessing import MinMaxScaler
 

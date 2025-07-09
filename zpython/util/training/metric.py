@@ -1,9 +1,9 @@
 import torch
 
 torch.set_printoptions(precision=3, sci_mode=False)
-from keras.api.metrics import Metric, MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, \
+from keras.metrics import Metric, MeanSquaredError, RootMeanSquaredError, MeanAbsoluteError, \
     MeanAbsolutePercentageError, MeanSquaredLogarithmicError, LogCoshError
-from keras.api import ops
+from keras import ops
 from zpython.util.training.loss_metric_util import _simulate_trades_sequence
 
 

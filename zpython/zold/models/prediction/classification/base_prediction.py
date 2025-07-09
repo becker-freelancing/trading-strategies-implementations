@@ -3,8 +3,8 @@ from abc import abstractmethod
 import joblib
 import numpy as np
 import pandas as pd
-from keras.api.models import Model
-from keras.api.models import load_model
+from keras.models import Model
+from keras.models import load_model
 from zpython.training.regression.data_preparation import read_data
 from zpython.util.data_source import DataSource
 from zpython.util.pair import Pair

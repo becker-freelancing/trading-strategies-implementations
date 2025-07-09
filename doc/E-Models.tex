@@ -10,6 +10,19 @@ By using Keras in combination with the PyTorch backend, user-friendly modeling c
 
 %TODO: Es werden Regressions und Klassifikationsmodelle trainiert
 
+The model architectures used in this work are not based on specific, citable publications, but were designed as part of an experimental and iterative development process.
+The goal was to construct powerful models well-suited to the given problem.
+Particularly with regard to processing sequential data of limited length and high variability.
+
+Established neural building blocks such as 1D convolutional layers, GRUs, attention mechanisms, and transformer components were used, the fundamentals of which are comprehensively documented in the literature.
+However, the specific design of the model architectures, such as the combination of multiple parallel CNN paths, the integration of GRUs after convolution steps, or the use of Global Average Pooling instead of flattening, represents a creative and pragmatic composition of its own.
+
+Additionally, all models were automatedly optimized using Optuna, so that architectural decisions were also influenced by the hyperparameter search.
+In many cases, initial ideas originate from non-scientific sources such as blog posts, online tutorials, or community code snippets, which are not scientifically citable.
+
+In summary, the developed models are original variations, inspired by familiar architectural elements, but not directly adopted or reconstructed from specific publications.
+This allows for greater flexibility and reinforces the experimental nature of the work.
+
 For both regression and classification models, 13 different architectures were used, which can be divided into neural networks, convolutional neural networks, long short-term memories, and transformers.
 
 \subsection{Metrics}
@@ -35,7 +48,6 @@ Neural networks are among the central methods of machine learning and form the b
 The simplest and most widely used form is the feedforward neural network (FNN), also known as a multilayer perceptron (MLP).
 Such networks are universally applicable and, with appropriate structuring, can be used for classification, regression, and pattern recognition.
 
-
 A classic neural network consists of several layers of artificial neurons that forward information in a fixed order from input to output.
 The structure can be divided as follows \cite{nn-basics}:
 
@@ -52,17 +64,11 @@ The tested models are different in their complexity, depth, and methodical appro
 \subsubsection{Base Model with Flatten-Architecture}
 
 The first model follows a classic feedforward approach, with one to three dense layers, each with 32 to 128 neurons and a ReLU activation function.
-Either before or after the dense layers, the input data are flattened.
-This decision influences whether the model processes all time points as a vector early on or treats each time step separately.
-
-The learning rate of the Adam optimizer is varied between $1^{-5}$ and $1^{-2}$.
-The number of historical time points used as input ranges from $5$ to $150$.
+Either before or after the dense layers, the input data are flattened \cite{keras-flatten}.
+This decision influences whether the model processes all timepoints as a vector early on or treats each time step separately.
 This architecture was used as a simple baseline model to obtain a quick training and a first baseline model.
 
-%The first neural network consists of one to three hidden layers, each with 32 to 128 neurons and the ReLu activation function.
-The learning rate of the Adam optimizer ranges between $10^{-5}$ and $10^{-2}$.
-Also a flatten layer is built in the model, which is either directly after the input layer or directly before the output layer.
-The input layer has a length of 5 to 150.
+The learning rate of the Adam optimizer ranges between $10^{-5}$ and $10^{-2}$ and the input layer has a length of 5 to 150
 All hyperparameters are managed by Optuna.
 
 \lstinputlisting[language=Python, caption=Base NN, label=lst:base-model, style=python]{python/models/nn_base.py}
@@ -71,24 +77,17 @@ All hyperparameters are managed by Optuna.
 
 In the second model, the data is first converted into a one-dimensional vector using a flatten layer.
 This is followed by one to three dense layers using ReLu activation.
-Batch normalization supports stable and rapid convergence, while dropout between 5\% and 35\% of the data is used as a regularization method to prevent overfitting.
+Batch normalization supports stable and rapid convergence \cite{batch-normalization}, while dropout between 5\% and 35\% of the data is used as a regularization method to prevent overfitting \cite{keras-dropout}.
+All other parameters are identical to those in the simple neural network.
 
 The parameters tuned via Optuna control the model depth, the number of nodes per layer, the training dynamics, and the number of historical time points used as input.
-
-%The dropout neural networks is similar to the simple neural network, but with additional layers for dropout and normalization.
-The flatten layer is directly after the input layer, followed by a dense layer.
-After the dense layer a batch normalization and a dropout layer are following.
-After that, between one and three hidden layers.
-After the hidden layers one additional dropout layer is added.
-Each dropout layer has a dropout from 0.05 to 0.35.
-All other parameters are identical to those in the simple neural network.
 
 \lstinputlisting[language=Python, caption=Dropout NN, label=lst:dropout-nn, style=python]{python/models/nn_dropout.py}
 
 \subsubsection{Residual Neural Network}
 
 The third model integrates a residual concept, originally known from image processing but also increasingly used in time series contexts.
-The architecture consists of a linear shortcut branch connected to the main path via an additive connection.
+The architecture consists of a linear shortcut branch connected to the main path via an additive connection \cite{residual-nn}.
 This construction facilitates the training of deeper networks by improving gradient flow and preventing information loss through multiple layers.
 
 In addition to the previous parameters, two additional variables controlled by Optuna are added: \verb|num_units_res_prep| and \verb|num_units_res|.
@@ -103,11 +102,11 @@ The residual path allows the model to pass on basic information directly, while 
 \subsection{Long Short-Term Memory Models}
 
 In addition to traditional dense neural networks, recurrent neural networks (RNNs) based on the Long Short-Term Memory (LSTM) architecture were also used.
-LSTMs are specifically designed to capture temporal dependencies in sequential data and retain long-term information across multiple time steps.
+LSTMs are specifically designed to capture temporal dependencies in sequential data and retain long-term information across multiple time steps \cite{lstm-usage}.
 This is particularly important for financial data such as ETH prices, as current prices are often influenced by past developments.
 
-LSTM cells have an internal memory structure and three control mechanisms (input, forget, and output gates) that allow the network to decide which information should be stored, overwritten, or passed on.
-This effectively mitigates the so-called vanishing gradient problem of traditional RNNs.
+LSTM cells have an internal memory structure and three control mechanisms (input, forget, and output gates) that allow the network to decide which information should be stored, overwritten, or passed on \cite{lstm-cell}.
+This effectively mitigates the so-called vanishing gradient problem of traditional RNNs \cite{lstm-gradient-problem}.
 
 \subsubsection{Base LSTM}
 
@@ -133,7 +132,7 @@ This model is particularly useful when working with noisy or volatile price tren
 \subsubsection{Bidirectional LSTM (BiLSTM)}
 
 The third model uses bidirectional LSTM layers.
-These process the input sequence forward and backward simultaneously, allowing both earlier and later information to be incorporated into the internal state.
+These process the input sequence forward and backward simultaneously, allowing both earlier and later information to be incorporated into the internal state \cite{bi-lstm}.
 
 This architecture can be particularly valuable in the context of ETH predictions based on historical data, as it allows for better detection of symmetric patterns or turning points in price trends.
 
@@ -144,26 +143,26 @@ The hyperparameter structure is similar to the previous models, but the modeling
 \subsubsection{Encode-Decode Model with Repeat-Vector}
 
 The fourth model is based on an encoder-decoder approach, as used in machine translation.
-The input sequence is first converted into a fixed context vector by an LSTM layer, which is then duplicated multiple times using RepeatVector.
+The input sequence is first converted into a fixed context vector by an LSTM layer, which is then duplicated multiple times using RepeatVector \cite{keras-repeat-vector}.
 A decoder-LSTM interprets this vector sequentially to generate a temporally structured output.
 
 This architecture is particularly suitable for multi-step forecasting, as it can map not only the next value but an entire sequence of future values.
-The final preprocessing is performed using \verb|TimeDistributed(Dense(...))| to calculate a separate output for each time step.
+The final preprocessing is performed using \verb|TimeDistributed(Dense(...))| to calculate a separate output for each time step \cite{keras-time-distributed}.
 
 \lstinputlisting[language=Python, caption=Encode-Decode LSTM, label=lst:encode-decode-lstm, style=python]{python/models/lstm_encode_decode.py}
 
 \subsection{Convolutional Neural Networks}
 
 Convolutional neural networks (CNNs) represent a special architecture within deep learning that was developed specifically to process data with spatial structures, such as images.
-Compared to traditional feedforward networks, CNNs are significantly more efficient in handling high-dimensional inputs and have established themselves as standard methods in numerous application areas such as image recognition, object detection, medical image analysis, and time series analysis.
+Compared to traditional feedforward networks, CNNs are significantly more efficient in handling high-dimensional inputs and have established themselves as standard methods in numerous application areas such as object detection, natural language processing, and time series analysis \cite{cnn-for-time-series}.
 
 The key difference between CNNs and classical neural networks lies in the use of so-called convolutional layers, which exploit the local structures in the input data.
 Instead of connecting every neuron to all input values (as with a fully connected layer), local filters (kernels) are used that respond only to a small portion of the input space.
-These filters are automatically learned during the training process.
+These filters are automatically learned during the training process \cite{cnn-for-time-series}.
 
 Time series typically exhibit temporal dependencies, repetitions, seasonal patterns, or short-term fluctuations.
 Classic methods for processing this data, such as LSTM networks, explicitly model such dependencies using recursive states.
-CNNs, on the other hand, use an alternative approach, called local convolutions, which also serve time series to detect relevant patterns or changes over short or medium periods of time.
+CNNs, on the other hand, use an alternative approach, called local convolutions, which also serve time series to detect relevant patterns or changes over short or medium periods of time \cite{cnn-local-convolution}.
 
 The advantages of using CNNs for time series include:
 
@@ -186,7 +185,7 @@ The hyperparameters tuned by Optuna are the number of units in the convolutional
 
 The model shown here represents an extension of a simple CNN model (Base CNN).
 While the simple model uses only a single 1D convolutional layer followed by a pooling and dense layer, this Deep CNN model uses two consecutive Conv1D layers.
-This additional depth allows the network to learn more complex and hierarchical feature representations from the input data.
+This additional depth allows the network to learn more complex and hierarchical feature representations from the input data \cite{cnn-deep-more-complex}.
 This is particularly useful for time series with multi-level dependencies or subtle patterns.
 The model is complemented by a MaxPooling layer, which reduces the temporal resolution and counteracts overfitting.
 The optional placement of the Flatten layer allows for the evaluation of different configurations of feature densification, which in turn increases model flexibility.
@@ -198,7 +197,7 @@ Overall, this more deeply structured CNN enables more powerful modeling than the
 
 An alternative architecture uses multiple parallel convolutional layers with different kernel sizes.
 This allows the model to detect both short-term and medium-term patterns simultaneously.
-The resulting feature maps are combined using an attention layer to highlight important sequence segments.
+The resulting feature maps are combined using an attention layer to highlight important sequence segments \cite{cnn-attention}.
 
 This is followed by global average pooling and a dense layer for output generation.
 
@@ -207,7 +206,7 @@ This is followed by global average pooling and a dense layer for output generati
 \subsubsection{Concatenation CNN}
 
 A slightly modified version replaces the attention module with a simple concatenation of the feature maps.
-This allows the model to pass the extracted features directly without performing weighting.
+This allows the model to pass the extracted features directly without performing weighting \cite{keras-concat}.
 
 This variant is computationally less expensive than the attention-based one and is well-suited when all filter outputs should be treated equally.
 
@@ -217,11 +216,10 @@ This variant is computationally less expensive than the attention-based one and 
 
 The Gated Recurrent Unit (GRU) model is a simplified variant of the LSTM and was developed to reduce computational effort and model complexity.
 Compared to LSTM, GRU has only two gates, an update gate and a reset gate, instead of three (input, forget, and output gates in LSTM).
-This makes GRU faster to train, requires less memory, and delivers comparable results in many tasks.
-Both models are capable of learning long-term dependencies in sequence data, but GRU is often the preferred choice when a good balance between efficiency and performance is required.
+This makes GRU faster to train, requires less memory, and delivers comparable results in many tasks \cite{gru-basics}.
 
 To combine the advantages of both architectures, a hybrid CNN-GRU model was also implemented.
-A Conv1D layer first extracts local features from the sequence, which are then sequentially processed using a GRU module.
+A Conv1D layer first extracts local features from the sequence, which are then sequentially processed using a GRU module to capture long-term dependencies and trends \cite{cnn-gru}.
 
 This model is particularly well-suited for linking local patterns (using CNN) with temporal dependencies (using GRU).
 The final dense layers perform the transformation to the target variable as usual.
@@ -232,13 +230,13 @@ The final dense layers perform the transformation to the target variable as usua
 
 In addition to recurrent architectures such as LSTMs, a model based on the Transformer architecture has also been implemented.
 Transformers are considered a powerful alternative to RNNs, especially in tasks that require the detection of long dependencies within the input sequence.
-Originally introduced in natural language processing, Transformers have also proven extremely effective in time series analysis.
+Originally introduced in natural language processing, Transformers have also proven extremely effective in time series analysis \cite{transformer-time-series}.
 
 In contrast to RNNs, transformers process all positions of a sequence simultaneously, i.e., in parallel.
-Instead of sequential propagation, the transformer uses a mechanism called self-attention to determine which parts of a sequence are particularly relevant to the current position.
-This allows the transformer to model long-term dependencies more efficiently, without information becoming diluted as the sequence length increases.
+Instead of sequential propagation, the transformer uses a self-attention mechanism to determine which parts of a sequence are particularly relevant to the current position.
+This allows the transformer to model long-term dependencies more efficiently, without information becoming diluted as the sequence length increases \cite{cnn-attention}.
 
-A transformer encoder typically consists of the following components:
+A transformer encoder typically consists of the following components \cite{cnn-attention}:
 
 \begin{enumerate}
     \item \textbf{Multi-head self-attention:} Multiple parallel attention heads allow the model to consider different aspects of the input sequence simultaneously.
