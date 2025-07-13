@@ -11,6 +11,15 @@ validation = validation_data()
 test = test_data()
 backtest = backtest_data()
 
+plt.rcParams.update({
+    "font.size": 20,
+    "axes.titlesize": 25,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "legend.fontsize": 20
+})
+
 plt.plot(train["closeTime"], train["closeBid"], label="Train")
 plt.plot(validation["closeTime"], validation["closeBid"], label="Validation")
 plt.plot(test["closeTime"], test["closeBid"], label="Test")

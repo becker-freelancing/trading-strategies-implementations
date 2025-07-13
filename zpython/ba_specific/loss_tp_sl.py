@@ -5,6 +5,14 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.rcParams.update({
+    "font.size": 20,
+    "axes.titlesize": 25,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "legend.fontsize": 20
+})
 fig, axs = plt.subplots(2, 2, figsize=(16, 9))
 
 # Long High Vor Low
@@ -86,4 +94,5 @@ axs[1, 1].fill_between(
     color="green", alpha=0.1
 )
 axs[1, 1].set_title("Short with Global High after Global Low")
+plt.subplots_adjust(hspace=0.5)
 plt.show()

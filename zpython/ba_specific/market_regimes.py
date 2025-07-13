@@ -10,6 +10,14 @@ import pandas as pd
 import numpy as np
 import matplotlib.dates as mdates
 
+plt.rcParams.update({
+    "font.size": 20,
+    "axes.titlesize": 25,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "legend.fontsize": 20
+})
 df = train_data()
 df.set_index("closeTime", inplace=True)
 df = split_on_gaps(df, 1)[1]
@@ -94,7 +102,7 @@ labels = {
 # Legende für Farben
 legend_patches = [mpatches.Patch(color=color, label=labels[enum])
                   for enum, color in colors.items()]
-ax.legend(handles=legend_patches + [ax.lines[0]], loc='upper left')
+ax.legend(handles=legend_patches + [ax.lines[0]], loc='upper right')
 
 formatter = mdates.DateFormatter('%H:%M')
 ax.xaxis.set_major_formatter(formatter)

@@ -5,6 +5,14 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.rcParams.update({
+    "font.size": 20,
+    "axes.titlesize": 25,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "legend.fontsize": 20
+})
 pred = np.array(
     [0.1, 0.13, -0.2, 0.1, 0.3, -0.5, -0.1, 0.4, 0.1, -0.3, -0.2, 0.05, -0.1, 0.2, 0.1, -0.4, 0.1, 0.15, -0.2, 0.1, 0.2,
      -0.1, 0.4])

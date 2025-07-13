@@ -4,7 +4,7 @@
     <module name="backtest-result-viewer-app" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.becker.freelance.backtest.resultviewer.app.*" />
+          <option name="PATTERN" value="com.becker.freelance.backtest.resultviewer.app.callback.*"/>
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

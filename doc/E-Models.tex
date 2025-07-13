@@ -1,10 +1,11 @@
 \section{Deep Learning Models}
+\label{chap:dl-models}
 
 This chapter presents the key components for developing and evaluating deep learning models.
 This includes both the selection of suitable models and the criteria for assessing their performance.
 
-For this work, Keras version 3.8.0 was used as a high-level API for modeling and training neural networks \cite{keras-home}.
-Instead of the standard TensorFlow backend, PyTorch version 2.5.1 was used as the backend.
+For this work, Keras version 3.10.0 was used as a high-level API for modeling and training neural networks \cite{keras-home}.
+Instead of the standard TensorFlow backend, PyTorch version 2.7.1 was used as the backend.
 A key reason for this decision was its better support on Windows, compared to TensorFlow \cite{tf-windows}, particularly with regard to installation and compatibility with existing CUDA drivers.
 By using Keras in combination with the PyTorch backend, user-friendly modeling could be combined with stable and well-supported execution on Windows systems.
 
@@ -27,6 +28,8 @@ For both regression and classification models, 13 different architectures were u
 
 \subsection{Metrics}
 
+% TODO
+
 \subsection{Optuna}
 
 In modern machine learning methods, the selection of hyperparameters plays a central role in model performance.
@@ -43,6 +46,7 @@ In this work, Optuna was used to automatically run multiple training models with
 In the relevant sections of the next chapters, the range of the hyperparameters for each model will be mentioned.
 
 \subsection{Neural Networks}
+\label{chap:nn}
 
 Neural networks are among the central methods of machine learning and form the basis of many modern deep learning models.
 The simplest and most widely used form is the feedforward neural network (FNN), also known as a multilayer perceptron (MLP).
@@ -63,7 +67,8 @@ The tested models are different in their complexity, depth, and methodical appro
 
 \subsubsection{Base Model with Flatten-Architecture}
 
-The first model follows a classic feedforward approach, with one to three dense layers, each with 32 to 128 neurons and a ReLU activation function.
+The first model follows a classic feedforward approach, with one to three dense layers, each with 32 to 128 neurons and a rectified linear unit (ReLU) activation function.
+The ReLU activation function was used because it provides an efficient calculation and a good gradient propagation with fewer vanishing gradients \cite{springer-ml-basics}.
 Either before or after the dense layers, the input data are flattened \cite{keras-flatten}.
 This decision influences whether the model processes all timepoints as a vector early on or treats each time step separately.
 This architecture was used as a simple baseline model to obtain a quick training and a first baseline model.
@@ -100,6 +105,7 @@ The residual path allows the model to pass on basic information directly, while 
 \lstinputlisting[language=Python, caption=Residual NN, label=lst:residual-nn, style=python]{python/models/nn_residual.py}
 
 \subsection{Long Short-Term Memory Models}
+\label{chap:lstm}
 
 In addition to traditional dense neural networks, recurrent neural networks (RNNs) based on the Long Short-Term Memory (LSTM) architecture were also used.
 LSTMs are specifically designed to capture temporal dependencies in sequential data and retain long-term information across multiple time steps \cite{lstm-usage}.
@@ -152,6 +158,7 @@ The final preprocessing is performed using \verb|TimeDistributed(Dense(...))| to
 \lstinputlisting[language=Python, caption=Encode-Decode LSTM, label=lst:encode-decode-lstm, style=python]{python/models/lstm_encode_decode.py}
 
 \subsection{Convolutional Neural Networks}
+\label{chap:cnn}
 
 Convolutional neural networks (CNNs) represent a special architecture within deep learning that was developed specifically to process data with spatial structures, such as images.
 Compared to traditional feedforward networks, CNNs are significantly more efficient in handling high-dimensional inputs and have established themselves as standard methods in numerous application areas such as object detection, natural language processing, and time series analysis \cite{cnn-for-time-series}.
@@ -226,60 +233,16 @@ The final dense layers perform the transformation to the target variable as usua
 
 \lstinputlisting[language=Python, caption=CNN + GRU, label=lst:gru-cnn, style=python]{python/models/cnn_gru.py}
 
-\subsection{Transformer Models}
-
-In addition to recurrent architectures such as LSTMs, a model based on the Transformer architecture has also been implemented.
-Transformers are considered a powerful alternative to RNNs, especially in tasks that require the detection of long dependencies within the input sequence.
-Originally introduced in natural language processing, Transformers have also proven extremely effective in time series analysis \cite{transformer-time-series}.
-
-In contrast to RNNs, transformers process all positions of a sequence simultaneously, i.e., in parallel.
-Instead of sequential propagation, the transformer uses a self-attention mechanism to determine which parts of a sequence are particularly relevant to the current position.
-This allows the transformer to model long-term dependencies more efficiently, without information becoming diluted as the sequence length increases \cite{cnn-attention}.
-
-A transformer encoder typically consists of the following components \cite{cnn-attention}:
-
-\begin{enumerate}
-    \item \textbf{Multi-head self-attention:} Multiple parallel attention heads allow the model to consider different aspects of the input sequence simultaneously.
-
-    \item \textbf{Residual connections \& layer normalization:} The original inputs are added to the output of the attention and feedforward steps, stabilized by normalization.
-
-    \item \textbf{Feedforward network:} A small, position-independent MLP layer for applying nonlinear transformations to the position embeddings.
-
-    \item \textbf{Dropout layers:} These are used for regularization to avoid overfitting.
-\end{enumerate}
-
-\subsubsection{Transformer Architecture}
-
-The implemented model is based on a stacked transformer encoder consisting of two encoder blocks.
-The architecture is as follows:
-
-\begin{enumerate}
-    \item \textbf{Input:} A sequential input with variable length and dimensionality corresponding to the number of features.
-
-    \item \textbf{Dual transformer encoder:} Each block uses multi-head attention with variable number of heads, a feedforward layer, and normalization and dropout layers.
-
-    \item \textbf{Global average pooling:} Reduces the sequence to a fixed vector by calculating the mean across all time points.
-
-    \item \textbf{Dense layers:} A fully connected layer with ReLU activation and dropout for further regularization.
-
-    \item \textbf{Output:} A linear dense layer that provides the prediction of the target variable.
-\end{enumerate}
-
-The most important hyperparameters managed by Optuna are the number of parallel attention heads, the dimension of the key, query, and value vectors in the attention, the number of neurons in the feedforward network, the dropout rate, as well as the learning rate.
-
-The method \verb|transformer_encoder(...)| implements a basic encoder block:
-
-\lstinputlisting[language=Python, caption=Transformer Model, label=lst:transformer-model, style=python]{python/models/transformer.py}
-
-The usage of a one-dimensional convolutional layer instead of a feedforward neural network is a common practice in time-series-based Transformer implementations and enables local processing along the time axis.
-
-In contrast to LSTM models, which work sequentially and propagate their internal states step by step, a transformer model can analyze all time points in parallel.
-This offers advantages in the modeling of long-term dependencies (e.g., trends or cyclical patterns).
-However, transformers are also more computationally intensive, especially for long sequences and large headcounts, since self-attention scales quadratically with the sequence length.
-
 \subsection{Regression-Models}
+\label{chap:regression-models}
+
+Regression models were used to predict the next 30 minutes of logarithmic returns as a continuous sequence.
+For this purpose, all models mentioned in \autoref{chap:nn}, \autoref{chap:lstm}, and \autoref{chap:cnn} were trained on the training data (\autoref{tbl:train-data}) for 20 trials of Optuna with 30 epochs each.
+After each epoch, the model was evaluated using the validation data (\autoref{tbl:validation-data}).
+To achieve a continuous sequence as output, the activation function in the last dense layer of the above-mentioned models was set to \verb|linear| and the number of neurons to 30.
 
 \subsubsection{Loss-Function}
+\label{chap:regression-loss}
 
 In order to incorporate the trading context during model training and evaluation, traditional loss functions such as the root mean squared error have been avoided.
 Instead, a proprietary loss function was implemented that calculates realized profit and loss.
@@ -295,7 +258,7 @@ Otherwise, a short position is opened.
 
 \begin{figure}[H]
     \centering
-    \includesvg[width=\textwidth]{images/models/loss_direction.svg}
+    \includegraphics[width=\textwidth]{images/models/loss_direction}
     \caption{Long Position Decision}
     \label{fig:loss-long-position-decision}
 \end{figure}
@@ -311,14 +274,42 @@ The red areas mark the predicted unprofitable zones and the green areas mark the
 
 \begin{figure}[H]
     \centering
-    \includesvg[width=\textwidth]{images/models/loss_tp_sl.svg}
+    \includegraphics[width=\textwidth]{images/models/loss_tp_sl}
     \caption{Long Position Decision}
     \label{fig:loss-tp-sl}
 \end{figure}
 
 After the stop loss and take profit levels are determined, the actual logarithmic returns are used to calculate the profit or loss for each position.
-If neither the stop loss or the take profit is reached, the profit calculation defaults to the profit if the stop loss is reached to ensure that the model predicts the correct take profit more often.
+If neither the stop loss nor the take profit is reached, the profit calculation defaults to the profit if the stop loss is reached to ensure that the model predicts the correct take profit more often.
+
+\subsubsection{Model Evaluation}
+
+%TODO
 
 \subsection{Classification-Models}
+\label{chap:classification-models}
 
-\subsection{Model Evaluation}
+Classification models were used to predict an action to be performed.
+The action can be either buy, sell, or do nothing.
+For that the model predicts a probability for each of the three classes.
+As with the \hyperref[chap:regression-models]{regression models}, the same models are used, but this time the last dense layer has only three neurons and the activation function \verb|softmax|.
+The identical training and validation period was also used and the training took place over 20 Optuna trials with 30 epochs each.
+
+\subsubsection{Loss-Function}
+
+For classification models the categorical cross-entropy loss function was used.
+This choice is common and well-suited for classification problems where the model output represents a probability distribution across multiple classes.
+Mathematically, it is defined as follows:
+
+\[
+    L_{CCE} = -\sum_{i=1}^{C} y_i*log(\hat{y_i})
+\]
+
+Where $C$ denotes the number of classes, $y_i$ the actual value (usually encoded as a one-hot vector), and $\hat{y_i}$ the probability predicted by the model for class $i$.
+This function penalizes the model particularly severely if it assigns a high probability to an incorrect class and rewards correct predictions with high confidence.
+
+Categorical cross-entropy measures the difference between the actual target distribution and the probability distribution predicted by the model \cite{springer-ml-basics}.
+
+\subsubsection{Model Evaluation}
+
+%TODO

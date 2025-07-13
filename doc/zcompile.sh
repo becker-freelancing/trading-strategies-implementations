@@ -4,7 +4,7 @@
 MAIN="main"
 
 # Liste der temporären Dateiendungen
-TEMP_EXTENSIONS="aux bbl bcf blg fdb_latexmk fls lof log lol lot out xml toc"
+TEMP_EXTENSIONS="aux bbl bcf blg fdb_latexmk fls lof lol lot out xml toc"
 
 # Funktion zum Entfernen temporärer Dateien
 clean() {

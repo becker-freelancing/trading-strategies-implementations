@@ -25,7 +25,14 @@ print(f"mean test = {test['closeBid'].mean()}")
 print(f"std test = {test['closeBid'].std()}")
 print(f"mean backtest = {backtest['closeBid'].mean()}")
 print(f"std backtest = {backtest['closeBid'].std()}")
-
+plt.rcParams.update({
+    "font.size": 20,
+    "axes.titlesize": 25,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "legend.fontsize": 20
+})
 plt.plot(train["closeTime"], train["closeBid"],
          label=f"Train (Mean: {round(train['closeBid'].mean(), 3)}, Std: {round(train['closeBid'].std(), 3)})")
 plt.plot(validation["closeTime"], validation["closeBid"],

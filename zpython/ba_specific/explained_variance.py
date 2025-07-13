@@ -14,6 +14,14 @@ import pandas as pd
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor
 
+plt.rcParams.update({
+    "font.size": 20,
+    "axes.titlesize": 25,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "legend.fontsize": 18
+})
 scaler = joblib.load(from_relative_path("data-bybit/a-scaler_SEQUENCE_REGRESSION.dump"))
 
 
@@ -21,7 +29,7 @@ def read_train(time_frame):
     return train_data()
 
 
-data = create_indicators(data_read_function=read_train)[0]
+data = create_indicators(data_read_function=read_train)[0].iloc[-400000:]
 
 # Regime zu numerischen Werten konvertieren
 data["regime"] = data["regime"].apply(number_to_market_regime)
@@ -95,4 +103,5 @@ plt.ylabel('Cumulative Explained Variance')
 plt.title('Explained Variance Plot')
 plt.legend(loc='best')
 plt.grid(True)
+plt.xticks(list(range(0, 11)) + [20, 30, 40, 50])
 plt.show()
