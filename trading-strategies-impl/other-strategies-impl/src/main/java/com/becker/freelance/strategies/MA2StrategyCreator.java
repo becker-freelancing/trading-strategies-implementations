@@ -31,13 +31,13 @@ public class MA2StrategyCreator implements StrategyCreator {
     public ValidStrategyInitParameters strategyParameters() {
         return new ValidStrategyInitParameters(
                 MA2StrategyCreator::shortMaLessThanLongMaValidation,
-                new StrategyInitParameter(SHORT_MA_PERIOD, 5, 1, 10, 1),
-                new StrategyInitParameter(LONG_MA_PERIOD, 7, 2, 20, 1),
-                new StrategyInitParameter(SWING_HIGH_LOW_ORDER, 2, 1, 10, 1),
-                new StrategyInitParameter(SWING_HIGH_LOW_MAX_AGE, 50, 5, 45, 10),
+                new StrategyInitParameter(SHORT_MA_PERIOD, 5, 3, 15, 2),
+                new StrategyInitParameter(LONG_MA_PERIOD, 7, 5, 20, 2),
+                new StrategyInitParameter(SWING_HIGH_LOW_ORDER, 2, 1, 10, 2),
+                new StrategyInitParameter(SWING_HIGH_LOW_MAX_AGE, 50, 10, 45, 10),
                 new StrategyInitParameter(TRAILING_STOP_ORDER, 0, 0, 1, 1),
-                new StrategyInitParameter(STOP_LOSS_DELTA, 0, 0, 100, 10),
-                new StrategyInitParameter(TAKE_PROFIT_DELTA, 0, 0, 200, 10)
+                new StrategyInitParameter(STOP_LOSS_DELTA, 0, 5, 100, 15),
+                new StrategyInitParameter(TAKE_PROFIT_DELTA, 0, 5, 200, 15)
         );
     }
 
