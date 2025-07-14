@@ -6,3 +6,4 @@ com.becker.freelance.strategies.rl.onlybuy.HardTpRLStrategyCreator
 com.becker.freelance.strategies.rl.onlybuy.AtrBasedRLStrategyCreator
 com.becker.freelance.strategies.rl.longandshort.HardTpRLStrategyCreator
 com.becker.freelance.strategies.rl.longandshort.AtrBasedRLStrategyCreator
+com.becker.freelance.strategies.classification.ClassificationLiveStrategyCreator

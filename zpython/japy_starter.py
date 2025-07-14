@@ -19,7 +19,7 @@ console_handler.setFormatter(formatter)
 # Handler dem Logger hinzufügen
 logger.addHandler(console_handler)
 
-file_scanner = from_relative_paths(["./live_prediction"])
+file_scanner = from_relative_paths(["./live_prediction/classification"])
 
 server_manager = get_japy_server_manager(file_scanner)
 server_manager.start_japy_server()

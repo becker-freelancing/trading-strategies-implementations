@@ -49,7 +49,6 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
     private final Double stopLossNotPredictedDelta;
     private final PositionBehaviour positionBehaviour;
     private final Map<String, CachedIndicator<Num>> predictionIndicators;
-    private boolean initiated = false;
 
     public SequenceLiveRegressionStrategy(StrategyParameter parameter, RegressionPredictor predictor, Decimal takeProfitDelta, Decimal stopLossDelta, Decimal stopLossNotPredictedDelta, PositionBehaviour positionBehaviour) {
         super(parameter);

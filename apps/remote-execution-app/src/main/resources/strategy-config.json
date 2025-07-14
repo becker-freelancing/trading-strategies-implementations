@@ -1,5 +1,131 @@
 [
   {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": 86.0,
+      "stopLossDelta": 41.0,
+      "trailingStopOrder": 1,
+      "minPropForEntry": 0.4
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": 76.0,
+      "stopLossDelta": 6.0,
+      "trailingStopOrder": 0,
+      "minPropForEntry": 0.3
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": 96.0,
+      "stopLossDelta": 16.0,
+      "trailingStopOrder": 0,
+      "minPropForEntry": 0.3
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": 96.0,
+      "stopLossDelta": 46.0,
+      "trailingStopOrder": 0,
+      "minPropForEntry": 0.4
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": 91.0,
+      "stopLossDelta": 11.0,
+      "trailingStopOrder": 0,
+      "minPropForEntry": 0.6
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": 36.0,
+      "stopLossDelta": 6.0,
+      "trailingStopOrder": 0,
+      "minPropForEntry": 0.6
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "takeProfitDelta": 86.0,
+      "stopLossDelta": 41.0,
+      "trailingStopOrder": 1,
+      "minPropForEntry": 0.4
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "takeProfitDelta": 91.0,
+      "stopLossDelta": 41.0,
+      "trailingStopOrder": 1,
+      "minPropForEntry": 0.4
+    }
+  },
+  {
+    "strategyName": "live_classification_strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "takeProfitDelta": 91.0,
+      "stopLossDelta": 11.0,
+      "trailingStopOrder": 0,
+      "minPropForEntry": 0.6
+    }
+  },
+  {
     "strategyName": "live_sequence_regression",
     "priority": 100,
     "pair": "ETHUSDT_1",
