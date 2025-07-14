@@ -73,7 +73,7 @@ Either before or after the dense layers, the input data are flattened \cite{kera
 This decision influences whether the model processes all timepoints as a vector early on or treats each time step separately.
 This architecture was used as a simple baseline model to obtain a quick training and a first baseline model.
 
-The learning rate of the Adam optimizer ranges between $10^{-5}$ and $10^{-2}$ and the input layer has a length of 5 to 150
+The learning rate of the Adam optimizer ranges between $10^{-5}$ and $10^{-2}$, while the input layer has a length of 5 to 150
 All hyperparameters are managed by Optuna.
 
 \lstinputlisting[language=Python, caption=Base NN, label=lst:base-model, style=python]{python/models/nn_base.py}
@@ -152,7 +152,7 @@ The fourth model is based on an encoder-decoder approach, as used in machine tra
 The input sequence is first converted into a fixed context vector by an LSTM layer, which is then duplicated multiple times using RepeatVector \cite{keras-repeat-vector}.
 A decoder-LSTM interprets this vector sequentially to generate a temporally structured output.
 
-This architecture is particularly suitable for multi-step forecasting, as it can map not only the next value but an entire sequence of future values.
+This architecture is particularly suitable for multistep forecasting, as it can map not only the next value but an entire sequence of future values.
 The final preprocessing is performed using \verb|TimeDistributed(Dense(...))| to calculate a separate output for each time step \cite{keras-time-distributed}.
 
 \lstinputlisting[language=Python, caption=Encode-Decode LSTM, label=lst:encode-decode-lstm, style=python]{python/models/lstm_encode_decode.py}
@@ -169,14 +169,14 @@ These filters are automatically learned during the training process \cite{cnn-fo
 
 Time series typically exhibit temporal dependencies, repetitions, seasonal patterns, or short-term fluctuations.
 Classic methods for processing this data, such as LSTM networks, explicitly model such dependencies using recursive states.
-CNNs, on the other hand, use an alternative approach, called local convolutions, which also serve time series to detect relevant patterns or changes over short or medium periods of time \cite{cnn-local-convolution}.
+CNNs, on the other hand, uses an alternative approach, called local convolutions, which also serve time series to detect relevant patterns or changes over short or medium periods of time \cite{cnn-local-convolution}.
 
 The advantages of using CNNs for time series include:
 
 \begin{enumerate}
-    \item \textbf{Parallel Processing:} CNNs do not require recursive loops, e.g., compared to LSTMs.
+    \item \textbf{Parallel Processing:} CNN does not require recursive loops, e.g., compared to LSTMs.
     \item \textbf{Local Pattern Detection:} CNNs can detect local patterns, such as peaks, fluctuations, or trend changes.
-    \item \textbf{Computational Complexity:} CNNs require lower computational power compared to recursive architectures.
+    \item \textbf{Computational Complexity:} CNNs requires lower computational power compared to recursive architectures.
 \end{enumerate}
 
 \subsubsection{Base CNN}
@@ -193,9 +193,9 @@ The hyperparameters tuned by Optuna are the number of units in the convolutional
 The model shown here represents an extension of a simple CNN model (Base CNN).
 While the simple model uses only a single 1D convolutional layer followed by a pooling and dense layer, this Deep CNN model uses two consecutive Conv1D layers.
 This additional depth allows the network to learn more complex and hierarchical feature representations from the input data \cite{cnn-deep-more-complex}.
-This is particularly useful for time series with multi-level dependencies or subtle patterns.
+This is particularly useful for timeseries with multi-level dependencies or subtle patterns.
 The model is complemented by a MaxPooling layer, which reduces the temporal resolution and counteracts overfitting.
-The optional placement of the Flatten layer allows for the evaluation of different configurations of feature densification, which in turn increases model flexibility.
+The optional placement of the Flatten layer allows for the evaluation of different configurations of feature identification, which in turn increases model flexibility.
 Overall, this more deeply structured CNN enables more powerful modeling than the flattened variant.
 
 \lstinputlisting[language=Python, caption=Deep CNN, label=lst:deep-cnn, style=python]{python/models/cnn_deep.py}
@@ -233,7 +233,7 @@ The final dense layers perform the transformation to the target variable as usua
 
 \lstinputlisting[language=Python, caption=CNN + GRU, label=lst:gru-cnn, style=python]{python/models/cnn_gru.py}
 
-\subsection{Regression-Models}
+\subsection{Regression Models}
 \label{chap:regression-models}
 
 Regression models were used to predict the next 30 minutes of logarithmic returns as a continuous sequence.
@@ -248,7 +248,7 @@ In order to incorporate the trading context during model training and evaluation
 Instead, a proprietary loss function was implemented that calculates realized profit and loss.
 The value of the loss function decreases the more profit is generated.
 
-As mentioned above the output of the regression models are either a sequence of the next expected logarithmic returns by minute.
+As mentioned above, the output of the regression models are either a sequence of the next expected logarithmic returns by minute.
 The first step of the loss function is to decide whether the opened position should be a long or short position.
 This is decided by cumulating the predictions.
 The absolute maximum is then determined for the cumulative values greater than and less than zero.
@@ -291,13 +291,13 @@ If neither the stop loss nor the take profit is reached, the profit calculation 
 
 Classification models were used to predict an action to be performed.
 The action can be either buy, sell, or do nothing.
-For that the model predicts a probability for each of the three classes.
+For that, the model predicts a probability for each of the three classes.
 As with the \hyperref[chap:regression-models]{regression models}, the same models are used, but this time the last dense layer has only three neurons and the activation function \verb|softmax|.
-The identical training and validation period was also used and the training took place over 20 Optuna trials with 30 epochs each.
+The identical training and validation period was also used, and the training took place over 20 Optuna trials with 30 epochs each.
 
 \subsubsection{Loss-Function}
 
-For classification models the categorical cross-entropy loss function was used.
+For classification models, the categorical cross-entropy loss function was used.
 This choice is common and well-suited for classification problems where the model output represents a probability distribution across multiple classes.
 Mathematically, it is defined as follows:
 

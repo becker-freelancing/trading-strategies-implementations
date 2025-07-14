@@ -30,7 +30,7 @@ From this, the expected price in $i$ minutes can be calculated based on the curr
     Price_{t+i} = Price_t * \prod_{k=0}^{i} e^{LogReturn_{t+k}}
 \]
 
-Based on the predicted price the stop-loss and take-profit can be determined identically to the loss-function of the regression models (\autoref{chap:regression-loss}).
+Based on the predicted price, the stop-loss and take-profit can be determined identically to the loss-function of the regression models (\autoref{chap:regression-loss}).
 This creates an entry signal with fixed stop-loss and take-profit level.
 
 However, since it is possible that the price could exceed the stop level or the take-profit level might not be reached, additional parameters are introduced into the strategy that shift the two levels by a specific number of points.
@@ -57,7 +57,7 @@ This can happen, for example, if the initial prediction is positive and the pric
 
 As described in \autoref{chap:classification-models} the classification models predict a probability for an action, which can be either buy, sell or do nothing.
 This strategy executes a buy or sell action if the predicted probability is greater than a predefined minimum probability.
-If the buy or sell probability is less than the minimum probability or the do nothing probability is the greatest the strategy does nothing.
+If the buy or sell probability is less than the minimum probability or the do nothing probability is the greatest, the strategy does nothing.
 
 The stop-loss and take-profit levels are also predefined parameters.
 

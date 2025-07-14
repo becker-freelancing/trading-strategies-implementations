@@ -1,19 +1,19 @@
 \section{Money- and Risk-Management}
 
-Successful trading is not only based on a good strategy, but also on a disciplinant management of capital, and risk.
+Successful trading is not only based on a good strategy, but also on a disciplined management of capital and risk.
 Even the best prediction is useless if losses grow uncontrolled or a majority of the capital is risked by a few wrong decisions.
-This is where money, and risk management come into play.
+This is where money and risk management come into play.
 They define clear rules regarding how much to invest per trade, what level of risk is acceptable, and how losses can be limited.
 The goal is to protect capital over the long term, minimizing drawdowns, and profit from positive expected values in a controlled manner.
-This chapter introduces fundamental concepts, metrics, and methods helping to make rational, and sustainable decisions.
+This chapter introduces fundamental concepts, metrics, and methods helping to make rational and sustainable decisions.
 
 \subsection{Calculating the Position Size}
 
 An important part of risk management is calculating the position size.
-It is helpful for maximizing the potential returns, as well as minimizing the financial risk.
+It is helpful to maximize the potential returns, as well as minimizing the financial risk.
 Many traders are only willing to risk 1\% or 2\% of the available capital per trade, to prevent a series of losing trades from decimating the available capital too much.
 
-The distance between the estimated entry price, and the estimated stop loss price represents the maximum distance a market can move in an unprofitable direction before a position is automatically closed.
+The distance between the estimated entry price and the estimated stop loss price represents the maximum distance a market can move in an unprofitable direction before a position is automatically closed.
 
 This allows the calculation of the position size to be carried out in three steps:
 
@@ -55,7 +55,7 @@ This chapter presents some techniques that can be used to validate entry signals
 
 The risk reward ratio (RRR) is a fundamental key figure in trading.
 It describes the ratio between the potential profit (reward), and the potential loss (risk) of a single trade.
-The RRR helps in deciding wether an entry signal is too risky or not.
+The RRR helps in deciding whether an entry signal is too risky or not.
 It ensures that not only the hit rate determines the success of a strategy, but also the ratio of profit to loss in each individual trade.
 
 The RRR is calculated by:
@@ -70,7 +70,7 @@ For example, if a long trade is opened at \$100, with a take profit at \$110, an
     RRR = \frac{|\$100 - \$110|}{|\$100 - 95\$|} = \frac{\$10}{\$5} = 2
 \end{equation}
 
-This means that for every dollar risked, a potential profit of two dollar is targeted.
+This means that for every dollar risked, a potential profit of two dollars is targeted.
 
 A RRR greater $1$ is generally considered positive because the expected profit is higher than the potential loss.
 However, the RRR should not be viewed in isolation.
@@ -89,7 +89,7 @@ The following rule of thumb clarifies when a strategy has a positive expected va
     ExpectedValue = PossibleProfit * HitRatio - PossibleLoss * (1 - HitRatio)
 \end{equation}
 
-Only when this expected value is above zero a trading strategy is statistically profitable.
+Only when this expected value is above zero, a trading strategy is statistically profitable.
 
 The RRR is not only a mathematical metric, but a central component of risk management.
 It helps traders systematically plan how much they are willing to lose per trade, relative to the expected profit.
@@ -102,10 +102,10 @@ $\ge 1.5$), many inefficient setups can be eliminated in advance \cite{bitpanda-
 
 \subsubsection{Minimum Take Profit}
 
-In every trading strategy transaction fees play an important role.
-Especially in short-term trading transaction fees can turn seemingly profitable trades negative if they are not adequately considered.
+In every trading strategy, transaction fees play an important role.
+Especially in short-term trading, transaction fees can turn seemingly profitable trades negative if they are not adequately considered.
 A common mistake is setting the take profit level too narrowly, resulting in a profit that is smaller than the costs incurred.
-To trade profitably, and sustainably, it is therefore essential that the take profit at least covers the fees incurred, but ideally, significantly higher.
+To trade profitably and sustainably, it is therefore essential that the take profit at least covers the fees incurred, but ideally, significantly higher.
 
 \subsection{Dealing with Trading Fees}
 \label{chap:dealing-with-trading-fees}
@@ -131,8 +131,8 @@ This means that a position may remain open significantly longer than intended.
 If the price then continues to move in an unprofitable direction, the worst-case scenario is that the position is automatically closed by the broker because there is no longer any capital in the account.
 
 The same problem can theoretically occur with a take-profit order.
-The difference here, is that the set stop market order still defines the maximum risk.
-Thus, while this particular trade may not be profitable, it is impossible to lose all of the capital.
+The difference here is that the set stop market order still defines the maximum risk.
+Thus, while this particular trade may not be profitable, it is impossible to lose all the capital.
 It is similar with the opening order.
 If it is not executed, the entire trade is not going to be executed.
 This means a missed potential profit, but there is no risk of losing capital.

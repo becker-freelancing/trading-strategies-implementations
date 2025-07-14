@@ -1,14 +1,14 @@
 \section{Trading-Engine}
 
-For backtesting, and live execution of trading strategies, a Java framework was built.
+For backtesting and live execution of trading strategies, a Java framework was built.
 This chapter describes the use cases as well as the most important components of the trading engine.
 
 \subsection{Use-Cases of the Trading-Engine}
 \label{chap:te-use-cases}
 
-The developed trading engine represents a flexible, and modular software platform that covers various use cases in the field of algorithmic trading.
+The developed trading engine represents a flexible and modular software platform that covers various use cases in the field of algorithmic trading.
 The focus is on combining usability, adaptability, and performance.
-The following describes the most important use cases, and features:
+The following describes the most important use cases and features:
 
 \begin{enumerate}
     \item \textbf{Backtesting trading strategies:} The trading engine enables the simulated execution of trading strategies on historical market data.
@@ -17,18 +17,18 @@ The following describes the most important use cases, and features:
     \item \textbf{Live Execution in Real-Time Operation:} In addition to backtesting, the engine also supports real-time execution of strategies in the market.
     By an interface to brokers, the engine can receive market data in real time, make trading decisions, and execute orders directly.
     This enables the engine to be used as the basis for automated trading in production environments.
-    \item \textbf{Using money, and risk management strategies:} An important use case is the implementation of different money, and risk management approaches.
-    Users can integrate various strategies for position sizing, stop-loss setting, or profit-taking, and examine their impact on a strategies performance in backtests or in live operation.
-    This supports the development of more stable, and profitable trading approaches.
+    \item \textbf{Using money, and risk management strategies:} An important use case is the implementation of different money and risk management approaches.
+    Users can integrate various strategies for position sizing, stop-loss setting, or profit-taking, and examine their impact on strategies performance in backtests or in live operation.
+    This supports the development of more stable and profitable trading approaches.
     \item \textbf{Connecting to any broker:} The trading engine is designed to connect to various brokers via interchangeable interfaces.
-    This allows the engine to be combined with different trading systems, and platforms.
-    This flexibility enables its use in a wide variety of markets, and infrastructures.
+    This allows the engine to be combined with different trading systems and platforms.
+    This flexibility enables its use in a wide variety of markets and infrastructures.
     \item \textbf{Development, and integration of custom trading strategies:} A key feature of the engine is the ability for users to implement their own trading strategies.
-    A clear separation between core functionality, and strategy logic allows for flexible integration, and testing of individual algorithms.
+    A clear separation between core functionality and strategy logic allows for flexible integration and testing of individual algorithms.
 \end{enumerate}
 
 Most components of the trading engine are interchangeable, and can be implemented by the user.
-Only the core of the framework, the basic process, and control logic, are fixed.
+Only the core of the framework, the basic process, and control logic are fixed.
 This allows users to tailor the engine to their individual needs, develop their own modules for data feeds, order management, strategy, or risk control, and thus ensure a high degree of flexibility in the use, and further development of the platform.
 
 \subsection{Architecture}
@@ -45,7 +45,7 @@ The trading engine consists of many modules which can be clustered in three main
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/trading-engine/trading-engine-components.pdf}
+    \includegraphics[width=\textwidth]{images/trading-engine/trading-engine-components}
     \caption{Trading-Engine Components}
     \label{fig:te-components}
 \end{figure}
@@ -60,7 +60,7 @@ The \verb|ServiceLoader| loads classes at runtime that implement a specific inte
 The classes to be loaded are specified via a configuration file in the \verb|resources/META-INF/services| directory, which the \verb|ServiceLoader| searches for in every JAR file in the classpath.
 If a corresponding configuration file is found, the ServiceLoader can create an instance of the respective class using the default constructor \cite{java-service-loader}.
 
-As an example, an service provider interface for read access can be defined.
+As an example, a service provider interface for read access can be defined.
 
 \lstinputlisting[language=Java, caption=SPI Definition, label=lst:service-loader-spi-definition, style=java]{java/trading-engine/service-loader-base.java}
 
@@ -76,7 +76,7 @@ Another implementation can be used to read data from databases:
 
 \lstinputlisting[language=Java, caption=Database-Repository Implementation, label=lst:service-loader-db, style=java]{java/trading-engine/service-loader-db.java}
 
-Similar to the \verb|FileReadRepository| a file named \\\verb|com.example.spi.read.ReadRepository| is located in the directory \\\verb|resources/META-INF/services|.
+Similar to the \verb|FileReadRepository| file named \\\verb|com.example.spi.read.ReadRepository| is located in the directory \\\verb|resources/META-INF/services|.
 However, this file contains \\\verb|com.example.adapter.database.read.DatabaseReadRepository|.
 
 The \verb|ServiceLoader| searched each JAR in the classpath for files under \verb|resources/META-INF/services| with the name \\\verb|com.example.spi.read.ReadRepository| that contains the implementation of this interface, and creates them.
@@ -102,44 +102,44 @@ The following components form the core:
     They are linked to their own \verb|Management-API|, and enable additional risk checks, such as capital requirements or position limits.
 \end{enumerate}
 
-Before the \verb|Strategy-Engine| there are two other engines, named \\\verb|Remote-Backtest-Engine|, and \verb|Backtest-Engine|, which configure the \\\verb|Strategy-Engine|.
-The difference between the engines is that the \\\verb|Remote-Backtest-Engine| defines the \verb|Strategy-Engine| asynchronously.
+Before the \verb|Strategy-Engine| there are two other engines, named \verb|Remote-Backtest-Engine|, and \verb|Backtest-Engine|, which configure the \verb|Strategy-Engine|.
+The difference between the engines is that the \verb|Remote-Backtest-Engine| defines the \verb|Strategy-Engine| asynchronously.
 This means that a remote data source can stream market data via an API.
 When new data arrives, the \verb|Strategy-Engine| is notified by the data source, and the \verb|Strategy-Engine| starts executing the trading strategy.
 For a local backtest, the \verb|Strategy-Engine| is configured so that data synchronization is handled by the backtest engine, not by the data source.
 
-Abstract apps are modules that accept, and parse user configurations.
+Abstract apps are modules that accept and parse user configurations.
 For example, the task of the \verb|Abstract-Local-Backtest-App| is to ask the user via the console which strategy should be used for the backtest.
 With the \verb|Abstract-Remote-Execution-App|, the configuration is not done via the console, but primarily via environment variables.
 The parsed configurations are then passed to the respective engines.
 
 \subsubsection{Applications}
 
-The application layer defines specific execution environments, by defining the classpath with adapters.
+The application layer defines specific execution environments by defining the classpath with adapters.
 
 \begin{enumerate}
-    \item \textbf{Local-Backtest-App:} Executes trading strategies offline by using the \verb|Local-CSV-Datasource|, and the \verb|Demo-Broker-Connector|.
+    \item \textbf{Local-Backtest-App:} Executes trading strategies offline by using the \verb|Local-CSV-Datasource| and the \verb|Demo-Broker-Connector|.
     \item \textbf{Remote-Execution-App:} Executes strategies in real time, and communicates with live broker interfaces.
 \end{enumerate}
 
 \subsection{Demo Broker}
 
-For local backtests the connection to a real broker must be mocked.
-Therefore the \verb|Demo-Broker-Connector| is used to replace a real broker.
+For local backtests, the connection to a real broker must be mocked.
+Therefore, the \verb|Demo-Broker-Connector| is used to replace a real broker.
 He takes over the main tasks including:
 
 \begin{enumerate}
     \item \textbf{Order execution and position management:} Executing market, limit, take-profit, and stop-loss orders, including execution fee calculation.
     \item \textbf{Adapt trailing stop positions:} Monitor trailing stop positions, and adapt the stop-level according to the most recent price.
     \item \textbf{Account balance management:} Manage the available account balance as well as the margin balance.
-    \item \textbf{Store executed trades:} Storing the executed trades is essential for risk management, and later analysis.
+    \item \textbf{Store executed trades:} Storing the executed trades is essential for risk management and later analysis.
 \end{enumerate}
 
 \subsubsection{Order Execution and Position Management}
 
-In context of trading order execution and position management are closely connected, because positions can be translated in three orders where only two of them are actually executed.
+In the context of trading order execution and position management are closely connected, because positions can be translated in three orders where only two of them are actually executed.
 As described in \autoref{chap:dealing-with-trading-fees} it is necessary that the trading engine supports market and limit orders.
-In real life environments the most orders are not executed at the expected price, due to slippage \cite{ig-slippage}.
+In real life environments, most orders are not executed at the expected price, due to slippage \cite{ig-slippage}.
 To simulate slippage, the trading engine can either use historical data of the underlying cryptocurrency, which is available in the lowest available timeframe (usually seconds or tick data), or simulate slippage randomly.
 Two problems exist with simulations using historical data.
 The first is that data in the seconds or tick range over a long period of time is difficult for private individuals to obtain.
@@ -178,7 +178,7 @@ The profit in euro is calculated using the following formula:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/trading-engine/position-closing.pdf}
+    \includegraphics[width=\textwidth]{images/trading-engine/position-closing}
     \caption{Closing a Position}
     \label{fig:te-position-closing}
 \end{figure}
@@ -188,7 +188,7 @@ The profit in euro is calculated using the following formula:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/trading-engine/complete-position-opening.pdf}
+    \includegraphics[width=\textwidth]{images/trading-engine/complete-position-opening}
     \caption{Opening a Position}
     \label{fig:te-complete-position-opening}
 \end{figure}
@@ -197,13 +197,13 @@ The profit in euro is calculated using the following formula:
 
 Trailing stop positions are positions with a dynamic stop order.
 The stop level moves automatically with the price as soon as it moves in the desired direction.
-For a buy position the stop level moves if the price rises.
+For a buy position, the stop level moves if the price rises.
 If the price falls, the stop remains unchanged \cite{ig-trailing}.
 
 \autoref{fig:trailing-stop} shows a synthetic closing price (black) and a trailing-stop order with 60 points distance (red) for a buy position.
-In the green filled areas the price moves in the desired direction, so the trailing-stop level follows the price.
-In the red filled areas the prices does not move in the desired direction, so the trailing-stop level does not move.
-An exception is the red filled area after $t=3$, where the price moves in the desired direction, but the trailing stop does not.
+In the green-filled areas, the price moves in the desired direction, so the trailing-stop level follows the price.
+In the red-filled areas, the prices do not move in the desired direction, so the trailing-stop level does not move.
+An exception is the red-filled area after $t=3$, where the price moves in the desired direction, but the trailing stop does not.
 This is because there is not yet a 60-point gap between the price and the stop level.
 Therefore, the stop only moves again once the 60-point gap is restored.
 
