@@ -191,7 +191,7 @@ class TradingEnvLongAndShort(gym.Env):
         obs = self._get_obs(self.time_absolute)
         self.reset_que.append(obs)
         self.state_que.append(obs)
-        obs = self.scaler.step(obs).flatten()
+        obs = self.scaler.step(np.array(self.state_que)).flatten()
 
         info = {
             'realized_pnl': realized_pnl,
@@ -201,7 +201,7 @@ class TradingEnvLongAndShort(gym.Env):
             'margin': self.margin,
             'available_balance': self.available_balance
         }
-        self.statistics_recorder.update(**info)
+        #self.statistics_recorder.update(**info)
 
         return obs, self.reward, done, False, info
 

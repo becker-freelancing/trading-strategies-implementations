@@ -21,9 +21,13 @@ public class ConfiguredBacktestApp {
                 "Bollinger_Band_Bounce",
                 "Bollinger_Band_Bounce_Min_Slope",
                 "MACD_Scalping",
-                "Parabolic_SAR",
+                "RL_Strategy_ATR_Long_and_Short",
+                "RL_Strategy_ATR_Only_Buy",
+                "RL_Strategy_Hard_TP_SL_Long_and_Short",
+                "RL_Strategy_Hard_TP_SL_Only_Buy",
                 "Rsi_Overbought_Oversold",
                 "swing_high_low",
+                "Parabolic_SAR",
                 "chart_pattern",
                 "freq_strategy",
                 "super_trend",
@@ -33,10 +37,10 @@ public class ConfiguredBacktestApp {
 
             Runnable backtestApp = AbstractLocalBacktestAppBuilder.builder()
                     .withInitialWalletAmount(new Decimal(5_000))
-                    .withFromTime(LocalDateTime.parse("2024-05-01T00:00:00"))
-                    .withToTime(LocalDateTime.parse("2024-09-30T23:59:00"))
+                    .withFromTime(LocalDateTime.parse("2025-01-01T00:00:00"))
+                    .withToTime(LocalDateTime.parse("2025-06-17T11:00:00"))
                     .withAppMode("BYBIT_LOCAL_DEMO")
-                    .withNumberOfThreads(20)
+                    .withNumberOfThreads(30)
                     .withPair("ETHPERP_1")
                     .withStrategyName(strategyName)
                     .withParameterPermutationLimit(1000)

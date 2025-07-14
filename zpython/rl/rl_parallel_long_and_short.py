@@ -134,7 +134,8 @@ def run():
 
     model = PPO(CustomActorCriticPolicy, env, verbose=2,
                 n_steps=256,
-                batch_size=256 // num_envs
+                batch_size=256 // num_envs,
+                device="cpu"
                 # tensorboard_log=f"./logs_{dt_str}/tensorboard/"
                 )
 
@@ -155,6 +156,7 @@ def run():
         verbose=2
     )
 
+    print(dt_str)
     model.learn(total_timesteps=1_000_000, callback=[checkpoint_callback, eval_callback], progress_bar=True)
 
     obs = env.reset()

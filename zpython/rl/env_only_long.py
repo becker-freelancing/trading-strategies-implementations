@@ -74,7 +74,7 @@ class TradingEnvOnlyLong(gym.Env):
         self._reset_env_state()
 
     def reset(self, seed=7, options={}):
-        self._reset_env_state(options.get("time_absolute"))
+        self._reset_env_state(options.get("time_absolute") if options else None)
         state_array, reset_array = self._get_observation_reset()
         scaled_obs_reset = self.scaler.reset(state_array, reset_array).flatten()
 
@@ -278,6 +278,9 @@ class TradingEnvOnlyLong(gym.Env):
         margin_long_end = self.margin_long
 
         obs_step = self._get_observation_step_fast(self.time_absolute)
+        self.state_que.append(obs_step)
+        self.reset_que.append(obs_step)
+        obs_step = np.array(self.state_que)
         obs = self.scaler.step(obs_step).flatten()
 
         info = {"action": action,

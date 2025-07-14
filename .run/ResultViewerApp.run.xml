@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ResultViewerApp" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="ResultViewerApp" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.becker.freelance.backtest.resultviewer.app.ResultViewerApp" />
     <module name="backtest-result-viewer-app" />
     <extension name="coverage">

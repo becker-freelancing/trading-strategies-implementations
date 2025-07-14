@@ -25,8 +25,8 @@ public class ClassificationStrategyCreator implements StrategyCreator {
     public ValidStrategyInitParameters strategyParameters() {
         return new ValidStrategyInitParameters(
 
-                new StrategyInitParameter(TAKE_PROFIT_DELTA, 5., 0., 100., 5.),
-                new StrategyInitParameter(STOP_LOSS_DELTA, 5., 0., 100., 5.),
+                new StrategyInitParameter(TAKE_PROFIT_DELTA, 5., 1., 100., 5.),
+                new StrategyInitParameter(STOP_LOSS_DELTA, 5., 1., 100., 5.),
                 new StrategyInitParameter(DefaultParameterNames.TRAILING_STOP_ORDER, 0, 0, 1, 1),
                 new StrategyInitParameter(MIN_PROP_FOR_ENTRY, 0.7, 0.3, 0.9, 0.1)
         );
