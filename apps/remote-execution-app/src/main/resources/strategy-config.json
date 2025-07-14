@@ -6,7 +6,7 @@
     "regimes": [
       "DOWN_LOW_VOLA_033"
     ],
-    "parameters": {"longMaPeriod":8,"swingHighLowOrder":5,"shortMaPeriod":5,"swingHighLowMaxAge":5}
+    "parameters": {"longMaPeriod":5,"swingHighLowOrder":5,"stopLossDelta":80,"takeProfitDelta":200,"trailingStopOrder":0,"shortMaPeriod":3,"swingHighLowMaxAge":10}
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -15,7 +15,7 @@
     "regimes": [
       "DOWN_LOW_VOLA_066"
     ],
-    "parameters": {"longMaPeriod":16,"swingHighLowOrder":2,"shortMaPeriod":3,"swingHighLowMaxAge":5}
+    "parameters": {"longMaPeriod":19,"swingHighLowOrder":5,"stopLossDelta":5,"takeProfitDelta":95,"trailingStopOrder":0,"shortMaPeriod":11,"swingHighLowMaxAge":10}
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -24,7 +24,7 @@
     "regimes": [
       "DOWN_LOW_VOLA_1"
     ],
-    "parameters": {"longMaPeriod":13,"swingHighLowOrder":6,"shortMaPeriod":8,"swingHighLowMaxAge":25}
+    "parameters": {"longMaPeriod":7,"swingHighLowOrder":9,"stopLossDelta":50,"takeProfitDelta":185,"trailingStopOrder":1,"shortMaPeriod":3,"swingHighLowMaxAge":10}
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -33,7 +33,7 @@
     "regimes": [
       "SIDE_LOW_VOLA_033"
     ],
-    "parameters": {"longMaPeriod":14,"swingHighLowOrder":2,"shortMaPeriod":3,"swingHighLowMaxAge":5}
+    "parameters": {"longMaPeriod":9,"swingHighLowOrder":1,"stopLossDelta":65,"takeProfitDelta":200,"trailingStopOrder":0,"shortMaPeriod":3,"swingHighLowMaxAge":30}
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -42,7 +42,7 @@
     "regimes": [
       "UP_LOW_VOLA_066"
     ],
-    "parameters": {"longMaPeriod":11,"swingHighLowOrder":7,"shortMaPeriod":5,"swingHighLowMaxAge":15}
+    "parameters": {"longMaPeriod":17,"swingHighLowOrder":7,"stopLossDelta":65,"takeProfitDelta":140,"trailingStopOrder":1,"shortMaPeriod":9,"swingHighLowMaxAge":10}
   },
   {
     "strategyName": "live_classification_strategy",
