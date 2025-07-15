@@ -23,13 +23,15 @@ public class MA3Strategy extends BaseStrategy {
     private final SMAIndicator longSma;
     private final Decimal minSlope;
     private final int minSlopeWindow;
+    private final PositionBehaviour positionBehaviour;
 
-    public MA3Strategy(StrategyParameter parameter, int longMaPeriod, int shortMaPeriod, int midMaPeriod, Decimal minSlope, int minSlopeWindow, Decimal stop, Decimal limit) {
+    public MA3Strategy(StrategyParameter parameter, int longMaPeriod, int shortMaPeriod, int midMaPeriod, Decimal minSlope, int minSlopeWindow, Decimal stop, Decimal limit, PositionBehaviour positionBehaviour) {
         super(parameter);
         this.minSlope = minSlope;
         this.minSlopeWindow = minSlopeWindow;
         this.stopDistance = stop;
         this.limitDistance = limit;
+        this.positionBehaviour = positionBehaviour;
         barSeries.setMaximumBarCount(longMaPeriod + 5);
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
         shortSma = new SMAIndicator(closePriceIndicator, shortMaPeriod);
@@ -57,7 +59,7 @@ public class MA3Strategy extends BaseStrategy {
 
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
-                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withPositionBehaviour(positionBehaviour)
                     .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(entryParameter.pair()))
                     .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.BUY)))
                     .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.BUY))));
@@ -65,7 +67,7 @@ public class MA3Strategy extends BaseStrategy {
 
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
-                    .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                    .withPositionBehaviour(positionBehaviour)
                     .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(entryParameter.pair()))
                     .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.SELL)))
                     .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.SELL))));
