@@ -25,7 +25,7 @@ public class BollingerBandBounceStrategyCreator implements StrategyCreator {
                 new StrategyInitParameter(DefaultParameterNames.PERIOD, 14, 10, 25, 1),
                 new StrategyInitParameter(STD, 2, 1.5, 3.0, 0.5),
                 new StrategyInitParameter(DefaultParameterNames.STOP_LOSS, 15, 10, 100, 20),
-                new StrategyInitParameter(DefaultParameterNames.TAKE_PROFIT, 15, 1, 50, 5),
+                new StrategyInitParameter(DefaultParameterNames.TAKE_PROFIT, 15, -5, 20, 2),
                 new StrategyInitParameter(DefaultParameterNames.TRAILING_STOP_ORDER, 0, 0, 1, 1)
         );
     }
