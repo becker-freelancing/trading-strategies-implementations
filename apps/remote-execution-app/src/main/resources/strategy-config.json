@@ -15,7 +15,7 @@
     "regimes": [
       "DOWN_LOW_VOLA_066"
     ],
-    "parameters": {"longMaPeriod":19,"swingHighLowOrder":5,"stopLossDelta":5,"takeProfitDelta":95,"trailingStopOrder":0,"shortMaPeriod":11,"swingHighLowMaxAge":10}
+    "parameters": {"longMaPeriod":7,"swingHighLowOrder":5,"stopLossDelta":95,"takeProfitDelta":155,"trailingStopOrder":0,"shortMaPeriod":3,"swingHighLowMaxAge":40}
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -24,7 +24,7 @@
     "regimes": [
       "DOWN_LOW_VOLA_1"
     ],
-    "parameters": {"longMaPeriod":7,"swingHighLowOrder":9,"stopLossDelta":50,"takeProfitDelta":185,"trailingStopOrder":1,"shortMaPeriod":3,"swingHighLowMaxAge":10}
+    "parameters": {"longMaPeriod":15,"swingHighLowOrder":5,"stopLossDelta":5,"takeProfitDelta":200,"trailingStopOrder":0,"shortMaPeriod":7,"swingHighLowMaxAge":40}
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -33,7 +33,34 @@
     "regimes": [
       "SIDE_LOW_VOLA_033"
     ],
-    "parameters": {"longMaPeriod":9,"swingHighLowOrder":1,"stopLossDelta":65,"takeProfitDelta":200,"trailingStopOrder":0,"shortMaPeriod":3,"swingHighLowMaxAge":30}
+    "parameters": {"longMaPeriod":11,"swingHighLowOrder":5,"stopLossDelta":35,"takeProfitDelta":80,"trailingStopOrder":0,"shortMaPeriod":5,"swingHighLowMaxAge":10}
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_066"
+    ],
+    "parameters": {"longMaPeriod":17,"swingHighLowOrder":1,"stopLossDelta":20,"takeProfitDelta":170,"trailingStopOrder":0,"shortMaPeriod":7,"swingHighLowMaxAge":20}
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_1"
+    ],
+    "parameters": {"longMaPeriod":15,"swingHighLowOrder":3,"stopLossDelta":50,"takeProfitDelta":170,"trailingStopOrder":0,"shortMaPeriod":5,"swingHighLowMaxAge":20}
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_033"
+    ],
+    "parameters": {"longMaPeriod":17,"swingHighLowOrder":7,"stopLossDelta":50,"takeProfitDelta":110,"trailingStopOrder":0,"shortMaPeriod":15,"swingHighLowMaxAge":30}
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -42,7 +69,16 @@
     "regimes": [
       "UP_LOW_VOLA_066"
     ],
-    "parameters": {"longMaPeriod":17,"swingHighLowOrder":7,"stopLossDelta":65,"takeProfitDelta":140,"trailingStopOrder":1,"shortMaPeriod":9,"swingHighLowMaxAge":10}
+    "parameters": {"longMaPeriod":11,"swingHighLowOrder":9,"stopLossDelta":35,"takeProfitDelta":140,"trailingStopOrder":0,"shortMaPeriod":5,"swingHighLowMaxAge":10}
+  },
+  {
+    "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_033"
+    ],
+    "parameters": {"longMaPeriod":15,"swingHighLowOrder":9,"stopLossDelta":5,"takeProfitDelta":200,"trailingStopOrder":0,"shortMaPeriod":7,"swingHighLowMaxAge":10}
   },
   {
     "strategyName": "live_classification_strategy",

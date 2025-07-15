@@ -37,7 +37,7 @@ public class BollingerBandBounceStrategyCreator implements StrategyCreator {
                 strategyParameter.getParameterAsInt(DefaultParameterNames.PERIOD),
                 strategyParameter.getParameter(STD),
                 strategyParameter.getParameter(DefaultParameterNames.STOP_LOSS),
-                strategyParameter.getParameterAsBool(DefaultParameterNames.TAKE_PROFIT),
+                strategyParameter.getParameter(DefaultParameterNames.TAKE_PROFIT),
                 strategyParameter.getParameterAsBool(DefaultParameterNames.TRAILING_STOP_ORDER) ? PositionBehaviour.TRAILING : PositionBehaviour.HARD_LIMIT
         );
     }

@@ -10,15 +10,15 @@ public class ConfiguredBacktestApp {
 
     public static void main(String[] args) {
         List<String> strategyNames = List.of(
+                "2_MA_Strategy",
+                "3_Ma_Strategy",
+                "Bollinger_Band_Bounce",
                 "2_EMA_Strategy_min_ATR",
                 "2_EMA_Strategy_simple",
                 "2_EMA_Strategy_with_RSI_filter",
                 "2_EMA_Strategy_with_long_EMA_filter",
-                "2_MA_Strategy",
                 "2_MA_Strategy_simple",
-                "3_Ma_Strategy",
                 "Best_Hard_TP_and_SL",
-                "Bollinger_Band_Bounce",
                 "Bollinger_Band_Bounce_Min_Slope",
                 "MACD_Scalping",
                 "RL_Strategy_ATR_Long_and_Short",
@@ -37,8 +37,8 @@ public class ConfiguredBacktestApp {
 
             Runnable backtestApp = AbstractLocalBacktestAppBuilder.builder()
                     .withInitialWalletAmount(new Decimal(5_000))
-                    .withFromTime(LocalDateTime.parse("2025-01-01T00:00:00"))
-                    .withToTime(LocalDateTime.parse("2025-06-17T11:00:00"))
+                    .withFromTime(LocalDateTime.parse("2024-05-01T00:00:00"))
+                    .withToTime(LocalDateTime.parse("2024-12-30T11:00:00"))
                     .withAppMode("BYBIT_LOCAL_DEMO")
                     .withNumberOfThreads(30)
                     .withPair("ETHPERP_1")
