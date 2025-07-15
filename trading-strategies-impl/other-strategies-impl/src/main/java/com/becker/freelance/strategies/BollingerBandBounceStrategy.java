@@ -1,6 +1,5 @@
 package com.becker.freelance.strategies;
 
-import com.becker.freelance.commons.pair.Pair;
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionBehaviour;
 import com.becker.freelance.commons.signal.EntrySignalBuilder;
@@ -32,10 +31,14 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
     private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
     private final BollingerBandsLowerIndicator bollingerBandsLowerIndicator;
     private final Decimal stopDistance;
+    private final Decimal takeProfitDelta;
+    private final PositionBehaviour positionBehaviour;
 
-    public BollingerBandBounceStrategy(StrategyParameter parameter, int period, Decimal std, Decimal stopDistance) {
+    public BollingerBandBounceStrategy(StrategyParameter parameter, int period, Decimal std, Decimal stopDistance, Decimal takeProfitDelta, PositionBehaviour positionBehaviour) {
         super(parameter);
         this.stopDistance = stopDistance;
+        this.positionBehaviour = positionBehaviour;
+        this.takeProfitDelta = takeProfitDelta;
         smaIndicator = new SMAIndicator(closePrice, period);
         standardDeviationIndicator = new StandardDeviationIndicator(closePrice, period);
         bollingerBandsMiddleIndicator = new BollingerBandsMiddleIndicator(smaIndicator);
@@ -65,12 +68,11 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
         if (currentPrice.getOpenMid().isLessThan(lowValue) && closeMid.isGreaterThan(lowValue)) {
             Num middleValueNum = bollingerBandsMiddleIndicator.getValue(barCount);
             Decimal middleValue = new Decimal(middleValueNum.doubleValue());
-            Pair pair = currentPrice.pair();
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
-                    .withPositionBehaviour(PositionBehaviour.TRAILING)
+                    .withPositionBehaviour(positionBehaviour)
                     .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(currentPrice.pair()))
-                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(middleValue))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(middleValue.add(takeProfitDelta)))
                     .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(currentPrice, stopDistance, Direction.BUY))));
         }
         return Optional.empty();
@@ -82,12 +84,11 @@ public class BollingerBandBounceStrategy extends BaseStrategy {
         Decimal closeMid = currentPrice.getCloseMid();
         if (currentPrice.getOpenMid().isGreaterThan(highValue) && closeMid.isLessThan(highValue)) {
             Decimal middleValue = new Decimal(bollingerBandsMiddleIndicator.getValue(barCount).doubleValue());
-            Pair pair = currentPrice.pair();
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
-                    .withPositionBehaviour(PositionBehaviour.TRAILING)
+                    .withPositionBehaviour(positionBehaviour)
                     .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(currentPrice.pair()))
-                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(middleValue))
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(middleValue.subtract(takeProfitDelta)))
                     .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(currentPrice, stopDistance, Direction.SELL))));
         }
         return Optional.empty();
