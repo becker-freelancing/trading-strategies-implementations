@@ -9,12 +9,16 @@ import com.becker.freelance.strategies.executionparameter.EntryExecutionParamete
 import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import java.util.Optional;
 
 public class MA3Strategy extends BaseStrategy {
+
+    private static final Logger logger = LoggerFactory.getLogger(MA3Strategy.class);
 
     private final Decimal stopDistance;
     private final Decimal limitDistance;
@@ -57,20 +61,26 @@ public class MA3Strategy extends BaseStrategy {
 
         if (currentShortSma > currentMidSma && lastShortSmaValue < lastMidSmaValue && Direction.BUY.equals(direction)) {
 
+            Decimal tpLevel = limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.BUY);
+            Decimal slLevel = stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.BUY);
+            logger.debug("Creating Buy Entry Signal with TP Level {} and SL Level {}", tpLevel, slLevel);
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
                     .withPositionBehaviour(positionBehaviour)
                     .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(entryParameter.pair()))
-                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.BUY)))
-                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.BUY))));
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(tpLevel))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(slLevel)));
         } else if (currentShortSma < currentMidSma && lastShortSmaValue > lastMidSmaValue && Direction.SELL.equals(direction)) {
 
+            Decimal tpLevel = limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.SELL);
+            Decimal slLevel = stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.SELL);
+            logger.debug("Creating Sell Entry Signal with TP Level {} and SL Level {}", tpLevel, slLevel);
             return Optional.of(entrySignalBuilder()
                     .withOpenMarketRegime(currentMarketRegime())
                     .withPositionBehaviour(positionBehaviour)
                     .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(entryParameter.pair()))
-                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitDistanceToLevel(entryParameter.currentPrice(), limitDistance, Direction.SELL)))
-                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopDistanceToLevel(entryParameter.currentPrice(), stopDistance, Direction.SELL))));
+                    .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(tpLevel))
+                    .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(slLevel)));
         }
 
         return Optional.empty();
