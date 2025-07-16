@@ -1,5 +1,6 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{styles}
+\usepackage{hyperref}
 
 \begin{document}
 
@@ -95,10 +96,6 @@
 
     \newpage
 
-    \include{I-Stresstesting}
-
-    \newpage
-
     \include{J-Live-Test}
 
     \newpage
@@ -113,6 +110,10 @@
 
     \section{References}
     \printbibliography[title=~]
+
+    \newpage
+
+    \include{L-Appendix}
 
 
 \end{document}

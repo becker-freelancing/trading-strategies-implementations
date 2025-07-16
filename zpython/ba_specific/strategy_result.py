@@ -41,12 +41,12 @@ fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(16, 9))
 
 
 def render(df: pd.DataFrame, col, row):
-    df["cum"] = df["pnl"].cumsum()
+    df["cum"] = df["pnl"].cumsum() + 5000
     df["rolMax"] = df["cum"].cummax()
     df["drawdown"] = df["cum"] / df["rolMax"] - 1
     ax1 = axs[row, col]
     ax1.plot(df["time"], df["cum"], label="Equity", color="blue")
-    ax1.set_ylabel('Cumulative Equity', color='blue')
+    ax1.set_ylabel('Account Equity', color='blue')
     ax1.tick_params(axis='y', labelcolor='blue')
     ax1.grid(True)
 

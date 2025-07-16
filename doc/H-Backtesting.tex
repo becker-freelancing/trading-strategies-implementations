@@ -1,6 +1,48 @@
 \section{Backtesting Trading-Strategies}
 
+The quantitative evaluation of trading strategies requires a structured and comprehensible testing environment which was introduced in \autoref{chap:te}.
+This chapter describes the executed backtests, which aim to verify the performance of the develop trading strategies in \autoref{chap:trading-strategies} under realistic conditions.
+
+Backtesting describes a performance simulation of a trading strategy based on historical data.
+This involves investigating how a specific strategy would have performed in the past if it had been executed under the given market conditions.
+The goal is to gain initial insights into the robustness, profitability, and risk profile of the approach before it is used in live trading \cite{backtesting}.
+
+\subsection{Trading-Strategy Parameter Selection}
+
+In contrast to the classic machine learning process, the parameter selection for the ultimately executed strategies is performed without the training set.
+This also applies to strategies that use deep learning (\autoref{chap:ai-strategies}).
+Unlike the training of deep learning models, which learn from the training data and adapt their internal states based on the training data, the trading strategies are initialized with fixed parameters.
+This corresponds to the fitting of deep learning models.
+However, the subsequent process is identical.
+The strategies are validated with their previously defined parameters on the validation set to find the best possible parameters.
+
 \subsection{Executing Backtests}
+
+Due to the large number of parameter combinations shown in \autoref{tbl:parameters-number}, backtesting all combinations is not possible due to the execution time.
+Therefore, only 1000 combinations per strategy were tested on the validation set.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{L{8cm}c}
+        \toprule
+        Strategy Name & Number of Parameters
+        \\
+        \midrule
+        \textbf{Regression AI Strategy}                     & 8,820     \\
+        \textbf{Classification AI Strategy}                 & 5,600     \\
+        \textbf{Dual Simple Moving Average Strategy}        & 98,000    \\
+        \textbf{Triple Exponential Moving Average Strategy} & 1,555,200 \\
+        \textbf{Bollinger Bands Strategy}                   & 8,320     \\
+        \bottomrule
+    \end{tabular}
+    \caption{Number of Parameters per Strategy}
+    \label{tbl:parameters-number}
+\end{table}
+
+Due to the length, the detailed results of the backtests, including the parameters that led to the respective results, can be found in \autoref{chap:backtest-results} in the appendix.
+Here, only the results of the strategies with the highest cumulative last equity combined across all market regimes are presented.
+
+
 
 \subsection{Evaluating Backtests}
 

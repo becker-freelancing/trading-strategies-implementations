@@ -29,7 +29,10 @@ clean
 
 # Kompilieren
 echo "Kompiliere LaTeX-Dokument..."
-latexmk -pdf -bibtex -shell-escape "${MAIN}.tex"
+pdflatex -interaction=nonstopmode main.mtex
+biber main
+pdflatex -interaction=nonstopmode main.mtex
+pdflatex -interaction=nonstopmode main.mtex
 
 # Nachher aufräumen
 clean
