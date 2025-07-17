@@ -2,6 +2,33 @@
 
 \subsection{Motivation}
 
+In recent years, the cryptocurrency market has emerged as a highly dynamic and rapidly evolving financial ecosystem.
+Trading pairs such as \ethusdc on minute-level (M1) intervals provide vast amounts of high-frequency data, reflecting extreme volatility and market shifts.
+This creates challenges and opportunities for traders and researchers.
+
+The availability of detailed tick and minute data, combined with direct API access from crypto brokers, creates new opportunities for developing data-driven trading systems.
+Advances in machine learning and deep learning offer promising tools to identify patterns in market movements.
+This motivates an exploration of AI-based trading systems specifically designed for the \ethusdc pair, aiming to leverage technical features and advanced models to improve performance in the volatile cryptocurrency environment.
+
+On the other hand, classical trading strategies also could perform well in this environment, especially if the strategies are adapted to specific market regimes.
+Techniques such as moving averages, Bollinger Bands, or momentum indicators have the advantage of simplicity and transparency, allowing traders to understand and trust their decision-making process.
+
+
 \subsection{Aim of this Paper}
 
-+ Noch ein Kapitel welches Kurz erklärt, das ETHUSDC M1 genommen wird und warum
+The primary goal of this paper is to develop and evaluate AI-powered and classical trading strategies focused on the \ethusdc cryptocurrency pair.
+This paper will:
+
+\begin{enumerate}
+    \item Retrieve historical \ethusdc data via a broker API and process it for analysis.
+    \item Perform exploratory data analysis and feature engineering, including trend, volatility, and momentum indicators.
+    \item Identify and classify distinct market regimes to provide adaptive trading decisions.
+    \item Apply risk and money management techniques to realistically simulate trading performance.
+    \item Design, train, and benchmark multiple deep learning architectures such as LSTM, CNN, and hybrid models for forecasting the price and classify trading decisions.
+    \item Develop algorithmic trading strategies based on AI model predictions and compare them with classical technical trading approaches.
+    \item Build a modular trading engine capable of backtesting trading strategies and live execution using real broker connections.
+    \item Execution of the final best trading strategy in live operation on a demo account with a real broker.
+\end{enumerate}
+
+
+By focusing on the \ethusdc pair, this paper aims to provide insights into the effectiveness of deep learning and classical strategies in cryptocurrency trading and contribute practical tools for automated, adaptive trading in this challenging asset class.

@@ -20,6 +20,7 @@ The strategies are validated with their previously defined parameters on the val
 
 Due to the large number of parameter combinations shown in \autoref{tbl:parameters-number}, backtesting all combinations is not possible due to the execution time.
 Therefore, only 1000 combinations per strategy were tested on the validation set.
+In order to cover the greatest possible variance of the parameters, the combinations were not sampled randomly from the set of all possible combinations, but the combinations were sorted in lexicographic order and sampled at constant intervals.
 
 \begin{table}[H]
     \centering
@@ -42,6 +43,7 @@ Therefore, only 1000 combinations per strategy were tested on the validation set
 Due to the length, the detailed results of the backtests, including the parameters that led to the respective results, can be found in \autoref{chap:backtest-results} in the appendix.
 Here, only the results of the strategies with the highest cumulative last equity combined across all market regimes are presented.
 
+\include{tables/cumulative-results}
 
 
 \subsection{Evaluating Backtests}

@@ -76,7 +76,7 @@ This architecture was used as a simple baseline model to obtain a quick training
 The learning rate of the Adam optimizer ranges between $10^{-5}$ and $10^{-2}$, while the input layer has a length of 5 to 150
 All hyperparameters are managed by Optuna.
 
-\lstinputlisting[language=Python, caption=Base NN, label=lst:base-model, style=python]{python/models/nn_base.py}
+\lstinputlisting[language=Python, caption=Base FNN, label=lst:base-model, style=python]{python/models/nn_base.py}
 
 \subsubsection{Dropout Neural Network}
 
@@ -263,13 +263,13 @@ Otherwise, a short position is opened.
     \label{fig:loss-long-position-decision}
 \end{figure}
 
-After the direction decision, the stop loss and take profit levels must be determined.
-For long and short positions, there are two possibilities at which specific level the stop loss and take profit are set, based on the global high and low of the cumulative predicted logarithmic returns.
-If a long position was previously decided and the global high comes after the global low, the stop loss is set at the global low and the take profit at the global high.
-However, if the global high comes before the global low, the stop loss is set at the lowest low before the global high.
+After the direction decision, the stop-loss and take-profit levels must be determined.
+For long and short positions, there are two possibilities at which specific level the stop-loss and take-profit are set, based on the global high and low of the cumulative predicted logarithmic returns.
+If a long position was previously decided and the global high comes after the global low, the stop-loss is set at the global low and the take-profit at the global high.
+However, if the global high comes before the global low, the stop-loss is set at the lowest low before the global high.
 For short positions, the decision is exactly the opposite.
 
-\autoref{fig:loss-tp-sl} shows the stop loss and take profit levels for all four cases.
+\autoref{fig:loss-tp-sl} shows the stop-loss and take-profit levels for all four cases.
 The red areas mark the predicted unprofitable zones and the green areas mark the predicted profitable zones.
 
 \begin{figure}[H]
@@ -279,8 +279,8 @@ The red areas mark the predicted unprofitable zones and the green areas mark the
     \label{fig:loss-tp-sl}
 \end{figure}
 
-After the stop loss and take profit levels are determined, the actual logarithmic returns are used to calculate the profit or loss for each position.
-If neither the stop loss nor the take profit is reached, the profit calculation defaults to the profit if the stop loss is reached to ensure that the model predicts the correct take profit more often.
+After the stop-loss and take-profit levels are determined, the actual logarithmic returns are used to calculate the profit or loss for each position.
+If neither the stop-loss nor the take-profit is reached, the profit calculation defaults to the profit if the stop-loss is reached to ensure that the model predicts the correct take-profit more often.
 
 \subsubsection{Model Evaluation}
 

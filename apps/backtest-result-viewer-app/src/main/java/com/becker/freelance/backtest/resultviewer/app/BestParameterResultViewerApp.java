@@ -38,7 +38,7 @@ public class BestParameterResultViewerApp {
                             "regimes": [
                                 %s"
                             ],
-                            "parameters": "%s"
+                            "parameters": %s
                         },
                         """, stratName, split[0], split[1]);
                 System.out.println(format);

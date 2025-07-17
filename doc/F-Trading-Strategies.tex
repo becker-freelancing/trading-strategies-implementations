@@ -42,7 +42,7 @@ Based on the predicted price, the stop-loss and take-profit can be determined id
 This creates an entry signal with fixed stop-loss and take-profit level.
 
 However, since it is possible that the price could exceed the stop level or the take-profit level might not be reached, additional parameters are introduced into the strategy that shift the two levels by a specific number of points.
-A third parameter is also introduced, which specifies a fixed distance to the stop loss if no stop loss has been predicted.
+A third parameter is also introduced, which specifies a fixed distance to the stop-loss if no stop-loss has been predicted.
 This can happen, for example, if the initial prediction is positive and the price in the prediction does not fall below the current price.
 
 \begin{table}[H]
@@ -129,7 +129,7 @@ To achieve a more adaptive stop-loss and take-profit level determination, a self
 This detection finds swings in the price movements differs between swing high and swing low points.
 A swing high point at time $t$ is a point where the closing price is greater than all closing prices in the intervall $[t-N; t+N]$.
 Similarly, a swing low point is a point where the closing price is lower than all closing prices in the same intervall.
-This allows detecting simple support and resistence zones, on which the stop loss can be set.
+This allows detecting simple support and resistence zones, on which the stop-loss can be set.
 Therefore, the strategy adapts to the current market behaviour.
 
 %\autoref{fig:swing-high-low} shows syntetic price movements where at time $t=0$ swing highs are detected.
@@ -137,7 +137,7 @@ Therefore, the strategy adapts to the current market behaviour.
 %TODO: Chart für swing highs und lows
 
 The strategy has six parameters, consisting of the long-term and short-term SMA period, the order $N$ of the swing detection, which determines how significant the swing has to be, the maximum age of the last swing point, as well as a delta for the stop-loss and take-profit levels (identically to those in \autoref{chap:regression-ai-stategy}).
-All parameter combination where the short-term SMA period is greater than the long-term SMA period, have been filtered out and are not tested.
+All parameter combinations where the short-term SMA period is greater than the long-term SMA period, have been filtered out and are not tested.
 
 \begin{table}[H]
     \centering
@@ -208,8 +208,8 @@ All parameter combinations, where the short-term EMA period is greater than the 
         \textbf{Long-Term EMA Period}        & 10  & 50  & 5   \\
         \textbf{Minimum EMA Slope}           & 0.2 & 1.2 & 0.2 \\
         \textbf{EMA Slope Window Length $i$} & 10  & 40  & 10  \\
-        \textbf{Stop Loss Distance}          & 10  & 100 & 10  \\
-        \textbf{Take Profit Distance}        & 10  & 150 & 10  \\
+        \textbf{Stop-Loss Distance}          & 10  & 100 & 10  \\
+        \textbf{Take-Profit Distance}        & 10  & 150 & 10  \\
         \bottomrule
     \end{tabular}
     \caption{Triple Exponential Moving Average Strategy Parameters}
@@ -246,8 +246,8 @@ The take-profit level is set at the level of the central line , with a certain d
         \midrule
         \textbf{Bollinger Band Period}      & 10   & 25    & 1    \\
         \textbf{No. of Standard Deviations} & 1.5  & 3.0   & 0.5  \\
-        \textbf{Stop Loss Distance}         & 10.0 & 100.0 & 20.0 \\
-        \textbf{Take Profit Delta}          & -5.0 & 20.0  & 2.0  \\
+        \textbf{Stop-Loss Distance}         & 10.0 & 100.0 & 20.0 \\
+        \textbf{Take-Profit Delta}          & -5.0 & 20.0  & 2.0  \\
         \bottomrule
     \end{tabular}
     \caption{Bollinger Band Strategy Parameters}

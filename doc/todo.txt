@@ -2,9 +2,17 @@
 * Test und Backtest zusammenlegen
 * Trading Strategy mit oder ohne Bindestrich
 * SL und TP immer mit Bindestrich
-* Quantilschreibweise klarstellen
+* Quantilschreibweise klarstellen -> Evtl noch ins Abkürzungsverzeichnis
 * In Tabellen: Wenn in der ersten Spalte ein Parameter etc steht, dann linksbündig
 * ByBit
+* + Noch ein Kapitel welches Kurz erklärt, das ETHUSDC M1 genommen wird und warum
++ Sets noch einmal genauer erklären (Test vs Backtest)
+* Doppelte Anführungszeichen?
+* Dollar oder Euro
+* RRR mit oder ohne bindestrich
+* Maximum Account Risk
+* Abkürzungen Sortieren
+* Alle MAx Drawdowns etc nochmal anschauen
 
 
 
@@ -26,8 +34,8 @@
                 \midrule
                 Minimum EMA Slope             &               & & & & & & \\
                 EMA Slope Window Length $i$  &               & & & & & & \\
-                Stop Loss Distance           &               & & & & & & \\
-                Take Profit Distance         &               & & & & & & \\
+                Stop-Loss Distance           &               & & & & & & \\
+                Take-Profit Distance         &               & & & & & & \\
                 \midrule
                 \multirow{3}{*}{\begin{sideways}Equity\end{sideways}} & Minimum      & & & & & & \\
                 & Maximum      & & & & & & \\

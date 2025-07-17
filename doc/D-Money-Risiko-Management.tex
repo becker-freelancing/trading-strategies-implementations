@@ -13,7 +13,7 @@ An important part of risk management is calculating the position size.
 It is helpful to maximize the potential returns, as well as minimizing the financial risk.
 Many traders are only willing to risk 1\% or 2\% of the available capital per trade, to prevent a series of losing trades from decimating the available capital too much.
 
-The distance between the estimated entry price and the estimated stop loss price represents the maximum distance a market can move in an unprofitable direction before a position is automatically closed.
+The distance between the estimated entry price and the estimated stop-loss price represents the maximum distance a market can move in an unprofitable direction before a position is automatically closed.
 
 This allows the calculation of the position size to be carried out in three steps:
 
@@ -24,23 +24,23 @@ This allows the calculation of the position size to be carried out in three step
     Thus, it is possible to risk more if the entry signal is very clear.
     If the entry signal is less clear, it can also be risked less.
     Only a fixed upper limit should be defined.
-    \item \textbf{Calculating the risk per unit:} To calculate the risk per share the absolute distance between the estimated entry price, and the estimated stop loss price must be calculated.
+    \item \textbf{Calculating the risk per unit:} To calculate the risk per share the absolute distance between the estimated entry price, and the estimated stop-loss price must be calculated.
     This represents the risk per unit.
     \item \textbf{Calculate the position size:} Dividing the risked capital by the risk per unit represents the number of units to buy or sell.
 \end{enumerate}
 
 In total, these three steps can be combined into one formula \cite{britannica-position-size}:
 
-\begin{equation}
+\[
     PositionSize = \frac{Available Balance*RiskPerTrade}{RiskPerUnit}
-\end{equation}
+\]
 
-So if the available account balance is \$10,000.00, the risk per trade is 1\%, and the distance from the estimated entry price to the stop loss is \$5.
+So if the available account balance is \$10,000.00, the risk per trade is 1\%, and the distance from the estimated entry price to the stop-loss is \$5.
 The position size is calculated by:
 
-\begin{equation}
+\[
     PositionSize = \frac{\$10.000*1\%}{\$5}=\frac{\$100}{\$5}=20 [Units]
-\end{equation}
+\]
 
 It is important to note that numbers can result with many decimal places, and many brokers only allow positions with a certain number of decimal places.
 If this is the case, the position size must be subsequently rounded to the maximum number of decimal places supported.
@@ -60,15 +60,15 @@ It ensures that not only the hit rate determines the success of a strategy, but 
 
 The RRR is calculated by:
 
-\begin{equation}
+\[
     RRR = \frac{PossibleProfit}{PossibleLoss} = \frac{|OpenPrice - TakeProfitPrice|}{|OpenPrice - StopLossPrice|}
-\end{equation}
+\]
 
-For example, if a long trade is opened at \$100, with a take profit at \$110, and a stop loss at \$95, the result is:
+For example, if a long trade is opened at \$100, with a take-profit at \$110, and a stop-loss at \$95, the result is:
 
-\begin{equation}
+\[
     RRR = \frac{|\$100 - \$110|}{|\$100 - 95\$|} = \frac{\$10}{\$5} = 2
-\end{equation}
+\]
 
 This means that for every dollar risked, a potential profit of two dollars is targeted.
 
@@ -85,27 +85,26 @@ The essential factor is the combination of RRR, and hit rate:
 
 The following rule of thumb clarifies when a strategy has a positive expected value in the long term:
 
-\begin{equation}
+\[
     ExpectedValue = PossibleProfit * HitRatio - PossibleLoss * (1 - HitRatio)
-\end{equation}
+\]
 
 Only when this expected value is above zero, a trading strategy is statistically profitable.
 
 The RRR is not only a mathematical metric, but a central component of risk management.
 It helps traders systematically plan how much they are willing to lose per trade, relative to the expected profit.
-By consistently applying a minimum RRR (e.g.
-$\ge 1.5$), many inefficient setups can be eliminated in advance \cite{bitpanda-crv}.
+By consistently applying a minimum RRR (e.g.$\ge 1.5$), many inefficient setups can be eliminated in advance \cite{bitpanda-crv}.
 
 \subsubsection{Maximum Account Risk}
 
 (Nicht mehr als 10\% des Riskieren in Summe)
 
-\subsubsection{Minimum Take Profit}
+\subsubsection{Minimum Take-Profit}
 
 In every trading strategy, transaction fees play an important role.
 Especially in short-term trading, transaction fees can turn seemingly profitable trades negative if they are not adequately considered.
-A common mistake is setting the take profit level too narrowly, resulting in a profit that is smaller than the costs incurred.
-To trade profitably and sustainably, it is therefore essential that the take profit at least covers the fees incurred, but ideally, significantly higher.
+A common mistake is setting the take-profit level too narrowly, resulting in a profit that is smaller than the costs incurred.
+To trade profitably and sustainably, it is therefore essential that the take-profit at least covers the fees incurred, but ideally, significantly higher.
 
 \subsection{Dealing with Trading Fees}
 \label{chap:dealing-with-trading-fees}
