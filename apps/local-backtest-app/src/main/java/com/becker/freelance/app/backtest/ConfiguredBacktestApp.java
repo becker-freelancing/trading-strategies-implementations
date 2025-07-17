@@ -10,37 +10,18 @@ public class ConfiguredBacktestApp {
 
     public static void main(String[] args) {
         List<String> strategyNames = List.of(
-                "2_MA_Strategy",
+                //"2_MA_Strategy",
                 "3_Ma_Strategy",
-                "Bollinger_Band_Bounce",
-                "2_EMA_Strategy_min_ATR",
-                "2_EMA_Strategy_simple",
-                "2_EMA_Strategy_with_RSI_filter",
-                "2_EMA_Strategy_with_long_EMA_filter",
-                "2_MA_Strategy_simple",
-                "Best_Hard_TP_and_SL",
-                "Bollinger_Band_Bounce_Min_Slope",
-                "MACD_Scalping",
-                "RL_Strategy_ATR_Long_and_Short",
-                "RL_Strategy_ATR_Only_Buy",
-                "RL_Strategy_Hard_TP_SL_Long_and_Short",
-                "RL_Strategy_Hard_TP_SL_Only_Buy",
-                "Rsi_Overbought_Oversold",
-                "swing_high_low",
-                "Parabolic_SAR",
-                "chart_pattern",
-                "freq_strategy",
-                "super_trend",
-                "voltan_expan_close_strategy"
+                "Bollinger_Band_Bounce"
         );
         for (String strategyName : strategyNames) {
 
             Runnable backtestApp = AbstractLocalBacktestAppBuilder.builder()
                     .withInitialWalletAmount(new Decimal(5_000))
                     .withFromTime(LocalDateTime.parse("2024-05-01T00:00:00"))
-                    .withToTime(LocalDateTime.parse("2024-12-30T11:00:00"))
+                    .withToTime(LocalDateTime.parse("2024-09-30T23:59:00"))
                     .withAppMode("BYBIT_LOCAL_DEMO")
-                    .withNumberOfThreads(30)
+                    .withNumberOfThreads(16)
                     .withPair("ETHPERP_1")
                     .withStrategyName(strategyName)
                     .withParameterPermutationLimit(1000)
