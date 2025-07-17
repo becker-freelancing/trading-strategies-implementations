@@ -6,7 +6,15 @@
     "regimes": [
       "DOWN_LOW_VOLA_033"
     ],
-    "parameters": {"longMaPeriod":5,"swingHighLowOrder":5,"stopLossDelta":80,"takeProfitDelta":200,"trailingStopOrder":0,"shortMaPeriod":3,"swingHighLowMaxAge":10}
+    "parameters": {
+      "longMaPeriod": 11,
+      "swingHighLowOrder": 5,
+      "stopLossDelta": 80,
+      "takeProfitDelta": 170,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 3,
+      "swingHighLowMaxAge": 40
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -15,7 +23,15 @@
     "regimes": [
       "DOWN_LOW_VOLA_066"
     ],
-    "parameters": {"longMaPeriod":7,"swingHighLowOrder":5,"stopLossDelta":95,"takeProfitDelta":155,"trailingStopOrder":0,"shortMaPeriod":3,"swingHighLowMaxAge":40}
+    "parameters": {
+      "longMaPeriod": 19,
+      "swingHighLowOrder": 5,
+      "stopLossDelta": 65,
+      "takeProfitDelta": 200,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 3,
+      "swingHighLowMaxAge": 40
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -24,7 +40,15 @@
     "regimes": [
       "DOWN_LOW_VOLA_1"
     ],
-    "parameters": {"longMaPeriod":15,"swingHighLowOrder":5,"stopLossDelta":5,"takeProfitDelta":200,"trailingStopOrder":0,"shortMaPeriod":7,"swingHighLowMaxAge":40}
+    "parameters": {
+      "longMaPeriod": 13,
+      "swingHighLowOrder": 9,
+      "stopLossDelta": 50,
+      "takeProfitDelta": 200,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 7,
+      "swingHighLowMaxAge": 40
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -33,7 +57,15 @@
     "regimes": [
       "SIDE_LOW_VOLA_033"
     ],
-    "parameters": {"longMaPeriod":11,"swingHighLowOrder":5,"stopLossDelta":35,"takeProfitDelta":80,"trailingStopOrder":0,"shortMaPeriod":5,"swingHighLowMaxAge":10}
+    "parameters": {
+      "longMaPeriod": 15,
+      "swingHighLowOrder": 1,
+      "stopLossDelta": 80,
+      "takeProfitDelta": 185,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 11,
+      "swingHighLowMaxAge": 10
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -42,7 +74,15 @@
     "regimes": [
       "SIDE_LOW_VOLA_066"
     ],
-    "parameters": {"longMaPeriod":17,"swingHighLowOrder":1,"stopLossDelta":20,"takeProfitDelta":170,"trailingStopOrder":0,"shortMaPeriod":7,"swingHighLowMaxAge":20}
+    "parameters": {
+      "longMaPeriod": 19,
+      "swingHighLowOrder": 1,
+      "stopLossDelta": 5,
+      "takeProfitDelta": 185,
+      "trailingStopOrder": 1,
+      "shortMaPeriod": 15,
+      "swingHighLowMaxAge": 10
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -51,7 +91,15 @@
     "regimes": [
       "SIDE_LOW_VOLA_1"
     ],
-    "parameters": {"longMaPeriod":15,"swingHighLowOrder":3,"stopLossDelta":50,"takeProfitDelta":170,"trailingStopOrder":0,"shortMaPeriod":5,"swingHighLowMaxAge":20}
+    "parameters": {
+      "longMaPeriod": 15,
+      "swingHighLowOrder": 1,
+      "stopLossDelta": 65,
+      "takeProfitDelta": 170,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 5,
+      "swingHighLowMaxAge": 30
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -60,7 +108,15 @@
     "regimes": [
       "UP_LOW_VOLA_033"
     ],
-    "parameters": {"longMaPeriod":17,"swingHighLowOrder":7,"stopLossDelta":50,"takeProfitDelta":110,"trailingStopOrder":0,"shortMaPeriod":15,"swingHighLowMaxAge":30}
+    "parameters": {
+      "longMaPeriod": 19,
+      "swingHighLowOrder": 5,
+      "stopLossDelta": 65,
+      "takeProfitDelta": 200,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 3,
+      "swingHighLowMaxAge": 40
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
@@ -69,10 +125,179 @@
     "regimes": [
       "UP_LOW_VOLA_066"
     ],
-    "parameters": {"longMaPeriod":11,"swingHighLowOrder":9,"stopLossDelta":35,"takeProfitDelta":140,"trailingStopOrder":0,"shortMaPeriod":5,"swingHighLowMaxAge":10}
+    "parameters": {
+      "longMaPeriod": 19,
+      "swingHighLowOrder": 5,
+      "stopLossDelta": 65,
+      "takeProfitDelta": 200,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 3,
+      "swingHighLowMaxAge": 40
+    }
   },
   {
     "strategyName": "2_MA_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "longMaPeriod": 15,
+      "swingHighLowOrder": 9,
+      "stopLossDelta": 5,
+      "takeProfitDelta": 200,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 7,
+      "swingHighLowMaxAge": 10
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "longMaPeriod": 10,
+      "minSlopeWindow": 20,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 3,
+      "midMaPeriod": 5,
+      "stopLoss": 30,
+      "takeProfit": 120,
+      "minSlope": 0.8
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "longMaPeriod": 50,
+      "minSlopeWindow": 20,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 5,
+      "midMaPeriod": 29,
+      "stopLoss": 10,
+      "takeProfit": 130,
+      "minSlope": 0.6
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "DOWN_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "longMaPeriod": 50,
+      "minSlopeWindow": 10,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 5,
+      "midMaPeriod": 8,
+      "stopLoss": 50,
+      "takeProfit": 130,
+      "minSlope": 0.6
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "longMaPeriod": 35,
+      "minSlopeWindow": 10,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 5,
+      "midMaPeriod": 29,
+      "stopLoss": 50,
+      "takeProfit": 130,
+      "minSlope": 0.2
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "longMaPeriod": 35,
+      "minSlopeWindow": 10,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 5,
+      "midMaPeriod": 29,
+      "stopLoss": 50,
+      "takeProfit": 130,
+      "minSlope": 0.2
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "SIDE_LOW_VOLA_1"
+    ],
+    "parameters": {
+      "longMaPeriod": 45,
+      "minSlopeWindow": 10,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 7,
+      "midMaPeriod": 29,
+      "stopLoss": 10,
+      "takeProfit": 150,
+      "minSlope": 0.2
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_033"
+    ],
+    "parameters": {
+      "longMaPeriod": 20,
+      "minSlopeWindow": 30,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 7,
+      "midMaPeriod": 14,
+      "stopLoss": 10,
+      "takeProfit": 100,
+      "minSlope": 1.2
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
+    "priority": 100,
+    "pair": "ETHPERP_1",
+    "regimes": [
+      "UP_LOW_VOLA_066"
+    ],
+    "parameters": {
+      "longMaPeriod": 35,
+      "minSlopeWindow": 20,
+      "trailingStopOrder": 0,
+      "shortMaPeriod": 3,
+      "midMaPeriod": 5,
+      "stopLoss": 20,
+      "takeProfit": 100,
+      "minSlope": 1.0
+    }
+  },
+  {
+    "strategyName": "3_Ma_Strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
