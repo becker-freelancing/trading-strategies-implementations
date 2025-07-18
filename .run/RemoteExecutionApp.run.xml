@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RemoteExecutionApp" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="APPMODE" value="BYBIT_REMOTE_DEMO" />
+      <env name="BYBIT_API_KEY" value="Jdx1SUOJHN0he8d405" />
+      <env name="BYBIT_DEMO_URL" value="https://api-demo.bybit.com" />
+      <env name="BYBIT_SECRET" value="8TFeLNv34mLzJICuVUxbk3nFRl0L8U8AxgLt" />
+      <env name="PAIRS" value="ETHPERP_1" />
+      <env name="STRATEGIES" value="live_classification_strategy" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.becker.freelance.app.remote.RemoteExecutionApp" />
+    <module name="remote-execution-app" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.becker.freelance.app.remote.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

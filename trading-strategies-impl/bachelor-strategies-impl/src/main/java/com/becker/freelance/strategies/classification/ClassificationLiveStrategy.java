@@ -18,6 +18,8 @@ import com.becker.freelance.strategies.shared.DefaultPredictionParameter;
 import com.becker.freelance.strategies.shared.PredictionParameter;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.indicators.*;
 import org.ta4j.core.indicators.bollinger.BollingerBandsLowerIndicator;
@@ -38,6 +40,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ClassificationLiveStrategy extends BaseStrategy {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClassificationLiveStrategy.class);
 
     private final Double minProbabilityForEntry;
     private final Double takeProfitDelta;
@@ -141,6 +145,7 @@ public class ClassificationLiveStrategy extends BaseStrategy {
             predictionParameter = buildPredictionParameter();
         }
         Optional<ClassificationPrediction> prediction = classificationPredictor.predict(entryParameter, predictionParameter);
+        logger.debug("Prediction: {}", prediction);
         return prediction.flatMap(pred -> toEntrySignal(pred, entryParameter.currentPrice()));
     }
 
@@ -166,7 +171,9 @@ public class ClassificationLiveStrategy extends BaseStrategy {
 
     private Optional<EntrySignalBuilder> toEntrySignal(ClassificationPrediction classificationPrediction, TimeSeriesEntry currentPrice) {
         if (classificationPrediction.maxProbabilityForBuyAndSell() > minProbabilityForEntry) {
+            logger.debug("Could generate Entry Signal");
             if (classificationPrediction.buyProbability() > minProbabilityForEntry) {
+                logger.debug("Generate Buy Entry Signal");
                 Direction direction = Direction.BUY;
                 Decimal price = currentPrice.getClosePriceForDirection(direction);
                 return Optional.of(entrySignalBuilder()
@@ -176,6 +183,7 @@ public class ClassificationLiveStrategy extends BaseStrategy {
                         .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(price.subtract(stopLossDelta)))
                         .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(price.add(takeProfitDelta))));
             } else if (classificationPrediction.sellProbability() > minProbabilityForEntry) {
+                logger.debug("Generate Sell Entry Signal");
                 Direction direction = Direction.SELL;
                 Decimal price = currentPrice.getClosePriceForDirection(direction);
                 return Optional.of(entrySignalBuilder()
