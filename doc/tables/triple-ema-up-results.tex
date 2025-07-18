@@ -1,0 +1,26 @@
+\centering
+\begin{tabular}{ll|cccccc}
+    \toprule
+    \multicolumn{2}{r|}{\multirow{2}{*}{Regime}} & \multicolumn{3}{l}{Uptrend + Low Volatility}     & \multicolumn{3}{l}{Uptrend + High Volatility}     \\
+    \multicolumn{2}{r|}{} & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ \\
+    \midrule
+    \multirow{3}{*}{EMA Period} & Short-Term  & 7   & 7    & 7   & 7   & - & - \\
+    & Medium-Term & 14  & 14   & 14  & 14  & - & - \\
+    & Long-Term   & 40  & 40   & 40  & 40  & - & - \\
+    \multicolumn{2}{l|}{Minimum EMA Slope} & 0.8 & 0.8 & 0.8 & 0.8 & - & - \\
+    \multicolumn{2}{l|}{EMA Slope Window Length $i$} & 40 & 20 & 40 & 20 & - & - \\
+    \multicolumn{2}{l|}{Trailing Stop Orders} & false & false & false & false & - & - \\
+    \multicolumn{2}{l|}{Stop Loss Distance} & 10 & 10 & 30 & 10 & - & - \\
+    \multicolumn{2}{l|}{Take Profit Distance} & 100 & 150 & 110 & 90 & - & - \\
+    \midrule
+    \multicolumn{2}{l|}{Number of Trades} & 2 & 43 & 2 & 1 & - & - \\
+    \multicolumn{2}{l|}{Maximum Gain} & 484 & 875 & 170 & 488 & - & - \\
+    \multicolumn{2}{l|}{Maximum Loss} & 484 & -135 & 170 & 488 & - & - \\
+    \multicolumn{2}{l|}{Profits Std.} & 0 & 290 & 0 & 0 & - & - \\
+    \multirow{3}{*}{Equity}     & Minimum     & 0   & -88  & 0   & 0   & - & - \\
+    & Maximum     & 968 & 2914 & 341 & 488 & - & - \\
+    & Last        & 968 & 2075 & 341 & 488 & - & - \\
+    \multicolumn{2}{l|}{Maximum Drawdown} & 0 & 58 & 0 & 0 & - & - \\
+    \multicolumn{2}{l|}{Win Ratio} & 100 & 18 & 100 & 100 & - & - \\
+    \bottomrule
+\end{tabular}

@@ -1,0 +1,25 @@
+\centering
+\begin{tabular}{ll|cccccc}
+    \toprule
+    \multicolumn{2}{r|}{\multirow{2}{*}{Regime}} & \multicolumn{3}{l}{Uptrend + Low Volatility}     & \multicolumn{3}{l}{Uptrend + High Volatility}     \\
+    \multicolumn{2}{r|}{} & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ \\
+    \midrule
+    \multirow{2}{*}{SMA Period}            & Short-Term & 3    & 5    & 3   & 5   & 11  & - \\
+    & Long-Term  & 19   & 11   & 19  & 11  & 13  & - \\
+    \multicolumn{2}{l|}{Swing Order $N$} & 5 & 7 & 7 & 7 & 3 & - \\
+    \multicolumn{2}{l|}{Swing Max Age} & 30 & 10 & 40 & 10 & 20 & - \\
+    \multicolumn{2}{l|}{Trailing Stop Order} & false & false & false & false & true & - \\
+    \multicolumn{2}{l|}{Take-Profit Delta} &            & 200  & 185  & 185 & 155 & 140 & - \\
+    \multicolumn{2}{l|}{Stop-Loss Delta}   &            & 80   & 50   & 20  & 50  & 35  & - \\
+    \midrule
+    \multicolumn{2}{l|}{Number of Trades} & 1468 & 526 & 152 & 1 & 1 & - \\
+    \multicolumn{2}{l|}{Maximum Gain} & 189 & 234 & 337 & 160 & 83 & - \\
+    \multicolumn{2}{l|}{Maximum Loss} & -121 & -114 & -59 & 160 & 83 & - \\
+    \multicolumn{2}{l|}{Profits Std.} & 27 & 52 & 46 & 0 & 0 & - \\
+    \multirow{3}{*}{Equity}                & Minimum    & -149 & -218 & 0   & 0   & 0   & - \\
+    & Maximum    & 2860 & 5120 & 975 & 160 & 83  & - \\
+    & Last       & 2490 & 5025 & 835 & 160 & 83  & - \\
+    \multicolumn{2}{l|}{Maximum Drawdown} & 427 & 408 & 14 & 0 & 0 & - \\
+    \multicolumn{2}{l|}{Win Ratio} & 48 & 53 & 42 & 100 & 83 & - \\
+    \bottomrule
+\end{tabular}

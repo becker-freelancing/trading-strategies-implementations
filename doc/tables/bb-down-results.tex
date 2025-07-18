@@ -1,0 +1,23 @@
+\centering
+\begin{tabular}{ll|cccccc}
+    \toprule
+    \multicolumn{2}{r|}{\multirow{2}{*}{Regime}} & \multicolumn{3}{l}{Downtrend + Low Volatility}   & \multicolumn{3}{l}{Downtrend + High Volatility}   \\
+    \multicolumn{2}{r|}{} & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ \\
+    \midrule
+    \multicolumn{2}{l|}{Bollinger Band Period} & 14 & 18 & 13 & 20 & 15 & 25 \\
+    \multicolumn{2}{l|}{No. of Standard Deviations} & 2.5 & 3.0 & 1.5 & 2 & 1.5 & 1.5 \\
+    \multicolumn{2}{l|}{Trailing Stop Orders} & true & false & true & false & false & false \\
+    \multicolumn{2}{l|}{Stop-Loss Distance} & 10 & 10 & 10 & 10 & 10 & 30 \\
+    \multicolumn{2}{l|}{Take-Profit Delta} & 11 & 9 & 15 & -1 & 1 & 19 \\
+    \midrule
+    \multicolumn{2}{l|}{Number of Trades} & 4 & 15 & 8 & 2 & 1 & 1 \\
+    \multicolumn{2}{l|}{Maximum Gain} & 84 & 109 & 97 & 191 & 111 & 80 \\
+    \multicolumn{2}{l|}{Maximum Loss} & -27 & -63 & -56 & 127 & 111 & 80 \\
+    \multicolumn{2}{l|}{Profits Std.} & 44 & 50 & 65 & 32 & 0 & 0 \\
+    \multirow{3}{*}{Equity} & Minimum & 0   & -9  & 0   & 0   & 0   & 0  \\
+    & Maximum & 174 & 250 & 226 & 319 & 111 & 80 \\
+    & Last    & 174 & 250 & 179 & 319 & 111 & 80 \\
+    \multicolumn{2}{l|}{Maximum Drawdown} & 33 & 98 & 57 & 0 & 0 & 0 \\
+    \multicolumn{2}{l|}{Win Ratio} & 75 & 53 & 50 & 100 & 100 & 100 \\
+    \bottomrule
+\end{tabular}
