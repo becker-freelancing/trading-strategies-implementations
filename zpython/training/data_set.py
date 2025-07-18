@@ -166,3 +166,23 @@ class FeatureShuffleTensorDataSet(Dataset):
         x, y = self.dataset[item]
         x[:, self.feature_shuffle_idx] = x[:, self.feature_shuffle_idx][torch.randperm(x.size(0))]
         return x, y
+
+
+class InMemoryNumpyDataSet(RegimeDataSet):
+
+    def __init__(self, regime: ModelMarketRegime, x, y, input_length):
+        super().__init__(regime)
+        self.x = x
+        self.y = y
+        self.input_length = input_length
+
+    def feature_shape(self):
+        return self.x.shape
+
+    def label_shape(self):
+        return self.y.shape
+
+    def __getitem__(self, item):
+        x_data = self.x[item][-self.input_length:, :]
+        y_data = self.y[item]
+        return x_data, y_data

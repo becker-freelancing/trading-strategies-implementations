@@ -74,6 +74,6 @@ render(best_cum, axs)
 # render(best_min, 0, 1)
 # render(most_trades, 1, 1)
 
-plt.title("Dual Simple Moving Average Strategy")
+plt.title("!!!!!!!!!!!!!!!!!!! SET TITLE !!!!!!!!!!!!!")
 plt.tight_layout()
 plt.show()
