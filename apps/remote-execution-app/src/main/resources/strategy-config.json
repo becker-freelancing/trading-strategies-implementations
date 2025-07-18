@@ -762,7 +762,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -776,7 +776,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -790,7 +790,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -804,7 +804,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -818,7 +818,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -832,7 +832,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -846,7 +846,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -860,7 +860,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
@@ -874,7 +874,7 @@
     }
   },
   {
-    "strategyName": "classification_strategy",
+    "strategyName": "live_classification_strategy",
     "priority": 100,
     "pair": "ETHPERP_1",
     "regimes": [
