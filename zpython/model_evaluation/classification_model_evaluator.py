@@ -10,15 +10,16 @@ from zpython.util.indicator_creator import create_indicators
 from zpython.util.market_regime import market_regime_to_number
 from zpython.util.model_market_regime import ModelMarketRegime
 from zpython.util.path_util import from_relative_path
+from zpython.util.classification_model_data_creator import get_model_data_for_regime
 
-test_data = test_data()
+test_data = test_data().iloc[:10000]
 BASE_PATH = "CLASSIFICATION_240"
 best_models = load_best_models(f"models-bybit/{BASE_PATH}")
 model_provider = LoadedModelProvider(best_models)
 model_regime_detector = joblib.load(
     from_relative_path(f"data-bybit/a-model-regime_detector_{BASE_PATH}.dump"))
 regime_detector = joblib.load(from_relative_path(f"data-bybit/a-regime_detector_{BASE_PATH}.dump"))
-pca = joblib.load(from_relative_path(f"data-bybit/a-regime_pca_{BASE_PATH}.dump"))
+pca_transformer = joblib.load(from_relative_path(f"data-bybit/a-regime_pca_{BASE_PATH}.dump"))
 scaler = joblib.load(from_relative_path(f"data-bybit/a-scaler_{BASE_PATH}.dump"))
 model = RegimeModel({regime: model_provider.get(regime) for regime in list(ModelMarketRegime)})
 
@@ -50,7 +51,7 @@ def _transform_data(data: dict[ModelMarketRegime, list[tuple[pd.Timestamp, pd.Da
         keys = [x[0] for x in xs]
         values = [x[1] for x in xs]
         scaled = scaler.transform(values, regime)
-        pca = pca.transform(scaled, regime)
+        pca = pca_transformer.transform(scaled, regime)
         pca = [(k, v) for k, v in zip(keys, pca)]
         result[regime] = pca
     return result
@@ -58,9 +59,12 @@ def _transform_data(data: dict[ModelMarketRegime, list[tuple[pd.Timestamp, pd.Da
 
 def _slice_data_by_regime(x: pd.DataFrame, predict_times: pd.Series, regimes: pd.Series) -> dict[
     ModelMarketRegime, list[tuple[pd.Timestamp, np.ndarray]]]:
+    regimes = regimes.reset_index(drop=True)
     time_shifts = regimes.apply(lambda regime: input_shifts[regime])
     start_times = predict_times - time_shifts + pd.Timedelta(minutes=1)
     results = {ModelMarketRegime(key): [] for key in input_lengths.keys()}
+    start_times.index = predict_times.values
+    regimes.index = predict_times.values
     for end_time in predict_times:
         start_time = start_times.loc[end_time]
         slice = x.loc[start_time:end_time]
