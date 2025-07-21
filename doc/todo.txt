@@ -1,7 +1,4 @@
 * Buy and Hold
-* Test und Backtest zusammenlegen
-* Trading Strategy mit oder ohne Bindestrich
-* SL und TP immer mit Bindestrich
 * Quantilschreibweise klarstellen -> Evtl noch ins Abkürzungsverzeichnis
 * In Tabellen: Wenn in der ersten Spalte ein Parameter etc steht, dann linksbündig
 * ByBit
@@ -13,38 +10,20 @@
 * Maximum Account Risk
 * Abkürzungen Sortieren
 * Alle MAx Drawdowns etc nochmal anschauen
+* Strategy Results noch einmal einbinden -> Bilder
+* Bei EMA(xy) in plots darauf achten, dass es nicht EMA (xy) ist -> Leerzeichen
+* ReLU oder ReLu
+* Wie berechnet man aus log-returns den Kurs zurück
+* AI oder ML
+* Multiscale CNN
+* Trading Strategie Vergleiche nach vorne + Verlinkung in Klassifikationsmodell Eval
+* Live End Date Ändern
+* Klassenverteilung untersuchen -> Falls gleich verteilt Accuracy guter Leistungsmesser
 
 
 
+# Warum ETH M1
 
+Im Rahmen dieser Arbeit wurde versucht, die zukünftige Entwicklung der logarithmischen Renditen des ETH/USDC-Währungspaars auf Minutenbasis mithilfe von Deep-Learning-Modellen vorherzusagen. Die Entscheidung für diese Datenbasis erfolgte bewusst, da sie sowohl aus wissenschaftlicher Perspektive als auch aus Sicht praktischer Relevanz eine Reihe von Vorteilen mit sich bringt: Zum einen bietet die hohe Frequenz der M1-Daten eine große Datenmenge zur Modellierung, zum anderen ermöglicht sie eine Untersuchung kurzfristiger Marktdynamiken, die im Kontext algorithmischen Tradings besonders relevant sind.
 
-\begin{table}
-    \centering
-    \rotatebox{90}{
-        \resizebox{\textheight}{!}{
-            \begin{tabular}{llcccccc}
-                \toprule
-                \multirow{2}{*}{Regime} & & \multicolumn{3}{c}{Uptrend + Low Volatility} & \multicolumn{3}{c}{Uptrend + High Volatility} \\
-                \cmidrule(lr){3-5} \cmidrule(lr){6-8}
-                & & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ & $Q_{0.33}$ & $Q_{0.66}$ & $Q_{1}$ \\
-                \midrule
-                \multirow{3}{*}{\begin{sideways}EMA Period\end{sideways}} & Short-Term   & & & & & & \\
-                & Medium-Term & & & & & & \\
-                & Long-Term   & & & & & & \\
-                \midrule
-                Minimum EMA Slope             &               & & & & & & \\
-                EMA Slope Window Length $i$  &               & & & & & & \\
-                Stop-Loss Distance           &               & & & & & & \\
-                Take-Profit Distance         &               & & & & & & \\
-                \midrule
-                \multirow{3}{*}{\begin{sideways}Equity\end{sideways}} & Minimum      & & & & & & \\
-                & Maximum      & & & & & & \\
-                & Last         & & & & & & \\
-                \midrule
-                Maximum Drawdown             &               & & & & & & \\
-                Win Ratio                    &               & & & & & & \\
-                \bottomrule
-            \end{tabular}
-        }
-    }
-\end{table}
+Auch wenn es viel rauschen gibt: 1. Nachricht in https://chatgpt.com/c/687c778c-ac48-8006-9694-89f9129aa5e3

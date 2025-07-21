@@ -1,7 +1,36 @@
 \section{Live-Testing}
 
+Despite the poor results from \autoref{chap:backtesting}, a strategy will be executed live on a demo account at ByBit for further work.
+This will serve, among other things, to compare the live-executed strategy with the backtest results and to test the robustness of the trading engine in live operation.
+
 \subsection{Broker Setup}
 
-\subsection{Connecting to ByBit}
+To connect to ByBit the \verb|ByBit-Broker-Connector| and \verb|ByBit-Remote-DataSource| components have been used.
+
+The \verb|ByBit-Remote-DataSource| is able to:
+
+\begin{enumerate}
+    \item Request historical market data by the ByBit \texttt{Get Kline} API Endpoint \cite{get-kline}.
+    \item Stream market data by the ByBit \texttt{Kline} websocket endpoint \cite{stream-kline}.
+\end{enumerate}
+
+The \verb|ByBit-Broker-Connector| is able to execute following actions via the ByBit API:
+
+\begin{enumerate}
+    \item Request the current wallet balance as well as the current margin \cite{wallet-balance}.
+    \item Placing Orders in the market, which includes open, take-profit, and stop-loss orders. Each Order is supported as limit and market order \cite{place-order}.
+    \item Request all open positions for one or multiple pairs \cite{position-info}. In the current paper this only includes positions on \ethusdc.
+    \item Request closed trades in a specified time period \cite{closed-pnl}.
+\end{enumerate}
+
+The connection to ByBit is established by an API key and an API secret which can be created in the ByBit web interface.
+The distinction between a demo account and a real money account is regulated by ByBit via the base URL, which is different in each case.
+To use the demo depot, for REST endpoints, the base url \texttt{https://api-testnet.bybit.com} has to be used.
+For the real money account, the base url \texttt{https://api.bybit.com} has to be used \cite{integration}.
+To stream the market data, no distinction is required because the base URL \texttt{wss://stream.bybit.com/v5/public/linear} \cite{ws-connect} for streaming USDC market data is a public endpoint, which can be used without API Key.
+In the trading engine, the base URLs, API key, and API secret are set by environment variables to achieve an independent implementation, which is configured by the user.
 
 \subsection{Live-Test Results}
+
+Using the trading engine configuration described above, a live execution of the triple exponential moving average strategy was performed from \liveStartDataStartDate to \liveStartDataEndDate.
+To keep the environment as similar as possible to the local backtest environment, the balance of the demo account was set to 5000 USDC at startup.

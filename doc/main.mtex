@@ -80,27 +80,27 @@
 
     \newpage
 
-    \include{E-Models}
+    %\include{E-Models}
 
     \newpage
 
-    \include{F-Trading-Strategies}
+    %\include{F-Trading-Strategies}
 
     \newpage
 
-    \include{G-Trading-Engine}
+    %\include{G-Trading-Engine}
 
     \newpage
 
-    \include{H-Backtesting}
+    %\include{H-Backtesting}
 
     \newpage
 
-    \include{J-Live-Test}
+    %\include{J-Live-Test}
 
     \newpage
 
-    \include{K-Zusammenfassung}
+    %\include{K-Zusammenfassung}
 
 % ====================  Listings  ======================
 

@@ -9,8 +9,6 @@ Instead of the standard TensorFlow backend, PyTorch version 2.7.1 was used as th
 A key reason for this decision was its better support on Windows, compared to TensorFlow \cite{tf-windows}, particularly with regard to installation and compatibility with existing CUDA drivers.
 By using Keras in combination with the PyTorch backend, user-friendly modeling could be combined with stable and well-supported execution on Windows systems.
 
-%TODO: Es werden Regressions und Klassifikationsmodelle trainiert
-
 The model architectures used in this work are not based on specific, citable publications, but were designed as part of an experimental and iterative development process.
 The goal was to construct powerful models well-suited to the given problem.
 Particularly with regard to processing sequential data of limited length and high variability.
@@ -26,10 +24,6 @@ This allows for greater flexibility and reinforces the experimental nature of th
 
 For both regression and classification models, 13 different architectures were used, which can be divided into neural networks, convolutional neural networks, long short-term memories, and transformers.
 
-\subsection{Metrics}
-
-% TODO
-
 \subsection{Optuna}
 
 In modern machine learning methods, the selection of hyperparameters plays a central role in model performance.
@@ -38,6 +32,15 @@ The search for optimal values for these parameters, the so-called hyperparameter
 
 Optuna is a modern framework for automated hyperparameter optimization designed for efficiency, flexibility, and ease of use.
 It was developed to enable easy integration into existing machine learning pipelines while providing powerful, goal-oriented optimization.
+
+The central abstraction in Optuna is the concept of a study, which defines the optimization task.
+It encapsulates the objective function and maintains a history of evaluated hyperparameter configurations.
+Within a study, multiple trials are executed.
+Each trial represents a single evaluation of the objective function with a specific set of hyperparameters \cite{optuna-basics}.
+
+The objective function is a user-defined Python function that receives a set of hyperparameters as input and returns a scalar value, which is typically the validation loss or accuracy, that reflects the performance of the model with those parameters.
+Optuna uses this value to decide how to sample the next set of hyperparameters.
+Thus, the objective function is the core of the optimization process, as it defines what is being optimized and how success is measured \cite{optuna-basics}.
 
 The goal of Optuna is to automatically find those hyperparameter combinations that satisfy a specific optimization criterion (e.g., minimum validation error rate or maximum accuracy).
 The search process should be as efficient as possible, requiring as few model training sessions as possible \cite{optuna-hyperparameters}.
@@ -280,19 +283,64 @@ The red areas mark the predicted unprofitable zones and the green areas mark the
 \end{figure}
 
 After the stop-loss and take-profit levels are determined, the actual logarithmic returns are used to calculate the profit or loss for each position.
-If neither the stop-loss nor the take-profit is reached, the profit calculation defaults to the profit if the stop-loss is reached to ensure that the model predicts the correct take-profit more often.
+If neither the stop-loss nor the take-profit is reached, the profit calculation will by default return the loss when the stop-loss is reached to ensure that the model predicts the correct take-profit more often and is penalized if neither the take-profit nor the stop-loss is reached.
+
+\subsubsection{Metrics}
+
+Additionally, additional metrics in the trading context were added to the model during training.
+These include:
+
+\begin{enumerate}
+    \item \textbf{Profit Hit-Rate:} Percentage of trades that would have been profitable based on the prediction.
+    \item \textbf{Loss Hit-Rate:} Percentage of trades that would have been unprofitable based on the prediction.
+    \item \textbf{None Hit-Rate:} Percentage of trades that would have reached neither the stop loss nor the take profit based on the prediction.
+\end{enumerate}
+
+When the three parts are added together, the result must be 1, since one of the events must occur in each prediction.
 
 \subsubsection{Model Evaluation}
 
-%TODO
+Despite the implementation and training of various deep learning models for accurate price prediction, combined with various technical indicators and a specially developed loss function for directly simulating trading decisions, none of the models achieved satisfactory predictive performance.
+The presented loss hit-rate metric was always exactly 1 for every model and in every market regime on both the validation and test data, meaning that every trade decision made based on the prediction was incorrect and closed with a loss.
+
+The inadequate suitability of the models is also evident in an exemplary prediction.
+In one specific case, future prices were reconstructed based on the predicted logarithmic returns and the price known at the time.
+The calculation was carried out using the formula presented in \autoref{chap:log-returns}.
+
+In reality, the ETH/USDC price was around USDC 1,800 at the given time.
+However, the model predicted such a negative return that the resulting price fell to almost USDC 0 within just 30 minutes.
+Such behavior is not only extremely unlikely under realistic market conditions, but economically virtually impossible, as it would be tantamount to a complete market collapse.
+
+This incorrect forecast is not an isolated case, but rather symptomatic of the weaknesses of the regression models tested.
+It shows that the models are not only inaccurate but also tend to sometimes produce unrealistic extreme values, which would entail considerable risks in a trading context.
+
+This chapter is dedicated to a critical analysis of possible causes.
+
+A key reason for the poor model performance lies in the low predictability of short-term price movements.
+Minute-by-minute logarithmic returns are subject to a strong stochastic nature.
+They resemble a random walk and rarely exhibit robust, persistently usable patterns \cite{random-walk}.
+Thus, the models lack the structural foundation to make reliable predictions.
+However, many machine learning methods implicitly assume the existence of certain stationary or repeatable relationships, a circumstance that is severely limited with M1 returns.
+
+A central methodological element of this work was the introduction of a modified loss function based on the simulation of trades.
+This function was explicitly designed to consider not only the statistical error but also the practical utility of a model within a trading strategy.
+
+In practice, however, it became apparent that the model often "learned" to remain as inactive as possible to minimize losses, or developed strategies with high trading frequency in the presence of negative performance because it was unable to identify stable patterns of advantage.
+This behavior is due to a lack of positive feedback in the learning process: If no or only random winning patterns are present in the data, even the best loss function cannot enable meaningful optimization.
+
+The poor model performance should not be interpreted as a failure of the method or the data selection, but rather as a relevant empirical result.
+It shows that applying deep learning to high-frequency cryptocurrency data does not automatically lead to profitable predictive models, even when modern model architectures, additional features, and specialized loss functions are used.
+
+For the reasons mentioned above, the regression models will not be pursued further in the course of this work.
 
 \subsection{Classification-Models}
 \label{chap:classification-models}
 
-Classification models were used to predict an action to be performed.
+Despite the poor results of the regression models, classification models were trained that predict an action to be performed.
 The action can be either buy, sell, or do nothing.
 For that, the model predicts a probability for each of the three classes.
-As with the \hyperref[chap:regression-models]{regression models}, the same models are used, but this time the last dense layer has only three neurons and the activation function \verb|softmax|.
+To achieve a direct comparison with the regression models, the same models as in \autoref{chap:regression-models} were used.
+However, with the difference that the last dense layer has only three neurons, each representing an action, and the activation function \verb|softmax| was used.
 The identical training and validation period was also used, and the training took place over 20 Optuna trials with 30 epochs each.
 
 \subsubsection{Loss-Function}
@@ -312,4 +360,19 @@ Categorical cross-entropy measures the difference between the actual target dist
 
 \subsubsection{Model Evaluation}
 
-%TODO
+%\autoref{tbl:classification-train-results} shows the best performing classification models on the validation data, as well as their associated loss and accuracy on the validation and test data for each market regime.
+
+%\begin{table}[H]
+%    \centering
+%    \include{tables/classification-results}
+%    \caption{Validation and Test Metrics for Classification Models}
+%    \label{tbl:classification-train-results}
+%\end{table}
+
+It is striking that some models achieve very good results on the validation data.
+On the test data, the model performance of all models is worse than on the validation data, but the metrics still show that a profitable trading strategy is possible.
+
+As explained in Chapter X, a high hit rate is not the only criterion that determines whether a trading strategy is successful.
+
+It is also striking that identical model architectures perform significantly better in classification than in regression.
+This once again highlights that not only the model architecture, but also other factors, such as the loss function or the task, determine whether a model can learn from the training data.

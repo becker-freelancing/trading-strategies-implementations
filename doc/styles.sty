@@ -34,7 +34,9 @@
 \usepackage{graphics}
 \usepackage{multirow}
 \usepackage{textcase}
-
+\usepackage{subfigure} % für subfigures
+\usepackage[margin=1in]{geometry}
+%\usepackage{vcell}
 % --------------------  Quellen --------------------------------
 
 \addbibresource{AZ-broker.bib}
@@ -192,4 +194,14 @@
 \newcommand{\ethBacktestDateEnd}{\formatdate{17}{6}{2025}}
 \newcommand{\ethBacktestTimeEnd}{11:30 UTC+2}
 \newcommand{\ethBacktestDataEndDate}{\ethBacktestDateEnd, \ethBacktestTimeEnd}
+
+% Live Test
+\newcommand{\liveStartDateStart}{\formatdate{20}{7}{2025}}
+\newcommand{\liveStartTimeStart}{05:00 UTC+2}
+\newcommand{\liveStartDataStartDate}{\liveStartDateStart, \liveStartTimeStart}
+
+
+\newcommand{\liveStartDateEnd}{\formatdate{1}{1}{2025}}
+\newcommand{\liveStartTimeEnd}{00:00 UTC+2}
+\newcommand{\liveStartDataEndDate}{\liveStartDateEnd, \liveStartTimeEnd}
 

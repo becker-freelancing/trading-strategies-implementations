@@ -22,9 +22,8 @@ Since the process is fully automated in short time-frames, the broker must meet 
 
 The API must be able to stream market data, request historical data, the current account balance, closed trades, and currently open positions, placing orders, and positions, as well as canceling unfilled orders.
 
-Apart from the API, the broker must support leveraged long/short products like CFDs or margin trading.
+Apart from the API, the broker must support leveraged long/short products like CFDs or margin trading, with the lowest possible fees.
 They also must provide data in high quality as well as a demo depot.
-The further they must be regulated in the European Union with the lowest possible fees.
 
 \autoref{tbl:broker-comparision} summarizes the required features for some potential brokers.
 All listed there meet the API functionality requirements.\footnote{Sources: \cite{bybit-home}, \cite{bybit-api-doc}, \cite{ig-home}, \cite{ig-api-doc}, \cite{capital-home}, \cite{capital-api-doc}}
@@ -51,11 +50,11 @@ All listed there meet the API functionality requirements.\footnote{Sources: \cit
 \end{table}
 
 
-Taking into account \autoref{tbl:broker-comparision}, ByBit is the best broker because it has the lowest fees, high quality data, the highest possible leverage as well as a regularization in the EU.
+Taking into account \autoref{tbl:broker-comparision}, ByBit is the best broker because it has the lowest fees, high quality data, as well as the highest possible leverage.
 
 \subsection{API Connection and Data Retrieval Process}
 
-Before starting with the Machine Learning process, and the backtests, the first step is to download historical \ethusdc via the ByBit API.
+Before starting with the Machine Learning process, and the backtests, the first step is to download historical \ethusdc data via the ByBit API.
 The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \verb|linear|, symbol \verb|ETHPERP|, and interval \verb|1| at \ethDataEndDate.
 Since ByBit only returns 1000 candlesticks per request, the same request with different start-, and end-times was executed until the ByBit API does no longer return older candlestick data.
 This resulted in a candlestick data pool with data on a minute basis from \ethDataStartDate to \ethDataEndDate.

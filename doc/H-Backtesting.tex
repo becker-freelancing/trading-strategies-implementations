@@ -1,4 +1,5 @@
-\section{Backtesting Trading-Strategies}
+\section{Backtesting Trading Strategies}
+\label{chap:backtesting}
 
 The quantitative evaluation of trading strategies requires a structured and comprehensible testing environment which was introduced in \autoref{chap:te}.
 This chapter describes the executed backtests, which aim to verify the performance of the develop trading strategies in \autoref{chap:trading-strategies} under realistic conditions.
@@ -7,7 +8,7 @@ Backtesting describes a performance simulation of a trading strategy based on hi
 This involves investigating how a specific strategy would have performed in the past if it had been executed under the given market conditions.
 The goal is to gain initial insights into the robustness, profitability, and risk profile of the approach before it is used in live trading \cite{backtesting}.
 
-\subsection{Trading-Strategy Parameter Selection}
+\subsection{Trading Strategy Parameter Selection}
 
 In contrast to the classic machine learning process, the parameter selection for the ultimately executed strategies is performed without the training set.
 This also applies to strategies that use deep learning (\autoref{chap:ai-strategies}).
@@ -40,12 +41,47 @@ In order to cover the greatest possible variance of the parameters, the combinat
     \label{tbl:parameters-number}
 \end{table}
 
+\subsection{Evaluating Backtests}
+
 Due to the length, the detailed results of the backtests, including the parameters that led to the respective results, can be found in \autoref{chap:backtest-results} in the appendix.
 Here, only the results of the strategies with the highest cumulative last equity combined across all market regimes are presented.
 
-\include{tables/cumulative-results}
+\begin{table}[H]
+    \input{tables/cumulative-results}
+    \caption{Combined Strategy Results}
+    \label{tbl:combined-strategy-results}
+\end{table}
+
+As seen in \autoref{tbl:combined-strategy-results} the Classification AI strategy achieves by far the best cumulative results on the validation set, with the lowest maximum drawdown and the highest win ratio.
+But on the other hand, it also has the greatest loss.
+
+To compare the out-of-sample performance, all strategies have also been tested with the best parameters on the validation set on the backtest set.
+
+\begin{table}[H]
+    \input{tables/cumulative-results-oof}
+    \caption{Combined Out-of-Sample Strytegy Results}
+    \label{tbl:combined-strategy-results-oof}
+\end{table}
 
 
-\subsection{Evaluating Backtests}
+\begin{figure}[htbp]
+    \centering
+    \subfigure[Bild 1]{\includegraphics[width=0.45\linewidth]{images/backtests/classification-results-oof}}
+    \hfill
+    \subfigure[Bild 2]{\includegraphics[width=0.45\linewidth]{images/backtests/dual-sma-results-oof}}
+
+    \vspace{0.5cm}
+
+    \subfigure[Bild 3]{\includegraphics[width=0.45\linewidth]{images/backtests/triple-ema-results-oof}}
+    \hfill
+    \subfigure[Bild 4]{\includegraphics[width=0.45\linewidth]{images/backtests/bb-results-oof}}
+
+    \caption{Vier PDF-Bilder im 2×2-Grid (mit subfigure)}
+\end{figure}
+
+
+\autoref{tbl:combined-strategy-results-oof} shows that the strategies have a poor out-of-sample performance, resulting in either high losses or very volatile equity curves, which are not useful for real live trading.
+This shows that there is also a kind of overfitting in the parameter selection.
+While the strategies work well on the validation data, they fail in the out-of-sample tests.
 
 \subsection{Fee-Impacts}

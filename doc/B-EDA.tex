@@ -121,6 +121,7 @@ After the splitting, the four subsets have the following summaries:
 \end{table}
 
 \subsection{Using Log-Returns}
+\label{chap:log-returns}
 
 In the summary statistics of the subsets (\autoref{tbl:train-data}, \autoref{tbl:validation-data}, \autoref{tbl:test-data}, \autoref{tbl:backtest-data}) it is noticeable that the mean values change over time.
 This becomes also clear when visualizing the data (\autoref{fig:eth-data}).
@@ -140,6 +141,24 @@ These are calculated as follows:
 \end{equation}
 
 After the transformation, the means and standard deviations in the subsets are very similar, and the data does no longer drift over time.
+\autoref{tbl:stat-log-returns} shows the means and standard deviations after the logarithmic return transformation.
+Additionally, \autoref{fig:eth-log-data} shows visually, that the data drift is eliminated.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{L{3cm}cc}
+        \toprule
+        Data Set            & Mean    & Standard Deviation \\
+        \midrule
+        \textbf{Train}      & 6.5E-7  & 8.7E-4             \\
+        \textbf{Validation} & -6.1E-7 & 9.4E-4             \\
+        \textbf{Test}       & 1.8E-6  & 9.4E-4             \\
+        \textbf{Backtest}   & -9.5E-7 & 1.1E-3             \\
+        \bottomrule
+    \end{tabular}
+    \caption{Statistics after Logarithmic Returns Transformation}
+    \label{tbl:stat-log-returns}
+\end{table}
 
 \begin{figure}[H]
     \centering
@@ -231,7 +250,17 @@ This creates a balanced feature set that takes into account both rapid reactions
 
 \subsection{Scaling the Data}
 
+Scaling data is an important step in exploratory data analysis.
+This is because, on the one hand, machine learning models perform better with scaled data \cite{data-scaling}, and, on the other hand, principal component analysis (\autoref{chap:pca}) is sensitive to unscaled data \cite{pca-scaling}.
+
+The use of the scikit-learn \texttt{MinMaxScaler} \cite{min-max}, which scales data date in a fixed range of $[0; 1]$ is useful and widely used.
+Neural networks, especially those with activation functions such as ReLU, which is introduced in \autoref{chap:nn} benefits greatly from inputs with a uniform range of values.
+The scaling stabilizes the gradient flow, shortens training time and reduces vanishing gradients \cite{min-max-benefits}.
+
+For these reasons, all features were scaled with the \texttt{MinMaxScaler} and are used exclusively in the scaled form in all steps related to machine learning.
+
 \subsection{Principal Component Analysis}
+\label{chap:pca}
 
 The principal component analysis (PCA) is a process for dimensional reduction, by linearly transforming high dimensional datasets to a small number of uncorrelated principal components  (directions of the new coordinate system).
 During the transformation, it can be specified how much variance in the data can be eliminated.
