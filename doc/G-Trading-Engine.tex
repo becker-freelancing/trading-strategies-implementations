@@ -28,6 +28,7 @@ The following describes the most important use cases and features:
     A clear separation between core functionality and strategy logic allows for flexible integration and testing of individual algorithms.
 \end{enumerate}
 
+\noindent
 Most components of the trading engine are interchangeable, and can be implemented by the user.
 Only the core of the framework, the basic process, and control logic are fixed.
 This allows users to tailor the engine to their individual needs, develop their own modules for data feeds, order management, strategy, or risk control, and thus ensure a high degree of flexibility in the use, and further development of the platform.
@@ -42,6 +43,7 @@ The trading engine consists of many modules which can be clustered in three main
     \item Adapters
 \end{enumerate}
 
+\noindent
 \autoref{fig:te-components} shows the components of the trading engine.
 
 \begin{figure}[H]
@@ -65,11 +67,13 @@ As an example, a service provider interface for read access can be defined.
 
 \lstinputlisting[language=Java, caption=SPI Definition, label=lst:service-loader-spi-definition, style=java]{java/trading-engine/service-loader-base.java}
 
+\noindent
 This interface can be implemented in multiple modules.
 One implementation can be used to read data from files:
 
 \lstinputlisting[language=Java, caption=File-Repository Implementation, label=lst:service-loader-file, style=java]{java/trading-engine/service-loader-file.java}
 
+\noindent
 Here, a configuration file named \verb|com.example.spi.read.ReadRepository| is located in the directory \verb|resources/META-INF/services|.
 This file contains the fully qualified class name of the implementation class \\(\verb|com.example.adapter.file.read.FileReadRepository|).
 
@@ -77,6 +81,7 @@ Another implementation can be used to read data from databases:
 
 \lstinputlisting[language=Java, caption=Database-Repository Implementation, label=lst:service-loader-db, style=java]{java/trading-engine/service-loader-db.java}
 
+\noindent
 Similar to the \verb|FileReadRepository| file named \\\verb|com.example.spi.read.ReadRepository| is located in the directory \\\verb|resources/META-INF/services|.
 However, this file contains \\\verb|com.example.adapter.database.read.DatabaseReadRepository|.
 
@@ -100,9 +105,11 @@ The following components form the core:
     This API is separate from the framework, and can be extended as required.
     \item \textbf{Broker-Requestor \& Trade-Executor:} Both communicate with brokers via a generic \verb|Broker-Connector-API|, and enable both order placement, and broker status queries, such as the current account balance or all open positions.
     \item \textbf{Entry-Signal-Adaptor \& Entry-Signal-Validator:} These two components process, and validate generated entry signals.
-    They are linked to their own \verb|Management-API|, and enable additional risk checks, such as capital requirements or position limits.
+    They are linked to the \verb|Management-API| and enable additional risk checks, such as capital requirements or position limits.
+    Currently the implemented management includes all techniques introduced in \autoref{chap:risk-man} and is executed every time a strategy creates an entry signal.
 \end{enumerate}
 
+\noindent
 Before the \verb|Strategy-Engine| there are two other engines, named \verb|Remote-Backtest-Engine|, and \verb|Backtest-Engine|, which configure the \verb|Strategy-Engine|.
 The difference between the engines is that the \verb|Remote-Backtest-Engine| defines the \verb|Strategy-Engine| asynchronously.
 This means that a remote data source can stream market data via an API.
@@ -122,6 +129,9 @@ The application layer defines specific execution environments by defining the cl
     \item \textbf{Local-Backtest-App:} Executes trading strategies offline by using the \verb|Local-CSV-Datasource| and the \verb|Demo-Broker-Connector|.
     \item \textbf{Remote-Execution-App:} Executes strategies in real time, and communicates with live broker interfaces.
 \end{enumerate}
+
+\noindent
+Each application contains its own \verb|main| method which constructs and starts the respective implementation.
 
 \subsection{Demo Broker}
 
@@ -155,17 +165,28 @@ The margin in euro is calculated using the following formula.
 $EuroConversion$ is the current price for converting the current counter currency in euro.
 For example, for ETH/USDC the $EuroConversion$ is the current price of EUR/USDC:
 
-\begin{equation}
+\[
     Margin = \frac{PositionQuantity}{Leverage * EuroConversion} = \frac{PositionSize * OpenPrice}{Leverage * EuroConversion}
-\end{equation}
+\]
+
+\noindent
+The conversion is done in euros because for different currency pairs with different counter currencies, the margin would be calculated in the respective counter currency.
+For ETH/USDC, the margin is calculated in USDC according to the formula.
+However, when trading ETH/BTC, the margin is calculated in BTC.
+To obtain a result that is always in the same unit, or in this case, the same currency, an additional conversion is implemented.
+It is important to note that it is also possible to implement conversion into any currency.
+This way, the margin could also be calculated in BTC, for example.
+A conversion to euros was preferred here, as the data provider ByBit does not offer direct USD/USDC rates.
+Since USDC/EUR is offered, it was easier in this case to obtain historical data directly from ByBit and obtain the EUR/USDC rate through a conversion $EUR/USDC = \frac{1}{USDC/EUR}$.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/trading-engine/position-opening}
+    \includegraphics[width=0.7\textwidth]{images/trading-engine/position-opening}
     \caption{Opening a Single Position}
     \label{fig:te-position-opening}
 \end{figure}
 
+\noindent
 \autoref{fig:te-position-closing} shows the process of closing a single position.
 The profit in euro is calculated using the following formula:
 
@@ -179,11 +200,12 @@ The profit in euro is calculated using the following formula:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/trading-engine/position-closing}
+    \includegraphics[width=0.4\textwidth]{images/trading-engine/position-closing}
     \caption{Closing a Position}
     \label{fig:te-position-closing}
 \end{figure}
 
+\noindent
 \autoref{fig:te-complete-position-opening} shows the process of opening a position taking into account that other open positions can already exist.
 
 
@@ -216,6 +238,5 @@ Therefore, the stop only moves again once the 60-point gap is restored.
 \end{figure}
 
 
-%TODO: Steht hier drin, ob das Risikomanagement bei jedem Entry angewandt wird?
 %TODO: UML-Diagramm mit Ablauf, wenn eine Neue Kerze kommt
 % TODO: Adapters erklären

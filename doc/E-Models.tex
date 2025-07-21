@@ -65,6 +65,7 @@ The structure can be divided as follows \cite{nn-basics}:
     \item \textbf{Output Layer:} Provides the final result, e.g., class membership (for classification) or continuous value (for regression).
 \end{enumerate}
 
+\noindent
 In this work, three different neural network models have been tested.
 The tested models are different in their complexity, depth, and methodical approach to data processing.
 
@@ -84,7 +85,7 @@ All hyperparameters are managed by Optuna.
 \subsubsection{Dropout Neural Network}
 
 In the second model, the data is first converted into a one-dimensional vector using a flatten layer.
-This is followed by one to three dense layers using ReLu activation.
+This is followed by one to three dense layers using ReLU activation.
 Batch normalization supports stable and rapid convergence \cite{batch-normalization}, while dropout between 5\% and 35\% of the data is used as a regularization method to prevent overfitting \cite{keras-dropout}.
 All other parameters are identical to those in the simple neural network.
 
@@ -266,6 +267,7 @@ Otherwise, a short position is opened.
     \label{fig:loss-long-position-decision}
 \end{figure}
 
+\noindent
 After the direction decision, the stop-loss and take-profit levels must be determined.
 For long and short positions, there are two possibilities at which specific level the stop-loss and take-profit are set, based on the global high and low of the cumulative predicted logarithmic returns.
 If a long position was previously decided and the global high comes after the global low, the stop-loss is set at the global low and the take-profit at the global high.
@@ -282,6 +284,7 @@ The red areas mark the predicted unprofitable zones and the green areas mark the
     \label{fig:loss-tp-sl}
 \end{figure}
 
+\noindent
 After the stop-loss and take-profit levels are determined, the actual logarithmic returns are used to calculate the profit or loss for each position.
 If neither the stop-loss nor the take-profit is reached, the profit calculation will by default return the loss when the stop-loss is reached to ensure that the model predicts the correct take-profit more often and is penalized if neither the take-profit nor the stop-loss is reached.
 
@@ -296,9 +299,11 @@ These include:
     \item \textbf{None Hit-Rate:} Percentage of trades that would have reached neither the stop loss nor the take profit based on the prediction.
 \end{enumerate}
 
+\noindent
 When the three parts are added together, the result must be 1, since one of the events must occur in each prediction.
 
 \subsubsection{Model Evaluation}
+\label{chap:regression-models-evaluation}
 
 Despite the implementation and training of various deep learning models for accurate price prediction, combined with various technical indicators and a specially developed loss function for directly simulating trading decisions, none of the models achieved satisfactory predictive performance.
 The presented loss hit-rate metric was always exactly 1 for every model and in every market regime on both the validation and test data, meaning that every trade decision made based on the prediction was incorrect and closed with a loss.
@@ -353,6 +358,7 @@ Mathematically, it is defined as follows:
     L_{CCE} = -\sum_{i=1}^{C} y_i*log(\hat{y_i})
 \]
 
+\noindent
 Where $C$ denotes the number of classes, $y_i$ the actual value (usually encoded as a one-hot vector), and $\hat{y_i}$ the probability predicted by the model for class $i$.
 This function penalizes the model particularly severely if it assigns a high probability to an incorrect class and rewards correct predictions with high confidence.
 
@@ -360,19 +366,20 @@ Categorical cross-entropy measures the difference between the actual target dist
 
 \subsubsection{Model Evaluation}
 
-%\autoref{tbl:classification-train-results} shows the best performing classification models on the validation data, as well as their associated loss and accuracy on the validation and test data for each market regime.
+\autoref{tbl:classification-train-results} shows the best performing classification models on the validation data, as well as their associated loss and accuracy on the validation and test data for each market regime.
 
-%\begin{table}[H]
-%    \centering
-%    \include{tables/classification-results}
-%    \caption{Validation and Test Metrics for Classification Models}
-%    \label{tbl:classification-train-results}
-%\end{table}
+\begin{table}[H]
+    \centering
+    \input{tables/classification-results}
+    \caption{Validation and Test Metrics for Classification Models}
+    \label{tbl:classification-train-results}
+\end{table}
 
+\noindent
 It is striking that some models achieve very good results on the validation data.
 On the test data, the model performance of all models is worse than on the validation data, but the metrics still show that a profitable trading strategy is possible.
 
-As explained in Chapter X, a high hit rate is not the only criterion that determines whether a trading strategy is successful.
+As explained in \autoref{chap:win-rate}, a high win rate is not the only criterion that determines whether a trading strategy is successful.
 
 It is also striking that identical model architectures perform significantly better in classification than in regression.
 This once again highlights that not only the model architecture, but also other factors, such as the loss function or the task, determine whether a model can learn from the training data.

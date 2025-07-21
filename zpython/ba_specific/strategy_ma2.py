@@ -35,8 +35,8 @@ fig, ax = plt.subplots()
 
 plot_candlesticks(ax, data.iloc[start:end])
 
-ax.plot(ema1, label="SMA (5)")
-ax.plot(ema2, label="SMA (10)")
+ax.plot(ema1, label="SMA(5)")
+ax.plot(ema2, label="SMA(10)")
 
 for idx, value in up_cross.items():
     if value:

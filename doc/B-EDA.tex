@@ -7,6 +7,8 @@
 
 Unlike classic machine learning processes, where data is split in three subsets, named train-, validation-, and test-set, here the data is split in four subsets.
 The fourth data-set is used for backtesting the real trading strategy, and is therefore not part of the machine learning process but plays an important role in developing the final trading strategy.
+In contrast, the test-set is only part of the machine learning process and is not used for evaluating or backtesting trading strategies.
+This distinction was made so that the critical phases (testing machine learning models and testing trading strategies) cannot influence each other.
 
 \begin{table}[H]
     \centering
@@ -32,11 +34,12 @@ The fourth data-set is used for backtesting the real trading strategy, and is th
     \label{tbl:data-split}
 \end{table}
 
+\noindent
 After the splitting, the four subsets have the following summaries:
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{cccccc}
+    \begin{tabular}{L{1.5cm}ccccc}
         \toprule
         & Open & High & Low & Close & Volume
         \\
@@ -59,7 +62,7 @@ After the splitting, the four subsets have the following summaries:
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{cccccc}
+    \begin{tabular}{L{1.5cm}ccccc}
         \toprule
         & Open & High & Low & Close & Volume
         \\
@@ -80,7 +83,7 @@ After the splitting, the four subsets have the following summaries:
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{cccccc}
+    \begin{tabular}{L{1.5cm}ccccc}
         \toprule
         & Open & High & Low & Close & Volume
         \\
@@ -101,7 +104,7 @@ After the splitting, the four subsets have the following summaries:
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{cccccc}
+    \begin{tabular}{L{1.5cm}ccccc}
         \toprule
         & Open & High & Low & Close & Volume
         \\
@@ -133,16 +136,18 @@ This becomes also clear when visualizing the data (\autoref{fig:eth-data}).
     \label{fig:eth-data}
 \end{figure}
 
+\noindent
 To avoid this data drift, the price is transformed to its logarithmic returns (also called log-returns).
 These are calculated as follows:
 
-\begin{equation}
+\[
     LogReturn_t = ln(\frac{Price_t}{Price_{t-1}})
-\end{equation}
+\]
 
+\noindent
 After the transformation, the means and standard deviations in the subsets are very similar, and the data does no longer drift over time.
 \autoref{tbl:stat-log-returns} shows the means and standard deviations after the logarithmic return transformation.
-Additionally, \autoref{fig:eth-log-data} shows visually, that the data drift is eliminated.
+Additionally, \autoref{fig:eth-log-data} shows visually that the data drift is eliminated.
 
 \begin{table}[H]
     \centering
@@ -167,6 +172,21 @@ Additionally, \autoref{fig:eth-log-data} shows visually, that the data drift is 
     \label{fig:eth-log-data}
 \end{figure}
 
+\noindent
+If an exact price is to be restored from the logarithmic returns, this can be done with the previous price using the following formula:
+
+\[
+    Price_t = Price_{t-1} * e^{LogReturn_t}
+\]
+
+\noindent
+If a series of logarithmic returns is present, any price in the series can also be calculated using the following formula, where $Price_{0}$ is the price at the start of the series and $t$ is the distance to the start of the series:
+
+\[
+    Price_t = Price_0 * \prod_{i=0}^{t} e^{LogReturn_{i}} = Price_0 * e^{\sum_{i=0}^{t} LogReturn_i}
+\]
+
+\noindent
 The transformation is applied to the open, high, low, and close prices, and the original prices are replaced by the logarithmic returns, so that all subsequent actions are carried out with the prices on the logarithmic returns.
 
 \subsection{Additional Features}

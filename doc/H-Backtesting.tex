@@ -43,7 +43,7 @@ In order to cover the greatest possible variance of the parameters, the combinat
 
 \subsection{Evaluating Backtests}
 
-Due to the length, the detailed results of the backtests, including the parameters that led to the respective results, can be found in \autoref{chap:backtest-results} in the appendix.
+Due to the length, the detailed results of the backtests \footnote{Detailed results in \autoref{chap:strategy-results-on-validation-data}}, including the parameters \footnote{Detailed parameters per strategy and regime in \autoref{chap:best-strategy-parameters}} that led to the respective results, can be found in the appendix.
 Here, only the results of the strategies with the highest cumulative last equity combined across all market regimes are presented.
 
 \begin{table}[H]
@@ -52,10 +52,11 @@ Here, only the results of the strategies with the highest cumulative last equity
     \label{tbl:combined-strategy-results}
 \end{table}
 
+\noindent
 As seen in \autoref{tbl:combined-strategy-results} the Classification AI strategy achieves by far the best cumulative results on the validation set, with the lowest maximum drawdown and the highest win ratio.
 But on the other hand, it also has the greatest loss.
 
-To compare the out-of-sample performance, all strategies have also been tested with the best parameters on the validation set on the backtest set.
+To compare the out-of-sample performance \footnote{Detailed out-of-sample results in \autoref{chap:oos-strategy-results}}, all strategies have also been tested with the best parameters on the validation set on the backtest set.
 
 \begin{table}[H]
     \input{tables/cumulative-results-oof}
@@ -64,22 +65,7 @@ To compare the out-of-sample performance, all strategies have also been tested w
 \end{table}
 
 
-\begin{figure}[htbp]
-    \centering
-    \subfigure[Bild 1]{\includegraphics[width=0.45\linewidth]{images/backtests/classification-results-oof}}
-    \hfill
-    \subfigure[Bild 2]{\includegraphics[width=0.45\linewidth]{images/backtests/dual-sma-results-oof}}
-
-    \vspace{0.5cm}
-
-    \subfigure[Bild 3]{\includegraphics[width=0.45\linewidth]{images/backtests/triple-ema-results-oof}}
-    \hfill
-    \subfigure[Bild 4]{\includegraphics[width=0.45\linewidth]{images/backtests/bb-results-oof}}
-
-    \caption{Vier PDF-Bilder im 2×2-Grid (mit subfigure)}
-\end{figure}
-
-
+\noindent
 \autoref{tbl:combined-strategy-results-oof} shows that the strategies have a poor out-of-sample performance, resulting in either high losses or very volatile equity curves, which are not useful for real live trading.
 This shows that there is also a kind of overfitting in the parameter selection.
 While the strategies work well on the validation data, they fail in the out-of-sample tests.

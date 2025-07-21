@@ -74,6 +74,6 @@ render(best_cum, axs)
 # render(best_min, 0, 1)
 # render(most_trades, 1, 1)
 
-plt.title("!!!!!!!!!!!!!!!!!!! SET TITLE !!!!!!!!!!!!!")
+plt.title("Classification AI Strategy Out-of-Sample Backtest Results")
 plt.tight_layout()
 plt.show()

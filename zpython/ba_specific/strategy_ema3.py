@@ -38,9 +38,9 @@ s = (ema3_slope > thres) | (ema3_slope < -thres)
 fig, ax = plt.subplots()
 plot_candlesticks(ax, data.iloc[start:end])
 
-ax.plot(ema1, label="EMA (5)")
-ax.plot(ema2, label="EMA (10)")
-ax.plot(ema3.loc[start:end], label="EMA (20)")
+ax.plot(ema1, label="EMA(5)")
+ax.plot(ema2, label="EMA(10)")
+ax.plot(ema3.loc[start:end], label="EMA(20)")
 
 for idx, value in up_cross.items():
     if value:

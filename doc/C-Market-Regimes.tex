@@ -29,6 +29,7 @@ A fundamental categorization is often made by the following dimensions:
     \item \textbf{Liquidity:} In illiquid markets, pricing processes can be different compared to liquid markets which has effect on strategies.
 \end{enumerate}
 
+\noindent
 According to the analysis goal, the categorization can be binary (e.g. bullish vs. bearish) or granular (e.g. a combination of trend behavior, and volatility).
 Also, a combination of multiple indicators, named regime scores, is possible to capture more complex market structures.
 
@@ -44,6 +45,7 @@ This results in six categories:
     \item Uptrend + High Volatility
 \end{enumerate}
 
+\noindent
 This takes into account the two most central aspects that lead traders to different trading decisions.
 However, the market is not divided into too many small segments, which can lead to overfitting.
 
@@ -69,6 +71,7 @@ This decision is based on two considerations:
     \item \textbf{Inertia of trend definition:} A shorter trend window, compared to the SMA(200) reduces the inertia of trend definition, which can be particularly advantageous for more refined classification into uptrends, downtrends, and sideways trend.
 \end{enumerate}
 
+\noindent
 Additionally, a minimum slope threshold over the last 15 minutes was integrated for the SMA(50) to avoid that minimal direction changes are mistakenly interpreted as a meaningful trend.
 This short time span ensures that current market movements are adequately incorporated into the trend classification without being dominated by short-term noise (e.g., individual volatility peaks), and therefore increases the robustness of the trend recognition, and addresses the weaknesses of moving averages in sideways phases.
 A slope above +0.05 signals a significant short-term uptrend, while a slope below -0.05 suggests a clear downtrend.
@@ -82,6 +85,7 @@ The market can therefore be divided into three trend phases based on the followi
     \item \textbf{Sideways trend:} The market currently does not meet condition 1 or 2.
 \end{enumerate}
 
+\noindent
 \autoref{fig:mr-trend-classification} shows an example of trend classification of \ethusdc for 700 minutes.
 
 \begin{figure}[H]
@@ -126,6 +130,7 @@ The results of the combination can be seen in \autoref{fig:mr-classification}.
     \label{fig:mr-classification}
 \end{figure}
 
+\noindent
 While classification of the market regimes some discrepancies may occur in individual cases between the algorithmically determined category and the visually perceived category.
 Such misclassifications are particularly possible during transition phases or in the case of short-term outliers.
 For example, the downtrend, highly volatile market regime after 10:00 PM, the algorithm detected a downtrend, but visually, an uptrend is perceived.

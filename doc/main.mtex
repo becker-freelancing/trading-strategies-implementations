@@ -1,6 +1,7 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{styles}
-\usepackage{hyperref}
+\usepackage{amstex}
+\usepackage{lstmisc}
 
 \begin{document}
 
@@ -80,27 +81,29 @@
 
     \newpage
 
-    %\include{E-Models}
+    \include{DZZ-Trading-Strategy-Comparison}
+
+    \include{E-Models}
 
     \newpage
 
-    %\include{F-Trading-Strategies}
+    \include{F-Trading-Strategies}
 
     \newpage
 
-    %\include{G-Trading-Engine}
+    \include{G-Trading-Engine}
 
     \newpage
 
-    %\include{H-Backtesting}
+    \include{H-Backtesting}
 
     \newpage
 
-    %\include{J-Live-Test}
+    \include{J-Live-Test}
 
     \newpage
 
-    %\include{K-Zusammenfassung}
+    \include{K-Zusammenfassung}
 
 % ====================  Listings  ======================
 
