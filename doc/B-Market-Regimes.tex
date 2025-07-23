@@ -8,7 +8,7 @@ A central concept in this context is market regimes.
 
 Market regimes describe phases with distinct statistical and economic characteristics, such as volatility, and trend behavior.
 They can be understood as different "states" of the market in which certain trading patterns dominate.
-Distinguishing between, for example, upward, sideways, and downward trends or high, and low volatility enables more targeted strategy selection and adaption.
+Distinguishing between, for example, upward, sideways, and downward trends or high and low volatility enables more targeted strategy selection and adaption.
 Accordingly, the identification and classification of market regimes plays an increasingly important role in modern trading analysis.
 For example, a strategy that performs well in a stable uptrend may fail in a sideways movement or in periods of high volatility \cite{macrosynergy-market-regime-introduction}.
 
@@ -23,15 +23,15 @@ In literature and practical applications, there exist different approaches to cl
 A fundamental categorization is often made by the following dimensions:
 
 \begin{enumerate}
-    \item \textbf{Trend behavior:} Markets can be categorized trend following (bullish/ bearish) or trendless (sideways).
-    \item \textbf{Volatility:} The volatility of a market is often an indicator for insecurity or stability.
+    \item \textbf{Trend behavior:} Markets can be categorized trend following (bullish/ bearish) or trendless (sideways) \cite{regime-trend}.
+    \item \textbf{Volatility:} The volatility of a market is often an indicator for insecurity or stability \cite{regime-vola}.
     High volatility can indicate periods of stress, while low volatility indicates calm markets.
-    \item \textbf{Liquidity:} In illiquid markets, pricing processes can be different compared to liquid markets which has effect on strategies.
+    \item \textbf{Liquidity:} In illiquid markets, pricing processes can be different compared to liquid markets which has effect on strategies \cite{regime-liq}.
 \end{enumerate}
 
 \noindent
-According to the analysis goal, the categorization can be binary (e.g. bullish vs. bearish) or granular (e.g. a combination of trend behavior, and volatility).
-Also, a combination of multiple indicators, named regime scores, is possible to capture more complex market structures.
+According to the analysis goal, the categorization can be binary (e.g., bullish vs. bearish) or granular (e.g., a combination of trend behavior, and volatility).
+While binary classification may be sufficient for high-level market orientation, more granular categorization enables a finer distinction of market conditions.
 
 In the current context, the market is categorized by trend behavior, and volatility.
 This results in six categories:
@@ -47,7 +47,6 @@ This results in six categories:
 
 \noindent
 This takes into account the two most central aspects that lead traders to different trading decisions.
-However, the market is not divided into too many small segments, which can lead to overfitting.
 
 \subsection{Recognizing Market Regimes}
 
@@ -58,7 +57,7 @@ This makes it possible to categorize the two individual categories individually,
 \label{chap:recognizing-trend}
 
 The first step is to categorize the market into uptrends, downtrends, and sideways trends.
-Commonly, a combination of a short-term simple moving average (e.g. SMA(50)), and a long-term simple moving average (e.g. SMA(200)) is used to identify superior trends.
+Commonly, a combination of a short-term simple moving average (e.g., SMA(50)), and a long-term simple moving average (e.g., SMA(200)) is used to identify superior trends.
 The SMA(200) is considered the classic boundary between bullish and bearish market phases.
 If the short-term simple moving average is above the long-term simple moving average, the market is considered bullish.
 Vice versa, if the short-term simple moving average is below the long-term simple moving average, the market is considered bearish \cite{ig-regimes-mas}.

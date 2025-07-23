@@ -16,6 +16,9 @@
 * In textbf bei aufzählungen auch wie Überschriften schreiben?
 * Wie wird PNL in Loss berechnet (Evtl auch noch in TE)
 
+* Warum bei Trend Klassifikation der Threshold +- 0.05?
+* Bei grafiken der Market Regimes sthet 22:00. Ist das richtig, oder lieber 10PM?
+
 
 
 # Warum ETH M1
