@@ -37,7 +37,7 @@ All listed there meet the API functionality requirements.\footnote{Sources: \cit
         Broker & Tradable assets & \multicolumn{2}{c}{\makecell{Fees}} & Leverage \\
         &                                            & Maker  & Taker   &      \\
         \midrule
-        \textbf{ByBit} & Spot, Spot with leverage, Futures, Options & 0.02\% & 0.055\% & 10:1 \\
+        \textbf{ByBit} & Spot, Spot with Leverage, Futures, Options & 0.02\% & 0.055\% & 10:1 \\
         \addlinespace[0.8em]
         \textbf{IG} & CFDs, Knock-out-Options & \multicolumn{2}{c}{Spread (approx.
         \$1.30)} & 2:1 \\
@@ -52,12 +52,20 @@ All listed there meet the API functionality requirements.\footnote{Sources: \cit
 
 
 \noindent
+Although ByBit's fees are calculated as a percentage of the transaction volume, they are lower overall than those charged by IG or Capital.com.
+The average price of ETH is approximately 2280 USDC \footnote{The average price was calculated using all data collected in \autoref{chap:api-connection}}.
+Based on the average ETH price, ByBit's fees are approximately 1.25 USDC for a taker order and 0.45 USDC for a maker order per ETH bought or sold.
+This means it is possible to save up to 1.3 USDC compared to IG and Capital.
+
 Taking into account \autoref{tbl:broker-comparision}, ByBit is the best broker because it has the lowest fees, high quality data, as well as the highest possible leverage.
 
 \subsection{API Connection and Data Retrieval Process}
+\label{chap:api-connection}
 
 Before starting with the Machine Learning process, and the backtests, the first step is to download historical \ethusdc data via the ByBit API.
 The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \verb|linear|, symbol \verb|ETHPERP|, and interval \verb|1| at \ethDataEndDate.
 Since ByBit only returns 1000 candlesticks per request, the same request with different start-, and end-times was executed until the ByBit API does no longer return older candlestick data.
 This resulted in a candlestick data pool with data on a minute basis from \ethDataStartDate to \ethDataEndDate.
-Chapter \ref{chap:statistics} will go into more detail about the data.
+Chapter \ref{chap:eda} will go into more detail about the data.
+
+% TODO: Sequenzdiagramm??

@@ -69,21 +69,23 @@
 
     \newpage
 
-    \include{B-EDA}
+    \include{B-Market-Regimes}
 
     \newpage
 
-    \include{C-Market-Regimes}
+    \include{C-EDA}
 
     \newpage
 
-    \include{D-Money-Risiko-Management}
+    \include{D-Models}
 
     \newpage
 
-    \include{DZZ-Trading-Strategy-Comparison}
+    \include{E-Money-Risiko-Management}
 
-    \include{E-Models}
+    \newpage
+
+    \include{EZZ-Trading-Strategy-Comparison}
 
     \newpage
 

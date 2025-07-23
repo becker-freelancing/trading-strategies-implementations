@@ -1,7 +1,10 @@
 \section{Exploratory Data Analysis}
+\label{chap:eda}
 
-\subsection{Statistics}
-\label{chap:statistics}
+Exploratory data analysis uses statistical metrics to gain an understanding of the raw data.
+In this work, exploratory data analysis also includes data partitioning for training, validation, and testing machine learning models and trading strategies, eliminating data drift, adding additional features, as well as scaling and dimension reduction.
+
+It should be noted that apart from the data splitting, which is a general step, the following steps are only relevant for the machine learning models and not for the classic trading strategies introduced later.
 
 \subsection{Dividing the Data}
 
@@ -204,20 +207,33 @@ Trend-following indicators can be used to filter out these outliers \cite{invest
 The exponential moving average (EMA) is one type of trend following indicator.
 It is a variation of the classic simple moving average (SMA), placing more emphasis on newer prices.
 It is often used by traders in length of 10-, 50-, and 200-period.
-One limitation is that many trades believe that new data better reflects the current trend, where many others believe that overweighting recent prices creates a bias \cite{investopia-ema}.
+
+An important aspect of distinguishing between EMA and SMA is that many traders assume that new data better reflects the current trend, while others argue that giving more weight to recent prices can lead to distortion
+\cite{investopia-ema}.
 
 %TODO: Bild von EMA und SMA im Vergleich -> EMA regiert schneller
 
-Because the EMA reacts faster to price changes than the SMA, and the aim of this paper are short-term predictions, the EMA could provide more relevant context for the model.
+Since the aim of this paper is short-term predictions and the EMA reacts faster to price changes than the SMA, the EMA could provide more relevant context for the model.
 The EMA was added in 5, 10, 20, 30, 50, and 200 period to the data.
 
-Another Trend following indicator is the moving average convergence/divergence (MACD) which does not only help to identify price trends, but also helps to measure the trend momentum.
+Another trend following indicator is the moving average convergence/divergence (MACD) which does not only help to identify price trends, but also helps to measure the trend momentum.
 It shows the relationship between two exponential moving averages.
 To calculate the MACD line, an EMA(12) is subtracted from an EMA(26).
 Additionally, a signal line is calculated as an EMA(9) of the MACD line.
 
-Although the MACD can signal possible reversals, it is also known for creating many false positives.
-This often happens if the market moves sideways \cite{investopia-macd}.
+
+Although the MACD can signal possible reversals, it is also known for generating a significant number of false positives.
+This tends to occur particularly in sideways or ranging markets, where price movements lack strong momentum or clear directional trends.
+In such environments, the MACD lines frequently cross without a meaningful shift in market sentiment, leading traders to act on misleading signals.
+Consequently, relying solely on MACD in these conditions can result in wrong entries or exits \cite{investopia-macd}.
+To mitigate this, many traders combine MACD with additional indicators, such as support and resistance levels or trend confirmation tools, to improve decision-making and reduce noise.
+
+Despite its susceptibility to false signals in sideways markets, the MACD can still be useful as a feature in a machine learning model.
+This is because the indicator provides valuable information about momentum and potential trend changes, especially during periods of clear price movements.
+In a machine learning context, the MACD is not considered in isolation but processed in combination with many other features.
+This allows the model to learn under which market conditions the MACD is more reliable and when it should be ignored.
+The nonlinear relationships and interactions with other features allow the model to identify context-dependent patterns from the MACD signals, which can be useful for predicting price movements.
+
 
 \subsubsection{Volatility Indicators}
 
@@ -273,8 +289,8 @@ This creates a balanced feature set that takes into account both rapid reactions
 Scaling data is an important step in exploratory data analysis.
 This is because, on the one hand, machine learning models perform better with scaled data \cite{data-scaling}, and, on the other hand, principal component analysis (\autoref{chap:pca}) is sensitive to unscaled data \cite{pca-scaling}.
 
-The use of the scikit-learn \texttt{MinMaxScaler} \cite{min-max}, which scales data date in a fixed range of $[0; 1]$ is useful and widely used.
-Neural networks, especially those with activation functions such as ReLU, which is introduced in \autoref{chap:nn} benefits greatly from inputs with a uniform range of values.
+The use of the scikit-learn \texttt{MinMaxScaler} \cite{min-max}, which scales data in a fixed range of $[0; 1]$ is useful and widely used.
+Neural networks, especially those with activation functions such as ReLU, which are introduced in \autoref{chap:nn} benefits greatly from inputs with a uniform range of values.
 The scaling stabilizes the gradient flow, shortens training time and reduces vanishing gradients \cite{min-max-benefits}.
 
 For these reasons, all features were scaled with the \texttt{MinMaxScaler} and are used exclusively in the scaled form in all steps related to machine learning.

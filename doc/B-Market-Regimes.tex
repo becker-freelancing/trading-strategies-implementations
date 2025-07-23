@@ -58,10 +58,10 @@ This makes it possible to categorize the two individual categories individually,
 \label{chap:recognizing-trend}
 
 The first step is to categorize the market into uptrends, downtrends, and sideways trends.
-Commonly, a combination of a short-term moving average (e.g. SMA(50)), and a long-term moving average (e.g. SMA(200)) is used to identify superior trends.
+Commonly, a combination of a short-term simple moving average (e.g. SMA(50)), and a long-term simple moving average (e.g. SMA(200)) is used to identify superior trends.
 The SMA(200) is considered the classic boundary between bullish and bearish market phases.
-If the short-term moving average is above the long-term moving average, the market is considered bullish.
-Vice versa, if the short-term moving average is below the long-term moving average, the market is considered bearish \cite{ig-regimes-mas}.
+If the short-term simple moving average is above the long-term simple moving average, the market is considered bullish.
+Vice versa, if the short-term simple moving average is below the long-term simple moving average, the market is considered bearish \cite{ig-regimes-mas}.
 
 For the purpose of the current context, a modified combination of SMA(50), and SMA(100) was chosen.
 This decision is based on two considerations:
@@ -73,7 +73,7 @@ This decision is based on two considerations:
 
 \noindent
 Additionally, a minimum slope threshold over the last 15 minutes was integrated for the SMA(50) to avoid that minimal direction changes are mistakenly interpreted as a meaningful trend.
-This short time span ensures that current market movements are adequately incorporated into the trend classification without being dominated by short-term noise (e.g., individual volatility peaks), and therefore increases the robustness of the trend recognition, and addresses the weaknesses of moving averages in sideways phases.
+This short time span ensures that current market movements are adequately incorporated into the trend classification without being dominated by short-term noise (e.g., individual volatility peaks), and therefore increases the robustness of the trend recognition, and addresses the weaknesses of simple moving averages in sideways phases.
 A slope above +0.05 signals a significant short-term uptrend, while a slope below -0.05 suggests a clear downtrend.
 Values in between are interpreted as ambiguous, and are included in the sideways classification accordingly.
 
