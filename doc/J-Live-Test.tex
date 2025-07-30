@@ -1,7 +1,9 @@
 \section{Live-Testing}
+\label{chap:live-test}
 
 Despite the poor results from \autoref{chap:backtesting}, a strategy will be executed live on a demo account at ByBit for further work.
-This will serve, among other things, to compare the live-executed strategy with the backtest results and to test the robustness of the trading engine in live operation.
+The primary purpose of this live test is not to achieve profitability, but rather to validate the end-to-end functionality of the trading infrastructure under realistic market conditions.
+
 
 \subsection{Broker Setup}
 
@@ -36,3 +38,28 @@ In the trading engine, the base URLs, API key, and API secret are set by environ
 
 Using the trading engine configuration described above, a live execution of the triple exponential moving average strategy was performed from \liveStartDataStartDate to \liveStartDataEndDate.
 To keep the environment as similar as possible to the local backtest environment, the balance of the demo account was set to 5000 USDC at startup.
+
+\begin{table}
+    \centering
+    \input{tables/live-results}
+    \caption{Live-Test Statistics}
+    \label{tbl:live-results}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/live/live-result}
+    \caption{Live-Test Results}
+    \label{fig:live-results}
+\end{figure}
+
+\noindent
+As \autoref{tbl:live-results} and \autoref{fig:live-results} show, the strategy does not deliver profitable results in the live test either.
+
+The logs \footnote{The logs are not published in this work due to their length.} show that the connection (data streaming) was interrupted several times during execution by the broker or due to network problems.
+In these cases, the trading engine attempts to reconnect every ten seconds.
+As soon as the connection is re-established, the engine continues to run normally.
+The only limitation is that the internal state of the currently executing strategies is not reset, as this function does not yet exist.
+This is particularly relevant if a connection interruption causes several candles to be skipped, making it appear to the strategies as if there was a jump in the data.
+A mechanism must therefore be built in that detects gaps in the data and resets the strategies.
+In the test carried out, however, this did not pose a problem, as the connection interruptions never lasted longer than a few seconds and no candles have been missed.

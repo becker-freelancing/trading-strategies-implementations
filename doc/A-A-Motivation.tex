@@ -3,12 +3,12 @@
 \subsection{Motivation}
 
 In recent years, the cryptocurrency market has emerged as a highly dynamic and rapidly evolving financial ecosystem.
-Trading pairs such as \ethusdc on minute-level (M1) intervals provide vast amounts of high-frequency data, reflecting extreme volatility and market shifts.
+Trading pairs such as \ethusdc~ on minute-level (M1) intervals provide vast amounts of high-frequency data, reflecting extreme volatility and market shifts.
 This creates challenges and opportunities for traders and researchers.
 
 The availability of detailed tick and minute data, combined with direct API access from crypto brokers, creates new opportunities for developing data-driven trading systems.
 Advances in machine learning and deep learning offer promising tools to identify patterns in market movements.
-This motivates an exploration of AI-based trading systems specifically designed for the \ethusdc pair, aiming to leverage technical features and advanced models to improve performance in the volatile cryptocurrency environment.
+This motivates an exploration of AI-based trading systems specifically designed for the \ethusdc~ pair, aiming to leverage technical features and advanced models to improve performance in the volatile cryptocurrency environment.
 
 On the other hand, classical trading strategies also could perform well in this environment, especially if the strategies are adapted to specific market regimes.
 Techniques such as moving averages, Bollinger Bands, or momentum indicators have the advantage of simplicity and transparency, allowing traders to understand and trust their decision-making process.
@@ -23,11 +23,11 @@ This creates a practical scenario for the development and evaluation of trading 
 
 \subsection{Aim of this Paper}
 
-The primary goal of this paper is to develop and evaluate AI-powered and classical trading strategies focused on the \ethusdc cryptocurrency pair.
+The primary goal of this paper is to develop and evaluate AI-powered and classical trading strategies focused on the \ethusdc~ cryptocurrency pair.
 This paper will:
 
 \begin{enumerate}
-    \item Retrieve historical \ethusdc data via a broker API and process it for analysis.
+    \item Retrieve historical \ethusdc~ data via a broker API and process it for analysis.
     \item Perform exploratory data analysis and feature engineering, including trend, volatility, and momentum indicators.
     \item Identify and classify distinct market regimes to provide adaptive trading decisions.
     \item Apply risk and money management techniques to realistically simulate trading performance.
@@ -38,4 +38,39 @@ This paper will:
 \end{enumerate}
 
 \noindent
-By focusing on the \ethusdc pair, this paper aims to provide insights into the effectiveness of deep learning and classical strategies in cryptocurrency trading and contribute practical tools for automated, adaptive trading in this challenging asset class.
+By focusing on the \ethusdc~ pair, this paper aims to provide insights into the effectiveness of deep learning and classical strategies in cryptocurrency trading and contribute practical tools for automated, adaptive trading in this challenging asset class.
+
+\subsection{Structure of this Paper}
+
+\autoref{chap:broker} first lays the foundation for technical integration with financial markets.
+This includes selecting a suitable broker and setting up an automated interface for data retrieval.
+Without this foundation, real-time access to market data and the subsequent live execution of strategies are not possible.
+
+\autoref{chap:market-regimes} and \autoref{chap:risk-man} introduce essential concepts such as market regimes and money and risk management.
+These theoretical foundations serve to analyze the markets in a structured manner while ensuring that trading decisions are made within the framework of sound risk management.
+Classification approaches for market phases as well as rules for position sizing and risk limitation are covered.
+
+
+Building on this, \autoref{chap:eda} provides a comprehensive exploratory data analysis (EDA) approach, describing key steps for processing and transforming historical price data.
+In addition to generating technical indicators, modern methods such as feature scaling and principal component analysis (PCA) are also discussed as a foundation for machine learning.
+
+Subsequently, in \autoref{chap:dl-models}, various deep learning models are developed and trained to enable predictions of future market movements.
+Both regression and classification models are examined and evaluated for their suitability for use in trading.
+
+\autoref{chap:trading-strategies} is devoted to the development of concrete trading strategies.
+These are based either on classic technical indicators or on signals derived from the previously developed ML models.
+Each strategy is methodically described and prepared for later evaluation.
+
+To execute and evaluate these strategies, \autoref{chap:te} introduces a modular trading engine that enables both backtesting and live trading.
+The structure follows a plug-in architecture to flexibly integrate different strategies.
+
+\autoref{chap:backtesting} verifies the performance of the developed strategies using backtests.
+Various metrics such as profit curves, drawdowns, and hit rates are used.
+The impact of fees is also considered to ensure a realistic evaluation.
+
+\autoref{chap:live-test} describes the transition to practice by conducting a live test.
+This section is intended to demonstrate the extent to which the results observed in the backtest can be confirmed in the real market environment.
+The results obtained are then critically discussed.
+
+\autoref{chap:conclusion} concludes, summarizing the key findings and drawing conclusions.
+\autoref{chap:aim-further-works} provides suggestions for further work, for example, regarding improvements to the models, strategies, or engine extensions.

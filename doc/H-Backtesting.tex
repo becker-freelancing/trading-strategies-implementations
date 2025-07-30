@@ -71,3 +71,49 @@ This shows that there is also a kind of overfitting in the parameter selection.
 While the strategies work well on the validation data, they fail in the out-of-sample tests.
 
 \subsection{Fee-Impacts}
+
+A key component of the realistic evaluation of algorithmic trading strategies is the consideration of transaction costs.
+These costs can have a significant impact on performance depending on trading frequency, broker model, and market conditions.
+
+In this study, trading fees were integrated directly into the trading engine so that they are automatically considered with every order execution in backtesting.
+The chosen model is based on the ByBit fee structure based on the traded volume (0.02\% for maker orders and 0.055\% for taker orders).
+This enables realistic backtests of trading strategies.
+However, things like slippage were not taken into account but can be added in later improvements.
+
+\autoref{tbl:fees} shows the sum of all fees incurred with the best parameters on the validation data (In-Sample) and on the test data (Out-of-Sample).
+
+\begin{table}[H]
+    \centering
+    \centering
+    \begin{tabular}{l|ccc}
+        \toprule
+        \multirow{2}{*}{\textbf{Strategy}} & \multicolumn{2}{c}{In-Sample} & Out-of-Sample \\
+        & Total Fees & Relative to PnL & Total Fees \\
+        \midrule
+        \textbf{Classification AI} & 3570       & 6.4\%           & 1937       \\
+        \textbf{Dual SMA}          & 4219       & 27.8\%          & 2874       \\
+        \textbf{Triple EMA}        & 3858       & 40.6\%          & 4652       \\
+        \textbf{Bollinger Bands}   & 1127       & 44.9\%          & 1858       \\
+        \bottomrule
+    \end{tabular}
+    \label{tbl:fees}
+    \caption{Total Trading Fees}
+\end{table}
+
+\noindent
+It becomes clear that a considerable amount of fees is incurred, which amounts to up to approximately 40\% of the net profit (Triple EMA).
+However, when comparing the number of trades across strategies, an interesting insight emerges.
+As shown in \autoref{tbl:combined-strategy-results}, the Dual SMA strategy executes by far the most trades (3473 in total) on the validation set, but despite this high trading frequency, its relative fee impact is noticeable lower compared to the Triple EMA strategy, which executed only 870 trades.
+This indicates that not only the number of trades but also entry and exit timing, holding duration, and trade efficiency play a crucial role in determining fee sensitivity.
+
+This highlights that fee efficiency is not strictly a function of trading frequency alone.
+While one might intuitively expect more trades to always lead to higher costs, the Dual SMA strategy demonstrated that a high-frequency system can still be cost-efficient if implemented with consistent execution logic and stable market conditions.
+
+Most importantly, these findings emphasize the critical importance of incorporating fees in every phase of strategy evaluation.
+Conducting backtests without fees would draw an overly optimistic and misleading picture of strategy performance.
+For instance, a strategy that appears profitable on a gross level may become unprofitable once realistic costs are accounted for.
+
+For this reason, no backtests or performance evaluation in this work was conducted without accounting for trading fees.
+All strategies were tested under the assumption of realistic maker and taker fees, according to the selected broker ByBit.
+This ensures that every performance metric presented reflects realistic scenarios and therefore increases the practial relevance and robustness of the results.
+

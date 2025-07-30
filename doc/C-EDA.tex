@@ -284,7 +284,25 @@ This could help the models to recognize trend reversals, volatility changes or s
 Lastly, the logarithmic returns of other time frames (M2, M3, M6, M9, and M12) have been added to the data providing another more stable trend context which helps to correctly classify short-term price movements.
 This creates a balanced feature set that takes into account both rapid reactions and long-term patterns.
 
-\subsection{Scaling the Data}
+\subsection{Further Transformations}
+
+Due to the previous steps, the data contains 56 features (price data and additional indicators).
+Two further transformations are then performed on the features.
+This includes scaling and dimensionality reduction.
+It is important to note that before these steps, the data is clustered into the respective regimes using the algorithm described in \autoref{chap:market-regimes}, and both scaling and dimensionality reduction are performed in isolation for each regime.
+This brings advantages in both steps.
+
+When scaling, the value range of the scaler can be better utilized.
+This is evident, for example, with volatility indicators such as the ATR.
+This indicator generates higher values in volatile phases than in less volatile ones.
+If the scaler is fitted to the entire data and then a differentiation between market regimes is made, the entire value range of the scaler cannot be utilized in the respective regimes.
+However, once the differentiation into regimes is made, the entire value range is utilized for each regime.
+
+Dimensionality reduction also offers an advantage.
+Here, different features may be more dominant than others in different regimes.
+This allows to examine which features are most important for each regime individually, preventing dilution.
+
+\subsubsection{Scaling the Data}
 
 Scaling data is an important step in exploratory data analysis.
 This is because, on the one hand, machine learning models perform better with scaled data \cite{data-scaling}, and, on the other hand, principal component analysis (\autoref{chap:pca}) is sensitive to unscaled data \cite{pca-scaling}.
@@ -295,7 +313,7 @@ The scaling stabilizes the gradient flow, shortens training time and reduces van
 
 For these reasons, all features were scaled with the \texttt{MinMaxScaler} and are used exclusively in the scaled form in all steps related to machine learning.
 
-\subsection{Principal Component Analysis}
+\subsubsection{Principal Component Analysis}
 \label{chap:pca}
 
 The principal component analysis (PCA) is a process for dimensional reduction, by linearly transforming high dimensional datasets to a small number of uncorrelated principal components  (directions of the new coordinate system).

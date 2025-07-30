@@ -2,6 +2,8 @@ import matplotlib
 
 matplotlib.use("TkAgg")
 
-import pandas as pd
+from zpython.util.indicator_creator import create_indicators
+from zpython.util.data_split import test_data
 
-high = pd.DataFrame
+df = create_indicators(data_read_function=test_data)
+print(df)

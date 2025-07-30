@@ -73,19 +73,19 @@
 
     \newpage
 
-    \include{C-EDA}
-
-    \newpage
-
-    \include{D-Models}
-
-    \newpage
-
     \include{E-Money-Risiko-Management}
 
     \newpage
 
     \include{EZZ-Trading-Strategy-Comparison}
+
+    \newpage
+
+    \include{C-EDA}
+
+    \newpage
+
+    \include{D-Models}
 
     \newpage
 

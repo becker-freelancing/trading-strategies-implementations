@@ -1,7 +1,6 @@
 * Buy and Hold -> Geht das überhaupt, da ja POsitionsgröße nicht fix ist?
 * + Noch ein Kapitel welches Kurz erklärt, das ETHUSDC M1 genommen wird und warum
 * Alle MAx Drawdowns etc nochmal anschauen
-* Live End Date Ändern
 * Klassenverteilung untersuchen -> Falls gleich verteilt Accuracy guter Leistungsmesser
 * Nointends einfügen
 * Parameter Tabellen auch horizontal zentrieren -> Bzw evtl alle Tabellen

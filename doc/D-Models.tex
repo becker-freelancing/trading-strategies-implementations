@@ -13,7 +13,7 @@ The model architectures used in this work are not based on specific, citable pub
 The goal was to construct powerful models well-suited to the given problem.
 Particularly with regard to processing sequential data of limited length and high variability.
 
-Established neural building blocks such as 1D convolutional layers, GRUs, attention mechanisms, and transformer components were used, the fundamentals of which are comprehensively documented in the literature.
+Established neural building blocks such as 1D convolutional layers, GRUs, and attention mechanisms were used, the fundamentals of which are comprehensively documented in the literature.
 However, the specific design of the model architectures, such as the combination of multiple parallel CNN paths, the integration of GRUs after convolution steps, or the use of Global Average Pooling instead of flattening, represents a creative and pragmatic composition of its own.
 
 Additionally, all models were automatedly optimized using Optuna, so that architectural decisions were also influenced by the hyperparameter search.
@@ -22,7 +22,9 @@ In many cases, initial ideas originate from non-scientific sources such as blog 
 In summary, the developed models are original variations, inspired by familiar architectural elements, but not directly adopted or reconstructed from specific publications.
 This allows for greater flexibility and reinforces the experimental nature of the work.
 
-For both regression and classification models, 13 different architectures were used, which can be divided into neural networks, convolutional neural networks, long short-term memories, and transformers.
+For both regression and classification models, 13 different architectures were used, which can be divided into neural networks, convolutional neural networks, and long short-term memories.
+
+% TODO: Beschreiben, dass die Inputs komplett im Regime liegen und das das folgende egal ist
 
 \subsection{Optuna}
 
@@ -237,12 +239,45 @@ The final dense layers perform the transformation to the target variable as usua
 
 \lstinputlisting[language=Python, caption=CNN + GRU, label=lst:gru-cnn, style=python]{python/models/cnn_gru.py}
 
+\subsection{Model Training}
+
+In the following, all models mentioned in \autoref{chap:nn}, \autoref{chap:lstm}, and \autoref{chap:cnn} are trained on the training data (\autoref{tbl:train-data}) for 20 Optuna trials, each with 30 epochs.
+After each epoch, the models are evaluated on the validation data (\autoref{tbl:validation-data}).
+
+As already mentioned, the model architectures mentioned are used for regression and classification.
+For this purpose, a different final dense layer is used for each architecture, which is described in the respective chapters.
+
+Similar to scaling and dimensionality reduction, the models are trained individually for each regime.
+This results in 10,800 \footnote{$18 Regimes * 20 Trials * 30 Epochs$} trained models per architecture.
+After each epoch, the evaluation metrics and the model are saved.
+
+Another aspect that is determined by the regimes is how the input-output sequences can be divided.
+There are four possibilities here:
+
+\begin{enumerate}
+    \item \textbf{Complete sequence within a regime:} In this case, the entire sequence, both the input and output data, would be within a single regime.
+    This has the advantage that each model is truly assigned to only one regime and operates exclusively with data within that regime.
+    However, this approach is impractical in live operation, as it is unknown whether the market will remain in this regime in the future in which the prediction is made.
+    This would constitute data snooping, and the models would be useless.
+    \item \textbf{Only the output data within a regime:} The same problem arises here as in point 1.
+    In live operation, it is unknown whether the market will remain in this regime in the future.
+    Thus, data snooping occurs again, and the models become unusable.
+    \item \textbf{Only the input data within a regime:} It must be ensured that all input data lies within a regime.
+    The number of regimes in the output data is irrelevant.
+    This ensures that the model always receives data that lies within a regime as input, but no data snooping occurs.
+    \item \textbf{The last $N$ percent of the input data must be within a regime:} This has the advantage of eliminating data snooping and providing more test data compared to point 3, since more input sequences meet the requirements.
+    However, it requires additional effort because the percentage $N$ must be determined.
+    This would require either heuristics or a complex process to determine $N$.
+    Furthermore, compared to point 3, the model cannot guarantee that 100\% of the input data is in the same regime and would therefore have to learn more patterns in the data to cope with regime changes within the input data.
+\end{enumerate}
+
+\noindent
+For the reasons listed above, it was decided in this work to divide the data as described in point 3, since the distinction as to which model the data belongs is easy to implement, data snooping is excluded and no additional heuristics or processes have to be carried out to determine what percentage of the input data must belong to the respective regime.
+
 \subsection{Regression Models}
 \label{chap:regression-models}
 
 Regression models were used to predict the next 30 minutes of logarithmic returns as a continuous sequence.
-For this purpose, all models mentioned in \autoref{chap:nn}, \autoref{chap:lstm}, and \autoref{chap:cnn} were trained on the training data (\autoref{tbl:train-data}) for 20 trials of Optuna with 30 epochs each.
-After each epoch, the model was evaluated using the validation data (\autoref{tbl:validation-data}).
 To achieve a continuous sequence as output, the activation function in the last dense layer of the above-mentioned models was set to \verb|linear| and the number of neurons to 30.
 
 \subsubsection{Loss-Function}
