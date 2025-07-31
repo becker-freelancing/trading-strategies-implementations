@@ -30,6 +30,7 @@ def render(df: pd.DataFrame, ax1):
     df[df["drawdown"] > 0] = 0
     ax1.plot(df["time"], df["cum"], label="Equity", color="blue")
     ax1.set_ylabel('Account Equity', color='blue')
+    ax1.set_xlabel("Trade Index")
     ax1.tick_params(axis='y', labelcolor='blue')
     ax1.grid(True)
 

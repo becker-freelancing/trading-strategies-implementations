@@ -1,3 +1,6 @@
+\usepackage{hyperref}
+
+
 \section{Trading Strategies}
 \label{chap:trading-strategies}
 
@@ -47,7 +50,7 @@ This can happen, for example, if the initial prediction is positive and the pric
     \centering
     \begin{tabular}{L{4cm}ccc}
         \toprule
-        Parameter Name & Min Value & Max Value & Step Size
+        \textbf{Parameter Name} & Min Value & Max Value & Step Size
         \\
         \midrule
         \textbf{Take-Profit Delta}             & -20.0 & 20.0 & 2.0  \\
@@ -71,7 +74,7 @@ The stop-loss and take-profit levels are also predefined parameters.
     \centering
     \begin{tabular}{L{4cm}ccc}
         \toprule
-        Parameter Name & Min Value & Max Value & Step Size
+        \textbf{Parameter Name} & Min Value & Max Value & Step Size
         \\
         \midrule
         \textbf{Take-Profit Distance}       & 5.0 & 100.0 & 5.0 \\
@@ -96,7 +99,7 @@ Therefore, technical analysis strategies are more likely suitable for algorithmi
 This chapter describes three widely used technical analysis trading strategies.
 The strategies introduced are not the only classic strategies tested.
 They are the three that performed best in the tests.
-The other tested strategies are also briefly listed in Chapter X. %TODO: verlinkung
+The other tested strategies are also briefly listed in C\autoref{chap:other-strategies-results}. %TODO: verlinkung
 However, some of them have been slightly modified in this work compared to the most widely used ones.
 
 \subsubsection{Dual Simple Moving Average Strategy}
@@ -142,7 +145,7 @@ All parameter combinations where the short-term SMA period is greater than the l
     \centering
     \begin{tabular}{L{4cm}ccc}
         \toprule
-        Parameter Name & Min Value & Max Value & Step Size
+        \textbf{Parameter Name} & Min Value & Max Value & Step Size
         \\
         \midrule
         \textbf{Short-Term SMA Period} & 1   & 10    & 1    \\
@@ -201,7 +204,7 @@ All parameter combinations, where the short-term EMA period is greater than the 
     \centering
     \begin{tabular}{L{4cm}ccc}
         \toprule
-        Parameter Name & Min Value & Max Value & Step Size
+        \textbf{Parameter Name} & Min Value & Max Value & Step Size
         \\
         \midrule
         \textbf{Short-Term EMA Period}       & 3   & 10  & 2   \\
@@ -243,7 +246,7 @@ The take-profit level is set at the level of the central line , with a certain d
     \centering
     \begin{tabular}{L{4cm}ccc}
         \toprule
-        Parameter Name & Min Value & Max Value & Step Size
+        \textbf{Parameter Name} & Min Value & Max Value & Step Size
         \\
         \midrule
         \textbf{Bollinger Band Period}      & 10   & 25    & 1    \\

@@ -2,8 +2,9 @@ num_layers = trial.suggest_int('num_layers', 1, 3)
 num_units_1 = trial.suggest_int('num_units_1', 32, 256)
 num_units_2 = trial.suggest_int('num_units_1', 32, 256)
 dropout = trial.suggest_float('dropout', 0.05, 0.35)
-learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)
 input_length = trial.suggest_int('input_length', 5, 150)
+learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2,
+                                    log=True)
 
 model = Sequential()
 

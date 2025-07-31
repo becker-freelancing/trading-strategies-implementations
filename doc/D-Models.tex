@@ -61,10 +61,10 @@ A classic neural network consists of several layers of artificial neurons that f
 The structure can be divided as follows \cite{nn-basics}:
 
 \begin{enumerate}
-    \item \textbf{Input Layer:} Accepts the raw input data, e.g., a vector form of a time series or preprocessed features.
-    \item \textbf{Hidden Layers:} One or more layers of artificial neurons, each of which calculates a weighted sum of the inputs and further processes it using an activation function.
+    \item \textbf{Input layer:} Accepts the raw input data, e.g., a vector form of a time series or preprocessed features.
+    \item \textbf{Hidden layers:} One or more layers of artificial neurons, each of which calculates a weighted sum of the inputs and further processes it using an activation function.
     Typical activation functions are ReLU, sigmoid, or tanh.
-    \item \textbf{Output Layer:} Provides the final result, e.g., class membership (for classification) or continuous value (for regression).
+    \item \textbf{Output layer:} Provides the final result, e.g., class membership (for classification) or continuous value (for regression).
 \end{enumerate}
 
 \noindent
@@ -180,9 +180,9 @@ CNNs, on the other hand, uses an alternative approach, called local convolutions
 The advantages of using CNNs for time series include:
 
 \begin{enumerate}
-    \item \textbf{Parallel Processing:} CNN does not require recursive loops, e.g., compared to LSTMs.
-    \item \textbf{Local Pattern Detection:} CNNs can detect local patterns, such as peaks, fluctuations, or trend changes.
-    \item \textbf{Computational Complexity:} CNNs requires lower computational power compared to recursive architectures.
+    \item \textbf{Parallel processing:} CNN does not require recursive loops, e.g., compared to LSTMs.
+    \item \textbf{Local pattern detection:} CNNs can detect local patterns, such as peaks, fluctuations, or trend changes.
+    \item \textbf{Computational complexity:} CNNs requires lower computational power compared to recursive architectures.
 \end{enumerate}
 
 \subsubsection{Base CNN}
@@ -329,9 +329,9 @@ Additionally, additional metrics in the trading context were added to the model 
 These include:
 
 \begin{enumerate}
-    \item \textbf{Profit Hit-Rate:} Percentage of trades that would have been profitable based on the prediction.
-    \item \textbf{Loss Hit-Rate:} Percentage of trades that would have been unprofitable based on the prediction.
-    \item \textbf{None Hit-Rate:} Percentage of trades that would have reached neither the stop loss nor the take profit based on the prediction.
+    \item \textbf{Profit hit rate:} Percentage of trades that would have been profitable based on the prediction.
+    \item \textbf{Loss hit rate:} Percentage of trades that would have been unprofitable based on the prediction.
+    \item \textbf{None hit rate:} Percentage of trades that would have reached neither the stop loss nor the take profit based on the prediction.
 \end{enumerate}
 
 \noindent

@@ -1,7 +1,6 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{styles}
 \usepackage{amstex}
-\usepackage{lstmisc}
 
 \begin{document}
 
@@ -47,7 +46,6 @@
     \listoftables
 
 
-    \newpage
     \renewcommand{\thelstlisting}{\Alph{lstlisting}} % Code-Listings benuzen A, B, C, ...
     \lstlistoflistings
 
@@ -56,8 +54,6 @@
     \include{4-Abkuerzungsverzeichniss}
 
     \newpage
-
-
 
     \pagenumbering{arabic}
 
