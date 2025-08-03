@@ -74,7 +74,7 @@ The tested models are different in their complexity, depth, and methodical appro
 \subsubsection{Base Model with Flatten-Architecture}
 
 The first model follows a classic feedforward approach, with one to three dense layers, each with 32 to 128 neurons and a rectified linear unit (ReLU) activation function.
-The ReLU activation function was used because it provides an efficient calculation and a good gradient propagation with fewer vanishing gradients \cite{springer-ml-basics}.
+The ReLU activation function was used because it provides an efficient calculation and a efficient gradient propagation with fewer vanishing gradients \cite{springer-ml-basics}.
 Either before or after the dense layers, the input data are flattened \cite{keras-flatten}.
 This decision influences whether the model processes all timepoints as a vector early on or treats each time step separately.
 This architecture was used as a simple baseline model to obtain a quick training and a first baseline model.
@@ -113,7 +113,7 @@ The residual path allows the model to pass on basic information directly, while 
 \subsection{Long Short-Term Memory Models}
 \label{chap:lstm}
 
-In addition to traditional dense neural networks, recurrent neural networks (RNNs) based on the Long Short-Term Memory (LSTM) architecture were also used.
+In addition to traditional feedforward neural networks, Recurrent Neural Networks (RNNs) based on the Long Short-Term Memory (LSTM) architecture were also used.
 LSTMs are specifically designed to capture temporal dependencies in sequential data and retain long-term information across multiple time steps \cite{lstm-usage}.
 This is particularly important for financial data such as ETH prices, as current prices are often influenced by past developments.
 
@@ -190,7 +190,7 @@ The advantages of using CNNs for time series include:
 The simplest variant consists of two stacked one-dimensional convolutional layers, followed by maxpooling, and two dense layers for output preparation.
 The position of the flattening layer affects the processing order between the dense and the sequence structure.
 
-The hyperparameters tuned by Optuna are the number of units in the convolutional layers, the length of the filters (Kernel size), the size of the maxpooling region, the position of the flattening layer, and the number of neurons in the dense layers.
+The hyperparameters tuned by Optuna are the number of units in the convolutional layers, the length of the filters (kernel size), the size of the maxpooling region, the position of the flattening layer, and the number of neurons in the dense layers.
 
 \lstinputlisting[language=Python, caption=Base CNN, label=lst:simple-cnn, style=python]{python/models/cnn_simple.py}
 
@@ -228,7 +228,7 @@ This variant is computationally less expensive than the attention-based one and 
 \subsubsection{CNN-GRU Hybrid Model}
 
 The Gated Recurrent Unit (GRU) model is a simplified variant of the LSTM and was developed to reduce computational effort and model complexity.
-Compared to LSTM, GRU has only two gates, an update gate and a reset gate, instead of three (input, forget, and output gates in LSTM).
+Compared to LSTM, GRU has only two gates, an update gate and a reset gate, instead of three (input, forget, and output gates).
 This makes GRU faster to train, requires less memory, and delivers comparable results in many tasks \cite{gru-basics}.
 
 To combine the advantages of both architectures, a hybrid CNN-GRU model was also implemented.
@@ -244,10 +244,11 @@ The final dense layers perform the transformation to the target variable as usua
 In the following, all models mentioned in \autoref{chap:nn}, \autoref{chap:lstm}, and \autoref{chap:cnn} are trained on the training data (\autoref{tbl:train-data}) for 20 Optuna trials, each with 30 epochs.
 After each epoch, the models are evaluated on the validation data (\autoref{tbl:validation-data}).
 
-As already mentioned, the model architectures mentioned are used for regression and classification.
+As already mentioned, the model architectures are used for both regression and classification.
 For this purpose, a different final dense layer is used for each architecture, which is described in the respective chapters.
 
 Similar to scaling and dimensionality reduction, the models are trained individually for each regime.
+This means that the training and validation data must be divided into 18 different subsets, and all model architectures are trained for 20 trials with 30 epochs using the corresponding subdata.
 This results in 10,800 \footnote{$18 Regimes * 20 Trials * 30 Epochs$} trained models per architecture.
 After each epoch, the evaluation metrics and the model are saved.
 
@@ -267,7 +268,7 @@ There are four possibilities here:
     This ensures that the model always receives data that lies within a regime as input, but no data snooping occurs.
     \item \textbf{The last $N$ percent of the input data must be within a regime:} This has the advantage of eliminating data snooping and providing more test data compared to point 3, since more input sequences meet the requirements.
     However, it requires additional effort because the percentage $N$ must be determined.
-    This would require either heuristics or a complex process to determine $N$.
+    This would require either a heuristic approach or a more complex process.
     Furthermore, compared to point 3, the model cannot guarantee that 100\% of the input data is in the same regime and would therefore have to learn more patterns in the data to cope with regime changes within the input data.
 \end{enumerate}
 
@@ -305,11 +306,11 @@ Otherwise, a short position is opened.
 \noindent
 After the direction decision, the stop-loss and take-profit levels must be determined.
 For long and short positions, there are two possibilities at which specific level the stop-loss and take-profit are set, based on the global high and low of the cumulative predicted logarithmic returns.
-If a long position was previously decided and the global high comes after the global low, the stop-loss is set at the global low and the take-profit at the global high.
-However, if the global high comes before the global low, the stop-loss is set at the lowest low before the global high.
+If a long position has been previously determined and the global high occurs after the global low, the stop-loss is placed at the global low and the take-profit at the global high.
+However, if the global high occurs before the global low, the stop-loss is set at the lowest low before the global high.
 For short positions, the decision is exactly the opposite.
 
-\autoref{fig:loss-tp-sl} shows the stop-loss and take-profit levels for all four cases.
+\autoref{fig:loss-tp-sl} shows the stop-loss (red line) and take-profit (green line) levels for all four cases.
 The red areas mark the predicted unprofitable zones and the green areas mark the predicted profitable zones.
 
 \begin{figure}[H]
@@ -352,7 +353,7 @@ However, the model predicted such a negative return that the resulting price fel
 Such behavior is not only extremely unlikely under realistic market conditions, but economically virtually impossible, as it would be tantamount to a complete market collapse.
 
 This incorrect forecast is not an isolated case, but rather symptomatic of the weaknesses of the regression models tested.
-It shows that the models are not only inaccurate but also tend to sometimes produce unrealistic extreme values, which would entail considerable risks in a trading context.
+It shows that the models are not only inaccurate but also tend to produce unrealistic extreme values, which would entail considerable risks in a trading context.
 
 This chapter is dedicated to a critical analysis of possible causes.
 
@@ -380,7 +381,8 @@ Despite the poor results of the regression models, classification models were tr
 The action can be either buy, sell, or do nothing.
 For that, the model predicts a probability for each of the three classes.
 To achieve a direct comparison with the regression models, the same models as in \autoref{chap:regression-models} were used.
-However, with the difference that the last dense layer has only three neurons, each representing an action, and the activation function \verb|softmax| was used.
+However, the main difference is that the final dense layer contains only three neurons, each representing an action, and uses the
+\verb|softmax| activation function.
 The identical training and validation period was also used, and the training took place over 20 Optuna trials with 30 epochs each.
 
 \subsubsection{Loss-Function}
@@ -399,6 +401,11 @@ This function penalizes the model particularly severely if it assigns a high pro
 
 Categorical cross-entropy measures the difference between the actual target distribution and the probability distribution predicted by the model \cite{springer-ml-basics}.
 
+In the context of trading, where the model must choose between three mutually exclusive actions, categorical cross-entropy is especially suitable.
+It encourages the model to make confident and accurate predictions by penalizing uncertain or incorrect outputs.
+This is important in trading, where executing the wrong action can lead to financial loss, and taking no action when an opportunity exists can result in missed profit.
+By using the loss function that directly evaluates the alignment between predicted probabilities and the true action, the model is guided toward making precise, confident decisions, which is a crucial requirement in financial markets, where clear and timely signals are essential for effective strategy execution.
+
 \subsubsection{Model Evaluation}
 
 \autoref{tbl:classification-train-results} shows the best performing classification models on the validation data, as well as their associated loss and accuracy on the validation and test data for each market regime.
@@ -411,7 +418,7 @@ Categorical cross-entropy measures the difference between the actual target dist
 \end{table}
 
 \noindent
-It is striking that some models achieve very good results on the validation data.
+It is notable that some models perform very well on the validation data.
 On the test data, the model performance of all models is worse than on the validation data, but the metrics still show that a profitable trading strategy is possible.
 
 As explained in \autoref{chap:win-rate}, a high win rate is not the only criterion that determines whether a trading strategy is successful.

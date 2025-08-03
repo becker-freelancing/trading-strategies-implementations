@@ -9,12 +9,16 @@ Their key tasks include:
     \item \textbf{Providing access:} Individuals can participate in the market through a broker and thereby trade various cryptocurrencies.
     This includes executing orders such as buying cryptocurrencies at the lowest available price or selling them at the highest available price.
     \item \textbf{Security and compliance:} They also provide customers with a secure platform for executing transactions and adhere to the financial regulations established by authorities.
-    \item \textbf{Leveraging:} Brokers offer customers the opportunity to borrow money, and thus trade with more capital than they actually have in their account.
+    \item \textbf{Leveraging:} Brokers offer customers the opportunity to borrow funds, allowing them to trade with more capital than they actually hold in their account.
 \end{enumerate}
 
 
 \noindent
-This has the advantage that trading with cryptocurrencies is much easier and safer, but one of the biggest disadvantages is the fees that are incurred when using \cite{broker-investing}.
+This makes trading cryptocurrencies significantly more accessible and user-friendly, especially through simplified interfaces, integrated wallets, and automated order execution.
+Additionally, the security infrastructure provided by brokers, such as two-factor authentication, can reduce the risk of user error or loss of funds.
+However, one of the major disadvantages of using brokers is the fees they impose.
+They can include trading commissions, spreads, funding rates for leveraged positions, and withdrawal fees \cite{broker-investing}.
+Especially in high-frequency or short-term trading, such costs can accumulate quickly and have a substantial impact on overall profitability.
 
 \subsection{Broker Selection}
 \label{chap:broker-selection}
@@ -67,6 +71,6 @@ Before starting with the Machine Learning process, and the backtests, the first 
 The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \verb|linear|, symbol \verb|ETHPERP|, and interval \verb|1| at \ethDataEndDate.
 Since ByBit only returns 1000 candlesticks per request, the same request with different start-, and end-times was executed until the ByBit API does no longer return older candlestick data.
 This resulted in a candlestick data pool with data on a minute basis from \ethDataStartDate~ to \ethDataEndDate.
-Chapter \ref{chap:eda} will go into more detail about the data.
+\autoref{chap:eda} will go into more detail about the data.
 
 % TODO: Sequenzdiagramm??

@@ -12,7 +12,7 @@ This chapter introduces fundamental concepts, metrics, and methods helping to ma
 
 An important part of risk management is calculating the position size.
 It is helpful to maximize the potential returns, as well as minimizing the financial risk.
-Many traders are only willing to risk 1\% or 2\% of the available capital per trade, to prevent a series of losing trades from decimating the available capital too much.
+Many traders are only willing to risk 1\% or 2\% of the available capital per trade, to prevent a series of losing trades from decimating the available capital too much \cite{1-2-prozent}.
 
 The distance between the estimated entry price and the estimated stop-loss price represents the maximum distance a market can move in an unprofitable direction before a position is automatically closed.
 
@@ -60,7 +60,7 @@ This chapter presents some techniques that can be used to validate entry signals
 The risk-reward ratio (RRR) is a fundamental key figure in trading.
 It describes the ratio between the potential profit (reward), and the potential loss (risk) of a single trade.
 The RRR helps in deciding whether an entry signal is too risky or not.
-It ensures that not only the win rate determines the success of a strategy, but also the ratio of profit to loss in each individual trade.
+It ensures that not only the win rate determines the success of a strategy, but also the ratio of profit to loss in each individual trade \cite{rrr-base}.
 
 The RRR is calculated by:
 
@@ -91,7 +91,7 @@ The essential factor is the combination of RRR, and win rate:
 The following rule of thumb clarifies when a strategy has a positive expected value in the long term:
 
 \[
-    ExpectedValue = PossibleProfit * HitRatio - PossibleLoss * (1 - HitRatio)
+    ExpectedValue = PossibleProfit * WinRatio - PossibleLoss * (1 - WinRatio)
 \]
 
 \noindent
@@ -120,6 +120,9 @@ Especially in short-term trading, transaction fees can turn seemingly profitable
 A common mistake is setting the take-profit level too narrowly, resulting in a profit that is smaller than the costs incurred.
 To trade profitably and sustainably, it is therefore essential that the take-profit at least covers the fees incurred, but ideally, significantly higher.
 
+Assuming a trader sets a take-profit target of 0.1\% on a position, while round-trip transaction costs amount to 0.15\%.
+Even with a 100\% win rate, the trader would lose money.
+
 \subsection{Dealing with Trading Fees}
 \label{chap:dealing-with-trading-fees}
 
@@ -127,7 +130,7 @@ As shown in \autoref{tbl:broker-comparision} ByBit charges two different fees na
 The maker fee is charged when a limit order is placed in the order book, thereby creating liquidity.
 In contrast, the taker fee is charged when a market order is executed.
 This removes liquidity from the market.
-It is better for a broker if a market is as liquid as possible.
+It is better for a broker if a market is as liquid as possible \cite{liquid-markets}.
 Therefore, maker orders incur lower fees than taker orders.
 
 Especially in higher-frequency trading, it is better to charge as few fees as possible.
@@ -135,7 +138,7 @@ Therefore, it is better for a trader to execute as many limit orders as possible
 Two orders are required for a complete trade: one for entry, and one for exit.
 But typically, three orders are placed (entry, stop-loss, take-profit), with either the take-profit or stop-loss order being executed.
 
-If a market order is to be executed as an entry order, it is possible to convert it into a limit order by setting the order price slightly below (for long positions) or slightly above the current price (for short positions).
+If a market order is to be executed as an entry order, it is possible to convert it into a limit order by setting the order price slightly below (for long positions) or slightly above (for short positions) the current price.
 The same procedure can be followed for the take-profit order.
 
 However, this procedure should not be used for a stop-loss order.

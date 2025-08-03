@@ -1,8 +1,12 @@
 @startuml
 'https://plantuml.com/component-diagram
+skinparam ComponentFontSize 22
+skinparam InterfaceFontSize 22
+skinparam NoteFontSize 22
+skinparam PackageFontSize 22
 
 
-frame "Trading Engine" {
+package "Trading Engine" {
     () "Data-Provider"
     () "Trading-Strategy"
     () "Broker-Requestor"
@@ -28,12 +32,12 @@ frame "Trading Engine" {
     [Abstract-Remote-Execution-App] ..> [Remote-Execution-Engine]
 }
 
-frame "Applications" {
+package "Applications" {
     [Local-Backtest-App] ..> [Abstract-Local-Backtest-App]
     [Remote-Execution-App] ..> [Abstract-Remote-Execution-App]
 }
 
-frame "Adapters"{
+package "Adapters"{
     [Local-CSV-Datasource]
     [ByBit-Remote-Datasource]
     [Strategies-Implementations]

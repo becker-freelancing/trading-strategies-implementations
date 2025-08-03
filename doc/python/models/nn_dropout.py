@@ -17,6 +17,7 @@ model.add(BatchNormalization())
 model.add(Dropout(dropout))
 for _ in range(num_layers - 1):
     model.add(Dense(num_units_2, activation='relu'))
+
 model.add(Dropout(dropout))
 model.add(Dense(...))
 

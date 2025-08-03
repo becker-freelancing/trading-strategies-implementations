@@ -30,7 +30,7 @@ The following describes the most important use cases and features:
 
 \noindent
 Most components of the trading engine are interchangeable, and can be implemented by the user.
-Only the core of the framework, the basic process, and control logic are fixed.
+Only the core of the framework, including the fundamental process flow and control logic, remains fixed.
 This allows users to tailor the engine to their individual needs, develop their own modules for data feeds, order management, strategy, or risk control, and thus ensure a high degree of flexibility in the use, and further development of the platform.
 
 \subsection{Architecture}
@@ -61,9 +61,9 @@ To enable easy interchangeability by users, the implementations of the interface
 
 The \verb|ServiceLoader| loads classes at runtime that implement a specific interface or abstract class.
 The classes to be loaded are specified via a configuration file in the \verb|resources/META-INF/services| directory, which the \verb|ServiceLoader| searches for in every JAR file in the classpath.
-If a corresponding configuration file is found, the ServiceLoader can create an instance of the respective class using the default constructor \cite{java-service-loader}.
+If a corresponding configuration file is found, the \verb|ServiceLoader| can create an instance of the respective class using the default constructor \cite{java-service-loader}.
 
-As an example, a service provider interface for read access can be defined.
+As an example, a service provider interface for read access can be defined in a module \verb|spi|.
 
 \lstinputlisting[language=Java, caption=SPI Definition, label=lst:service-loader-spi-definition, style=java]{java/trading-engine/service-loader-base.java}
 
@@ -162,14 +162,15 @@ This means that market orders are always executed at the most current available 
 
 \autoref{fig:te-position-opening} shows the process of opening a single position.
 The margin in euro is calculated using the following formula.
-$EuroConversion$ is the current price for converting the current counter currency in euro.
-For example, for ETH/USDC the $EuroConversion$ is the current price of EUR/USDC:
+
 
 \[
     Margin = \frac{PositionQuantity}{Leverage * EuroConversion} = \frac{PositionSize * OpenPrice}{Leverage * EuroConversion}
 \]
 
 \noindent
+$EuroConversion$ is the current price for converting the current counter currency in euro.
+For example, for ETH/USDC the $EuroConversion$ is the current price of EUR/USDC:
 The conversion is done in euros because for different currency pairs with different counter currencies, the margin would be calculated in the respective counter currency.
 For ETH/USDC, the margin is calculated in USDC according to the formula.
 However, when trading ETH/BTC, the margin is calculated in BTC.

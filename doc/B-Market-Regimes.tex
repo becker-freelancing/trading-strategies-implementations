@@ -3,12 +3,12 @@
 
 Cryptocurrency markets are subject to constant change, which is reflected not only in price movements but also in the underlying structures and dynamics.
 In quantitative analysis and algorithmic trading, understanding these changes is essential for developing and adapting robust trading strategies.
-A central concept in this context is market regimes.
+A central concept in this context is the idea of market regimes.
 
 \subsection{Introduction to Market Regimes}
 
 Market regimes describe phases with distinct statistical and economic characteristics, such as volatility, and trend behavior.
-They can be understood as different "states" of the market in which certain trading patterns dominate.
+They can be understood as different \textit{states} of the market in which certain trading patterns dominate.
 Distinguishing between, for example, upward, sideways, and downward trends or high and low volatility enables more targeted strategy selection and adaption.
 Accordingly, the identification and classification of market regimes plays an increasingly important role in modern trading analysis.
 For example, a strategy that performs well in a stable uptrend may fail in a sideways movement or in periods of high volatility \cite{macrosynergy-market-regime-introduction}.
@@ -20,14 +20,14 @@ Through targeted adaptation of the parameters or the selection of different mode
 \label{chap:market-regime-categories}
 
 Categorizing different market characteristics is a common step in identifying market regimes.
-In literature and practical applications, there exist different approaches to classifying markets.
+In literature and practical applications, different approaches to classifying markets exist.
 A fundamental categorization is often made by the following dimensions:
 
 \begin{enumerate}
     \item \textbf{Trend behavior:} Markets can be categorized trend following (bullish/ bearish) or trendless (sideways) \cite{regime-trend}.
     \item \textbf{Volatility:} The volatility of a market is often an indicator for insecurity or stability \cite{regime-vola}.
     High volatility can indicate periods of stress, while low volatility indicates calm markets.
-    \item \textbf{Liquidity:} In illiquid markets, pricing processes can be different compared to liquid markets which has effect on strategies \cite{regime-liq}.
+    \item \textbf{Liquidity:} In illiquid markets, pricing processes can differ significantly from those in liquid markets, which can affect the performance of trading strategies \cite{regime-liq}.
 \end{enumerate}
 
 \noindent
@@ -76,6 +76,12 @@ Additionally, a minimum slope threshold over the last 15 minutes was integrated 
 This short time span ensures that current market movements are adequately incorporated into the trend classification without being dominated by short-term noise (e.g., individual volatility peaks), and therefore increases the robustness of the trend recognition, and addresses the weaknesses of simple moving averages in sideways phases.
 A slope above +0.05 signals a significant short-term uptrend, while a slope below -0.05 suggests a clear downtrend.
 Values in between are interpreted as ambiguous, and are included in the sideways classification accordingly.
+
+The threshold of $\pm 0.05$ was determined using a targeted, visually supported trial-and-error approach.
+Different values were gradually tested within a range from $\pm 0.01$ to $\pm 0.15$, and the graphical trend classification was assessed against historical charts.
+Values below $\pm 0.05$ lead to hypersensitivity to short-term market noise, while values above $\pm 0.05$ detected genuine trend reversals too late.
+Only with a threshold of $\pm 0.05$ meaningful up- and downtrends could be detected consistently.
+Despite the lack of a formal optimization framework, this heuristic-guided approach enables a robust separation between noise and relevant market movements.
 
 The market can therefore be divided into three trend phases based on the following criteria:
 
@@ -144,6 +150,9 @@ The robustness and usefulness of the approach does not arise from absolute freed
 Based on the combination of trend direction and volatility level, the duration of each market regime is also taken into account to enable a more differentiated classification.
 The regime duration is divided into three quantiles (33\%, 66\%, 100\%) based on its distribution, allowing for classification into short-term, medium-term, and long-term phases.
 The notation in the current work for the respective regime durations is $Q_{0.33}$, $Q_{0.66}$ and $Q_{1}$.
+
+It should be noted that the duration used to distinguish between $Q_{0.33}$, $Q_{0.66}$ and $Q_{1}$ is calculated per regime across all durations, not within a single occurrence of a regime.
+For example, if a low-volatility uptrend emerges, it may only be in $Q_{0.33}$ and then transition into a high-volatility uptrend that initially occurs in $Q_{0.33}$ and then in $Q_{0.66}$.
 
 The combination of these three dimensions results in a total of 18 different market regimes.
 This fine-grained segmentation makes it possible to more precisely capture and differentiate different market conditions.
