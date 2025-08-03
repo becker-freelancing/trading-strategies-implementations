@@ -57,13 +57,13 @@ The trading engine consists of many modules which can be clustered in three main
 
 To achieve the flexibility mentioned in \autoref{chap:te-use-cases}, a plugin architecture was used.
 Within the core, interfaces have been defined that define which external functionalities are required (Service provider interface, or SPI).
-To enable easy interchangeability by users, the implementations of the interfaces in the external modules (Adapters) are loaded by the Java \verb|java.util.ServiceLoader|.
+To enable easy interchangeability by users, the implementations of the interfaces in the external modules (Adapters) are loaded by the Java \texttt{java.util.ServiceLoader}.
 
-The \verb|ServiceLoader| loads classes at runtime that implement a specific interface or abstract class.
-The classes to be loaded are specified via a configuration file in the \verb|resources/META-INF/services| directory, which the \verb|ServiceLoader| searches for in every JAR file in the classpath.
-If a corresponding configuration file is found, the \verb|ServiceLoader| can create an instance of the respective class using the default constructor \cite{java-service-loader}.
+The \texttt{ServiceLoader} loads classes at runtime that implement a specific interface or abstract class.
+The classes to be loaded are specified via a configuration file in the \texttt{resources/META-INF/services} directory, which the \texttt{ServiceLoader} searches for in every JAR file in the classpath.
+If a corresponding configuration file is found, the \texttt{ServiceLoader} can create an instance of the respective class using the default constructor \cite{java-service-loader}.
 
-As an example, a service provider interface for read access can be defined in a module \verb|spi|.
+As an example, a service provider interface for read access can be defined in a module \texttt{spi}.
 
 \lstinputlisting[language=Java, caption=SPI Definition, label=lst:service-loader-spi-definition, style=java]{java/trading-engine/service-loader-base.java}
 
@@ -74,51 +74,51 @@ One implementation can be used to read data from files:
 \lstinputlisting[language=Java, caption=File-Repository Implementation, label=lst:service-loader-file, style=java]{java/trading-engine/service-loader-file.java}
 
 \noindent
-Here, a configuration file named \verb|com.example.spi.read.ReadRepository| is located in the directory \verb|resources/META-INF/services|.
-This file contains the fully qualified class name of the implementation class \\(\verb|com.example.adapter.file.read.FileReadRepository|).
+Here, a configuration file named \texttt{com.example.spi.read.ReadRepository} is located in the directory \texttt{resources/META-INF/services}.
+This file contains the fully qualified class name of the implementation class (\texttt{com.example.adapter.file.read.}\\\texttt{FileReadRepository}).
 
 Another implementation can be used to read data from databases:
 
 \lstinputlisting[language=Java, caption=Database-Repository Implementation, label=lst:service-loader-db, style=java]{java/trading-engine/service-loader-db.java}
 
 \noindent
-Similar to the \verb|FileReadRepository| file named \\\verb|com.example.spi.read.ReadRepository| is located in the directory \\\verb|resources/META-INF/services|.
-However, this file contains \\\verb|com.example.adapter.database.read.DatabaseReadRepository|.
+Similar to the \texttt{FileReadRepository} file named \texttt{com.example.spi.read.ReadRepository} is located in the directory \texttt{resources/META-INF/services}.
+However, this file contains \texttt{com.example.adapter.database.read.DatabaseReadRepository}.
 
-The \verb|ServiceLoader| searched each JAR in the classpath for files under \verb|resources/META-INF/services| with the name \\\verb|com.example.spi.read.ReadRepository| that contains the implementation of this interface, and creates them.
+The \texttt{ServiceLoader} searched each JAR in the classpath for files under \\\texttt{resources/META-INF/services} with the name \texttt{com.example.spi.read.}\\\texttt{ReadRepository} that contains the implementation of this interface, and creates them.
 
 Since an external application has the ability to define the classpath, it can add or remove specific JARs.
 This allows it to determine which implementations to use.
-For example, it can decide to add only the \verb|file-adapter| module or, if necessary, the \verb|db-adapter| module if loading from a file, and a database simultaneously.
+For example, it can decide to add only the \texttt{file-adapter} module or, if necessary, the \texttt{db-adapter} module if loading from a file, and a database simultaneously.
 
 \subsubsection{Core Modules}
 
 The core of the framework consists of several loosely coupled components that communicate with each other through well-defined APIs.
-The most central unit is the \verb|Strategy-Engine| which contains the main logic for execution of trading strategies, and controls the cooperation of the other subsystems.
+The most central unit is the \texttt{Strategy-Engine} which contains the main logic for execution of trading strategies, and controls the cooperation of the other subsystems.
 
 The following components form the core:
 
 \begin{enumerate}
-    \item \textbf{Data-Provider:} Obtains market data by a configurable \verb|Datasource-API|.
+    \item \textbf{Data-Provider:} Obtains market data by a configurable \texttt{Datasource-API}.
     The specific data source (local or remote) is integrated via adapters.
-    \item \textbf{Trading-Strategy:} The actual trading logic is integrated via the \verb|Strategies-API|.
+    \item \textbf{Trading-Strategy:} The actual trading logic is integrated via the \texttt{Strategies-API}.
     This API is separate from the framework, and can be extended as required.
-    \item \textbf{Broker-Requestor \& Trade-Executor:} Both communicate with brokers via a generic \verb|Broker-Connector-API|, and enable both order placement, and broker status queries, such as the current account balance or all open positions.
+    \item \textbf{Broker-Requestor \& Trade-Executor:} Both communicate with brokers via a generic \texttt{Broker-Connector-API}, and enable both order placement, and broker status queries, such as the current account balance or all open positions.
     \item \textbf{Entry-Signal-Adaptor \& Entry-Signal-Validator:} These two components process, and validate generated entry signals.
-    They are linked to the \verb|Management-API| and enable additional risk checks, such as capital requirements or position limits.
+    They are linked to the \texttt{Management-API} and enable additional risk checks, such as capital requirements or position limits.
     Currently the implemented management includes all techniques introduced in \autoref{chap:risk-man} and is executed every time a strategy creates an entry signal.
 \end{enumerate}
 
 \noindent
-Before the \verb|Strategy-Engine| there are two other engines, named \verb|Remote-Backtest-Engine|, and \verb|Backtest-Engine|, which configure the \verb|Strategy-Engine|.
-The difference between the engines is that the \verb|Remote-Backtest-Engine| defines the \verb|Strategy-Engine| asynchronously.
+Before the \texttt{Strategy-Engine} there are two other engines, named \texttt{Remote-Backtest-}\\\texttt{Engine}, and \texttt{Backtest-Engine}, which configure the \texttt{Strategy-Engine}.
+The difference between the engines is that the \texttt{Remote-Backtest-Engine} defines the \texttt{Strategy-Engine} asynchronously.
 This means that a remote data source can stream market data via an API.
-When new data arrives, the \verb|Strategy-Engine| is notified by the data source, and the \verb|Strategy-Engine| starts executing the trading strategy.
-For a local backtest, the \verb|Strategy-Engine| is configured so that data synchronization is handled by the backtest engine, not by the data source.
+When new data arrives, the \texttt{Strategy-Engine} is notified by the data source, and the \texttt{Strategy-Engine} starts executing the trading strategy.
+For a local backtest, the \texttt{Strategy-Engine} is configured so that data synchronization is handled by the backtest engine, not by the data source.
 
 Abstract apps are modules that accept and parse user configurations.
-For example, the task of the \verb|Abstract-Local-Backtest-App| is to ask the user via the console which strategy should be used for the backtest.
-With the \verb|Abstract-Remote-Execution-App|, the configuration is not done via the console, but primarily via environment variables.
+For example, the task of the \texttt{Abstract-Local-Backtest-App} is to ask the user via the console which strategy should be used for the backtest.
+With the \texttt{Abstract-Remote-Execution-App}, the configuration is not done via the console, but primarily via environment variables.
 The parsed configurations are then passed to the respective engines.
 
 \subsubsection{Applications}
@@ -126,17 +126,17 @@ The parsed configurations are then passed to the respective engines.
 The application layer defines specific execution environments by defining the classpath with adapters.
 
 \begin{enumerate}
-    \item \textbf{Local-Backtest-App:} Executes trading strategies offline by using the \verb|Local-CSV-Datasource| and the \verb|Demo-Broker-Connector|.
+    \item \textbf{Local-Backtest-App:} Executes trading strategies offline by using the \texttt{Local-CSV-}\\\texttt{Datasource} and the \texttt{Demo-Broker-Connector}.
     \item \textbf{Remote-Execution-App:} Executes strategies in real time, and communicates with live broker interfaces.
 \end{enumerate}
 
 \noindent
-Each application contains its own \verb|main| method which constructs and starts the respective implementation.
+Each application contains its own \texttt{main} method which constructs and starts the respective implementation.
 
 \subsection{Demo Broker}
 
 For local backtests, the connection to a real broker must be mocked.
-Therefore, the \verb|Demo-Broker-Connector| is used to replace a real broker.
+Therefore, the \texttt{Demo-Broker-Connector} is used to replace a real broker.
 He takes over the main tasks including:
 
 \begin{enumerate}

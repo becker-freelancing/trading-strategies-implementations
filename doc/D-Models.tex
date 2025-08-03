@@ -101,7 +101,7 @@ The third model integrates a residual concept, originally known from image proce
 The architecture consists of a linear shortcut branch connected to the main path via an additive connection \cite{residual-nn}.
 This construction facilitates the training of deeper networks by improving gradient flow and preventing information loss through multiple layers.
 
-In addition to the previous parameters, two additional variables controlled by Optuna are added: \verb|num_units_res_prep| and \verb|num_units_res|.
+In addition to the previous parameters, two additional variables controlled by Optuna are added: \texttt{num\_units\_res\_prep} and \texttt{num\_units\_res}.
 These determine the complexity of the residual branch.
 The distinction whether flattening is done before or after the hidden layers is also included here to flexibly adapt data processing to the underlying data structure.
 
@@ -159,7 +159,7 @@ The input sequence is first converted into a fixed context vector by an LSTM lay
 A decoder-LSTM interprets this vector sequentially to generate a temporally structured output.
 
 This architecture is particularly suitable for multistep forecasting, as it can map not only the next value but an entire sequence of future values.
-The final preprocessing is performed using \verb|TimeDistributed(Dense(...))| to calculate a separate output for each time step \cite{keras-time-distributed}.
+The final preprocessing is performed using \texttt{TimeDistributed(Dense(...))} to calculate a separate output for each time step \cite{keras-time-distributed}.
 
 \lstinputlisting[language=Python, caption=Encode-Decode LSTM, label=lst:encode-decode-lstm, style=python]{python/models/lstm_encode_decode.py}
 
@@ -279,7 +279,7 @@ For the reasons listed above, it was decided in this work to divide the data as 
 \label{chap:regression-models}
 
 Regression models were used to predict the next 30 minutes of logarithmic returns as a continuous sequence.
-To achieve a continuous sequence as output, the activation function in the last dense layer of the above-mentioned models was set to \verb|linear| and the number of neurons to 30.
+To achieve a continuous sequence as output, the activation function in the last dense layer of the above-mentioned models was set to \texttt{linear} and the number of neurons to 30.
 
 \subsubsection{Loss-Function}
 \label{chap:regression-loss}
@@ -382,7 +382,7 @@ The action can be either buy, sell, or do nothing.
 For that, the model predicts a probability for each of the three classes.
 To achieve a direct comparison with the regression models, the same models as in \autoref{chap:regression-models} were used.
 However, the main difference is that the final dense layer contains only three neurons, each representing an action, and uses the
-\verb|softmax| activation function.
+\texttt{softmax} activation function.
 The identical training and validation period was also used, and the training took place over 20 Optuna trials with 30 epochs each.
 
 \subsubsection{Loss-Function}
