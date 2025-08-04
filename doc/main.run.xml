@@ -81,6 +81,7 @@
         </requires>
         <requires type="editable">
             <file>AZ-broker.bib</file>
+            <file>A-AZ-Motivation.bib</file>
             <file>BZ-market-regime.bib</file>
             <file>CZ-eda.bib</file>
             <file>EZ-money-risiko-management.bib</file>

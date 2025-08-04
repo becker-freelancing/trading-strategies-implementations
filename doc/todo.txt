@@ -6,7 +6,6 @@
 * Classification Test minimal besser als ein Randommodell?
 * Wie wird PNL in Loss berechnet (Evtl auch noch in TE)
 
-* Warum bei Trend Klassifikation der Threshold +- 0.05?
 * USDC vs USD
 
 

@@ -1,3 +1,6 @@
+\usepackage{hyperref}
+
+
 \section{Introduction}
 
 \subsection{Motivation}
@@ -71,6 +74,61 @@ The impact of fees is also considered to ensure a realistic evaluation.
 \autoref{chap:live-test} describes the transition to practice by conducting a live test.
 This section is intended to demonstrate the extent to which the results observed in the backtest can be confirmed in the real market environment.
 The results obtained are then critically discussed.
+\autoref{chap:overfitting} then deals again with the possible overfitting of trading strategies
 
 \autoref{chap:conclusion} wraps up the thesis with a summary of the main findings.
 \autoref{chap:aim-further-works} provides suggestions for further work, for example, regarding improvements to the models, strategies, or trading engine extensions.
+
+\subsection{Ethereum}
+
+Ethereum is a decentralized, open-source blockchain platform first introduced in 2015 by Vitalik Buterin and other co-founders.
+Unlike Bitcoin, which was primarily designed as a digital currency, Ethereum is a Turing-complete platform capable of running smart contracts and decentralized applications (dApps).
+Ethereum's native cryptocurrency is called Ether (ETH) \cite{eth-1}.
+
+The Ethereum blockchain is a distributed, immutable mechanism that chronologically stores all transactions.
+Each block contains transactions linked together using cryptographic methods.
+The integrity and security of this chain are ensured by the Ethereum Virtual Machine (EVM), which replicates the execution of smart contracts identically on every full node \cite{eth-1}.
+
+Unlike centralized systems where a single entity exercises control, blockchain technology enables trustless consensus among network participants.
+This makes Ethereum particularly relevant for applications in decentralized finance (DeFi), digital identities, and asset tokenization \cite{eth-1}.
+
+The use of Ethereum introduces both technical opportunities and limitations that directly impact financial applications, DeFi protocols, and automated trading strategies.
+One of the key strengths lies in its decentralization and transparency.
+All transactions and contract states on the network are publicly verifiable and resistant to censorship or manipulation.
+Furthermore, Ethereum enables high programmability through smart contracts, allowing developers to encode complex financial logic, automate processes, and minimize reliance on intermediaries \cite{eth-3}.
+
+However, these strengths are accompanied by certain limitations.
+Ethereum still faces notable scalability issues.
+Despite recent upgrades, its transaction throughput remains limited compared to centralized systems, which can lead to congestion and elevated fees during periods of high usage.
+This is closely tied to the disadvantage of highly volatile transaction fees, which makes small or frequent transactions economically inefficient.
+Regulatory uncertainty also poses a challenge, as the legal classification of Ethereum remains unresolved in many jurisdictions, leading to problems, especially for institutional participants \cite{eth-3}.
+
+In summary, Ethereum provides a powerful and flexible foundation for building decentralized financial systems.
+Its ability to execute programmable logic on-chain, without the need for central authorities, makes it an ideal infrastructure for digital assets.
+However, limitations in scalability, cost, and regulatory clarity must be carefully considered when designing systems that depend on Ethereum.
+
+\subsection{USD Coin}
+
+In addition to traditional cryptocurrencies such as Bitcoin or Ethereum, a special form of digital assets, named stablecoins has emerged.
+One of the best-known stablecoin is the USD Coin (USDC), whose value is pegged to the US Dollar (USD).
+
+USDC is a digital stablecoin that exists on various blockchains such as Ethereum, Solana, and Polygon.
+It was launched in 2018 by the company Circle in collaboration with the cryptocurrency platform Coinbase.
+The goal of USDC is to digitally represent the value of one US dollar.
+This means that one USDC token should always represent the equivalent of one USD \cite{usdc-1}.
+
+Unlike volatile cryptocurrencies, USDC is pegged to a fiat currency.
+To ensure this peg, for every USDC issued, a real US dollar (or an equivalent liquid reserve instrument) is deposited with regulated financial institutions.
+The custody and transparency of the reserves are regularly audited by independent auditors and publicly documented \cite{usdc-2}.
+
+USDC is fully programmable and can be transferred globally in near real time without the need for traditional financial intermediaries such as banks.
+This makes it particularly interesting for applications in decentralized finance (DeFi) systems, crypto trading, or international remittances \cite{circle-usdc}.
+
+Although USDC aims to be pegged 1:1 to the US dollar, they are not the same currency.
+The US dollar (USD) is the official fiat currency of the United States and is regulated by the US Federal Reserve.
+USD exists both in physical form (as cash) and digitally (e.g., in bank accounts) and is legal tender \cite{usdc-2}.
+
+USDC, on the other hand, is a private product of a technology company.
+It is a tokenized representation of the US dollar that exists exclusively in the digital space.
+USDC is not legal tender and is not directly controlled by a central bank.
+Its peg to the US dollar is based on trust in the issuers and their ability to maintain sufficient reserves.
