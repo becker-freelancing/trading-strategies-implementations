@@ -2,15 +2,7 @@
 \label{chap:performance}
 
 The performance of trading strategies can be compared in many ways.
-To reduce complexity, only the three most important metrics are used to compare the result of trading strategies.
-
-Namely, these are \cite{performace}:
-
-\begin{enumerate}
-    \item \textbf{Equity curve}
-    \item \textbf{Maximum drawdown}
-    \item \textbf{Win ratio}
-\end{enumerate}
+This chapter provides an overview of the most important performance metrics.
 
 \subsection{Equity Curve}
 \label{chap:equity-curve}
@@ -55,6 +47,57 @@ It is noticeable that the maximum drawdown for the more volatile equity curve is
     \caption{Drawdown Comparison}
     \label{fig:max-drawdown}
 \end{figure}
+
+\subsection{Maximum Gain and Maximum Loss}
+
+The maximum loss indicates the largest loss within the tested period.
+This metric is crucial for assessing the tail risk, i.e., the risk of extreme negative events \cite{max-loss}.
+A strategy with a very high maximum loss may be profitable on average, but is potentially difficult to trade and may not be sustainable in live operations.
+Especially in combination with the drawdown, the maximum loss provides an indication of the financial burden a strategy can entail.
+
+The maximum gain describes the highest profit achieved with a single trade.
+This metric allows conclusions to be drawn about the "opportunity profile" of a strategy, meaning how large the potential profits can be under optimal conditions \cite{max-gain}.
+
+However, a very high maximum gain is not necessarily a positive.
+In many cases, a single upward outlier is the result of random market movements and can distort overall performance.
+Strategies that rely heavily on such individual results tend to be more unstable and more susceptible to market changes \cite{max-gain}.
+
+The combination of maximum loss and maximum gain makes it possible to evaluate strategies in terms of their return-risk asymmetry.
+A strategy that enables high profits but also carries a high risk of loss must be evaluated differently than a strategy with a smaller range but consistent performance.
+
+\subsection{Standard Deviation of Profits}
+
+The standard deviation of profits is a statistical measure that indicates how much the individual results of a trading strategy disperse around the average profit or loss per trade.
+It is thus a measure of the volatility of individual results and allows conclusions to be drawn about the stability, consistency, and risk of a trading strategy \cite{std}.
+
+Formally, the standard deviation of profits is defined as follows:
+
+\[
+    \sigma = \sqrt{\frac{1}{n} \sum_{i=1}^n (p_i - \bar{p})^2}
+\]
+
+\noindent
+Where:
+
+\begin{itemize}
+    \item \(p_i\) is the profit (or loss) of the \(i\)th trade,
+    \item \(\bar{p}\) is the average profit across all trades,
+    \item \(n\) is the number of trades.
+\end{itemize}
+
+\noindent
+The standard deviation is particularly valuable when comparing strategies with similar average profits.
+It helps assess the consistency of performance \cite{std}:
+
+\begin{itemize}
+    \item A strategy with a low standard deviation consistently produces similar results and is therefore more robust against market noise and random effects.
+    \item A strategy with a high standard deviation exhibits strong fluctuations between winning and losing trades.
+    It is potentially more susceptible to overfitting and more difficult to trade psychologically.
+\end{itemize}
+
+\noindent
+A low standard deviation means that the results of individual trades are close to the average, while a high standard deviation indicates highly fluctuating results.
+In particular, strategies with few but very large wins and many small losses (or vice versa) usually have a high standard deviation, which increases the risk of miscalculations.
 
 \subsection{Win Rate}
 \label{chap:win-rate}
