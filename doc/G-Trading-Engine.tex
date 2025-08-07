@@ -77,6 +77,7 @@ One implementation can be used to read data from files:
 Here, a configuration file named \texttt{com.example.spi.read.ReadRepository} is located in the directory \texttt{resources/META-INF/services}.
 This file contains the fully qualified class name of the implementation class (\texttt{com.example.adapter.file.read.}\\\texttt{FileReadRepository}).
 
+\newpage
 Another implementation can be used to read data from databases:
 
 \lstinputlisting[language=Java, caption=Database-Repository Implementation, label=lst:service-loader-db, style=java]{java/trading-engine/service-loader-db.java}
@@ -104,6 +105,7 @@ The following components form the core:
     \item \textbf{Trading-Strategy:} The actual trading logic is integrated via the \texttt{Strategies-API}.
     This API is separate from the framework, and can be extended as required.
     \item \textbf{Broker-Requestor \& Trade-Executor:} Both communicate with brokers via a generic \texttt{Broker-Connector-API}, and enable both order placement, and broker status queries, such as the current account balance or all open positions.
+    \newpage
     \item \textbf{Entry-Signal-Adaptor \& Entry-Signal-Validator:} These two components process, and validate generated entry signals.
     They are linked to the \texttt{Management-API} and enable additional risk checks, such as capital requirements or position limits.
     Currently the implemented management includes all techniques introduced in \autoref{chap:risk-man} and is executed every time a strategy creates an entry signal.
@@ -187,6 +189,8 @@ Since USDC/EUR rates are offered by ByBit, it was easier in this case to obtain 
 \end{figure}
 
 \noindent
+After a position has been opened, it must be closed again at a later point in time.
+This can happen either by reaching the stop loss or take profit, or by intentionally closing it, which is controlled by a strategy.
 \autoref{fig:te-position-closing} shows the process of closing a single position.
 The profit in euro is calculated using the following formula \cite{margin-calculation}:
 
@@ -198,6 +202,9 @@ The profit in euro is calculated using the following formula \cite{margin-calcul
     \end{cases}
 \]
 
+\noindent
+Just like with the margin calculation, a conversion into euros also takes place, so that when trading on different pairs with different counter currencies at the same time, the profit is always calculated in the same unit.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{images/trading-engine/position-closing}
@@ -206,7 +213,12 @@ The profit in euro is calculated using the following formula \cite{margin-calcul
 \end{figure}
 
 \noindent
+If there are already positions in a market, the process for opening a new position must be extended.
+This is because the size of the open positions must first be reduced and then a new position with a smaller size than the original must be opened.
+This is comparable to a netting process.
 \autoref{fig:te-complete-position-opening} shows the process of opening a position taking into account that other open positions can already exist.
+
+If a strategy is designed in such a way that all positions in the other direction should first be closed when a signal is given in one direction, the strategy must first send an exit signal before the entry signal, which closes all other positions
 
 
 \begin{figure}[H]
@@ -236,7 +248,3 @@ Therefore, the stop only moves again once the 60-point gap is restored.
     \caption{Trailing Stop Example}
     \label{fig:trailing-stop}
 \end{figure}
-
-
-%TODO: UML-Diagramm mit Ablauf, wenn eine Neue Kerze kommt
-% TODO: Adapters erklären
