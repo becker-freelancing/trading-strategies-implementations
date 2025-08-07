@@ -22,15 +22,15 @@ This distinction was made so that the critical phases (testing machine learning 
         \\
         \midrule
         \textbf{Complete} & \makecell{08/05/2022 \\ 10:00 UTC+2} & \makecell{06/17/2025 \\ 11:30 UTC+2} & $1,507,598$ & \\
-        \addlinespace[0.8em]
+        \addlinespace[0.2em]
         \textbf{Train} & \makecell{08/05/2022 \\ 10:00 UTC+2} & \makecell{04/30/2024 \\ 23:59 UTC+2} & $913,684$ & $60.6\%$ \\
-        \addlinespace[0.8em]
+        \addlinespace[0.2em]
         \textbf{Validation} & \makecell{05/01/2024 \\ 00:00 UTC+2} & \makecell{09/30/2024 \\ 23:59 UTC+2} & $220,320$ & $14.6\%$ \\
-        \addlinespace[0.8em]
+        \addlinespace[0.2em]
         \textbf{Test} & \makecell{10/01/2024 \\ 00:00 UTC+2} & \makecell{12/31/2024 \\ 23:59 UTC+2} & $132,482$ & $8.8\%$ \\
-        \addlinespace[0.8em]
+        \addlinespace[0.2em]
         \textbf{Backtest} & \makecell{01/01/2025 \\ 00:00 UTC+2} & \makecell{06/17/2025 \\ 11:30 UTC+2} & $241,111$ & $15.9\%$ \\
-        \addlinespace[0.8em]
+        \addlinespace[0.2em]
         \bottomrule
     \end{tabular}
     \caption{Data Split}
@@ -221,7 +221,7 @@ An important aspect of distinguishing between EMA and SMA is that many traders a
 Since the aim of this paper is short-term predictions and the EMA reacts faster to price changes than the SMA, the EMA could provide more relevant context for the model.
 The EMA was added in 5, 10, 20, 30, 50, and 200 period to the data.
 
-Another trend following indicator is the moving average convergence/divergence (MACD) which does not only help to identify price trends, but also helps to measure the trend momentum.
+Another trend following indicator is the moving average convergence/divergence \\(MACD) which does not only help to identify price trends, but also helps to measure the trend momentum.
 It shows the relationship between two exponential moving averages.
 To calculate the MACD line, an EMA(12) is subtracted from an EMA(26).
 Additionally, a signal line is calculated as an EMA(9) of the MACD line \cite{investopia-macd}.

@@ -41,57 +41,57 @@
                 >
         ]>
 <requests version="1.0">
-    <internal package="biblatex" priority="9" active="0">
-        <generic>latex</generic>
-        <provides type="dynamic">
-            <file>mainprint.bcf</file>
-        </provides>
-        <requires type="dynamic">
-            <file>mainprint.bbl</file>
-        </requires>
-        <requires type="static">
-            <file>blx-dm.def</file>
-            <file>blx-compat.def</file>
-            <file>biblatex.def</file>
-            <file>standard.bbx</file>
-            <file>numeric.bbx</file>
-            <file>numeric-comp.bbx</file>
-            <file>numeric-comp.cbx</file>
-            <file>biblatex.cfg</file>
-            <file>english.lbx</file>
-        </requires>
-    </internal>
-    <external package="biblatex" priority="5" active="0">
-        <generic>biber</generic>
-        <cmdline>
-            <binary>biber</binary>
-            <infile>mainprint</infile>
-        </cmdline>
-        <input>
-            <file>mainprint.bcf</file>
-        </input>
-        <output>
-            <file>mainprint.bbl</file>
-        </output>
-        <provides type="dynamic">
-            <file>mainprint.bbl</file>
-        </provides>
-        <requires type="dynamic">
-            <file>mainprint.bcf</file>
-        </requires>
-        <requires type="editable">
-            <file>AZ-broker.bib</file>
-            <file>A-AZ-Motivation.bib</file>
-            <file>BZ-market-regime.bib</file>
-            <file>CZ-eda.bib</file>
-            <file>EZ-money-risiko-management.bib</file>
-            <file>EZZZ-Trading-Strategy-Comparison.bib</file>
-            <file>DZ-models.bib</file>
-            <file>FZ-trading-strategies.bib</file>
-            <file>GZ-trading-engine.bib</file>
-            <file>HZ-backtesting.bib</file>
-            <file>JZ-live-testing.bib</file>
-            <file>JZZ-Overfitting.bib</file>
-        </requires>
-    </external>
+  <internal package="biblatex" priority="9" active="0">
+    <generic>latex</generic>
+    <provides type="dynamic">
+      <file>mainprint.bcf</file>
+    </provides>
+    <requires type="dynamic">
+      <file>mainprint.bbl</file>
+    </requires>
+    <requires type="static">
+      <file>blx-dm.def</file>
+      <file>blx-compat.def</file>
+      <file>biblatex.def</file>
+      <file>standard.bbx</file>
+      <file>numeric.bbx</file>
+      <file>numeric-comp.bbx</file>
+      <file>numeric-comp.cbx</file>
+      <file>biblatex.cfg</file>
+      <file>english.lbx</file>
+    </requires>
+  </internal>
+  <external package="biblatex" priority="5" active="0">
+    <generic>biber</generic>
+    <cmdline>
+      <binary>biber</binary>
+      <infile>mainprint</infile>
+    </cmdline>
+    <input>
+      <file>mainprint.bcf</file>
+    </input>
+    <output>
+      <file>mainprint.bbl</file>
+    </output>
+    <provides type="dynamic">
+      <file>mainprint.bbl</file>
+    </provides>
+    <requires type="dynamic">
+      <file>mainprint.bcf</file>
+    </requires>
+    <requires type="editable">
+      <file>AZ-broker.bib</file>
+      <file>A-AZ-Motivation.bib</file>
+      <file>BZ-market-regime.bib</file>
+      <file>CZ-eda.bib</file>
+      <file>EZ-money-risiko-management.bib</file>
+      <file>EZZZ-Trading-Strategy-Comparison.bib</file>
+      <file>DZ-models.bib</file>
+      <file>FZ-trading-strategies.bib</file>
+      <file>GZ-trading-engine.bib</file>
+      <file>HZ-backtesting.bib</file>
+      <file>JZ-live-testing.bib</file>
+      <file>JZZ-Overfitting.bib</file>
+    </requires>
+  </external>
 </requests>

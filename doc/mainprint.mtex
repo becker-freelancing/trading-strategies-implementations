@@ -1,6 +1,9 @@
 \documentclass[12pt, twoside]{article}
 \usepackage{styles}
 \usepackage{afterpage}
+\setlength{\headheight}{15pt}
+\raggedbottom
+
 
 
 
@@ -29,7 +32,6 @@
     \newpage
 
 % ====================  Abstract  ======================
-
 
     \include{3-Abstract}
 
