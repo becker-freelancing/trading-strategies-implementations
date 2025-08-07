@@ -35,8 +35,19 @@
 \usepackage{multirow}
 \usepackage{textcase}
 \usepackage{subfigure} % für subfigures
-\usepackage[margin=1in]{geometry}
 \usepackage{vcell}
+\usepackage{amstex}
+\usepackage{lstmisc}
+\usepackage{amsfonts}
+\usepackage[
+    a4paper,
+    left=30mm,    % größerer linker Rand für Ringbindung
+    right=20mm,   % normaler rechter Rand
+    top=25mm,
+    bottom=25mm,
+    includeheadfoot
+]{geometry}
+\usepackage{fancyhdr}
 % --------------------  Quellen --------------------------------
 
 \addbibresource{AZ-broker.bib}
@@ -159,10 +170,11 @@
 
 % ====================  Globale Variablen  ======================
 
-\title{Predicting the Bitcoin Price with Deep Learning Models and Developing a Profitable Trading Strategy}
+\title{Backtesting and Live-Testing of Classic and AI-Powered Trading Strategies}
 \author{Jason Becker}
 \date{\monthyear}
 \newcommand{\ethusdc}{ETH/USDC M1}
+
 
 % ETH Full Period
 \newcommand{\ethDateStart}{\formatdate{5}{8}{2022}}

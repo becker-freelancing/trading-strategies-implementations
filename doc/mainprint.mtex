@@ -1,5 +1,6 @@
 \documentclass[12pt, twoside]{article}
 \usepackage{styles}
+\usepackage{afterpage}
 
 
 
@@ -19,12 +20,16 @@
 
     \newpage
 
+    \mbox{}
+
     \newpage
+
     \include{2-Declaration-of-ownership}
 
     \newpage
 
 % ====================  Abstract  ======================
+
 
     \include{3-Abstract}
 
