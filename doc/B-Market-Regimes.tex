@@ -154,6 +154,17 @@ The notation in the current work for the respective regime durations is $Q_{0.33
 It should be noted that the duration used to distinguish between $Q_{0.33}$, $Q_{0.66}$ and $Q_{1}$ is calculated per regime across all durations, not within a single occurrence of a regime.
 For example, if a low-volatility uptrend emerges, it may only be in $Q_{0.33}$ and then transition into a high-volatility uptrend that initially occurs in $Q_{0.33}$ and then in $Q_{0.66}$.
 
+\autoref{tbl:regime-durations} shows the duration in minutes that a regime must last to reach the respective quantile.
+
+
+\begin{table}[H]
+    \centering
+    \input{tables/regime-durations}
+    \caption{Regime Durations}
+    \label{tbl:regime-durations}
+\end{table}
+
+\noindent
 The combination of these three dimensions results in a total of 18 different market regimes.
 This fine-grained segmentation makes it possible to more precisely capture and differentiate different market conditions.
 For example, a short-term, volatile uptrend from a long-term, calm downtrend.
@@ -163,4 +174,3 @@ It allows for context-sensitive market behavior to be examined, and differences 
 
 Instead of smoothing out reality with overly broad categories, a more nuanced picture is deliberately drawn that takes into account both the direction, intensity, and stability of market behavior.
 The resulting increased complexity is not a disadvantage, but rather a prerequisite for more meaningful, context-based analyses.
-
