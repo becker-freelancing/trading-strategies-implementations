@@ -98,8 +98,8 @@ The parameters tuned via Optuna control the model depth, the number of nodes per
 \subsubsection{Residual Neural Network}
 
 The third model integrates a residual concept, originally known from image processing but also increasingly used in time series contexts.
-The architecture consists of a linear shortcut branch connected to the main path via an additive connection \cite{residual-nn}.
-This construction facilitates the training of deeper networks by improving gradient flow and preventing information loss through multiple layers.
+The architecture consists of a linear shortcut branch connected to the main path via an additive connection.
+This construction facilitates the training of deeper networks by improving gradient flow and preventing information loss through multiple layers \cite{residual-nn}.
 
 In addition to the previous parameters, two additional variables controlled by Optuna are added: \texttt{num\_units\_res\_prep} and \texttt{num\_units\_res}.
 These determine the complexity of the residual branch.

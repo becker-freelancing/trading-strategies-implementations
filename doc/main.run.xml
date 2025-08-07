@@ -91,6 +91,7 @@
             <file>GZ-trading-engine.bib</file>
             <file>HZ-backtesting.bib</file>
             <file>JZ-live-testing.bib</file>
+            <file>JZZ-Overfitting.bib</file>
         </requires>
     </external>
 </requests>

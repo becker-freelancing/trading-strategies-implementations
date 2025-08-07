@@ -11,7 +11,7 @@ model.add(LSTM(num_units_input, return_sequences=False))
 
 model.add(RepeatVector(30))
 
-model.add(LSTM(num_units, activation="relu", return_sequences=True))
+model.add(LSTM(num_units, activation='relu', return_sequences=True))
 model.add(TimeDistributed(Dense(...)))
 
 model.compile(optimizer=Adam(learning_rate=learning_rate), ...)

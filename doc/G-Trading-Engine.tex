@@ -161,7 +161,7 @@ This means that market orders are always executed at the most current available 
 
 
 \autoref{fig:te-position-opening} shows the process of opening a single position.
-The margin in euro is calculated using the following formula.
+The margin in euro is calculated using the following formula \cite{margin-calculation}.
 
 
 \[
@@ -177,8 +177,7 @@ However, when trading ETH/BTC, the margin is calculated in BTC.
 To obtain a result that is always in the same unit, or in this case, the same currency, an additional conversion is implemented.
 It is important to note that it is also possible to implement conversion into any currency.
 This way, the margin could also be calculated in BTC, for example.
-A conversion to euros was preferred here, as the data provider ByBit does not offer direct USD/USDC rates.
-Since USDC/EUR is offered, it was easier in this case to obtain historical data directly from ByBit and obtain the EUR/USDC rate through a conversion $EUR/USDC = \frac{1}{USDC/EUR}$.
+Since USDC/EUR rates are offered by ByBit, it was easier in this case to obtain historical data directly from ByBit and obtain the EUR/USDC rate through a conversion $EUR/USDC = \frac{1}{USDC/EUR}$.
 
 \begin{figure}[H]
     \centering
@@ -189,7 +188,7 @@ Since USDC/EUR is offered, it was easier in this case to obtain historical data 
 
 \noindent
 \autoref{fig:te-position-closing} shows the process of closing a single position.
-The profit in euro is calculated using the following formula:
+The profit in euro is calculated using the following formula \cite{margin-calculation}:
 
 \[
     Profit = \frac{(ClosePrice - OpenPrice) * PositionSize}{EuroConversion} *

@@ -3,7 +3,7 @@ num_units = trial.suggest_int('num_units', 32, 128)
 input_length = trial.suggest_int('input_length', 5, 150)
 learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2,
                                     log=True)
-flatten_before = trial.suggest_categorical("flatten_before",
+flatten_before = trial.suggest_categorical('flatten_before',
                                            [True, False])
 
 model = Sequential()

@@ -50,6 +50,7 @@
 \addbibresource{GZ-trading-engine.bib}
 \addbibresource{HZ-backtesting.bib}
 \addbibresource{JZ-live-testing.bib}
+\addbibresource{JZZ-Overfitting.bib}
 
 % ====================  Allg Einstellungen  ======================
 
@@ -87,12 +88,14 @@
 \definecolor{keywordcolour}{rgb}{0.0,0.478,0.8}
 
 
+
 \lstdefinestyle{python}{
     language=Python,
-    backgroundcolor=\color{backcolour},
+    deletekeywords={compile},
+    backgroundcolor=\color{black!5},
     commentstyle=\color{codegreen},
-    keywordstyle=\color{keywordcolour},
-    numberstyle=\tiny\color{codegray},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
     stringstyle=\color{codepurple},
     basicstyle=\ttfamily\footnotesize,
     breakatwhitespace=false,
@@ -115,7 +118,7 @@
     basicstyle=\ttfamily\footnotesize,
     keywordstyle=\color{blue}\bfseries,
     commentstyle=\color{violet},
-    stringstyle=\color{red},
+    stringstyle=\color{codepurple},
     numberstyle=\tiny\color{gray},
     numbers=left,
     stepnumber=1,
@@ -123,7 +126,7 @@
     frame=single,
     rulecolor=\color{black},
     breaklines=true,
-    breakatwhitespace=true,
+    breakatwhitespace=false,
     showstringspaces=false,
     captionpos=b,
     escapeinside={\%*}{*)}
