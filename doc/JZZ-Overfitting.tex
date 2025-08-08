@@ -2,14 +2,14 @@
 \label{chap:overfitting}
 
 As has become clear in previous chapters, overfitting is one of the biggest problems with the strategies presented.
-This chapter therefore deals with a self-developed idea of how strategies could be adapted to the data with less risk of overfitting.
-It is important to note, that this is merely an idea that has not yet been tested.
+This chapter therefore deals with a self-developed idea for adapting strategies to the data while reducing the overfitting risk.
+It is important to note that this is merely an idea that has not yet been tested.
 This would have to be addressed in future work.
 
 It is striking that the strategies performed very well in the in-sample tests.
 However, they completely failed in the out-of-sample tests.
 This observation leads to the assumption that the parameters found are too specific to generalize well.
-Therefore, the conclusion was reached that the search for stable parameter spaces is more important than the search for individual parameter combinations, which at first glance, produce better results, but are not stable.
+Therefore, the conclusion was reached that the search for stable parameter spaces is more important than the search for individual parameter combinations, which, at first glance, produce better results but are not stable.
 Based on this insight, this chapter describes a concrete workflow for how a search for parameter spaces could work that simultaneously delivers stable and profitable results.
 
 First, as many parameter combinations as possible should be tested through backtests.
@@ -39,7 +39,7 @@ Here $Rank(X)$ is the ranking of $X$ across all tested combinations, normalized 
 This metric incorporates all metrics that were also compared in the previous strategies, eliminates scale differences, and considers whether a metric should be maximized or minimized.
 This results in one value for each parameter combination and backtest, which can be used to search for plateaus, simplifying the subsequent steps without losing any information.
 
-The best 10-20\% of the backtest results are then filtered using the combination metric.
+The best 10-20\% of the backtest results are then filtered using the combined metric.
 This has the advantage of allowing unwanted plateaus to be filtered out in advance.
 These unwanted plateaus can arise when various parameter combinations produce poor results, resulting in plateaus in undesirable ranges.
 Thus, filtering can reduce the risk of finding false plateaus.

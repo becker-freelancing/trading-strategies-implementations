@@ -1,13 +1,13 @@
 \section{Conclusion}
 \label{chap:conclusion}
 
-This paper investigates the performance of AI-based and classic trading strategies for the ETH/USDC market on a minute-by-minute basis.
-The aim was to compare both neural networks (NN, LSTM, CNN) and rule-based strategies (moving averages, Bollinger Bands) with regard to their suitability for high-frequency crypto trading.
+This paper investigates the performance of AI-based and classical trading strategies for the ETH/USDC market on a minute-by-minute basis.
+The aim was to compare both neural networks (NN, LSTM, CNN) and rule-based strategies (moving averages, Bollinger Bands) regarding their suitability for high-frequency crypto trading.
 
 Based on historical market data obtained from the broker ByBit from \ethDataStartDate~to \ethDataEndDate, an exploratory data analysis was initially conducted.
 The raw prices were transformed into logarithmic returns to eliminate data drift and supplemented with technical indicators such as trend, volatility, and momentum indicators.
 
-Subsequently, scaling using MinMaxScaler and a PCA reduction to the principal components, which explain 80\% of the variance, were performed for each market regime.
+Subsequently, scaling using MinMaxScaler and a PCA reduction to the principal components, explaining 80\% of the variance, were performed for each market regime.
 This resulted in a manageable feature set for the subsequent models.
 
 To dynamically adapt to different market regimes, a regime detection algorithm was developed that uses two moving averages (SMAs) and the rolling standard deviation to classify the market environment into trend and volatility phases.
@@ -27,7 +27,7 @@ To further minimize costs, market orders were automatically converted into limit
 
 Hyperparameter optimization with Optuna played an important role in model training.
 However, regression models designed to predict future logarithmic returns over the next 30 minutes exhibited severe overfitting and produced economically implausible results.
-Classification models designed to predict buy, sell, or no action achieved on the test-set win rates minimally better than a random model and resulted in losses in simulations.
+Classification models designed to predict buy, sell, or no action achieved win rates on the test set minimally better than a random model and resulted in losses in simulations.
 In parallel, classic strategies such as dual SMA, triple EMA, and Bollinger Bands were implemented and their performance compared.
 
 
@@ -37,7 +37,7 @@ The modular structure makes it possible to implement specific trading strategies
 While all trading strategy approaches showed excellent results in the in-sample backtest, their performance collapsed significantly in the out-of-sample test, leading to losses or highly volatile equity curves.
 
 A subsequent live test primarily served to verify the technical stability of the trading engine.
-The engine ran without interruption, even in the event of connection interruption by the broker.
+The engine ran without interruptions, even in the event of connection interruption by the broker.
 The executed triple EMA strategy did not generate any significantly profitable signals.
 
 Overall, the work illustrates that high-frequency ETH/USDC data contains hardly any predictable patterns for the model architectures examined.
@@ -45,29 +45,24 @@ Both AI models and classical approaches suffer from overfitting, which requires 
 While the PCA transformation facilitates model creation, it can dilute important indicator signals.
 Despite the lack of profitability, the work provides valuable insights into data preprocessing, regime detection, risk management, and the development of a stable trading infrastructure.
 
-Overall, the work demonstrates that high-frequency ETH/USDC data contains hardly any predictable pattern for the model architectures examined.
-Both AI models and classical approaches suffer from overfitting, which requires robust optimization methods and careful validation.
-While PCA transformation facilitates model building, it can misrepresent important indicator signals.
-Despite its lack of profitability, the work provides valuable insights into data preprocessing, regime detection, risk management, and the development of a stable trading infrastructure.
-
 \section{Aim of further Works}
 \label{chap:aim-further-works}
 
 The challenges and limitations identified in this work open up many concrete and promising starting points for further research and development projects.
-Particularly with regard to alternative data sources, model architectures and improved validation strategies, opportunities arise to specifically address existing weaknesses while simultaneously exploiting the full potential of data-driven trading strategies in the cryptocurrency market.
+Particularly with regard to alternative data sources, model architectures, and improved validation strategies, opportunities arise to specifically address existing weaknesses while simultaneously exploiting the full potential of data-driven trading strategies in the cryptocurrency market.
 The following concrete approaches can form the basis for future work:
 
 \begin{enumerate}
     \item \textbf{Expanding the feature set:} The integration of order book data (e.g., depth snapshots or order flow imbalance), sentiment indices from social media and news, and macroeconomic indicators can provide uncorrelated information and improve forecasting capabilities.
-    \item \textbf{Alternative model architectures:} Reinforcement learning agents (e.g., DQN, PPO) could learn to dynamically allocate between long, short, and cash positions. Transformer models with attention mechanisms offer the possibility of specifically weighting relevant market phases. Ensemble methods from multiple model types promise to reduce overfitting.
-    \item \textbf{Meta-strategies and target size adjustment:} Instead of exact return predictions, models could only forecast the trading direction or volatility classes to increase stability. A meta-strategy that switches daily between different sub-strategies based on their current performance expectations can create additional robustness.
-    \item \textbf{Robust optimization and validation:}Monte Carlo cross-validation with random parameter starts and scenario variation, combined with restrictive regularization (ElasticNet, DropConnect) and data augmentation, can further mitigate overfitting.
+    \item \textbf{Alternative model architectures:} Reinforcement learning agents (e.g., DQN, PPO) could learn to dynamically allocate between long, short, and cash positions. Transformer models with attention mechanisms offer the possibility of specifically weighting relevant market phases. Ensemble methods combining multiple model types promise to reduce overfitting.
+    \item \textbf{Meta-strategies and target size adjustment:} Instead of exact return or trading direction predictions, models could only forecast the volatility classes to increase the stability of classical trading strategies. A meta-strategy that switches daily between different sub-strategies based on their current performance expectations can create additional robustness.
+    \item \textbf{Robust optimization and validation:} Monte Carlo cross-validation with random parameter starts and scenario variation, combined with restrictive regularization (ElasticNet, DropConnect) and data augmentation, can further mitigate overfitting.
     \item \textbf{Diversification of markets and time frames:} Checking trading signals on different timeframes (5-minute, 15-minute, hourly) and in other currency pairs (e.g., BTC/USDC, altcoins) enables the analysis of correlation structures and low-risk diversification.
     \item \textbf{Composite strategies:} Entry confirmations should only occur when multiple algorithms issue a signal simultaneously. Portfolio-level management that weights strategies according to risk budget and other risk metrics can stabilize overall returns.
     \item \textbf{Stress tests and scenario analyses:} Simulating extreme market events such as flash crashes or liquidity shortages, including slippage and order execution models, provides important insights into strategy robustness.
 \end{enumerate}
 
 \noindent
-With these extensions on the stable technical infrastructure developed in this work, it could be possible to design a significantly more robust and better generalizing trading approach.
+With these extensions on the stable technical infrastructure and the workflow to reduce the overfitting risk developed in this work, it could be possible to design a significantly more robust and better generalizing trading approach.
 The insights gained in modeling, regime detection, risk management, and strategy integration compared with the provided suggestions for further researches form a solid foundation for the development of practice-relevant algorithms that can deliver consistent results not only in backtests but also in live operation.
 

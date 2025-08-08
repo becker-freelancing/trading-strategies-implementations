@@ -22,7 +22,5 @@ for i in range(num_layers - 1):
     else:
         model.add(Bidirectional(LSTM(num_units,
                                      return_sequences=True)))
-
 model.add(Dense(...))
-
 model.compile(optimizer=Adam(learning_rate=learning_rate), ...)

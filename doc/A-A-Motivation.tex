@@ -3,129 +3,156 @@
 \subsection{Motivation}
 
 In recent years, the cryptocurrency market has emerged as a highly dynamic and rapidly evolving financial ecosystem.
-Trading pairs such as \ethusdc~ on minute-level (M1) intervals provide vast amounts of high-frequency data, reflecting extreme volatility and market shifts.
-This creates challenges and opportunities for traders and researchers.
+Trading pairs such as ETH/USDC at minute-level (M1) intervals provide vast amounts of high-frequency data, reflecting pronounced volatility and frequent market shifts.
+This environment presents both significant challenges and promising opportunities for traders and researchers.
 
-The availability of detailed tick and minute data, combined with direct API access from crypto brokers, creates new opportunities for developing data-driven trading systems.
-Advances in machine learning and deep learning offer promising tools to identify patterns in market movements.
-This motivates an exploration of AI-based trading systems specifically designed for the \ethusdc~ pair, aiming to leverage technical features and advanced models to improve performance in the volatile cryptocurrency environment.
+The availability of detailed tick and minute data, combined with direct API access from cryptocurrency brokers, enables the development of sophisticated data-driven trading systems.
+Advances in machine learning and deep learning offer powerful tools for identifying patterns in market movements.
 
-On the other hand, classical trading strategies also could perform well in this environment, especially if the strategies are adapted to specific market regimes.
-Techniques such as moving averages, Bollinger Bands, or momentum indicators have the advantage of simplicity and transparency, allowing traders to understand and trust their decision-making process.
+This motivates the exploration of AI-based trading systems specifically designed for the ETH/USDC pair, aiming to leverage technical features and advanced models to enhance performance in the volatile cryptocurrency environment.
+At the same time, classical trading strategies could also perform well in this setting, particularly when adapted to specific market regimes.
 
-The ETH/USDC trading pair at the minute timescale was deliberately chosen because it offers several key advantages for analyzing and modeling algorithmic trading strategies.
-Ethereum is one of the largest and most liquid cryptocurrencies in the world, while USDC, as a stablecoin, is subject to lower price fluctuations.
-This combination allows for a clear separation between the volatile component (ETH) and a stable reference currency (USDC), simplifying analysis.
-The high liquidity of this pair also ensures a reliable data basis with low slippage and tight spreads.
-In particular, the M1 timescale provides sufficiently granular information to identify short-term market movements and micro-patterns without completely relying on high-frequency tick data.
-This creates a practical scenario for the development and evaluation of data-driven trading algorithms.
+Techniques such as moving averages, Bollinger Bands, and momentum indicators offer the advantages of simplicity and transparency, allowing traders to better understand and trust their decision-making processes.
+
+
+The ETH/USDC trading pair at the minute timescale was deliberately chosen for this research because it offers several key advantages for the analysis and modeling of algorithmic trading strategies.
+Ethereum is one of the largest and most liquid cryptocurrencies worldwide, while USDC, as a stablecoin, experiences relatively low price fluctuations.
+This combination provides a clear separation between the volatile asset (ETH) and a stable reference currency (USDC), simplifying analysis.
+
+The high liquidity of this pair further ensures a reliable data foundation with minimal slippage and tight spreads.
+Moreover, the M1 timescale offers sufficiently granular information to capture short-term market movements and micro-patterns without relying exclusively on high-frequency tick data.
+This creates a practical and balanced framework for the development and evaluation of data-driven trading algorithms.
 
 
 \subsection{Aim of this Paper}
 
-The primary goal of this paper is to develop and evaluate AI-powered and classical trading strategies focused on the \ethusdc~ cryptocurrency pair.
-This paper will:
+
+The primary goal of this paper is to develop and evaluate both AI-powered and classical trading strategies for the ETH/USDC cryptocurrency pair.
+
+Specifically, the work will:
+
 
 \begin{enumerate}
-    \item Retrieve historical \ethusdc~ data via a broker API and process it for analysis.
-    \item Perform exploratory data analysis and feature engineering, including trend, volatility, and momentum indicators.
-    \item Identify and classify distinct market regimes to provide adaptive trading decisions.
+
+    \item Retrieve historical ETH/USDC data via a broker API and preprocess it for analysis.
+
+    \item Perform exploratory data analysis and feature engineering, incorporating trend, volatility, and momentum indicators.
+
+    \item Identify and classify distinct market regimes to enable adaptive trading decisions.
+
     \item Apply risk and money management techniques to realistically simulate trading performance.
-    \item Design, train, and benchmark multiple deep learning architectures such as LSTM, CNN, and hybrid models for forecasting the price and classify trading decisions.
+
+    \item Design, train, and benchmark multiple deep learning architectures, including LSTM, CNN, and hybrid models, for price forecasting and trade decision classification.
+
     \item Develop algorithmic trading strategies based on AI model predictions and compare them with classical technical trading approaches.
-    \item Build a modular trading engine capable of backtesting trading strategies and live execution using real broker connections.
-    \item Execution of the final best trading strategy in live operation on a demo account with a real broker.
+
+    \item Implement a modular trading engine capable of backtesting strategies and executing trades in real time through broker integration.
+
+    \item Deploy the most promising trading strategy in a controlled live test on a demo account with a real broker.
+
 \end{enumerate}
 
 \noindent
-By focusing on the \ethusdc~ pair, this paper aims to provide insights into the effectiveness of deep learning and classical strategies in cryptocurrency trading and contribute practical tools for automated, adaptive trading in this challenging asset class.
+By focusing on the ETH/USDC M1 pair, this paper aims to generate insights into the comparative effectiveness of deep learning–based and classical strategies in cryptocurrency trading, while delivering practical tools for automated and adaptive trading in this challenging asset class.
+
 
 \subsection{Structure of this Paper}
 
-\autoref{chap:broker} first lays the foundation for technical integration with financial markets.
+
+\autoref{chap:broker} lays the foundation for the technical integration with financial markets.
 This includes selecting a suitable broker and setting up an automated interface for data retrieval.
-Without this foundation, real-time access to market data and the subsequent live execution of strategies are not possible.
+Without this foundation, real-time access to market data and the subsequent live execution of strategies would not be possible.
 
-\autoref{chap:market-regimes} and \autoref{chap:risk-man} introduce essential concepts such as market regimes and money and risk management.
-These theoretical foundations serve to analyze the markets in a structured manner while ensuring that trading decisions are made within the framework of solid risk management.
-Classification approaches for market phases as well as rules for position sizing and risk limitation are covered.
+\autoref{chap:market-regimes} and \autoref{chap:risk-man} introduce essential concepts such as market regimes as well as money and risk management.
+These theoretical foundations enable a structured analysis of the markets while ensuring that trading decisions are made within a solid risk management framework.
+Classification approaches for market phases, along with rules for position sizing and risk limitation, are covered.
 
+\autoref{chap:performance} then introduces methods and metrics for comparing trading strategies.
+These include equity curves, maximum drawdown, maximum gain and loss, standard deviations of profits, and win rate.
 
-Building on this, \autoref{chap:eda} provides a comprehensive exploratory data analysis (EDA) approach, describing key steps for processing and transforming historical price data.
-In addition to generating technical indicators, modern methods such as feature scaling and principal component analysis (PCA) are also discussed as a foundation for machine learning.
+Building on this, \autoref{chap:eda} presents a comprehensive exploratory data analysis (EDA) approach, outlining key steps for processing and transforming historical price data.
+In addition to generating technical indicators, modern techniques such as feature scaling and principal component analysis (PCA) are discussed as a basis for machine learning applications.
 
-Subsequently, in \autoref{chap:dl-models}, various deep learning models are developed and trained to enable predictions of future market movements.
-Both regression and classification models are examined and evaluated for their suitability for use in trading.
+In \autoref{chap:dl-models}, various deep learning models are developed and trained to predict future market movements.
+Both regression and classification models are examined and evaluated with respect to their suitability for use in trading.
 
-\autoref{chap:trading-strategies} is devoted to the development of concrete trading strategies.
+\autoref{chap:trading-strategies} focuses on the development of concrete trading strategies.
 These are based either on classic technical indicators or on signals derived from the previously developed ML models.
-Each strategy is methodically described and prepared for later evaluation.
+Each strategy is described in detail and prepared for subsequent evaluation.
 
-To execute and evaluate these strategies, \autoref{chap:te} introduces a modular trading engine that enables both backtesting and live trading.
-The structure follows a plug-in architecture to flexibly integrate different strategies.
+To execute and evaluate these strategies, \autoref{chap:te} introduces a modular trading engine that supports both backtesting and live trading.
+Its plug-in architecture allows for the flexible integration of different strategies.
 
-\autoref{chap:backtesting} verifies the performance of the developed strategies using backtests.
-Various metrics such as profit curves, drawdowns, and win rates are used.
-The impact of fees is also considered to ensure a realistic evaluation.
+\autoref{chap:backtesting} assesses the performance of the developed strategies using backtests.
+Various metrics such as profit curves, drawdowns, and win rates are considered, along with the impact of trading fees, to ensure a realistic evaluation.
 
-\autoref{chap:live-test} describes the transition to practice by conducting a live test.
-This section is intended to demonstrate the extent to which the results observed in the backtest can be confirmed in the real market environment.
-The results obtained are then critically discussed.
-\autoref{chap:overfitting} then deals again with the possible overfitting of trading strategies
+\autoref{chap:live-test} describes the transition to practical application through a live test, demonstrating the extent to which backtest results can be confirmed in real market conditions.
+Finally, \autoref{chap:overfitting} revisits the issue of overfitting in trading strategies.
 
-\autoref{chap:conclusion} wraps up the thesis with a summary of the main findings.
-\autoref{chap:aim-further-works} provides suggestions for further work, for example, regarding improvements to the models, strategies, or trading engine extensions.
+\autoref{chap:conclusion} concludes the thesis with a summary of the main findings, while \autoref{chap:aim-further-works} provides suggestions for future work, such as improving the models, refining strategies, or extending the trading engine.
 
 \subsection{Ethereum}
 
-Ethereum is a decentralized, open-source blockchain platform first introduced in 2015 by Vitalik Buterin and other co-founders.
+Ethereum is a decentralized, open-source blockchain platform introduced in 2015 by Vitalik Buterin and other co-founders.
 Unlike Bitcoin, which was primarily designed as a digital currency, Ethereum is a Turing-complete platform capable of running smart contracts and decentralized applications (dApps).
-Ethereum's native cryptocurrency is called Ether (ETH) \cite{eth-1}.
+Its native cryptocurrency is called Ether (ETH) \cite{eth-1}.
 
-The Ethereum blockchain is a distributed, immutable mechanism that chronologically stores all transactions.
-Each block contains transactions linked together using cryptographic methods.
-The integrity and security of this chain are ensured by the Ethereum Virtual Machine (EVM), which replicates the execution of smart contracts identically on every full node \cite{eth-1}.
 
-Unlike centralized systems where a single entity exercises control, blockchain technology enables trustless consensus among network participants.
-This makes Ethereum particularly relevant for applications in decentralized finance (DeFi), digital identities, and asset tokenization \cite{eth-1}.
+The Ethereum blockchain is a distributed and immutable ledger that stores all transactions in chronological order.
+Each block contains a set of transactions linked together through cryptographic methods.
+The integrity and security of the chain are maintained by the Ethereum Virtual Machine (EVM), which executes smart contracts identically across all full nodes \cite{eth-1}.
 
-The use of Ethereum introduces both technical opportunities and limitations that directly impact financial applications, DeFi protocols, and automated trading strategies.
-One of the key strengths lies in its decentralization and transparency.
-All transactions and contract states on the network are publicly verifiable and resistant to censorship or manipulation.
-Furthermore, Ethereum enables high programmability through smart contracts, allowing developers to encode complex financial logic, automate processes, and minimize reliance on intermediaries \cite{eth-3}.
 
-However, these strengths are accompanied by certain limitations.
-Ethereum still faces notable scalability issues.
-Despite recent upgrades, its transaction throughput remains limited compared to centralized systems, which can lead to congestion and elevated fees during periods of high usage.
-This is closely tied to the disadvantage of highly volatile transaction fees, which makes small or frequent transactions economically inefficient.
-Regulatory uncertainty also poses a challenge, as the legal classification of Ethereum remains unresolved in many jurisdictions, leading to problems, especially for institutional participants \cite{eth-3}.
+Unlike centralized systems where a single entity holds control, blockchain technology enables trustless consensus among network participants.
+This makes Ethereum particularly relevant for applications in decentralized finance (DeFi), digital identity systems, and asset tokenization \cite{eth-1}.
+
+
+Ethereum offers both technical opportunities and limitations that directly affect financial applications, DeFi protocols, and automated trading strategies.
+One of its key strengths lies in decentralization and transparency.
+All transactions and contract states are publicly verifiable and resistant to censorship or manipulation.
+In addition, Ethereum’s programmability through smart contracts enables the encoding of complex financial logic, process automation, and a reduced reliance on intermediaries \cite{eth-3}.
+
+
+However, these strengths are accompanied by notable limitations.
+Ethereum continues to face scalability challenges.
+Despite recent upgrades, its transaction throughput remains limited compared to centralized systems, leading to potential congestion and elevated fees during periods of high usage.
+This is compounded by volatile transaction fees, which make small or frequent transactions economically inefficient.
+Furthermore, regulatory uncertainty persists, as Ethereum’s legal classification remains unresolved in many jurisdictions, posing challenges particularly for institutional participants \cite{eth-3}.
+
 
 In summary, Ethereum provides a powerful and flexible foundation for building decentralized financial systems.
-Its ability to execute programmable logic on-chain, without the need for central authorities, makes it an ideal infrastructure for digital assets.
-However, limitations in scalability, cost, and regulatory clarity must be carefully considered when designing systems that depend on Ethereum.
+Its capability to execute programmable logic on-chain without central authorities makes it an ideal infrastructure for digital assets.
+Nevertheless, limitations in scalability, cost, and regulatory clarity must be addressed when designing systems that depend on Ethereum.
+
 
 \subsection{USD Coin}
 
-In addition to traditional cryptocurrencies such as Bitcoin or Ethereum, a special form of digital assets, named stablecoins has emerged.
-One of the best-known stablecoin is the USD Coin (USDC), whose value is pegged to the US Dollar (USD).
 
-USDC is a digital stablecoin that exists on various blockchains such as Ethereum, Solana, and Polygon.
+In addition to traditional cryptocurrencies such as Bitcoin or Ethereum, a special category of digital assets known as \textit{stablecoins} has emerged.
+One of the best-known stablecoins is the USD Coin (USDC), whose value is pegged to the US dollar (USD).
+
+USDC is a digital stablecoin that operates on multiple blockchains, including Ethereum, Solana, and Polygon.
 It was launched in 2018 by the company Circle in collaboration with the cryptocurrency platform Coinbase.
-The goal of USDC is to digitally represent the value of one US dollar.
-This means that one USDC token should always represent the equivalent of one USD \cite{usdc-1}.
+The primary objective of USDC is to digitally represent the value of one US dollar, meaning that one USDC token is intended to correspond to the equivalent of one USD \cite{usdc-1}.
 
-Unlike volatile cryptocurrencies, USDC is pegged to a fiat currency.
-To ensure this peg, for every USDC issued, a real US dollar (or an equivalent liquid reserve instrument) is deposited with regulated financial institutions.
-The custody and transparency of the reserves are regularly audited by independent auditors and publicly documented \cite{usdc-2}.
+
+Unlike volatile cryptocurrencies, USDC is backed by a fiat currency.
+To maintain its peg, for every USDC issued, a real US dollar, or an equivalent liquid reserve instrument, is held in custody with regulated financial institutions.
+The existence and adequacy of these reserves are regularly audited by independent auditors, with the results made publicly available \cite{usdc-2}.
+
 
 USDC is fully programmable and can be transferred globally in near real time without the need for traditional financial intermediaries such as banks.
-This makes it particularly interesting for applications in decentralized finance (DeFi) systems, crypto trading, or international remittances \cite{circle-usdc}.
+This makes it particularly attractive for applications in decentralized finance (DeFi), cryptocurrency trading, and international remittances \cite{circle-usdc}.
 
-Although USDC aims to be pegged 1:1 to the US dollar, they are not the same currency.
-The US dollar (USD) is the official fiat currency of the United States and is regulated by the US Federal Reserve.
-USD exists both in physical form (as cash) and digitally (e.g., in bank accounts) and is legal tender \cite{usdc-2}.
 
-USDC, on the other hand, is a private product of a technology company.
-It is a tokenized representation of the US dollar that exists exclusively in the digital space.
+Although USDC aims to maintain a 1:1 peg with the US dollar, the two are not the same.
+The US dollar (USD) is the official fiat currency of the United States, issued under the authority of the US Federal Reserve.
+It exists both in physical form (cash) and digitally (e.g., in bank accounts) and is recognized as legal tender \cite{usdc-2}.
+
+
+USDC, by contrast, is a privately issued product of a technology company.
+It is a tokenized representation of the US dollar that exists exclusively in the digital domain.
 USDC is not legal tender and is not directly controlled by a central bank.
-Its peg to the US dollar is based on trust in the issuers and their ability to maintain sufficient reserves.
+Its peg to the US dollar depends on trust in the issuer’s ability to maintain adequate reserves.
+
+

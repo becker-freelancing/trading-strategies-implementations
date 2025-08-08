@@ -7,27 +7,35 @@
 
 This bachelor's thesis examines the effectiveness of classical and AI-based algorithmic trading strategies using the ETH/USDC cryptocurrency pair on a per-minute basis (M1).
 The goal is to improve informed trading decisions through data-driven methods.
-The special feature of this currency pair lies in the high liquidity and volatility of ETH and the stability of USDC, which brings with it both advantages and disadvantages.
+The special feature of this currency pair lies in the combination of the high liquidity and volatility of ETH with the stability of USDC, which brings both advantages and disadvantages.
 
-Therefore, a complete workflow is presented, from data acquisition via a Broker-API to feature engineering, the identification of market regimes, and the development and training of various deep learning models (FNN, LSTM, CNN, hybrid models), all the way to the implementation and evaluation.
+
+Therefore, a complete workflow is presented, from data acquisition via a broker API to feature engineering, the identification of market regimes, and the development and training of various deep learning models (FNN, LSTM, CNN, hybrid models), all the way to implementation and evaluation.
+
 In addition to classic technical indicators such as moving averages and Bollinger Bands, AI-based regression and classification strategies were also developed and compared.
-
-After retrieving the market data via the broker API, systematic feature engineering followed, using not only traditional price- and volume-based indicators but also technical oscillators such as the RSI and MACD.
+After retrieving the market data via the broker API, systematic feature engineering was performed, using not only traditional price- and volume-based indicators but also technical oscillators such as the RSI and MACD.
 Principal component analysis (PCA) was also applied to reduce the dimensionality of the data and eliminate redundant information.
 
+
 The Optuna framework, based on Bayesian optimization and enabling efficient hyperparameter search, was used to optimize the model parameters.
-A dedicated loss function was implemented for the regression models, which takes the practical application of the models in a trading context into account during training.
+A dedicated loss function was implemented for the regression models, taking into account the practical application of the models in a trading context during training.
+
 
 A particular focus of this work is the technical implementation of a modular trading engine.
-The architecture of this engine allows dynamic import and exchange of trading strategies, efficient processing of historical data, and both backtesting and live trading with real broker integration.
-The implementation includes essential components such as an order execution module or data source modules that enable live-streaming of data via a broker or local loading of data, for example via CSV files.
+The architecture of this engine allows the dynamic import and exchange of trading strategies, efficient processing of historical data, and both backtesting and live trading with real broker integration.
+The implementation includes essential components such as an order execution module and data source modules that enable livestreaming of data via a broker or local loading of data, for example via CSV files.
+
 
 To ensure realistic evaluation, the developed strategies were first optimized through backtests on historical data.
-After identifying the best parameters, the best strategies were evaluated through out-of-sample tests, and one strategy was then deployed in a controlled live test with a real broker under real market conditions.
-During both development and live testing, various risk and money management concepts were used to ensure capital preservation and controlled loss limitation.
+After identifying the best parameters, the most promising strategies were evaluated through out-of-sample tests, and one strategy was then deployed in a controlled live test with a real broker under actual market conditions.
+During both development and live testing, various risk and money management concepts were applied to ensure capital preservation and controlled risk limitation.
+
 
 The results show that both classical and AI-based approaches have their strengths.
-However, it turned out that the various strategies were severely affected by overfitting.
-This was demonstrated by the fact that the strategies achieved profitable results on the data used for parameter selection, but failed on previously unused test data.
+However, the various strategies were severely affected by overfitting.
+This was demonstrated by the fact that the strategies achieved profitable results on the data used for parameter selection but failed on previously unused test data.
 This highlights the challenge of developing robust, generalizable strategies.
-Although none of the tested strategies were profitable in the long term, this work provides valuable insights into the connection between AI and algorithmic trading, the importance of risk control, and the implementation of a fully automated trading system with direct connectivity to real brokers.
+For this reason, a workflow was presented which could help to avoid overfitting in the development of trading strategies.
+Although none of the tested strategies proved profitable in the long term, this work provides valuable insights into the relationship between AI and algorithmic trading, the importance of risk control, and the implementation of a fully automated trading system with direct connectivity to real brokers.
+
+

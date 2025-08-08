@@ -1,8 +1,8 @@
 \section{Backtesting Trading Strategies}
 \label{chap:backtesting}
 
-The quantitative evaluation of trading strategies requires a structured and comprehensible testing environment which was introduced in \autoref{chap:te}.
-This chapter describes the executed backtests, which aim to verify the performance of the develop trading strategies in \autoref{chap:trading-strategies} under realistic conditions.
+The quantitative evaluation of trading strategies requires a structured and comprehensible testing environment, which was introduced in \autoref{chap:te}.
+This chapter describes the executed backtests, which aim to verify the performance of the developed trading strategies in \autoref{chap:trading-strategies} under realistic conditions.
 
 Backtesting describes a performance simulation of a trading strategy based on historical data.
 This involves investigating how a specific strategy would have performed in the past if it had been executed under the given market conditions.
@@ -12,14 +12,14 @@ The goal is to gain initial insights into the robustness, profitability, and ris
 
 In contrast to the classic machine learning process, the parameter selection for the ultimately executed strategies is performed without the training set.
 This also applies to strategies that use deep learning (\autoref{chap:ai-strategies}).
-Unlike the training of deep learning models, which learn from the training data and adapt their internal states based on the training data, the trading strategies are initialized with fixed parameters.
-This corresponds to the fitting of deep learning models.
+Unlike the training of deep learning models, which learn from the training data and adapt their internal states based on it, the trading strategies are initialized with fixed parameters.
+This corresponds to the fitting stage of deep learning models.
 However, the subsequent process is identical.
 The strategies are validated with their previously defined parameters on the validation set to find the best possible parameters.
 
 \subsection{Executing Backtests}
 
-Due to the large number of parameter combinations shown in \autoref{tbl:parameters-number}, backtesting all combinations is not possible due to the execution time.
+Due to the large number of parameter combinations shown in \autoref{tbl:parameters-number}, backtesting all combinations is not feasible due to the execution time.
 Therefore, only 1000 combinations per strategy were tested on the validation set.
 In order to cover the greatest possible variance of the parameters, the combinations were not sampled randomly from the set of all possible combinations, but the combinations were sorted in lexicographic order and sampled at constant intervals.
 
@@ -43,8 +43,8 @@ In order to cover the greatest possible variance of the parameters, the combinat
 
 \subsection{Evaluating Backtests}
 
-Due to the length, the detailed results of the backtests \footnote{Detailed results in \autoref{chap:strategy-results-on-validation-data}}, including the parameters \footnote{Detailed parameters per strategy and regime in \autoref{chap:best-strategy-parameters}} that led to the respective results, can be found in the appendix.
-Here, only the results of the strategies with the highest cumulative last equity combined across all market regimes are presented.
+Due to the length, the detailed results of the backtests\footnote{Detailed results in \autoref{chap:strategy-results-on-validation-data}}, including the parameters\footnote{Detailed parameters per strategy and regime in \autoref{chap:best-strategy-parameters}} that led to the respective results, can be found in the appendix.
+Here, only the results of the strategies with the highest cumulative last equity, which is the account equity after the whole backtest, combined across all market regimes are presented.
 
 \begin{table}[H]
     \input{tables/cumulative-results}
@@ -53,32 +53,32 @@ Here, only the results of the strategies with the highest cumulative last equity
 \end{table}
 
 \noindent
-As seen in \autoref{tbl:combined-strategy-results} the Classification AI strategy achieves by far the best cumulative results on the validation set, with the lowest maximum drawdown and the highest win ratio.
-But on the other hand, it also has the greatest loss.
+As seen in \autoref{tbl:combined-strategy-results}, the Classification AI strategy achieves by far the best cumulative results on the validation set, with the lowest maximum drawdown and the highest win ratio.
+However, it also has the greatest loss.
 
-To compare the out-of-sample performance \footnote{Detailed out-of-sample results in \autoref{chap:oos-strategy-results}}, all strategies have also been tested with the best parameters on the validation set on the backtest set.
+To compare the out-of-sample performance \footnote{Detailed out-of-sample results in \autoref{chap:oos-strategy-results}}, all strategies were tested with the best parameters on the validation set on the backtest set.
 
 \begin{table}[H]
     \input{tables/cumulative-results-oof}
-    \caption{Combined Out-of-Sample Strytegy Results}
+    \caption{Combined Out-of-Sample Strategy Results}
     \label{tbl:combined-strategy-results-oof}
 \end{table}
 
 
 \noindent
-\autoref{tbl:combined-strategy-results-oof} shows that the strategies have a poor out-of-sample performance, resulting in either high losses or very volatile equity curves, which are not useful for real live trading.
+\autoref{tbl:combined-strategy-results-oof} shows that the strategies have a poor out-of-sample performance, resulting in either high losses or very volatile equity curves, which are unsuitable for real live trading.
 This shows that there is also a kind of overfitting in the parameter selection.
 While the strategies work well on the validation data, they fail in the out-of-sample tests.
 
-\subsection{Fee-Impacts}
+\subsection{Fee Impacts}
 
 A key component of the realistic evaluation of algorithmic trading strategies is the consideration of transaction costs.
 These costs can have a significant impact on performance depending on trading frequency, broker model, and market conditions.
 
-In this study, trading fees were integrated directly into the trading engine so that they are automatically considered with every order execution in backtesting.
+In this study, trading fees were integrated directly into the trading engine so that they were automatically considered with every order execution in backtesting.
 The chosen model is based on the ByBit fee structure which is based on the traded volume (0.02\% for maker orders and 0.055\% for taker orders).
 This enables realistic backtests of trading strategies.
-However, things like slippage were not taken into account but can be added in later improvements.
+However, things like slippage were not taken into account but could be added in later improvements.
 
 \autoref{tbl:fees} shows the sum of all fees incurred with the best parameters on the validation data (in-sample) and on the test data (out-of-sample).
 
@@ -103,11 +103,11 @@ However, things like slippage were not taken into account but can be added in la
 \noindent
 It becomes clear that a considerable amount of fees is incurred, which amounts to up to approximately 40\% of the net profit (Triple EMA).
 However, when comparing the number of trades across strategies, an interesting insight emerges.
-As shown in \autoref{tbl:combined-strategy-results}, the Dual SMA strategy executes by far the most trades (3473 in total) on the validation set, but despite this high trading frequency, its relative fee impact is noticeable lower compared to the Triple EMA strategy, which executed only 870 trades.
+As shown in \autoref{tbl:combined-strategy-results}, the Dual SMA strategy executes by far the most trades (3473 in total) on the validation set, but despite this high trading frequency, its relative fee impact is noticeably lower compared to the Triple EMA strategy, which executed only 870 trades.
 This indicates that not only the number of trades but also entry and exit timing, holding duration, and trade efficiency play a crucial role in determining fee sensitivity.
 
 This highlights that fee efficiency is not strictly a function of trading frequency alone.
-While one might intuitively expect more trades to always lead to higher costs, the Dual SMA strategy demonstrated that a high-frequency system can still be cost-efficient if implemented with consistent execution logic and stable market conditions.
+While one might intuitively expect more trades to always lead to higher costs, the Dual SMA strategy demonstrates that a high-frequency system can still be cost-efficient if implemented with consistent execution logic and stable market conditions.
 
 Most importantly, these findings emphasize the critical importance of incorporating fees in every phase of strategy evaluation.
 Conducting backtests without fees would draw an overly optimistic and misleading picture of strategy performance.
@@ -115,5 +115,5 @@ For instance, a strategy that appears profitable on a gross level may become unp
 
 For this reason, no backtests or performance evaluation in this work was conducted without accounting for trading fees.
 All strategies were tested under the assumption of realistic maker and taker fees, according to the selected broker ByBit.
-This ensures that every performance metric presented reflects realistic scenarios and therefore increases the practial relevance and robustness of the results.
+This ensures that every performance metric presented reflects realistic scenarios and therefore increases the practical relevance and robustness of the results.
 
