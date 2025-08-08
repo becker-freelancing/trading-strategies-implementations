@@ -5,20 +5,14 @@
 \raggedbottom
 
 
-
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{Backtesting and Live-Testing of Classic and AI-Powered Trading Strategies}
-\renewcommand{\headrulewidth}{0.4pt} % dünne Linie unter Kopfzeile
-\renewcommand{\footrulewidth}{0pt}   % keine Linie in der Fußzeile
-\fancyfoot[C]{\thepage}              % Seitenzahl zentriert im Fuß
+% Seitenzahl zentriert im Fuß
 
 \begin{document}
 
 % ====================  Deckblatt  ======================
 
     \include{1-Deckblatt}
+    \pagestyle{empty}
 
 
     \newpage
@@ -29,9 +23,18 @@
 
     \include{2-Declaration-of-ownership}
 
+    \mbox{}
     \newpage
 
 % ====================  Abstract  ======================
+
+
+    \pagestyle{fancy}
+    \fancyhf{}
+    \fancyhead[L]{Backtesting and Live-Testing of Classic and AI-Powered Trading Strategies}
+    \renewcommand{\headrulewidth}{0.4pt} % dünne Linie unter Kopfzeile
+    \renewcommand{\footrulewidth}{0pt}   % keine Linie in der Fußzeile
+    \fancyfoot[C]{\thepage}
 
     \include{3-Abstract}
 
@@ -39,6 +42,7 @@
 
 % ====================  Inhaltsverzeichniss  ======================
     \pagenumbering{roman}
+    \fancyfoot[C]{\thepage}
 
     \tableofcontents
 
@@ -68,6 +72,7 @@
     \newpage
 
     \pagenumbering{arabic}
+    \setcounter{page}{1}
 
     \include{A-A-Motivation}
 
