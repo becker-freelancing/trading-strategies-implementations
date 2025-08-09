@@ -57,7 +57,7 @@ The trading engine consists of many modules ,which can be clustered into three m
 
 To achieve the flexibility mentioned in \autoref{chap:te-use-cases}, a plugin architecture was used.
 Within the core, interfaces have been defined specifying which external functionalities are required (Service Provider Interface, or SPI).
-To enable easy interchangeability for users, the implementations of the interfaces in the external modules (Adapters) are loaded by the Java \texttt{java.util.ServiceLoader}.
+To facilitate seamless interchangeability for users, the implementations of the interfaces in the external modules (Adapters) are loaded by the Java \texttt{java.util.ServiceLoader}.
 
 The \texttt{ServiceLoader} loads classes at runtime that implement a specific interface or abstract class.
 The classes to be loaded are specified via a configuration file in the \texttt{resources/}\\\texttt{META-INF/services} directory, which the \texttt{ServiceLoader} searches for in every JAR file in the classpath.
@@ -112,8 +112,8 @@ The following components form the core:
 \end{enumerate}
 
 \noindent
-Before the \texttt{Strategy Engine}, there are two other engines, named \texttt{Remote Backtest}\\\texttt{Engine}, and \texttt{BacktestEngine}, which configure the \texttt{Strategy Engine}.
-The difference between the engines is that the \texttt{Remote Backtest Engine} defines the \texttt{Strategy Engine} asynchronously.
+Before the \texttt{Strategy Engine}, there are two other engines, named \texttt{Remote Execution}\\\texttt{Engine}, and \texttt{BacktestEngine}, which configure the \texttt{Strategy Engine}.
+The difference between the engines is that the \texttt{Remote Execution Engine} defines the \texttt{Strategy Engine} asynchronously.
 This means that a remote data source can stream market data via an API.
 When new data arrives, the \texttt{Strategy Engine} is notified by the data source and starts executing the trading strategy.
 For a local backtest, the \texttt{Strategy Engine} is configured so that data synchronization is handled by the \texttt{Backtest Engine}, not by the data source.
@@ -177,7 +177,7 @@ For example, for ETH/USDC the $\text{Euro Conversion}$ is the current price of E
 The conversion is done in euros because for different currency pairs with different counter currencies, the margin would be calculated in the respective counter currency.
 For ETH/USDC, the margin is calculated in USDC according to the formula.
 However, when trading ETH/BTC, the margin is calculated in BTC.
-To obtain a result that is always in the same unit, or in this case, the same currency, an additional conversion is implemented.
+To obtain a result that is always in the same unit, or in this case, the same currency, the additional conversion is implemented.
 It is important to note that it is also possible to implement conversion into any currency.
 This way, the margin could also be calculated in BTC, for example.
 Since USDC/EUR rates are offered by ByBit, it was easier in this case to compute historical data directly from ByBit and obtain the EUR/USDC rate through a conversion $\text{EUR/USDC} = \frac{1}{\text{USDC/EUR}}$.

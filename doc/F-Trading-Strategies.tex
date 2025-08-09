@@ -41,7 +41,7 @@ From the predicted series of logarithmic returns, the expected price in $t$ minu
 Based on the predicted price, the stop-loss and take-profit can be determined identically to the loss function of the regression models (\autoref{chap:regression-loss}).
 This creates an entry signal with fixed stop-loss and take-profit levels.
 
-However, since it is possible that the price could exceed the stop level or the take-profit level might not be reached, additional parameters are introduced into the strategy that shift the two levels by a specific number of points.
+However, since it is possible that the price could exceed the stop-loss level or the take-profit level might not be reached, additional parameters are introduced into the strategy that shift the two levels by a specific number of points.
 A third parameter is also introduced, which specifies a fixed distance to the stop-loss if no stop-loss has been predicted.
 This can happen, for example, if the initial prediction is positive and the predicted price does not fall below the current price.
 
@@ -98,7 +98,7 @@ In contrast to fundamental analysis, which deals with the intrinsic value of a f
 Technical analysis focuses on visual and computational methods for identifying trends, support and resistance levels, and reversal points.
 These analysis are used to develop specific trading strategies that respond to particular market behaviours.
 These strategies are often rule-based and can be implemented both manually and algorithmically \cite{ta-basics}.
-Therefore, technical analysis strategies are well suited for algorithmic trading.
+Therefore, technical analysis strategies are well-suited for algorithmic trading.
 
 This chapter describes three widely used technical analysis trading strategies.
 The strategies introduced are not the only classic strategies tested.

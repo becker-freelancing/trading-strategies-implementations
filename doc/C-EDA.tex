@@ -269,7 +269,7 @@ The higher the volatility of the market in the recent closing prices, the wider 
 If the price of the market rises near the upper band, traders see the market as overbought.
 Similarly, if the market falls near the lower band, the market could be oversold.
 This allows generating possible entry and exit signals \cite{investopia-bb}.
-The three Lines were added to the data using 15, 20, and 25 period SMAs with double price standard deviation.
+The three lines were added to the data using 15, 20, and 25 period SMAs with double price standard deviation.
 
 \subsubsection{Momentum Indicators}
 
@@ -277,13 +277,13 @@ Momentum measures the strength and direction of a price movement over a certain 
 Momentum indicators are useful because they provide insights into the strength of trending prices and can therefore indicate possible trend reversals \cite{investopia-momentum}.
 
 A common momentum indicator is the relative strength index (RSI).
-It measures the speed and magnitude of price movements by comparing the average gains and losses over a specified period, and can be used to detect overbought and oversold conditions.
+It measures the speed and magnitude of price movements by comparing the average gains and losses over a specified period and can be used to detect overbought and oversold conditions.
 The RSI ranges from 0 to 100.
 Typically, an RSI above 70 indicates an overbought market, while an RSI below 30 indicates an oversold market.
 The default RSI period commonly used for comparing average gains and losses is 14 \cite{investopia-rsi}.
 The RSI was added to the data with periods of 7, 14, and 20.
 
-To depict relative trend strength more precisely, a custom momentum indicator was constructed that compares the logarithmic returns of two different time frames.
+To depict relative trend strength more precisely, a custom momentum indicator was constructed that compares the logarithmic returns of two different time frames, by subtracting the logarithmic returns of the two time frames.
 This feature allows the model to distinguish phases of accelerating price movements from stable or declining trends.
 The use of logarithmic returns simultaneously achieves scale independence and improved comparability, which is particularly advantageous for modeling financial market-related time series.
 This indicator was added for time frames M2, M3, M6, M9, and M12.
@@ -317,7 +317,7 @@ This allows examining which features are most important for each regime individu
 \subsubsection{Scaling the Data}
 
 Scaling data is an important step in exploratory data analysis.
-This is because, on the one hand, machine learning models perform better with scaled data \cite{data-scaling}, and, on the other hand, principal component analysis (\autoref{chap:pca}) is sensitive to unscaled data \cite{pca-scaling}.
+This is because, on the one hand, machine learning models perform better with scaled data \cite{data-scaling} and, on the other hand, principal component analysis (\autoref{chap:pca}) is sensitive to unscaled data \cite{pca-scaling}.
 
 The use of the scikit-learn \texttt{MinMaxScaler} \cite{min-max}, which scales data in a fixed range of $[0; 1]$ is useful and widely adopted.
 Neural networks, especially those with activation functions such as ReLU, which are introduced in \autoref{chap:nn}, benefit greatly from inputs with a uniform range of values.

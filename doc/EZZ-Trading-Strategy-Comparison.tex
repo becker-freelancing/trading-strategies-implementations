@@ -58,7 +58,7 @@ A strategy with a very high maximum loss may be profitable on average, but is po
 Especially in combination with the drawdown, the maximum loss provides an indication of the financial burden a strategy can entail.
 
 The maximum gain describes the highest profit achieved with a single trade.
-This metric allows conclusions to be drawn about the "opportunity profile" of a strategy, meaning how large the potential profits can be under optimal conditions \cite{max-gain}.
+This metric allows conclusions to be drawn about the \textit{opportunity profile} of a strategy, meaning how large the potential profits can be under optimal conditions \cite{max-gain}.
 
 However, a very high maximum gain is not necessarily positive.
 In many cases, a single upward outlier is the result of random market movements and can distort overall performance.
@@ -69,7 +69,7 @@ A strategy that enables high profits but also carries a high risk of loss must b
 
 \subsection{Standard Deviation of Profits}
 
-The standard deviation of profits is a statistical measure that indicates how much the individual results of a trading strategy very around the average profit or loss per trade.
+The standard deviation of profits is a statistical measure that indicates how much the individual results of a trading strategy deviate from the average profit or loss per trade.
 It therefore measures the volatility of individual results and allows conclusions to be drawn about the stability, consistency, and risk of a trading strategy \cite{std}.
 
 Formally, the standard deviation of profits is defined as follows:
@@ -114,6 +114,6 @@ It is the percentage of profitable trades in relation to the total number of tra
 For example, if for a total of 20 trades, 16 have been profitable, the win rate is $\frac{16}{20} \cdot 100 = 80\%$.
 
 The greatest limitation of the win rate is that a high win rate does not always indicate a profitable trading strategy \cite{win-rate}.
-For example, if the win rate is 80\% with an average gain of 20\$ per profitable trade and an average loss of 90\$ per unprofitable trade, the weighted average is $\frac{80 \cdot 20 - (100 - 80) \cdot 90}{100} = -2$\$.
-Assuming a different strategy with 40\% win rate, but with an average gain of 70\$ per profitable trade and an average loss of 15\$ per unprofitable trade, its weighted average is $\frac{40 \cdot 70 - (100 - 40) \cdot 15}{100} = 19$\$.
+For example, if the win rate is 80\% with an average gain of \$20 per profitable trade and an average loss of \$90 per unprofitable trade, the weighted average is $\frac{80 \cdot 20 - (100 - 80) \cdot 90}{100} = \$-2$.
+Assuming a different strategy with 40\% win rate, but with an average gain of \$70 per profitable trade and an average loss of \$15 per unprofitable trade, its weighted average is $\frac{40 \cdot 70 - (100 - 40) \cdot 15}{100} = \$19$.
 The second strategy has a much lower win rate, but its long-term outcome is much higher, compared to the first one.

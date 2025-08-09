@@ -38,7 +38,7 @@ A fundamental categorization is often made by the following dimensions:
 According to the analysis goal, the categorization can be binary (e.g., bullish vs. bearish) or granular (e.g., a combination of trend behavior, and volatility).
 While binary classification may be sufficient for high-level market orientation, more granular categorization enables a finer distinction of market conditions.
 
-In the current context, the market is categorized by trend behavior, and volatility.
+In the current context, the market is categorized by trend behavior and volatility.
 This results in six categories:
 
 \newpage
@@ -57,7 +57,7 @@ This takes into account the two most central aspects that lead traders to differ
 \subsection{Recognizing Market Regimes}
 
 As described in \autoref{chap:market-regime-categories}, the market will be divided into six categories, which are the result of combinations of two individual categories.
-This makes it possible to categorize the two individual categories individually, and finally merge them.
+This makes it possible to categorize the market into two individual categories individually and finally merge them.
 
 \subsubsection{Recognizing Trend Behavior}
 \label{chap:recognizing-trend}
@@ -79,7 +79,7 @@ This decision is based on two considerations:
 \noindent
 Additionally, a minimum slope threshold over the last 15 minutes was integrated for the SMA(50) to avoid minimal direction changes being mistakenly interpreted as a meaningful trend.
 This short time span ensures that current market movements are adequately incorporated into the trend classification without being dominated by short-term noise (e.g., individual volatility peaks), and therefore increases the robustness of the trend recognition and addresses the weaknesses of simple moving averages in sideways phases.
-A slope above +0.05 signals a significant short-term uptrend, while a slope below -0.05 suggests a clear downtrend.
+A slope above +0.05 signals a significant uptrend, while a slope below -0.05 suggests a clear downtrend.
 Values in between are interpreted as ambiguous and are included in the sideways classification accordingly.
 
 The threshold of $\pm 0.05$ was determined using a targeted, visually supported trial-and-error approach.
@@ -157,7 +157,7 @@ The regime duration is divided into three quantiles (33\%, 66\%, 100\%) based on
 The notation in the current work for the respective regime durations is $Q_{0.33}$, $Q_{0.66}$, and $Q_{1}$.
 
 It should be noted that the duration used to distinguish between $Q_{0.33}$, $Q_{0.66}$, and $Q_{1}$ is calculated per regime across all durations, not within a single occurrence of a regime.
-For example, if a low-volatility uptrend emerges, it may only be in $Q_{0.33}$ and then transition into a high-volatility uptrend that initially occurs in $Q_{0.33}$ and then in $Q_{0.66}$.
+For example, if a low-volatility uptrend emerges, it may only be in $Q_{0.33}$ and then transition into a high-volatility uptrend that initially occurs in $Q_{0.33}$ before moving to $Q_{0.66}$.
 
 \autoref{tbl:regime-durations} shows the duration in minutes that a regime must last to reach the respective quantile.
 
@@ -177,5 +177,5 @@ For example, it distinguishes a short-term, volatile uptrend from a long-term, c
 Even though this makes the market appear more fragmented and regimes can change more frequently, this finer subdivision is analytically useful.
 It allows for context-sensitive market behavior to be examined and differences in the dynamics of effectiveness of trading strategies in specific regime types to be systematically analyzed.
 
-Instead of smoothing out reality with overly broad categories, a more nuanced picture is deliberately drawn that takes into account both the direction, intensity, and stability of market behavior.
+Instead of smoothing out reality with overly broad categories, a more nuanced picture is deliberately presented that takes into account both the direction, intensity, and stability of market behavior.
 The resulting increased complexity is not a disadvantage, but rather a prerequisite for more meaningful, context-based analyses.

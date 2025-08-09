@@ -5,14 +5,15 @@ This chapter presents the key components for developing and evaluating deep lear
 This includes both the selection of suitable models and the criteria for assessing their performance.
 
 For this work, Keras version 3.10.0 was used as a high-level API for modeling and training neural networks \cite{keras-home}.
-Instead of the standard TensorFlow backend, PyTorch version 2.7.1 was used as the backend.
+Instead of the default TensorFlow backend, PyTorch version 2.7.1 was used as the backend.
 A key reason for this decision was its better support on Windows compared to TensorFlow \cite{tf-windows}, particularly regarding installation and compatibility with existing CUDA drivers.
 By using Keras in combination with the PyTorch backend, user-friendly modeling could be combined with stable and well-supported execution on Windows systems.
 
 The model architectures used in this work are not based on specific, citable publications but were designed as part of an experimental and iterative development process.
 The goal was to construct powerful models well-suited to the given problem, particularly with regard to processing sequential data of limited length and high variability.
 
-Established neural building blocks such as 1D convolutional layers, GRUs, and attention mechanisms were used, the fundamentals of which are comprehensively documented in the literature.
+Established neural building blocks such as 1D convolutional layers, GRUs, and attention mechanisms were used.
+The fundamentals of which are comprehensively documented in the literature.
 However, the specific design of the model architectures, such as the combination of multiple parallel CNN paths, the integration of GRUs after convolution steps, or the use of Global Average Pooling instead of flattening, represents a creative and pragmatic composition of its own.
 
 Additionally, all models were automatically optimized using Optuna, so that architectural decisions were also influenced by the hyperparameter search.
@@ -31,6 +32,8 @@ The search for optimal values for these parameters, the so-called hyperparameter
 
 Optuna is a modern framework for automated hyperparameter optimization designed for efficiency, flexibility, and ease of use.
 It was developed to enable easy integration into existing machine learning pipelines while providing powerful, goal-oriented optimization.
+Therefore, Optuna uses optimization algorithms such as Bayesian Optimization to guide the search for the best hyperparameters efficiently.
+
 
 The central abstraction in Optuna is the concept of a study, which defines the optimization task.
 It encapsulates the objective function and maintains a history of evaluated hyperparameter configurations.
@@ -51,7 +54,7 @@ In the relevant sections of the next chapters, the range of the hyperparameters 
 \label{chap:nn}
 
 Neural networks are among the central methods of machine learning and form the basis of many modern deep learning models.
-The simplest and most widely used form is the feedforward neural network (FNN), also known as a multilayer perceptron (MLP).
+The simplest form is the feedforward neural network (FNN), also known as a multilayer perceptron (MLP).
 Such networks are universally applicable and, with appropriate structuring, can be used for classification, regression, and pattern recognition.
 
 A classic neural network consists of several layers of artificial neurons that forward information in a fixed order from input to output.
@@ -65,7 +68,7 @@ The structure can be divided as follows \cite{nn-basics}:
 \end{enumerate}
 
 \noindent
-In this work, three different neural network models have been tested.
+In this work, three different feedforward neural network models have been tested.
 The tested models differ in their complexity, depth, and methodological approach to data processing.
 
 \subsubsection{Base Model with Flatten-Architecture}
@@ -100,7 +103,6 @@ This construction facilitates the training of deeper networks by improving gradi
 
 In addition to the previous parameters, two additional variables controlled by Optuna are added: \texttt{num\_units\_res\_prep} and \texttt{num\_units\_res}.
 These determine the complexity of the residual branch.
-The distinction of whether flattening is done before or after the hidden layers is also included here to flexibly adapt data processing to the underlying data structure.
 
 This architecture is particularly suitable for nonlinear and complex relationships, such as those frequently encountered in ETH price forecasting.
 The residual path allows the model to pass on basic information directly, while deeper layers learn abstract features.
@@ -125,7 +127,7 @@ With multiple layers, the temporal sequence information is passed to the second 
 
 Similar to feedforward neural networks, the number of layers, the number of neurons per layer, the learning rate, and the length of the input window used are managed via Optuna.
 
-This model represents the basic form of a sequential predictor and is well suited for simple time series patterns.
+This model represents the basic form of a sequential predictor and is well-suited for simple time series patterns.
 
 \lstinputlisting[language=Python, caption=Base LSTM, label=lst:base-lstm, style=python]{python/models/lstm.py}
 
@@ -152,7 +154,7 @@ The hyperparameter structure is similar to the previous models, but the modeling
 \subsubsection{Encode-Decode Model with Repeat-Vector}
 
 The fourth model is based on an encoder-decoder approach, as used in machine translation.
-The input sequence is first converted into a fixed context vector by an LSTM layer, which is then duplicated multiple times using RepeatVector \cite{keras-repeat-vector}.
+The input sequence is first converted into a fixed context vector by an LSTM layer, which is then duplicated multiple times using \texttt{RepeatVector} \cite{keras-repeat-vector}.
 A decoder LSTM interprets this vector sequentially to generate a temporally structured output.
 
 This architecture is particularly suitable for multistep forecasting, as it can map not only the next value but an entire sequence of future values.
@@ -194,11 +196,11 @@ The hyperparameters tuned by Optuna are the number of units in the convolutional
 \subsubsection{Deep CNN}
 
 The model shown here represents an extension of a simple CNN model (Base CNN).
-While the simple model uses only a single 1D convolutional layer followed by a pooling and dense layer, this Deep CNN model uses two consecutive Conv1D layers.
+While the simple model uses only a single 1D convolutional layer followed by a pooling and dense layer, this Deep CNN model uses two consecutive \texttt{Conv1D} layers.
 This additional depth allows the network to learn more complex and hierarchical feature representations from the input data \cite{cnn-deep-more-complex}.
 This is particularly useful for time series with multi-level dependencies or subtle patterns.
-The model is complemented by a MaxPooling layer, which reduces the temporal resolution and counteracts overfitting.
-The optional placement of the Flatten layer allows for the evaluation of different configurations of feature identification, which in turn increases model flexibility.
+The model is complemented by a \texttt{MaxPooling} layer, which reduces the temporal resolution and counteracts overfitting.
+The optional placement of the \texttt{Flatten} layer allows for the evaluation of different configurations of feature identification, which in turn increases model flexibility.
 Overall, this more deeply structured CNN enables more powerful modeling than the flattened variant.
 
 \lstinputlisting[language=Python, caption=Deep CNN, label=lst:deep-cnn, style=python]{python/models/cnn_deep.py}
@@ -218,7 +220,7 @@ This is followed by global average pooling and a dense layer for output generati
 A slightly modified version replaces the attention module with a simple concatenation of the feature maps.
 This allows the model to pass the extracted features directly without performing weighting \cite{keras-concat}.
 
-This variant is computationally less expensive than the attention-based one and is well suited when all filter outputs should be treated equally.
+This variant is computationally less expensive than the attention-based one and is well-suited when all filter outputs should be treated equally.
 
 \lstinputlisting[language=Python, caption=Concatenation CNN, label=lst:multiscale-cnn, style=python]{python/models/cnn_multi_scale.py}
 
@@ -229,7 +231,7 @@ Compared to LSTM, GRU has only two gates, an update gate and a reset gate, inste
 This makes GRU faster to train, requires less memory, and delivers comparable results in many tasks \cite{gru-basics}.
 
 To combine the advantages of both architectures, a hybrid CNN-GRU model was also implemented.
-A Conv1D layer first extracts local features from the sequence, which are then sequentially processed using a GRU module to capture long-term dependencies and trends \cite{cnn-gru}.
+A \texttt{Conv1D} layer first extracts local features from the sequence, which are then sequentially processed using a \texttt{GRU} module to capture long-term dependencies and trends \cite{cnn-gru}.
 
 This model is particularly well-suited for linking local patterns (using CNN) with temporal dependencies (using GRU).
 The final dense layers perform the transformation to the target variable as usual.
@@ -246,7 +248,7 @@ For this purpose, a different final dense layer is used for each architecture, w
 
 Similar to scaling and dimensionality reduction, the models are trained individually for each regime.
 This means that the training and validation data must be divided into 18 different subsets, and all model architectures are trained for 20 trials with 30 epochs using the corresponding subsets.
-This results in 10,800 \footnote{$18 \text{ Regimes} * 20 \text{ Trials} * 30 \text{ Epochs}$} trained models per architecture.
+This results in 10,800 \footnote{$18 \text{ Regimes} \cdot 20 \text{ Trials} \cdot 30 \text{ Epochs}$} trained models per architecture.
 After each epoch, the evaluation metrics and the model are saved.
 
 Another aspect influenced by the regimes is how the input-output sequences can be divided.
@@ -276,7 +278,7 @@ For the reasons listed above, it was decided in this work to divide the data as 
 \label{chap:regression-models}
 
 Regression models were used to predict the next 30 minutes of logarithmic returns as a continuous sequence.
-To achieve a continuous sequence as output, the activation function in the last dense layer of the above-mentioned models was set to \texttt{linear} and the number of neurons to 30.
+To achieve a continuous sequence as output, the activation function in the last dense layer of the above-mentioned models was set to \texttt{linear} \cite{linear-softmax} and the number of neurons to 30.
 
 \subsubsection{Loss-Function}
 \label{chap:regression-loss}
@@ -351,8 +353,7 @@ Such behavior is not only extremely unlikely under realistic market conditions, 
 
 This incorrect forecast is not an isolated case, but rather symptomatic of the weaknesses of the regression models tested.
 It shows that the models are not only inaccurate but also tend to produce unrealistic extreme values, which would entail considerable risks in a trading context.
-
-This chapter is dedicated to a critical analysis of possible causes.
+This section is dedicated to a critical analysis of possible causes.
 
 A key reason for the poor model performance lies in the low predictability of short-term price movements.
 Minute-by-minute logarithmic returns are subject to a strong stochastic nature.
@@ -363,7 +364,7 @@ However, many machine learning methods implicitly assume the existence of certai
 A central methodological element of this work was the introduction of a modified loss function based on the simulation of trades.
 This function was explicitly designed to consider not only the statistical error but also the practical utility of a model within a trading strategy.
 
-In practice, however, it became apparent that the model often "learned" to remain as inactive as possible to minimize losses, or developed strategies with high trading frequency in the presence of negative performance because it was unable to identify stable patterns of advantage.
+In practice, however, it became apparent that the model often \textit{learned} to remain as inactive as possible to minimize losses, or developed strategies with high trading frequency in the presence of negative performance because it was unable to identify stable patterns of advantage.
 This behavior is due to a lack of positive feedback in the learning process: If no or only random winning patterns are present in the data, even the best loss function cannot enable meaningful optimization.
 
 The poor model performance should not be interpreted as a failure of the method or the data selection, but rather as a relevant empirical result.
@@ -377,7 +378,7 @@ Despite the poor results of the regression models, classification models were tr
 The action can be either buy, sell, or do nothing.
 To do so, the model predicts a probability for each of the three classes.
 To achieve a direct comparison with the regression models, the same models as in \autoref{chap:regression-models} were used.
-However, the main difference is that the final dense layer contains only three neurons, each representing an action, and uses the \texttt{softmax} activation function.
+However, the main difference is that the final dense layer contains only three neurons, each representing an action, and uses the \texttt{softmax} activation function \cite{linear-softmax}.
 The same training and validation period was also used, and the training took place over 20 Optuna trials with 30 epochs each.
 
 \subsubsection{Loss Function}

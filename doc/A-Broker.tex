@@ -81,6 +81,6 @@ Considering the results in \autoref{tbl:broker-comparision}, ByBit emerges as th
 Before starting with the Machine Learning process, and the backtests, the first step is to download historical ETH/USDC M1 data via the ByBit API.
 The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \texttt{linear}, symbol \texttt{ETHPERP}, and interval \texttt{1} at \ethDataEndDate.
 Since ByBit only returns 1000 candlesticks per request, the same request with different start and end times was executed until the ByBit API does no longer return older candlestick data.
-This resulted in a candlestick data pool containing minute-level from \ethDataStartDate~to \ethDataEndDate.
+This resulted in a candlestick data pool containing minute-level data from \ethDataStartDate~to \ethDataEndDate.
 The candlestick data includes the open, high, low, and close prices along with the traded volume (OHLCV data).
 \autoref{chap:eda} will go into more detail about the data.

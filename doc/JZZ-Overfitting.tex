@@ -37,6 +37,7 @@ This could, for example, look like this:
 \noindent
 Here $Rank(X)$ is the ranking of $X$ across all tested combinations, normalized to $[0; 1]$.
 This metric incorporates all metrics that were also compared in the previous strategies, eliminates scale differences, and considers whether a metric should be maximized or minimized.
+Furthermore, the weighting determines the importance of individual metrics, allowing greater or lesser emphasis to be placed on individual metrics.
 This results in one value for each parameter combination and backtest, which can be used to search for plateaus, simplifying the subsequent steps without losing any information.
 
 The best 10-20\% of the backtest results are then filtered using the combined metric.
@@ -67,7 +68,7 @@ The following algorithm describes how, for each tested parameter combination $x_
     \item \textbf{Knn-Neighborhood:} Find the $k$ nearest points $\{x_j\}$ to $x_i$.
     \item \textbf{Local gradient:} For $x_i$, calculate the local gradient $g_i$ with
     \[
-        g_i = \frac{1}{k} * \sum_{j=i}^{k} \frac{|f(x_i) - f(x_j)|}{\Vert x_i - x_j \Vert + \epsilon}
+        g_i = \frac{1}{k} \cdot \sum_{j=i}^{k} \frac{|f(x_i) - f(x_j)|}{\Vert x_i - x_j \Vert + \epsilon}
     \]
     \item \textbf{Local variance:} For $x_i$, calculate the local variance $v_i$ with
     \[
@@ -78,7 +79,8 @@ The following algorithm describes how, for each tested parameter combination $x_
         f(x_i) \geq Q_{1-\alpha}, \quad g_i \leq \gamma, \quad v_i \leq \delta
     \]
     where $Q_{1-\alpha}$ is the $(1 - \alpha)$-quantile (e.g., $\alpha = 0.2$), and $\gamma$, $\delta$ are small limits (e.g., median of $g_i$, $v_i$)
-    \item \textbf{Clustering:} Connect all $x_i$ from step 4 that are located in each other's KNNs (Connected Components or DBSCAN).
+    \item \textbf{Clustering:} Connect all $x_i$ from step 4 that are located in each other's KNNs.
+    Alternatively, clustering can be done using density-based clustering methods such as DBSCAN \cite{dbscan}.
     Each cluster is a plateau.
 \end{enumerate}
 
@@ -93,7 +95,7 @@ For this purpose, for example, the best parameter vector $\vec{p_{i^\ast}} \in C
 Alternatively, the mean vector $\vec{p}_{\text{center}}$ of the cluster can be selected.
 
 \[
-    \vec{p}_{\text{center}} = \frac{1}{|C^\ast|} * \\sum_{i \in C^\ast} \vec{p_i}
+    \vec{p}_{\text{center}} = \frac{1}{|C^\ast|} \cdot \sum_{i \in C^\ast} \vec{p_i}
 \]
 
 \noindent

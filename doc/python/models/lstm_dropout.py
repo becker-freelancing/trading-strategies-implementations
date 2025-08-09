@@ -17,6 +17,7 @@ model.add(Dropout(dropout))
 for i in range(num_layers - 1):
     if i == num_layers - 2:
         model.add(LSTM(num_units, return_sequences=False))
+
     else:
         model.add(LSTM(num_units, return_sequences=True))
     model.add(Dropout(dropout))

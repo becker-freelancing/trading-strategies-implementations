@@ -33,7 +33,7 @@ The connection to ByBit is established by an API key and an API secret, which ca
 The distinction between a demo account and a real money account is regulated by ByBit via the base URL, which differs in each case.
 To use the demo account, for REST endpoints, the base url \texttt{https://api-testnet.bybit.com} must be used.
 For the real money account, the base url \texttt{https://api.bybit.com} must be used \cite{integration}.
-To stream the market data, no distinction is required because the base URL \texttt{wss://stream.bybit.com/v5/public/linear} \cite{ws-connect} for streaming USDC market data is a public endpoint that can be used without an API Key.
+To stream the market data, no distinction is required because the base URL \texttt{wss://stream.bybit.com/v5/public/linear} \cite{ws-connect} for streaming market data is a public endpoint that can be used without an API key.
 In the trading engine, the base URLs, API key, and API secret are set via environment variables to achieve an independent implementation, configured by the user.
 
 \subsection{Live-Test Results}
@@ -41,7 +41,7 @@ In the trading engine, the base URLs, API key, and API secret are set via enviro
 Using the trading engine configuration described above, a live execution of the triple exponential moving average strategy was performed from \liveStartDataStartDate~to \liveStartDataEndDate.
 To keep the environment as similar as possible to the local backtest environment, the balance of the demo account was set to 5000 USDC at startup.
 
-\begin{table}
+\begin{table}[H]
     \centering
     \input{tables/live-results}
     \caption{Live-Test Statistics}
