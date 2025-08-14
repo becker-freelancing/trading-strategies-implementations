@@ -73,7 +73,7 @@ legend_patches = [mpatches.Patch(color=color, label=labels[enum])
                   for enum, color in colors.items()]
 ax.legend(handles=legend_patches + [ax.lines[0], ax.lines[1], ax.lines[2]], loc='upper left')
 
-formatter = mdates.DateFormatter('%H:%M')
+formatter = mdates.DateFormatter('%I %p')
 ax.xaxis.set_major_formatter(formatter)
 ax.set_title("Trend Classification")
 ax.set_ylabel("ETH/USDC M1")

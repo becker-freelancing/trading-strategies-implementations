@@ -12,6 +12,8 @@ import com.becker.freelance.strategies.executionparameter.EntryExecutionParamete
 import com.becker.freelance.strategies.executionparameter.ExitExecutionParameter;
 import com.becker.freelance.strategies.strategy.BaseStrategy;
 import com.becker.freelance.strategies.strategy.StrategyParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
@@ -20,18 +22,26 @@ import java.util.Optional;
 
 public class MA2Strategy extends BaseStrategy {
 
+    private static final Logger logger = LoggerFactory.getLogger(MA2Strategy.class);
+
 
     private final int swingHighLowMaxAge;
     private final int swingHighLowOrder;
     private final SwingDetection swingDetection;
     private final SMAIndicator shortSma;
     private final SMAIndicator longSma;
+    private final Decimal stopLossDelta;
+    private final Decimal takeProfitDelta;
+    private final PositionBehaviour positionBehaviour;
 
-    public MA2Strategy(StrategyParameter parameter, int shortMaPeriod, int longMaPeriod, int swingHighLowMaxAge, int swingHighLowOrder) {
+    public MA2Strategy(StrategyParameter parameter, int shortMaPeriod, int longMaPeriod, int swingHighLowMaxAge, int swingHighLowOrder, Decimal stopLossDelta, Decimal takeProfitDelta, PositionBehaviour positionBehaviour) {
         super(parameter);
 
         this.swingHighLowMaxAge = swingHighLowMaxAge;
         this.swingHighLowOrder = swingHighLowOrder;
+        this.stopLossDelta = stopLossDelta;
+        this.takeProfitDelta = takeProfitDelta;
+        this.positionBehaviour = positionBehaviour;
         this.swingDetection = new SwingDetection();
         barSeries.setMaximumBarCount(Math.max(longMaPeriod, swingHighLowOrder));
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(barSeries);
@@ -55,6 +65,8 @@ public class MA2Strategy extends BaseStrategy {
         int swingDataCount = swingHighLowMaxAge + swingHighLowOrder;
         Optional<List<TimeSeriesEntry>> optionalSwingHighLowData = entryParameter.timeSeries().getLastNCloseForTimeAsEntryIfExist(entryParameter.time(), swingDataCount);
 
+        logger.debug("Swing detection data is present {}", optionalSwingHighLowData.isPresent());
+
         if (optionalSwingHighLowData.isEmpty()) {
             return Optional.empty();
         }
@@ -68,30 +80,34 @@ public class MA2Strategy extends BaseStrategy {
         Double currentLong = lastLongMaValues.current();
 
         if (lastShort < lastLong && currentShort > currentLong) {
+            logger.debug("Buy Position could be opened");
             //BUY
             Optional<TimeSeriesEntry> lastSwingLow = swingDetection.getLastSwingLow(swingData, swingOrder);
+            lastSwingLow.ifPresentOrElse(low -> logger.debug("Last Swing low was {}", low), () -> logger.debug("No swing low detected"));
             Pair pair = current.pair();
-            return lastSwingLow.map(swingValue -> swingValue.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
+            return lastSwingLow.map(swingValue -> swingValue.getCloseMid().subtract(stopLossDelta))
                     .map(stopLevel -> {
                         return entrySignalBuilder()
                                 .withOpenMarketRegime(currentMarketRegime())
-                                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                                .withPositionBehaviour(positionBehaviour)
                                 .withOpenOrder(orderBuilder().withDirection(Direction.BUY).asMarketOrder().withPair(current.pair()))
-                                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(current.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE))))
+                                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(current.getCloseMid().add(takeProfitDelta)))
                                 .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopLevel));
                     });
         } else if (lastShort > lastLong && currentShort < currentLong) {
+            logger.debug("Sell Position could be opened");
             //SELL
             Optional<TimeSeriesEntry> lastSwingHigh = swingDetection.getLastSwingHigh(swingData, swingOrder);
+            lastSwingHigh.ifPresentOrElse(low -> logger.debug("Last Swing High was {}", low), () -> logger.debug("No swing high detected"));
             Pair pair = current.pair();
-            return lastSwingHigh.map(swingValue -> swingValue.getCloseMid().add(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(50), Decimal.ONE)))
+            return lastSwingHigh.map(swingValue -> swingValue.getCloseMid().add(stopLossDelta))
                     .map(stopLevel -> {
 
                         return entrySignalBuilder()
                                 .withOpenMarketRegime(currentMarketRegime())
-                                .withPositionBehaviour(PositionBehaviour.HARD_LIMIT)
+                                .withPositionBehaviour(positionBehaviour)
                                 .withOpenOrder(orderBuilder().withDirection(Direction.SELL).asMarketOrder().withPair(current.pair()))
-                                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(current.getCloseMid().subtract(pair.priceDifferenceForNProfitInCounterCurrency(new Decimal(150), Decimal.ONE))))
+                                .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(current.getCloseMid().subtract(takeProfitDelta)))
                                 .withStopOrder(orderBuilder().asConditionalOrder().withDelegate(orderBuilder().asMarketOrder()).withThresholdPrice(stopLevel));
                     });
         }

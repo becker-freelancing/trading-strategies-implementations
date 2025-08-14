@@ -1,43 +1,58 @@
 \section{Data Source and Broker Selection}
+\label{chap:broker}
 
-Cryptocurrency brokers (also called crypto brokers) play an important role in cryptocurrency trading.
-Among other things, they act as intermediaries between different market participants.
-Their key tasks include:
+Cryptocurrency brokers (also referred to as crypto brokers) play an important role in cryptocurrency trading.
+They act as intermediaries between different market participants, performing several key functions \cite{binance-broker}:
+
 
 \begin{enumerate}
-    \item \textbf{Providing access:} Individuals can participate in the market through a broker and thereby trade various cryptocurrencies.
-    This includes executing orders such as buying cryptocurrencies at the lowest available price or selling them at the highest available price.
-    \item \textbf{Security, and Compliance:} They also provide customers with a secure platform for executing transactions and adhere to the financial regulations established by authorities.
-    \item \textbf{Leveraging:} Brokers offer customers the opportunity to borrow money, and thus trade with more capital than they actually have in their account.
+
+    \item \textbf{Providing access:} Brokers enable individuals to participate in the cryptocurrency market and trade various digital assets.
+    This includes executing orders such as buying at the lowest available price or selling at the highest available price.
+
+    \item \textbf{Security and compliance:} Brokers provide customers with a secure platform for executing transactions and comply with financial regulations established by the relevant authorities.
+
+    \item \textbf{Leverage:} Many brokers offer clients the ability to borrow funds, allowing them to trade with greater capital than they actually hold in their accounts.
+
 \end{enumerate}
 
 
-This has the advantage that trading with cryptocurrencies is much easier and safer, but one of the biggest disadvantages are the fees that are incurred when using \cite{broker-investing}.
+\noindent
+By offering simplified interfaces, integrated wallets, and automated order execution, brokers make cryptocurrency trading significantly more accessible and user-friendly.
+In addition, their security infrastructure, such as two-factor authentication, can reduce the risk of user error or loss of funds.
+
+
+However, one of the main drawbacks of using brokers is the cost.
+Fees may include trading commissions, spreads, funding rates for leveraged positions, and withdrawal charges \cite{broker-investing}.
+In high-frequency or short-term trading, such costs can accumulate rapidly and have a substantial impact on overall profitability.
+
 
 \subsection{Broker Selection}
 \label{chap:broker-selection}
 
-For this paper, one broker must be selected for data retrieval, and live testing.
-Since the process is fully automated in short time-frames, the broker must meet certain requirements.
+
+For this paper, a single broker must be selected for both data retrieval and live testing.
+Since the process is fully automated on short timeframes, the broker must meet several specific requirements.
+
 
 The API must be able to stream market data, request historical data, the current account balance, closed trades, and currently open positions, placing orders, and positions, as well as canceling unfilled orders.
 
-Apart from the API the broker must support leveraged long/short products like CFDs or margin trading.
-They also must provide data in high quality as well as a demo depot.
-The further they must be regulated in the European Union with the lowest possible fees.
+In addition to API functionality, the broker must offer leveraged long/short products such as CFDs or margin trading, charge the lowest possible fees, provide high-quality data, and offer a demo account.
 
-\autoref{tbl:broker-comparision} summarizes the required features for some potential brokers.
-All listed there meet the API functionality requirements.\footnote{Sources: \cite{bybit-home}, \cite{bybit-api-doc}, \cite{ig-home}, \cite{ig-api-doc}, \cite{capital-home}, \cite{capital-api-doc}}
+
+\autoref{tbl:broker-comparision} summarizes the key features of selected potential brokers.
+All listed brokers meet the API functionality requirements.\footnote{Sources: \cite{bybit-home}, \cite{bybit-api-doc}, \cite{ig-home}, \cite{ig-api-doc}, \cite{capital-home}, \cite{capital-api-doc}}
+
 
 \begin{table}[H]
     \small
     \centering
     \begin{tabular}{L{2cm} P{3.5cm} c c P{2cm}}
         \toprule
-        Broker & Tradable assets & \multicolumn{2}{c}{\makecell{Fees}} & Leverage \\
+        \textbf{Broker} & Tradable assets & \multicolumn{2}{c}{\makecell{Fees}} & Leverage \\
         &                                            & Maker  & Taker   &      \\
         \midrule
-        \textbf{ByBit} & Spot, Spot with leverage, Futures, Options & 0.02\% & 0.055\% & 10:1 \\
+        \textbf{ByBit} & Spot, Spot with Leverage, Futures, Options & 0.02\% & 0.055\% & 10:1 \\
         \addlinespace[0.8em]
         \textbf{IG} & CFDs, Knock-out-Options & \multicolumn{2}{c}{Spread (approx.
         \$1.30)} & 2:1 \\
@@ -51,12 +66,21 @@ All listed there meet the API functionality requirements.\footnote{Sources: \cit
 \end{table}
 
 
-Taking into account \autoref{tbl:broker-comparision}, ByBit is the best broker because it has the lowest fees, high quality data, the highest possible leverage as well as a regularization in the EU.
+\noindent
+Although ByBit's fees are calculated as a percentage of the transaction volume, they are lower overall than those charged by IG or Capital.com.
+The average ETH price is approximately 2280 USDC\footnote{The average price was calculated using all data collected in \autoref{chap:api-connection}}.
+Based on this average, ByBit’s fees correspond to approximately 1.25 USDC for a taker order and 0.45 USDC for a maker order per ETH bought or sold.
+This allows potential savings of up to 1.3 USDC per trade compared to IG and Capital.com.
+
+Considering the results in \autoref{tbl:broker-comparision}, ByBit emerges as the most suitable broker due to its lowest fees, high-quality data, and highest available leverage.
+
 
 \subsection{API Connection and Data Retrieval Process}
+\label{chap:api-connection}
 
-Before starting with the Machine Learning process, and the backtests, the first step is to download historical \ethusdc via the ByBit API.
-The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \verb|linear|, symbol \verb|ETHPERP|, and interval \verb|1| at \ethDataEndDate.
-Since ByBit only returns 1000 candlesticks per request, the same request with different start-, and end-times was executed until the ByBit API does no longer return older candlestick data.
-This resulted in a candlestick data pool with data on a minute basis from \ethDataStartDate to \ethDataEndDate.
-Chapter \ref{chap:statistics} will go into more detail about the data.
+Before starting with the Machine Learning process, and the backtests, the first step is to download historical ETH/USDC M1 data via the ByBit API.
+The request was executed on the \texttt{/v5/market/kline} API-Endpoint \cite{bybit-api-doc-get-kline} with the category \texttt{linear}, symbol \texttt{ETHPERP}, and interval \texttt{1} at \ethDataEndDate.
+Since ByBit only returns 1000 candlesticks per request, the same request with different start and end times was executed until the ByBit API does no longer return older candlestick data.
+This resulted in a candlestick data pool containing minute-level data from \ethDataStartDate~to \ethDataEndDate.
+The candlestick data includes the open, high, low, and close prices along with the traded volume (OHLCV data).
+\autoref{chap:eda} will go into more detail about the data.

@@ -1,0 +1,62 @@
+Ziel:
+
+* Leistungsfähigkeit von Ki-basierten und Klassischen Modellen anhand des Beispiels von ETH/USDC aus Minutenbasis zu untersuchen
+
+Vorgehen:
+
+* Abfrage von Historischen Daten von Datum xy bis xy auf Minutenbasis über den Broker ByBit
+* Explorative Datenanalyse
+** Eliminierung des Datadrifts durch transformation des Preises auf logarithmische Renditen
+** Verschiedene Technische Indikatoren hinzugefügt (Trend Following, Volatility, Momentum, Preistransformation)
+** Skalierung mittels MinMaxScaler
+** PCA, dass 80% der Varianz übrig bleibt
+* Algorithmus entwickelt, welcher den Markt automatisch in verschiedene Regime unterteilt
+** Basiert auf 2 verschiedenen SMA's für Trend und rolling Standardabweichung des Preises für Volatilität
+* Untersuchung von verschiedene Money- und Risikomanagement Techniken
+** Positionsgröße anhand der entfernung des Stop-Losses
+** Risk-Reward Ratio
+** Maximales Portfolio Risiko
+** Minimales Take-Profit -> Mindestens gebühren gedeckt
+** Umwandlung von Market-Orders in Limit Orders um Gebühren zu sparen
+* Vorstellung von Techniken, wie man Performance von Trading Strategien vergleicht
+* Training von verschiedenen DL Modellen
+** Hyperparameter Optimierung mit Optuna
+** NN's, LSTM's, CNN's
+** Modelle die Log Returns der nächsten 30 min vorhersagen -> Eigene Loss-Function -> Komplettes Overfitting (nicht nutzbar)
+** Modelle welche Vorhersagen: Kaufen, Verkaufen, Nichts tun
+* Beschreibung von Trading Strategien
+** KI-Basiert (Durch Klassifikation)
+** Klassische (Mit 2 MA'S, Mit 3MA's, Bollinger Bands)
+* Entwicklung eines Trading-Engines
+** Kann lokale Backtests aber auch in Live-Umgebung ausführen
+** Implementierung von eigenen Trading-Strategien, eigenen Money- und Risiko-Management strategien, Verbindung zu beliebigen Broker
+* Backtest der Trading-Strategien
+** Erst fitting von Strategie Parametern von Datum XY bis XY -> Sehr gute Ergebnisse
+** Dann Out-of-Sample test von Datum xy bis xy -> sehr schlechte Ergebnisse
+** Strategien generalisieren nicht gut -> Machen Verlust oder sind sehr volatil
+* Live-Test
+** Live-Test von Datum xy bis xy
+** Diente eher dazu den Trading-Engine im Live Betrieb zu testen
+** Ohne Fehler dauerhaft durchgelaufen
+** Selbst wenn durch den Broker die Verbindung abgebrochen wurde hat sich der Engine neu verbunden und ist weitergelaufen ohne Probleme
+
+Erkenntnisse:
+
+* KI-Modelle führten erstmal gute Ergebnisse -> Dann aber Schlecht
+** Das bedeutet, dass andere Architekturen oder ähnliches evtl profitabel sind
+** Hier wurde der Grundstein gelegt
+* Trotz dessen, dass kein zufriedenstellendes Ergebnis gezogen werden konnte ist die Arbeit wichtig, da sie viele Erkenntnisse (Verschiedene Modelle, Trading Engine, Risk Man, ...) und als basis für andere dienen kann.
+* Evtl. PCA weglassen, dass Modelle "rohe" Daten haben -> Können genau auf die Bdeutung von z.B. EMA eingehen
+* Overfitting von Strategien geht sehr schnell -> Notwendigkeit von robusten Optimierungsmethoden
+* Regression konnte keine Muster in den hochfrequenten Daten erkennen -> Hochfrequente ETH/USDC M1 Daten liefern keine Ausreichenden Muster für vorgestellte Modellarchitekturen
+* Unabhängig von den Strategiergebnissen
+
+
+Ausblick:
+* Robustere Feature-Sets (z.B. Orderbuchdaten, Sentiment-Daten).
+* Andere Modelltypen (z.B. Reinforcement Learning, Transformer mit Attention auf relevante Marktphasen, Ensemble).
+* Meta-Strategien: Z.B. statt exakte Renditen vorherzusagen, lieber nur Richtung oder Volatilität.
+* Zusammengesetzte Strategien -> Mehrere Strategien müssen gleichzeitig Entry geben für wirklichen Entry
+* Andere Timeframes, Währungen
+* Stresstests
+* Hyperparameter‑Optimierung robust gestalten: Cross‑Validation mit Monte‑Carlo‑Simulationsläufen und restriktivere Regularisierung (z.B. ElasticNet, DropConnect).

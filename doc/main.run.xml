@@ -41,7 +41,7 @@
                 >
         ]>
 <requests version="1.0">
-    <internal package="biblatex" priority="9" active="1">
+    <internal package="biblatex" priority="9" active="0">
         <generic>latex</generic>
         <provides type="dynamic">
             <file>main.bcf</file>
@@ -81,15 +81,17 @@
         </requires>
         <requires type="editable">
             <file>AZ-broker.bib</file>
-            <file>BZ-eda.bib</file>
-            <file>CZ-market-regime.bib</file>
-            <file>DZ-money-risiko-management.bib</file>
-            <file>EZ-models.bib</file>
+            <file>A-AZ-Motivation.bib</file>
+            <file>BZ-market-regime.bib</file>
+            <file>CZ-eda.bib</file>
+            <file>EZ-money-risiko-management.bib</file>
+            <file>EZZZ-Trading-Strategy-Comparison.bib</file>
+            <file>DZ-models.bib</file>
             <file>FZ-trading-strategies.bib</file>
             <file>GZ-trading-engine.bib</file>
             <file>HZ-backtesting.bib</file>
-            <file>IZ-stresstesting.bib</file>
             <file>JZ-live-testing.bib</file>
+            <file>JZZ-Overfitting.bib</file>
         </requires>
     </external>
 </requests>

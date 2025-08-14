@@ -1,0 +1,134 @@
+\documentclass[12pt, twoside]{article}
+\usepackage{styles}
+\setlength{\headheight}{15pt}
+\raggedbottom
+
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Backtesting and Live-Testing of Classic and AI-Powered Trading Strategies}
+\renewcommand{\headrulewidth}{0.4pt} % dünne Linie unter Kopfzeile
+\renewcommand{\footrulewidth}{0pt}   % keine Linie in der Fußzeile
+\fancyfoot[C]{\thepage}              % Seitenzahl zentriert im Fuß
+
+\begin{document}
+
+% ====================  Deckblatt  ======================
+
+    \include{1-Deckblatt}
+
+
+    \newpage
+
+    \newpage
+
+    \include{2-Declaration-of-ownership}
+
+    \newpage
+
+% ====================  Abstract  ======================
+
+    \include{3-Abstract}
+
+    \newpage
+
+% ====================  Inhaltsverzeichniss  ======================
+    \pagenumbering{roman}
+    \fancyfoot[C]{\thepage}
+
+    \tableofcontents
+
+    \newpage
+
+
+% ====================  Listings  ======================
+
+    \pagenumbering{alph}
+
+    \newpage
+    \listoffigures
+
+
+    \newpage
+
+    \listoftables
+
+    \newpage
+    \renewcommand{\thelstlisting}{\Alph{lstlisting}} % Code-Listings benuzen A, B, C, ...
+    \lstlistoflistings
+
+    \newpage
+
+    \include{4-Abkuerzungsverzeichniss}
+
+    \newpage
+
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+
+    \include{A-A-Motivation}
+
+    \newpage
+
+    \include{A-Broker}
+
+    \newpage
+
+    \include{B-Market-Regimes}
+
+    \newpage
+
+    \include{E-Money-Risiko-Management}
+
+    \newpage
+
+    \include{EZZ-Trading-Strategy-Comparison}
+
+    \newpage
+
+    \include{C-EDA}
+
+    \newpage
+
+    \include{D-Models}
+
+    \newpage
+
+    \include{F-Trading-Strategies}
+
+    \newpage
+
+    \include{G-Trading-Engine}
+
+    \newpage
+
+    \include{H-Backtesting}
+
+    \newpage
+
+    \include{J-Live-Test}
+
+    \newpage
+
+    \include{JZZ-Overfitting}
+
+    \newpage
+
+    \include{K-Zusammenfassung}
+
+% ====================  Listings  ======================
+
+
+    \newpage
+
+
+    \section{References}
+    \printbibliography[title=~]
+
+    \newpage
+
+    \include{L-Appendix}
+
+
+\end{document}

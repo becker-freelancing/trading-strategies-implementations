@@ -1,0 +1,23 @@
+* Buy and Hold -> Geht das überhaupt, da ja POsitionsgröße nicht fix ist?
+* + Noch ein Kapitel welches Kurz erklärt, das ETHUSDC M1 genommen wird und warum
+* Parameter Tabellen auch horizontal zentrieren -> Bzw evtl alle Tabellen
+* Strategie vergleiche noch etwas ausbauen -> Werden aber nur drei verwendet
+* Andere Strategie Ergebnisse in den Anhang packen
+* Classification Test minimal besser als ein Randommodell?
+* Wie wird PNL in Loss berechnet (Evtl auch noch in TE)
+
+* USDC vs USD
+
+
+
+# Warum ETH M1
+
+Im Rahmen dieser Arbeit wurde versucht, die zukünftige Entwicklung der logarithmischen Renditen des ETH/USDC-Währungspaars auf Minutenbasis mithilfe von Deep-Learning-Modellen vorherzusagen. Die Entscheidung für diese Datenbasis erfolgte bewusst, da sie sowohl aus wissenschaftlicher Perspektive als auch aus Sicht praktischer Relevanz eine Reihe von Vorteilen mit sich bringt: Zum einen bietet die hohe Frequenz der M1-Daten eine große Datenmenge zur Modellierung, zum anderen ermöglicht sie eine Untersuchung kurzfristiger Marktdynamiken, die im Kontext algorithmischen Tradings besonders relevant sind.
+
+Auch wenn es viel rauschen gibt: 1. Nachricht in https://chatgpt.com/c/687c778c-ac48-8006-9694-89f9129aa5e3
+
+
+# Einführung
+
+Quantitative Kennzahlen zur Volatilität einbauen
+Um ETH/USDC als Beispiel­paar noch anschaulicher zu machen, könntest du eine Vergleichstabelle mit den jährlichen Volatilitäten der letzten zwei Jahre erstellen. Zeige beispielsweise, dass die Annualized Volatility von ETH‑USD 2024 bei 85 % lag, während bei BTC‑USD 2024 nur 60 % gemessen wurden. So untermauerst du Deine Motivation mit harten Zahlen und kannst klar begründen, warum ETH/USDC für M1‑Daten besonders geeignet ist.

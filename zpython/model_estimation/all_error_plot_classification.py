@@ -8,6 +8,15 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from zpython.model.best_model_loader_classification import _get_metrics_by_regime
 
+plt.rcParams.update({
+    "font.size": 20,
+    "axes.titlesize": 25,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "legend.fontsize": 20
+})
+
 metrics_by_regime = _get_metrics_by_regime("models-bybit/CLASSIFICATION_240")
 
 regime_groups = [

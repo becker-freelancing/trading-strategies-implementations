@@ -32,5 +32,6 @@ plt.plot(backtest["closeTime"], backtest["closeBid"], label="Backtest")
 
 plt.title("ETH/USDC M1")
 plt.ylabel("Price [USDC]")
+plt.xlabel("Date")
 plt.legend()
 plt.show()

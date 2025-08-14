@@ -1,0 +1,27 @@
+\begin{tabular}{lll|c|cc|cc}
+    \toprule
+    \multicolumn{3}{l|}{\multirow{2}{*}{\textbf{Market Regime}}} & \multirow{2}{*}{Model} & \multicolumn{2}{c|}{Loss} & \multicolumn{2}{c}{Accuracy}  \\
+    \multicolumn{3}{c|}{} & & Validation & Test & Validation & Test \\
+    \midrule
+    \multirow{6}{*}{\textbf{Down}}     & \multirow{3}{*}{\textbf{Low}}  & \textbf{$Q_{0.33}$} & Concatenation CNN & 0.69 & 0.70         & 0.53       & 0.47             \\
+    &                                & \textbf{$Q_{0.66}$} & Concatenation CNN & 0.70 & 0.70 & 0.55 & 0.52 \\
+    &                                & \textbf{$Q_{1}$}    & Attention CNN     & 0.89 & 0.86 & 0.58 & 0.43 \\
+    & \multirow{3}{*}{\textbf{High}} & \textbf{$Q_{0.33}$} & Attention CNN     & 0.78 & 0.89 & 0.53 & 0.51 \\
+    &                                & \textbf{$Q_{0.66}$} & Attention CNN     & 0.84 & 0.68 & 0.54 & 0.48 \\
+    &                                & \textbf{$Q_{1}$}    & LSTM              & 0.81 & 0.79 & 0.55 & 0.49 \\
+    \midrule
+    \multirow{6}{*}{\textbf{Sideways}} & \multirow{3}{*}{\textbf{Low}}  & \textbf{$Q_{0.33}$} & Attention CNN     & 0.75 & 0.63         & 0.52       & 0.49             \\
+    &                                & \textbf{$Q_{0.66}$} & Concatenation CNN & 0.72 & 0.67 & 0.52 & 0.51 \\
+    &                                & \textbf{$Q_{1}$}    & Attention CNN     & 0.95 & 0.66 & 0.55 & 0.50 \\
+    & \multirow{3}{*}{\textbf{High}} & \textbf{$Q_{0.33}$} & Attention CNN     & 0.73 & 0.69 & 0.54 & 0.49 \\
+    &                                & \textbf{$Q_{0.66}$} & Attention CNN     & 0.99 & 0.76 & 0.58 & 0.51 \\
+    &                                & \textbf{$Q_{1}$}    & Concatenation CNN & 0.66 & 0.71 & 0.54 & 0.52 \\
+    \midrule
+    \multirow{6}{*}{\textbf{Up}}       & \multirow{3}{*}{\textbf{Low}}  & \textbf{$Q_{0.33}$} & Concatenation CNN & 0.69 & 0.69 & 0.54       & 0.54             \\
+    &                                & \textbf{$Q_{0.66}$} & Concatenation CNN & 0.69 & 0.69 & 0.54 & 0.51 \\
+    &                                & \textbf{$Q_{1}$}    & Base CNN          & 0.75 & 0.65 & 0.53 & 0.49 \\
+    & \multirow{3}{*}{\textbf{High}} & \textbf{$Q_{0.33}$} & Concatenation CNN & 0.70 & 0.70 & 0.52 & 0.48 \\
+    &                                & \textbf{$Q_{0.66}$} & Attention CNN     & 0.81 & 0.95 & 0.53 & 0.48 \\
+    &                                & \textbf{$Q_{1}$}    & BiLSTM            & 0.69 & 0.69 & 0.56 & 0.51 \\
+    \bottomrule
+\end{tabular}

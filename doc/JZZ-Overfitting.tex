@@ -1,0 +1,105 @@
+\section{Dealing with Strategy-Overfitting}
+\label{chap:overfitting}
+
+As has become clear in previous chapters, overfitting is one of the biggest problems with the strategies presented.
+This chapter therefore deals with a self-developed idea for adapting strategies to the data while reducing the overfitting risk.
+It is important to note that this is merely an idea that has not yet been tested.
+This would have to be addressed in future work.
+
+It is striking that the strategies performed very well in the in-sample tests.
+However, they completely failed in the out-of-sample tests.
+This observation leads to the assumption that the parameters found are too specific to generalize well.
+Therefore, the conclusion was reached that the search for stable parameter spaces is more important than the search for individual parameter combinations, which, at first glance, produce better results but are not stable.
+Based on this insight, this chapter describes a concrete workflow for how a search for parameter spaces could work that simultaneously delivers stable and profitable results.
+
+First, as many parameter combinations as possible should be tested through backtests.
+Metrics needed for the next step should be recorded for each of these.
+These metrics can be taken from \autoref{chap:performance}, for example, or expanded as desired.
+It should be noted that the larger the number of parameters, the more backtests should be performed to cover the entire parameter space as well as possible.
+
+In the next step, optionally, a combined metric $f$ can be created from the recorded metrics, which includes multiple aspects.
+This could, for example, look like this:
+
+\[
+    \begin{aligned}
+        f =\ &+\, 0.25 \cdot \text{Rank}(\text{LastEquity}) \\
+        &+\, 0.15 \cdot \text{Rank}(\text{MaxEquity}) \\
+        &+\, 0.10 \cdot \text{Rank}(\text{WinRatio}) \\
+        &+\, 0.10 \cdot \text{Rank}(\text{NumTrades}) \\
+        &-\, 0.15 \cdot \text{Rank}(\text{MaxDrawdown}) \\
+        &-\, 0.10 \cdot \text{Rank}(\text{MaxLoss}) \\
+        &-\, 0.10 \cdot \text{Rank}(\text{ProfitsStd}) \\
+        &-\, 0.05 \cdot \text{Rank}(\text{MinEquity})
+    \end{aligned}
+\]
+
+
+\noindent
+Here $Rank(X)$ is the ranking of $X$ across all tested combinations, normalized to $[0; 1]$.
+This metric incorporates all metrics that were also compared in the previous strategies, eliminates scale differences, and considers whether a metric should be maximized or minimized.
+Furthermore, the weighting determines the importance of individual metrics, allowing greater or lesser emphasis to be placed on individual metrics.
+This results in one value for each parameter combination and backtest, which can be used to search for plateaus, simplifying the subsequent steps without losing any information.
+
+The best 10-20\% of the backtest results are then filtered using the combined metric.
+This has the advantage of allowing unwanted plateaus to be filtered out in advance.
+These unwanted plateaus can arise when various parameter combinations produce poor results, resulting in plateaus in undesirable ranges.
+Thus, filtering can reduce the risk of finding false plateaus.
+The best 10-20\% range was selected because a smaller range may simply contain many peaks in the data.
+A larger range can dilute the structures because average results are also included.
+Thus, the 10-20\% range offers a good trade-off between average results and results affected by overfitting.
+
+The next and most important step is the actual plateau search.
+Several methods could be used for this.
+The first approach involves dimensional reduction of the $N$-dimensional space\footnote{$N$ corresponds to the number of strategy parameters} followed by clustering.
+The second approach uses mathematical neighborhood analysis using gradients and variances to find smooth regions.
+Both approaches have advantages and disadvantages.
+Clustering is usually more efficient than neighborhood analysis for large $N$ \cite{cluster-neighbors} and, if the correct dimensional reduction and clustering methods are chosen, it does not lose any information.
+However, this is also a disadvantage.
+If the wrong dimensional reduction method is chosen, the neighborhoods of the points may not be preserved \cite{cluster-neighbors}, which can lead to misinterpretations of the results.
+At the same time, the clusters found must be transformed back into the higher-dimensional space to recover the strategy parameters, which can lead to errors.
+The second approach, using mathematical neighborhood analysis, is more computationally intensive, but it eliminates the need for back transformation and prevents any loss of information, as the calculations are performed directly in the original space.
+For this reason, it was decided to explain the second way in more detail.
+
+The basic idea is to first find plateau candidates and then cluster them.
+A plateau candidate is a point that exhibits a small gradient and low variance with respect to its $k$ nearest neighbors.
+The following algorithm describes how, for each tested parameter combination $x_i \in \mathbb{R}^N$ with the associated performance metric $f(x_i)$, a point is determined to be a plateau candidate.
+
+\begin{enumerate}
+    \item \textbf{Knn-Neighborhood:} Find the $k$ nearest points $\{x_j\}$ to $x_i$.
+    \item \textbf{Local gradient:} For $x_i$, calculate the local gradient $g_i$ with
+    \[
+        g_i = \frac{1}{k} \cdot \sum_{j=i}^{k} \frac{|f(x_i) - f(x_j)|}{\Vert x_i - x_j \Vert + \epsilon}
+    \]
+    \item \textbf{Local variance:} For $x_i$, calculate the local variance $v_i$ with
+    \[
+        v_i = \text{Var}(f(x_j) | x_j \in \text{KNN}(x_i))
+    \]
+    \item \textbf{Plateau candidates:} Select only those $x_i$ for which
+    \[
+        f(x_i) \geq Q_{1-\alpha}, \quad g_i \leq \gamma, \quad v_i \leq \delta
+    \]
+    where $Q_{1-\alpha}$ is the $(1 - \alpha)$-quantile (e.g., $\alpha = 0.2$), and $\gamma$, $\delta$ are small limits (e.g., median of $g_i$, $v_i$)
+    \item \textbf{Clustering:} Connect all $x_i$ from step 4 that are located in each other's KNNs.
+    Alternatively, clustering can be done using density-based clustering methods such as DBSCAN \cite{dbscan}.
+    Each cluster is a plateau.
+\end{enumerate}
+
+\noindent
+Subsequently, the mean $\bar{f}$ and the stability score $S = \frac{\bar{f}}{std(f)}$ must be calculated for each plateau.
+$S$ can be interpreted that the highest possible combined metric ($\bar{f}$) and the lowest possible standard deviation within the cluster lead to a larger $S$.
+This means that a good strategy result, in the sense of the combined metric and high stability have been achieved simultaneously.
+Thus, the cluster with the highest $S$ can be selected as the best cluster $C^\ast$.
+
+As a final step, the strategy's final parameters must be determined from the cluster.
+For this purpose, for example, the best parameter vector $\vec{p_{i^\ast}} \in C^\ast$ with the highest individual $f_i$ can be selected, which leads to the highest performance but potentially a lower tolerance.
+Alternatively, the mean vector $\vec{p}_{\text{center}}$ of the cluster can be selected.
+
+\[
+    \vec{p}_{\text{center}} = \frac{1}{|C^\ast|} \cdot \sum_{i \in C^\ast} \vec{p_i}
+\]
+
+\noindent
+This vector has the maximum distance to the edges of the plateau and thus the highest tolerance to parameter fluctuations.
+
+Thus, this workflow yields a final parameter vector that is contained in a more stable parameter space, which probably yields worse in-sample results, but generalizes significantly better than the best parameter combination on the in-sample data.
+

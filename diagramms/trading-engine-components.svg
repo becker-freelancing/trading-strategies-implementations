@@ -1,472 +1,472 @@
 <svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css"
-     height="688px" preserveAspectRatio="none" style="width:1140px;height:688px;background:#FFFFFF;" version="1.1"
-     viewBox="0 0 1140 688" width="1140.8px" zoomAndPan="magnify">
+     height="776px" preserveAspectRatio="none" style="width:1584px;height:776px;background:#FFFFFF;" version="1.1"
+     viewBox="0 0 1584 776" width="1584px" zoomAndPan="magnify">
     <defs/>
     <g><!--cluster Trading Engine-->
         <g id="cluster_Trading Engine">
-            <rect fill="none" height="440.8" rx="2" ry="2" style="stroke:#181818;stroke-width:0.8000000000000002;"
-                  width="770.4" x="224" y="106.4"/>
-            <path d="M313.5117,106.4 L313.5117,115.6969 L305.5117,123.6969 L224,123.6969 " fill="none"
-                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" font-weight="bold" lengthAdjust="spacing"
-                  textLength="81.5117" x="226.4" y="119.2859">Trading Engine
+            <path d="M315.6,124.0172 L444.4898,124.0172 A3,3 0 0 1 446.4898,126.0172 L452.0898,152.2266 L1381.2,152.2266 A2,2 0 0 1 1383.2,154.2266 L1383.2,621.2172 A2,2 0 0 1 1381.2,623.2172 L315.6,623.2172 A2,2 0 0 1 313.6,621.2172 L313.6,126.0172 A2,2 0 0 1 315.6,124.0172 "
+                  fill="none" style="stroke:#000000;stroke-width:1.2000000000000002;"/>
+            <line style="stroke:#000000;stroke-width:1.2000000000000002;" x1="313.6" x2="452.0898" y1="152.2266"
+                  y2="152.2266"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" font-weight="bold" lengthAdjust="spacing"
+                  textLength="128.0898" x="316.8" y="144.6094">Trading Engine
             </text>
         </g><!--cluster Applications-->
         <g id="cluster_Applications">
-            <rect fill="none" height="81.6" rx="2" ry="2" style="stroke:#181818;stroke-width:0.8000000000000002;"
-                  width="331.2" x="392.8" y="5.6"/>
-            <path d="M468.0055,5.6 L468.0055,14.8969 L460.0055,22.8969 L392.8,22.8969 " fill="none"
-                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" font-weight="bold" lengthAdjust="spacing"
-                  textLength="67.2055" x="395.2" y="18.4859">Applications
+            <path d="M554,6.4172 L660.4086,6.4172 A3,3 0 0 1 662.4086,8.4172 L668.0086,34.6266 L1002.8,34.6266 A2,2 0 0 1 1004.8,36.6266 L1004.8,102.8172 A2,2 0 0 1 1002.8,104.8172 L554,104.8172 A2,2 0 0 1 552,102.8172 L552,8.4172 A2,2 0 0 1 554,6.4172 "
+                  fill="none" style="stroke:#000000;stroke-width:1.2000000000000002;"/>
+            <line style="stroke:#000000;stroke-width:1.2000000000000002;" x1="552" x2="668.0086" y1="34.6266"
+                  y2="34.6266"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" font-weight="bold" lengthAdjust="spacing"
+                  textLength="105.6086" x="555.2" y="27.0094">Applications
             </text>
         </g><!--cluster Adapters-->
         <g id="cluster_Adapters">
-            <rect fill="none" height="81.6" rx="2" ry="2" style="stroke:#181818;stroke-width:0.8000000000000002;"
-                  width="1130.4" x="5.6" y="601.6"/>
-            <path d="M62.1461,601.6 L62.1461,610.8969 L54.1461,618.8969 L5.6,618.8969 " fill="none"
-                  style="stroke:#181818;stroke-width:0.8000000000000002;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" font-weight="bold" lengthAdjust="spacing"
-                  textLength="48.5461" x="8" y="614.4859">Adapters
+            <path d="M6.8,672.0172 L83.8867,672.0172 A3,3 0 0 1 85.8867,674.0172 L91.4867,700.2266 L1576.4,700.2266 A2,2 0 0 1 1578.4,702.2266 L1578.4,768.4172 A2,2 0 0 1 1576.4,770.4172 L6.8,770.4172 A2,2 0 0 1 4.8,768.4172 L4.8,674.0172 A2,2 0 0 1 6.8,672.0172 "
+                  fill="none" style="stroke:#000000;stroke-width:1.2000000000000002;"/>
+            <line style="stroke:#000000;stroke-width:1.2000000000000002;" x1="4.8" x2="91.4867" y1="700.2266"
+                  y2="700.2266"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" font-weight="bold" lengthAdjust="spacing"
+                  textLength="76.2867" x="8" y="692.6094">Adapters
             </text>
         </g><!--entity Data-Provider-->
         <g id="elem_Data-Provider">
-            <ellipse cx="648" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+            <ellipse cx="896" cy="576.8172" fill="#F1F1F1" rx="6.4" ry="6.4"
                      style="stroke:#181818;stroke-width:0.4000000000000001;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="69.0922"
-                  x="613.4539" y="535.2859">Data-Provider
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="108.5734"
+                  x="841.7133" y="609.4094">Data-Provider
             </text>
         </g><!--entity Trading-Strategy-->
         <g id="elem_Trading-Strategy">
-            <ellipse cx="284.8" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+            <ellipse cx="397.6" cy="576.8172" fill="#F1F1F1" rx="6.4" ry="6.4"
                      style="stroke:#181818;stroke-width:0.4000000000000001;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="83.4148"
-                  x="243.0926" y="535.2859">Trading-Strategy
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="131.0805"
+                  x="332.0598" y="609.4094">Trading-Strategy
             </text>
         </g><!--entity Broker-Requestor-->
         <g id="elem_Broker-Requestor">
-            <ellipse cx="411.2" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+            <ellipse cx="572" cy="576.8172" fill="#F1F1F1" rx="6.4" ry="6.4"
                      style="stroke:#181818;stroke-width:0.4000000000000001;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="88.3914"
-                  x="367.0043" y="535.2859">Broker-Requestor
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="138.9008"
+                  x="502.5496" y="609.4094">Broker-Requestor
             </text>
         </g><!--entity Trade-Executor-->
         <g id="elem_Trade-Executor">
-            <ellipse cx="534.4" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+            <ellipse cx="741.6" cy="576.8172" fill="#F1F1F1" rx="6.4" ry="6.4"
                      style="stroke:#181818;stroke-width:0.4000000000000001;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="77.1859"
-                  x="495.807" y="535.2859">Trade-Executor
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="121.2922"
+                  x="680.9539" y="609.4094">Trade-Executor
             </text>
         </g><!--entity Entry-Signal-Adaptor-->
         <g id="elem_Entry-Signal-Adaptor">
-            <ellipse cx="924" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+            <ellipse cx="1282.4" cy="576.8172" fill="#F1F1F1" rx="6.4" ry="6.4"
                      style="stroke:#181818;stroke-width:0.4000000000000001;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="103.9609"
-                  x="872.0195" y="535.2859">Entry-Signal-Adaptor
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="163.3672"
+                  x="1200.7164" y="609.4094">Entry-Signal-Adaptor
             </text>
         </g><!--entity Entry-Signal-Validator-->
         <g id="elem_Entry-Signal-Validator">
-            <ellipse cx="777.6" cy="509.6" fill="#F1F1F1" rx="6.4" ry="6.4"
+            <ellipse cx="1075.2" cy="576.8172" fill="#F1F1F1" rx="6.4" ry="6.4"
                      style="stroke:#181818;stroke-width:0.4000000000000001;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="108.9375"
-                  x="723.1313" y="535.2859">Entry-Signal-Validator
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="171.1875"
+                  x="989.6063" y="609.4094">Entry-Signal-Validator
             </text>
         </g><!--entity Strategy-Engine-->
         <g id="elem_Strategy-Engine">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="112.3141" x="507.2" y="310.4"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="158.2078" x="706.4" y="352.8172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="603.5141" y="314.4"/>
+                  x="848.6078" y="356.8172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="601.9141" y="316"/>
+                  x="847.0078" y="358.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="601.9141" y="319.2"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="80.3141"
-                  x="519.2" y="338.4859">Strategy-Engine
+                  x="847.0078" y="361.6172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="126.2078"
+                  x="718.4" y="387.8094">Strategy-Engine
             </text>
         </g><!--entity Datasource-API-->
         <g id="elem_Datasource-API">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="111.0563" x="585.2" y="397.6"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="156.2313" x="812.4" y="448.0172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="680.2563" y="401.6"/>
+                  x="952.6313" y="452.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="678.6563" y="403.2"/>
+                  x="951.0313" y="453.6172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="678.6563" y="406.4"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="79.0563"
-                  x="597.2" y="425.6859">Datasource-API
+                  x="951.0313" y="456.8172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="124.2313"
+                  x="824.4" y="483.0094">Datasource-API
             </text>
         </g><!--entity Strategies-API-->
         <g id="elem_Strategies-API">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="104.2094" x="263.2" y="397.6"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="145.4719" x="368.8" y="448.0172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="351.4094" y="401.6"/>
+                  x="498.2719" y="452.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="349.8094" y="403.2"/>
+                  x="496.6719" y="453.6172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="349.8094" y="406.4"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="72.2094"
-                  x="275.2" y="425.6859">Strategies-API
+                  x="496.6719" y="456.8172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="113.4719"
+                  x="380.8" y="483.0094">Strategies-API
             </text>
         </g><!--entity Broker-Connector-API-->
         <g id="elem_Broker-Connector-API">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="142.1734" x="414.4" y="397.6"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="205.1297" x="579.2" y="448.0172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="540.5734" y="401.6"/>
+                  x="768.3297" y="452.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="538.9734" y="403.2"/>
+                  x="766.7297" y="453.6172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="538.9734" y="406.4"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="110.1734"
-                  x="426.4" y="425.6859">Broker-Connector-API
+                  x="766.7297" y="456.8172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="173.1297"
+                  x="591.2" y="483.0094">Broker-Connector-API
             </text>
         </g><!--entity Management-API-->
         <g id="elem_Management-API">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="119.1555" x="724.4" y="397.6"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="168.9586" x="996.4" y="448.0172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="827.5555" y="401.6"/>
+                  x="1149.3586" y="452.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="825.9555" y="403.2"/>
+                  x="1147.7586" y="453.6172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="825.9555" y="406.4"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="87.1555"
-                  x="736.4" y="425.6859">Management-API
+                  x="1147.7586" y="456.8172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="136.9586"
+                  x="1008.4" y="483.0094">Management-API
             </text>
         </g><!--entity Backtest-Engine-->
         <g id="elem_Backtest-Engine">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="113.5555" x="600.8" y="223.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="160.1586" x="836.8" y="257.6172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="698.3555" y="227.2"/>
+                  x="980.9586" y="261.6172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="696.7555" y="228.8"/>
+                  x="979.3586" y="263.2172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="696.7555" y="232"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="81.5555"
-                  x="612.8" y="251.2859">Backtest-Engine
+                  x="979.3586" y="266.4172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="128.1586"
+                  x="848.8" y="292.6094">Backtest-Engine
             </text>
         </g><!--entity Remote-Execution-Engine-->
         <g id="elem_Remote-Execution-Engine">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="162.7359" x="387.6" y="223.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="237.4422" x="535.6" y="257.6172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="534.3359" y="227.2"/>
+                  x="757.0422" y="261.6172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="532.7359" y="228.8"/>
+                  x="755.4422" y="263.2172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="532.7359" y="232"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="130.7359"
-                  x="399.6" y="251.2859">Remote-Execution-Engine
+                  x="755.4422" y="266.4172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="205.4422"
+                  x="547.6" y="292.6094">Remote-Execution-Engine
             </text>
         </g><!--entity Abstract-Local-Backtest-App-->
         <g id="elem_Abstract-Local-Backtest-App">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="173.925" x="582" y="136"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="255.025" x="806.8" y="162.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="739.925" y="140"/>
+                  x="1045.825" y="166.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="738.325" y="141.6"/>
+                  x="1044.225" y="168.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="738.325" y="144.8"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="141.925"
-                  x="594" y="164.0859">Abstract-Local-Backtest-App
+                  x="1044.225" y="171.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="223.025"
+                  x="818.8" y="197.4094">Abstract-Local-Backtest-App
             </text>
         </g><!--entity Abstract-Remote-Execution-App-->
         <g id="elem_Abstract-Remote-Execution-App">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="192.6008" x="361.2" y="136"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="284.3727" x="494.8" y="162.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="537.8008" y="140"/>
+                  x="763.1727" y="166.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="536.2008" y="141.6"/>
+                  x="761.5727" y="168.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="536.2008" y="144.8"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="160.6008"
-                  x="373.2" y="164.0859">Abstract-Remote-Execution-App
+                  x="761.5727" y="171.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="252.3727"
+                  x="506.8" y="197.4094">Abstract-Remote-Execution-App
             </text>
         </g><!--entity Local-Backtest-App-->
         <g id="elem_Local-Backtest-App">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="129.1141" x="582" y="35.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="184.6078" x="806.8" y="44.8172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="695.1141" y="39.2"/>
+                  x="975.4078" y="48.8172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="693.5141" y="40.8"/>
+                  x="973.8078" y="50.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="693.5141" y="44"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="97.1141"
-                  x="594" y="63.2859">Local-Backtest-App
+                  x="973.8078" y="53.6172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="152.6078"
+                  x="818.8" y="79.8094">Local-Backtest-App
             </text>
         </g><!--entity Remote-Execution-App-->
         <g id="elem_Remote-Execution-App">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="147.7898" x="406" y="35.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="213.9555" x="565.2" y="44.8172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="537.7898" y="39.2"/>
+                  x="763.1555" y="48.8172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="536.1898" y="40.8"/>
+                  x="761.5555" y="50.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="536.1898" y="44"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="115.7898"
-                  x="418" y="63.2859">Remote-Execution-App
+                  x="761.5555" y="53.6172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="181.9555"
+                  x="577.2" y="79.8094">Remote-Execution-App
             </text>
         </g><!--entity Local-CSV-Datasource-->
         <g id="elem_Local-CSV-Datasource">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="146.5375" x="574.8" y="631.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="211.9875" x="790" y="710.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="705.3375" y="635.2"/>
+                  x="985.9875" y="714.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="703.7375" y="636.8"/>
+                  x="984.3875" y="716.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="703.7375" y="640"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="114.5375"
-                  x="586.8" y="659.2859">Local-CSV-Datasource
+                  x="984.3875" y="719.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="179.9875"
+                  x="802" y="745.4094">Local-CSV-Datasource
             </text>
         </g><!--entity ByBit-Remote-Datasource-->
         <g id="elem_ByBit-Remote-Datasource">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="162.0906" x="749.2" y="631.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="236.4281" x="1030.4" y="710.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="895.2906" y="635.2"/>
+                  x="1250.8281" y="714.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="893.6906" y="636.8"/>
+                  x="1249.2281" y="716.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="893.6906" y="640"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="130.0906"
-                  x="761.2" y="659.2859">ByBit-Remote-Datasource
+                  x="1249.2281" y="719.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="204.4281"
+                  x="1042.4" y="745.4094">ByBit-Remote-Datasource
             </text>
         </g><!--entity Strategies-Implementations-->
         <g id="elem_Strategies-Implementations">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="168.3305" x="18.4" y="631.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="246.2336" x="17.6" y="710.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="170.7305" y="635.2"/>
+                  x="247.8336" y="714.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="169.1305" y="636.8"/>
+                  x="246.2336" y="716.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="169.1305" y="640"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="136.3305"
-                  x="30.4" y="659.2859">Strategies-Implementations
+                  x="246.2336" y="719.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="214.2336"
+                  x="29.6" y="745.4094">Strategies-Implementations
             </text>
         </g><!--entity Demo-Broker-Connector-->
         <g id="elem_Demo-Broker-Connector">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="153.9969" x="214.4" y="631.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="223.7094" x="292" y="710.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="352.3969" y="635.2"/>
+                  x="499.7094" y="714.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="350.7969" y="636.8"/>
+                  x="498.1094" y="716.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="350.7969" y="640"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="121.9969"
-                  x="226.4" y="659.2859">Demo-Broker-Connector
+                  x="498.1094" y="719.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="191.7094"
+                  x="304" y="745.4094">Demo-Broker-Connector
             </text>
         </g><!--entity ByBit-Broker-Connector-->
         <g id="elem_ByBit-Broker-Connector">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="150.2617" x="396" y="631.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="217.8398" x="544" y="710.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="530.2617" y="635.2"/>
+                  x="745.8398" y="714.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="528.6617" y="636.8"/>
+                  x="744.2398" y="716.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="528.6617" y="640"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="118.2617"
-                  x="408" y="659.2859">ByBit-Broker-Connector
+                  x="744.2398" y="719.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="185.8398"
+                  x="556" y="745.4094">ByBit-Broker-Connector
             </text>
         </g><!--entity Management-Implementations-->
         <g id="elem_Management-Implementations">
-            <rect fill="#F1F1F1" height="38.8969" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
-                  width="183.2766" x="939.6" y="631.2"/>
+            <rect fill="#F1F1F1" height="47.4094" rx="2" ry="2" style="stroke:#181818;stroke-width:0.4000000000000001;"
+                  width="269.7203" x="1295.6" y="710.4172"/>
             <rect fill="#F1F1F1" height="8" style="stroke:#181818;stroke-width:0.4000000000000001;" width="12"
-                  x="1106.8766" y="635.2"/>
+                  x="1549.3203" y="714.4172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="1105.2766" y="636.8"/>
+                  x="1547.7203" y="716.0172"/>
             <rect fill="#F1F1F1" height="1.6" style="stroke:#181818;stroke-width:0.4000000000000001;" width="3.2"
-                  x="1105.2766" y="640"/>
-            <text fill="#000000" font-family="sans-serif" font-size="11.2" lengthAdjust="spacing" textLength="151.2766"
-                  x="951.6" y="659.2859">Management-Implementations
+                  x="1547.7203" y="719.2172"/>
+            <text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacing" textLength="237.7203"
+                  x="1307.6" y="745.4094">Management-Implementations
             </text>
         </g><!--link Datasource-API to Data-Provider-->
         <g id="link_Datasource-API_Data-Provider">
-            <path d="M642.288,436.816 C643.912,457.28 646.424,488.88 647.488,502.352 " fill="none"
+            <path d="M891.64,495.4092 C892.928,519.2572 894.864,555.0412 895.648,569.5532 " fill="none"
                   id="Datasource-API-Data-Provider" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Strategies-API to Trading-Strategy-->
         <g id="link_Strategies-API_Trading-Strategy">
-            <path d="M308.904,436.816 C302.048,457.28 291.472,488.88 286.96,502.352 " fill="none"
+            <path d="M431.832,495.4092 C421.704,519.2572 406.512,555.0412 400.344,569.5532 " fill="none"
                   id="Strategies-API-Trading-Strategy" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Broker-Connector-API to Broker-Requestor-->
         <g id="link_Broker-Connector-API_Broker-Requestor">
-            <path d="M470.184,436.816 C453.416,457.28 427.528,488.88 416.48,502.352 " fill="none"
+            <path d="M657.28,495.4092 C632.048,519.2572 594.192,555.0412 578.832,569.5532 " fill="none"
                   id="Broker-Connector-API-Broker-Requestor" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Broker-Connector-API to Trade-Executor-->
         <g id="link_Broker-Connector-API_Trade-Executor">
-            <path d="M495.712,436.816 C506.712,457.28 523.696,488.88 530.936,502.352 " fill="none"
+            <path d="M694.912,495.4092 C708.728,519.2572 729.448,555.0412 737.856,569.5532 " fill="none"
                   id="Broker-Connector-API-Trade-Executor" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Management-API to Entry-Signal-Adaptor-->
         <g id="link_Management-API_Entry-Signal-Adaptor">
-            <path d="M813.008,436.816 C846.008,458.216 897.768,491.784 916.728,504.08 " fill="none"
+            <path d="M1125.288,495.2812 C1174.92,520.7852 1251.36,560.0652 1275.112,572.2732 " fill="none"
                   id="Management-API-Entry-Signal-Adaptor" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Management-API to Entry-Signal-Validator-->
         <g id="link_Management-API_Entry-Signal-Validator">
-            <path d="M782.672,436.816 C781.232,457.28 779.008,488.88 778.056,502.352 " fill="none"
+            <path d="M1079.56,495.4092 C1078.272,519.2572 1076.336,555.0412 1075.552,569.5532 " fill="none"
                   id="Management-API-Entry-Signal-Validator" style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Backtest-Engine to Strategy-Engine-->
         <g id="link_Backtest-Engine_Strategy-Engine">
-            <path d="M636.648,262.6 C621.008,276.784 603.2757,292.8555 587.6437,307.0315 " fill="none"
+            <path d="M884.704,304.9132 C864.296,319.4732 841.8834,335.4613 821.4994,350.0053 " fill="none"
                   id="Backtest-Engine-to-Strategy-Engine"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="584.088,310.256,591.5711,307.7897,587.0511,307.5689,587.2718,303.0488,584.088,310.256"
+                     points="817.592,352.7932,825.3117,351.2162,820.8481,350.4699,821.5944,346.0064,817.592,352.7932"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Remote-Execution-Engine to Strategy-Engine-->
         <g id="link_Remote-Execution-Engine_Strategy-Engine">
-            <path d="M489.752,262.6 C505.392,276.784 523.1243,292.8555 538.7563,307.0315 " fill="none"
+            <path d="M686.496,304.9132 C706.904,319.4732 729.3166,335.4613 749.7006,350.0053 " fill="none"
                   id="Remote-Execution-Engine-to-Strategy-Engine"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="542.312,310.256,539.1282,303.0488,539.3489,307.5689,534.8289,307.7897,542.312,310.256"
+                     points="753.608,352.7932,749.6056,346.0064,750.3519,350.4699,745.8883,351.2162,753.608,352.7932"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Abstract-Local-Backtest-App to Backtest-Engine-->
         <g id="link_Abstract-Local-Backtest-App_Backtest-Engine">
-            <path d="M666.312,175.4 C664.456,189.584 662.5591,204.1206 660.7031,218.2966 " fill="none"
+            <path d="M930.096,209.7132 C927.368,224.2172 924.7448,238.1962 922.0088,252.7162 " fill="none"
                   id="Abstract-Local-Backtest-App-to-Backtest-Engine"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="660.08,223.056,664.1876,216.3323,660.5993,219.0898,657.8418,215.5015,660.08,223.056"
+                     points="921.12,257.4332,925.5979,250.9502,921.8607,253.5024,919.3086,249.7652,921.12,257.4332"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Abstract-Remote-Execution-App to Remote-Execution-Engine-->
         <g id="link_Abstract-Remote-Execution-App_Remote-Execution-Engine">
-            <path d="M460.088,175.4 C461.944,189.584 463.8409,204.1206 465.6969,218.2966 " fill="none"
+            <path d="M641.104,209.7132 C643.832,224.2172 646.4552,238.1962 649.1912,252.7162 " fill="none"
                   id="Abstract-Remote-Execution-App-to-Remote-Execution-Engine"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="466.32,223.056,468.5582,215.5015,465.8007,219.0898,462.2124,216.3323,466.32,223.056"
+                     points="650.08,257.4332,651.8914,249.7652,649.3393,253.5024,645.6021,250.9502,650.08,257.4332"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Local-Backtest-App to Abstract-Local-Backtest-App-->
         <g id="link_Local-Backtest-App_Abstract-Local-Backtest-App">
-            <path d="M650.664,74.496 C654.648,92.144 659.5096,113.6701 663.4936,131.2941 " fill="none"
+            <path d="M906.152,92.1372 C912.328,112.4732 919.9018,137.4321 926.0698,157.7521 " fill="none"
                   id="Local-Backtest-App-to-Abstract-Local-Backtest-App"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="664.552,135.976,666.0857,128.2476,663.67,132.0744,659.8432,129.6588,664.552,135.976"
+                     points="927.464,162.3452,928.4348,154.5261,926.3022,158.5176,922.3107,156.3851,927.464,162.3452"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Remote-Execution-App to Abstract-Remote-Execution-App-->
         <g id="link_Remote-Execution-App_Abstract-Remote-Execution-App">
-            <path d="M475.736,74.496 C471.752,92.144 466.8904,113.6701 462.9064,131.2941 " fill="none"
+            <path d="M665.048,92.1372 C658.872,112.4732 651.2982,137.4321 645.1302,157.7521 " fill="none"
                   id="Remote-Execution-App-to-Abstract-Remote-Execution-App"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="461.848,135.976,466.5568,129.6588,462.73,132.0744,460.3143,128.2476,461.848,135.976"
+                     points="643.736,162.3452,648.8893,156.3851,644.8978,158.5176,642.7652,154.5261,643.736,162.3452"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Strategy-Engine to Datasource-API-->
         <g id="link_Strategy-Engine_Datasource-API">
-            <path d="M580.424,349.8 C593.28,363.984 607.5526,379.7234 620.4006,393.8994 " fill="none"
+            <path d="M811.24,400.1132 C827.48,414.6172 844.8281,430.1156 861.0841,444.6356 " fill="none"
                   id="Strategy-Engine-to-Datasource-API"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="623.624,397.456,621.1599,389.9721,620.9378,394.4922,616.4178,394.27,623.624,397.456"
+                     points="864.664,447.8332,861.4259,440.6502,861.6808,445.1685,857.1625,445.4234,864.664,447.8332"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Strategy-Engine to Strategies-API-->
         <g id="link_Strategy-Engine_Strategies-API">
-            <path d="M508.472,349.688 C466.392,364.216 413.1776,382.5866 371.7856,396.8666 " fill="none"
+            <path d="M706.248,398.8092 C648.504,414.5212 575.5437,434.3733 519.3117,449.6693 " fill="none"
                   id="Strategy-Engine-to-Strategies-API"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="367.248,398.432,375.098,399.1089,371.0293,397.1275,373.0107,393.0588,367.248,398.432"
+                     points="514.68,450.9292,522.4675,452.1271,518.5398,449.8793,520.7876,445.9515,514.68,450.9292"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Strategy-Engine to Broker-Connector-API-->
         <g id="link_Strategy-Engine_Broker-Connector-API">
-            <path d="M545.976,349.8 C533.12,363.984 518.8474,379.7234 505.9994,393.8994 " fill="none"
+            <path d="M760.16,400.1132 C744.04,414.6172 726.8401,430.1025 710.7041,444.6225 " fill="none"
                   id="Strategy-Engine-to-Broker-Connector-API"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="502.776,397.456,509.9822,394.27,505.4622,394.4922,505.2401,389.9721,502.776,397.456"
+                     points="707.136,447.8332,714.6286,445.3958,710.1094,445.1576,710.3476,440.6384,707.136,447.8332"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--link Strategy-Engine to Management-API-->
         <g id="link_Strategy-Engine_Management-API">
-            <path d="M611.928,349.688 C648.632,363.92 694.2448,381.6002 730.9168,395.8242 " fill="none"
+            <path d="M857.816,400.1132 C903.728,414.6732 958.3765,431.9985 1004.2485,446.5425 " fill="none"
                   id="Strategy-Engine-to-Management-API"
                   style="stroke:#181818;stroke-width:0.8000000000000002;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="735.392,397.56,729.8364,391.9729,731.6627,396.1135,727.5221,397.9398,735.392,397.56"
+                     points="1008.824,447.9932,1002.9278,442.7668,1005.0111,446.7843,1000.9936,448.8675,1008.824,447.9932"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Entry-Signal-Adaptor to Management-Implementations-->
         <g id="link_Entry-Signal-Adaptor_Management-Implementations">
-            <path d="M932.0923,520.9424 C947.8203,541.4144 992.552,599.672 1016.76,631.192 " fill="none"
+            <path d="M1292.0684,587.7829 C1312.5404,609.3029 1374.08,674.0092 1408.48,710.1772 " fill="none"
                   id="Entry-Signal-Adaptor-backto-Management-Implementations"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="929.168,517.136,931.0169,524.7951,931.6049,520.308,936.092,520.896,929.168,517.136"
+                     points="1288.76,584.3052,1291.4041,591.7274,1291.517,587.2033,1296.0411,587.3162,1288.76,584.3052"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Entry-Signal-Validator to Management-Implementations-->
         <g id="link_Entry-Signal-Validator_Management-Implementations">
-            <path d="M788.9682,517.054 C802.3282,524.862 827.68,539.6 852.8,553.6 C902,581.024 959.392,611.824 995.512,631.064 "
+            <path d="M1086.7164,583.8409 C1103.6764,592.9529 1142.968,613.6092 1180.8,629.6172 C1224.608,648.1532 1237.504,647.7612 1281.6,665.6172 C1315.792,679.4572 1353.624,696.6732 1382.592,710.2732 "
                   fill="none" id="Entry-Signal-Validator-backto-Management-Implementations"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="784.824,514.632,789.4256,521.0277,788.2775,516.6503,792.6549,515.5022,784.824,514.632"
+                     points="1082.488,581.5692,1087.3161,587.7957,1086.0116,583.4623,1090.3451,582.1579,1082.488,581.5692"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Data-Provider to Local-CSV-Datasource-->
         <g id="link_Data-Provider_Local-CSV-Datasource">
-            <path d="M648,521.936 C648,542.408 648,599.672 648,631.192 " fill="none"
+            <path d="M896,589.1052 C896,610.6252 896,674.0092 896,710.1772 " fill="none"
                   id="Data-Provider-backto-Local-CSV-Datasource"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
-            <polygon fill="#181818" points="648,517.136,644.8,524.336,648,521.136,651.2,524.336,648,517.136"
+            <polygon fill="#181818" points="896,584.3052,892.8,591.5052,896,588.3052,899.2,591.5052,896,584.3052"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Data-Provider to ByBit-Remote-Datasource-->
         <g id="link_Data-Provider_ByBit-Remote-Datasource">
-            <path d="M659.2387,519.2792 C669.8227,527.6392 686.04,540.384 703.2,553.6 C738.432,580.736 779.488,611.736 805.216,631.088 "
+            <path d="M907.1221,585.8381 C920.2661,595.5101 945.16,613.5052 970.4,629.6172 C1016.288,658.9052 1070.576,689.9372 1107.112,710.3132 "
                   fill="none" id="Data-Provider-backto-ByBit-Remote-Datasource"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="655.472,516.304,659.1386,523.278,658.6109,518.7833,663.1055,518.2557,655.472,516.304"
+                     points="903.256,582.9932,907.1586,589.8379,906.4778,585.3639,910.9517,584.6831,903.256,582.9932"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Trade-Executor to ByBit-Broker-Connector-->
         <g id="link_Trade-Executor_ByBit-Broker-Connector">
-            <path d="M529.3717,521.5084 C520.0997,541.9804 493.984,599.672 479.712,631.192 " fill="none"
+            <path d="M735.405,588.4742 C723.125,609.9942 686.592,674.0092 665.952,710.1772 " fill="none"
                   id="Trade-Executor-backto-ByBit-Broker-Connector"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="531.352,517.136,525.4665,522.3744,529.7017,520.7797,531.2965,525.0149,531.352,517.136"
+                     points="737.784,584.3052,731.4362,588.9727,735.8015,587.7794,736.9949,592.1447,737.784,584.3052"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Broker-Requestor to ByBit-Broker-Connector-->
         <g id="link_Broker-Requestor_ByBit-Broker-Connector">
-            <path d="M415.9916,521.5458 C424.7916,542.0178 449.568,599.672 463.112,631.192 " fill="none"
+            <path d="M577.6842,588.565 C588.8602,610.085 622.056,674.0092 640.832,710.1772 " fill="none"
                   id="Broker-Requestor-backto-ByBit-Broker-Connector"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="414.096,517.136,413.9995,525.0145,415.6757,520.8109,419.8793,522.487,414.096,517.136"
+                     points="575.472,584.3052,575.9505,592.1697,577.3155,587.855,581.6302,589.2201,575.472,584.3052"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Trade-Executor to Demo-Broker-Connector-->
         <g id="link_Trade-Executor_Demo-Broker-Connector">
-            <path d="M523.3778,519.5733 C512.5298,528.4773 495.024,542.136 475.2,553.6 C435.792,576.392 421.944,574.112 381.6,595.2 C360.536,606.208 337.648,620.104 320.176,631.144 "
+            <path d="M730.5521,586.4368 C717.0161,597.0608 690.472,616.6812 661.6,629.6172 C606.112,654.4892 586.072,643.0652 529.6,665.6172 C498.672,677.9692 465.568,696.0012 441.12,710.3372 "
                   fill="none" id="Trade-Executor-backto-Demo-Broker-Connector"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="527.088,516.528,519.4924,518.6225,523.9961,519.0658,523.5529,523.5695,527.088,516.528"
+                     points="734.328,583.4732,726.6885,585.4013,731.1814,585.9428,730.6399,590.4358,734.328,583.4732"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Broker-Requestor to Demo-Broker-Connector-->
         <g id="link_Broker-Requestor_Demo-Broker-Connector">
-            <path d="M402.286,520.7751 C384.678,541.2471 334.464,599.672 307.368,631.192 " fill="none"
+            <path d="M561.4702,587.3666 C538.4302,608.7026 467.776,674.1532 428.664,710.3772 " fill="none"
                   id="Broker-Requestor-backto-Demo-Broker-Connector"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="405.416,517.136,398.2949,520.508,402.8077,520.1686,403.1471,524.6813,405.416,517.136"
+                     points="564.992,584.1052,557.535,586.6494,562.0571,586.823,561.8835,591.3452,564.992,584.1052"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
         </g><!--reverse link Trading-Strategy to Strategies-Implementations-->
         <g id="link_Trading-Strategy_Strategies-Implementations">
-            <path d="M273.6123,518.9653 C248.4843,538.1973 169.28,598.816 127.248,630.984 " fill="none"
+            <path d="M386.0869,584.5928 C355.2869,603.2568 240.224,672.9772 178.432,710.4172 " fill="none"
                   id="Trading-Strategy-backto-Strategies-Implementations"
                   style="stroke:#181818;stroke-width:0.8000000000000002;"/>
             <polygon fill="#181818"
-                     points="277.424,516.048,269.7615,517.8829,274.2476,518.4791,273.6513,522.9651,277.424,516.048"
+                     points="390.192,582.1052,382.3759,583.0998,386.7711,584.1782,385.6927,588.5733,390.192,582.1052"
                      style="stroke:#181818;stroke-width:0.8000000000000002;"/>
-        </g><!--SRC=[bLGzJyCm4DtpAwmimE1sPwYKbWwLGAfQr2LYC8u9LXFRE0wYGlntdCJvikCKAbLLxzwxU_VXktbNIXJtowN845DbdYqmpvVwApWZJC64ebIYF0Y2D_r3GFWiKK9P2hOifOo4u3i0-dDx1y87f13SI_v94oB3pcm8yAWaKYIzz9wrv6SYuO5ybAHGtE8GkFqYk1pPjqp92ppIbA4CHWaIVky9PJH1jRy6n6r-s2X_gQsMQ01B0K5S6GjUIanWjDyPf5E70Pl_b1GDkCbcQjjmnWZMAWQ1dB9De1cArOzPGfF_2J6KahmQOHzcidqcs7L2tr4FnLIEy5dfmje-WyLYvUb-V20vLsrXbBE_SABNGjknWeySQrLTkaW8mxCLM3mdQS_qwGb-kltNu8nYL7cBTljZhvGviPuMJ90dCKDDrIY9BCAHdCtn1FjDDkdMbpNj0ZhUmIxlSf7LisrADO07JOJster2Uvo3NN4Ywq82PzXD2-oNw87PRz03ctum7h2ptLhaJ1Nrcu0htutwFtLumAOdsl6io-iTieyG-6RN4Uo3V9NWtdRFxlXJNC6x6OAv_Htb6TtnNm00]-->
+        </g><!--SRC=[bLHDRzim3BtxLmY-R3ie0NhSeK2IPa20hGYQePTW1qtcF26sfCfoqMpOVvzYA_wGJ6SB420X-SX7yedlVbghgu_BfIwOj7LPBBWgb-whbGHfQIPORbYPL2SXDNE_oERg-wIaFOXVGExk1kwTj61-C0xJxaTb4S-UyHFBHyuaqQsHf5yDouJCoLRcGa9AVYV4VTv_8Ea3iupkZNeL6PYqCti0FLZ3BEJdthCswWI6Fi5B3PLL0GRezWruFR9lfJLdUX2vP0LTPKpZtcTMY8mr_YRWUArFM-RV6cj0cj1QKtAy62jL6mvqjT_voAWF7-p_2wZQuBQQxssZf0JkM0mIHMtxH3EGO1wpWBR-5oRTkigBSleqa-FpoMu3-eaY4D-vKufrZLtdJ1QBUsJwnoSedGnzOqB9Vy6ilbVEpYtzhBXZrPLRQUrn8OC05nNjaHYVvC_W1RZmGd1syLTN_HzHCdDqaI5CW2TZngmkwmHJfID2cyCpxTNi2wxFQz6bZBm3FUzANJJxRPlr0GyEI4FjZL8Zpe5UeiokbIHQU3k4y3KYOU4xHCAc7mqI72dSaPpfedaNz1wxK_yF7HwnwOrskE3weal600cskmuG7kMRWFY-8zh1Izo8ZoiaS_eTrHdTyhy0]-->
     </g>
 </svg>
