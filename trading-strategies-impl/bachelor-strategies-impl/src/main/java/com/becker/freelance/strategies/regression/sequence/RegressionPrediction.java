@@ -1,6 +1,6 @@
 package com.becker.freelance.strategies.regression.sequence;
 
-import com.becker.freelance.commons.regime.TradeableQuantilMarketRegime;
+import com.becker.freelance.commons.regime.TradeableMarketRegime;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
 import com.becker.freelance.strategies.shared.LogReturnInverseTransformer;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public record RegressionPrediction(LocalDateTime closeTime,
-                                   TradeableQuantilMarketRegime regime,
+                                   TradeableMarketRegime regime,
                                    Double[] logReturns,
                                    Double[] cumulativeLogReturns,
                                    LogReturnInverseTransformer<Double[]> inverseTransformer) implements LogReturnInverseTransformer<Double[]> {

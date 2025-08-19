@@ -128,7 +128,7 @@ public class ClassificationLiveStrategy extends BaseStrategy {
             predictionIndicators.put("logReturn_1m_t-" + i, new ShiftedIndicator(logReturnClose, i));
         }
         predictionIndicators.put("volume", new VolumeIndicator(barSeries, 1));
-        Indicator<MarketRegime> marketRegimeIndicator = new RegimeIndicatorFactory().marketRegimeIndicatorFromConfigFile(getPair().technicalName(), closePriceIndicator);
+        Indicator<MarketRegime> marketRegimeIndicator = new RegimeIndicatorFactory().marketRegimeIndicatorFromConfigFile(getPair(), closePriceIndicator);
         predictionIndicators.put("regime", new TransformerIndicator<>(marketRegimeIndicator, regime -> DecimalNum.valueOf(regime.getId())));
 
 
@@ -150,7 +150,7 @@ public class ClassificationLiveStrategy extends BaseStrategy {
     }
 
     private PredictionParameter buildPredictionParameter() {
-        QuantileMarketRegime marketRegime = currentMarketRegime();
+        QuantileMarketRegime marketRegime = currentQuantileMarketRegime();
         int inputLength = classificationPredictor.requiredInputLengthForRegime(marketRegime);
         return new DefaultPredictionParameter(
                 marketRegime,

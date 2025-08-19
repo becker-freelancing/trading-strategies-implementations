@@ -2,7 +2,7 @@ package com.becker.freelance.strategies.regression.sequence;
 
 import com.becker.freelance.commons.position.Direction;
 import com.becker.freelance.commons.position.PositionBehaviour;
-import com.becker.freelance.commons.regime.TradeableQuantilMarketRegime;
+import com.becker.freelance.commons.regime.TradeableMarketRegime;
 import com.becker.freelance.commons.signal.EntrySignalBuilder;
 import com.becker.freelance.commons.signal.ExitSignal;
 import com.becker.freelance.commons.timeseries.TimeSeriesEntry;
@@ -128,7 +128,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
             predictionIndicators.put("logReturn_1m_t-" + i, new ShiftedIndicator(logReturnClose, i));
         }
         predictionIndicators.put("volume", new VolumeIndicator(barSeries, 1));
-        Indicator<MarketRegime> marketRegimeIndicator = new RegimeIndicatorFactory().marketRegimeIndicatorFromConfigFile(getPair().technicalName(), closePriceIndicator);
+        Indicator<MarketRegime> marketRegimeIndicator = new RegimeIndicatorFactory().marketRegimeIndicatorFromConfigFile(getPair(), closePriceIndicator);
         predictionIndicators.put("regime", new TransformerIndicator<>(marketRegimeIndicator, regime -> DecimalNum.valueOf(regime.getId())));
 
 
@@ -180,7 +180,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
     }
 
     private PredictionParameter buildPredictionParameter() {
-        QuantileMarketRegime marketRegime = currentMarketRegime();
+        QuantileMarketRegime marketRegime = currentQuantileMarketRegime();
         int inputLength = predictor.requiredInputLengthForRegime(marketRegime);
         return new DefaultPredictionParameter(
                 marketRegime,
@@ -210,7 +210,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
         return Optional.empty();
     }
 
-    private EntrySignalBuilder toSellEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toSellEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableMarketRegime marketRegime) {
         if (highAroundZero.index() < lowAroundZero.index()) {
             return toSellEntryHighBeforeLow(predictedPrice, currentPrice, marketRegime);
         } else {
@@ -218,7 +218,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
         }
     }
 
-    private EntrySignalBuilder toSellEntryLowBeforeHigh(SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toSellEntryLowBeforeHigh(SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableMarketRegime marketRegime) {
         // Falls das Tiefste Tief in der Vorhersage vor den Höchsten Hoch war muss das SL auf das höchste Hoch vor den tiefsten Tief gesetzt werden
         Double stopLevel = findHighInRange(predictedPrice, lowAroundZero.index()).value();
         Decimal limitLevel = Decimal.valueOf(findLow(predictedPrice).value() + takeProfitDelta);
@@ -232,7 +232,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
                 .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
-    private EntrySignalBuilder toSellEntryHighBeforeLow(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toSellEntryHighBeforeLow(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableMarketRegime marketRegime) {
         // Falls das höchste Hoch vor dem tiefsten Tief kam kann man einfach bei dem höchsten Hoch das SL setzen
         Double stopLevel = findHigh(predictedPrice).value();
         stopLevel = transformSellStopLevel(currentPrice, stopLevel);
@@ -260,7 +260,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
         return stopLevel;
     }
 
-    private EntrySignalBuilder toBuyEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toBuyEntry(SignificantPoint highAroundZero, SignificantPoint lowAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableMarketRegime marketRegime) {
         if (highAroundZero.index() < lowAroundZero.index()) {
             return toBuyEntryHighBeforeLow(highAroundZero, predictedPrice, currentPrice, marketRegime);
         } else {
@@ -268,7 +268,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
         }
     }
 
-    private EntrySignalBuilder toBuyEntryLowBeforeHigh(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toBuyEntryLowBeforeHigh(Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableMarketRegime marketRegime) {
         Double stopLevel = findLow(predictedPrice).value();
         stopLevel = transformBuyStopLevel(currentPrice, stopLevel);
         Decimal limitLevel = Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta);
@@ -282,7 +282,7 @@ public class SequenceLiveRegressionStrategy extends BaseStrategy {
                 .withLimitOrder(orderBuilder().asLimitOrder().withOrderPrice(limitLevel));
     }
 
-    private EntrySignalBuilder toBuyEntryHighBeforeLow(SignificantPoint highAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableQuantilMarketRegime marketRegime) {
+    private EntrySignalBuilder toBuyEntryHighBeforeLow(SignificantPoint highAroundZero, Double[] predictedPrice, TimeSeriesEntry currentPrice, TradeableMarketRegime marketRegime) {
         Double stopLevel = findLowInRange(predictedPrice, highAroundZero.index()).value();
         stopLevel = transformBuyStopLevel(currentPrice, stopLevel);
         Decimal limitLevel = Decimal.valueOf(findHigh(predictedPrice).value() - takeProfitDelta);

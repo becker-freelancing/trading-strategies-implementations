@@ -1,6 +1,7 @@
 [
   {
     "pair": "ETH/USDT M1",
+    "divideRegimesIntoQuantiles": true,
     "quantileRegimeDetector": {
       "DOWN_HIGH_VOLA": [
         15.0,
@@ -41,6 +42,7 @@
   },
   {
     "pair": "ETH/USDC M1",
+    "divideRegimesIntoQuantiles": true,
     "quantileRegimeDetector": {
       "DOWN_HIGH_VOLA": [
         17.0,
